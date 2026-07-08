@@ -41,7 +41,7 @@ def test_walk_forward_returns_sections():
 
 
 def test_walk_forward_uses_default_specs():
-    assert DEFAULT_WALK_FORWARD_SPECS[-1]["score_version"] == "v10"
+    assert DEFAULT_WALK_FORWARD_SPECS[-1]["score_version"] == "v11"
 
 
 def test_walk_forward_records_windows():
@@ -72,6 +72,16 @@ def test_walk_forward_records_v10_summary():
     report = run_walk_forward_validation(_assets(), _histories(), _stock_histories())
 
     assert "V10_ROBUST_EXPOSURE" in report["versions"]
+
+
+def test_walk_forward_records_v11_summary():
+    report = run_walk_forward_validation(_assets(), _histories(), _stock_histories())
+
+    assert "V11_PRODUCTION_FUSION" in report["versions"]
+
+
+def test_walk_forward_v11_records_robust_config():
+    assert DEFAULT_WALK_FORWARD_SPECS[-1]["robust_exposure_config"]["target_volatility"] == 15.0
 
 
 def test_walk_forward_summary_has_win_rate():

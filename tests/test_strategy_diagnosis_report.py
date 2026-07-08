@@ -42,6 +42,7 @@ def test_strategy_diagnosis_report_compares_strategy_versions():
         "V8_ADAPTIVE_SELECTION",
         "V9_EXPOSURE_OPTIMIZED",
         "V10_ROBUST_EXPOSURE",
+        "V11_PRODUCTION_FUSION",
     }
 
 
@@ -59,6 +60,7 @@ def test_strategy_diagnosis_report_records_best_version():
         "V8_ADAPTIVE_SELECTION",
         "V9_EXPOSURE_OPTIMIZED",
         "V10_ROBUST_EXPOSURE",
+        "V11_PRODUCTION_FUSION",
     }
 
 
@@ -184,6 +186,12 @@ def test_strategy_diagnosis_report_records_attribution_v10():
     assert {"allocation", "selection", "timing"} <= set(report["diagnosis"]["attribution_v10"])
 
 
+def test_strategy_diagnosis_report_records_attribution_v11():
+    report = _report()
+
+    assert {"allocation", "selection", "timing"} <= set(report["diagnosis"]["attribution_v11"])
+
+
 def test_strategy_diagnosis_report_records_selection_attribution():
     report = _report()
 
@@ -218,6 +226,12 @@ def test_strategy_diagnosis_report_records_robust_exposure_attribution():
     report = _report()
 
     assert {"static_factor", "adaptive_factor", "selection"} <= set(report["diagnosis"]["robust_exposure_attribution"])
+
+
+def test_strategy_diagnosis_report_records_production_fusion_attribution():
+    report = _report()
+
+    assert {"static_factor", "adaptive_factor", "selection"} <= set(report["diagnosis"]["production_fusion_attribution"])
 
 
 def test_strategy_diagnosis_report_records_selection_analysis():
@@ -298,16 +312,34 @@ def test_strategy_diagnosis_report_strategy_selection_scores_v10():
     assert any(row["version"] == "V10_ROBUST_EXPOSURE" for row in report["diagnosis"]["strategy_selection"]["rows"])
 
 
+def test_strategy_diagnosis_report_strategy_selection_scores_v11():
+    report = _report()
+
+    assert any(row["version"] == "V11_PRODUCTION_FUSION" for row in report["diagnosis"]["strategy_selection"]["rows"])
+
+
 def test_strategy_diagnosis_report_records_robustness():
     report = _report()
 
     assert {"parameter_sensitivity", "bootstrap", "version_scores"} <= set(report["diagnosis"]["robustness"])
 
 
+def test_strategy_diagnosis_report_records_stress():
+    report = _report()
+
+    assert {"scenarios", "rows", "versions"} <= set(report["diagnosis"]["stress"])
+
+
 def test_strategy_diagnosis_report_records_final_strategy():
     report = _report()
 
     assert {"production_candidate", "candidate", "rows"} <= set(report["diagnosis"]["final_strategy"])
+
+
+def test_strategy_diagnosis_report_records_production_readiness():
+    report = _report()
+
+    assert {"candidate", "status", "rows", "checks"} <= set(report["diagnosis"]["production_readiness"])
 
 
 def test_strategy_diagnosis_report_records_strategy_registry():
@@ -371,6 +403,13 @@ def test_strategy_diagnosis_report_registry_records_v10_evidence():
     assert {"periods", "improvement", "stock_breadth_coverage", "robustness_score"} <= set(v10["evidence"])
 
 
+def test_strategy_diagnosis_report_registry_records_v11_evidence():
+    report = _report()
+    v11 = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V11_PRODUCTION_FUSION")
+
+    assert {"periods", "improvement", "stock_breadth_coverage", "stress_score", "production_readiness"} <= set(v11["evidence"])
+
+
 def test_strategy_diagnosis_report_registry_records_promotion_fields():
     report = _report()
     v7 = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V7_STOCK_BREADTH_SELECTION")
@@ -432,6 +471,20 @@ def test_strategy_diagnosis_report_v10_records_robust_exposure_config():
     v10_row = next(row for row in report["versions"]["rows"] if row["version"] == "V10_ROBUST_EXPOSURE")
 
     assert "robust_exposure_config" in v10_row["assumptions"]
+
+
+def test_strategy_diagnosis_report_v11_records_score_version():
+    report = _report()
+    v11_row = next(row for row in report["versions"]["rows"] if row["version"] == "V11_PRODUCTION_FUSION")
+
+    assert v11_row["assumptions"]["score_version"] == "v11"
+
+
+def test_strategy_diagnosis_report_v11_records_robust_exposure_config():
+    report = _report()
+    v11_row = next(row for row in report["versions"]["rows"] if row["version"] == "V11_PRODUCTION_FUSION")
+
+    assert v11_row["assumptions"]["robust_exposure_config"]["target_volatility"] == 15.0
 
 
 def test_strategy_diagnosis_report_benchmark_validation_passes_for_mock():

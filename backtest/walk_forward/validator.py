@@ -44,6 +44,18 @@ DEFAULT_WALK_FORWARD_SPECS = [
         "volatility_adjustment": True,
         "robust_exposure_config": {"monthly_max_change": 10.0},
     },
+    {
+        "version": "V11_PRODUCTION_FUSION",
+        "score_version": "v11",
+        "max_weight_step": 10.0,
+        "volatility_adjustment": True,
+        "robust_exposure_config": {
+            "target_volatility": 15.0,
+            "moderate_drawdown": -8.0,
+            "deep_drawdown": -12.0,
+            "monthly_max_change": 10.0,
+        },
+    },
 ]
 
 

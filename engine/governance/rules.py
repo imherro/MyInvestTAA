@@ -50,6 +50,7 @@ def build_promotion_report(
         "V8_ADAPTIVE_SELECTION",
         "V9_EXPOSURE_OPTIMIZED",
         "V10_ROBUST_EXPOSURE",
+        "V11_PRODUCTION_FUSION",
     ]
     by_version = {str(row.get("version")): row for row in version_rows}
     benchmark = by_version.get(benchmark_version, {})

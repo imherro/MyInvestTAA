@@ -168,24 +168,28 @@ def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
     assert _strategy_diagnosis_report_is_current(report) is False
 
 
-def test_strategy_diagnosis_report_current_check_accepts_task021_shape():
+def test_strategy_diagnosis_report_current_check_accepts_task022_shape():
     report = {
-        "versions": {"rows": [{"version": "V10_ROBUST_EXPOSURE"}]},
+        "versions": {"rows": [{"version": "V10_ROBUST_EXPOSURE"}, {"version": "V11_PRODUCTION_FUSION"}]},
         "benchmark": {"validation": {}},
         "diagnosis": {
             "attribution_v3": {},
             "attribution_v9": {},
             "attribution_v10": {},
+            "attribution_v11": {},
             "selection_attribution": {},
             "selection_analysis": {},
             "adaptive_selection": {},
             "adaptive_selection_attribution": {},
             "exposure_selection_attribution": {},
             "robust_exposure_attribution": {},
+            "production_fusion_attribution": {},
             "exposure_analysis": {},
             "strategy_selection": {},
             "robustness": {},
+            "stress": {},
             "final_strategy": {},
+            "production_readiness": {},
             "stock_breadth": {},
             "walk_forward": {},
             "promotion": {},
@@ -293,6 +297,22 @@ def test_final_strategy_api_returns_candidate():
     assert response.status_code == 200
     payload = response.json()
     assert {"candidate", "confidence", "rows"} <= set(payload)
+
+
+def test_stress_api_returns_scenarios():
+    response = client.get("/api/research/stress")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"scenarios", "versions", "rows"} <= set(payload)
+
+
+def test_production_readiness_api_returns_status():
+    response = client.get("/api/research/production-readiness")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"candidate", "status", "confidence", "rows"} <= set(payload)
 
 
 def test_research_report_page_returns_sections():
@@ -415,6 +435,15 @@ def test_final_strategy_page_returns_sections():
     assert "Robustness" in response.text
 
 
+def test_production_readiness_page_returns_sections():
+    response = client.get("/production-readiness")
+
+    assert response.status_code == 200
+    assert "Production Readiness" in response.text
+    assert "Production Governance V3" in response.text
+    assert "Stress Validation" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -476,6 +505,13 @@ def test_dashboard_links_final_strategy():
 
     assert response.status_code == 200
     assert "/final-strategy" in response.text
+
+
+def test_dashboard_links_production_readiness():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/production-readiness" in response.text
 
 
 def test_dashboard_links_benchmark_validation():

@@ -83,10 +83,10 @@ def test_report_adaptive_selection_rows_include_reason():
     assert "adaptive_reason" in report["diagnosis"]["adaptive_selection"]["rows"][0]
 
 
-def test_report_selection_analysis_is_v10():
+def test_report_selection_analysis_is_v11():
     report = _report()
 
-    assert report["diagnosis"]["selection_analysis"]["version"] == "v10"
+    assert report["diagnosis"]["selection_analysis"]["version"] == "v11"
 
 
 def test_report_walk_forward_includes_v8():

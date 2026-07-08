@@ -49,8 +49,8 @@ def run_taa_backtest(
         raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
-    if score_version not in {"v1", "v4", "v5", "v6", "v7", "v8", "v9", "v10"}:
-        raise ValueError("score_version must be v1, v4, v5, v6, v7, v8, v9, or v10")
+    if score_version not in {"v1", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11"}:
+        raise ValueError("score_version must be v1, v4, v5, v6, v7, v8, v9, v10, or v11")
     if max_weight_step is not None and max_weight_step <= 0:
         raise ValueError("max_weight_step must be positive")
     if equity_floor_by_regime:
@@ -111,7 +111,7 @@ def run_taa_backtest(
         histories_as_of = _histories_as_of(price_history, current_date)
         stock_histories_as_of = (
             _histories_as_of(stock_price_history, current_date)
-            if stock_price_history and score_version in {"v7", "v8", "v9", "v10"}
+            if stock_price_history and score_version in {"v7", "v8", "v9", "v10", "v11"}
             else {}
         )
         benchmark_history = histories_as_of.get("510300", [])
@@ -127,7 +127,7 @@ def run_taa_backtest(
                 _estimate_current_breadth(histories_as_of),
             )
             risk_budget = _risk_budget_from_exposure(risk_budget, exposure_decision.equity_target)
-        elif score_version == "v10":
+        elif score_version in {"v10", "v11"}:
             config = robust_exposure_config or {}
             current_curve = equity_curve + [value]
             exposure_decision = optimize_equity_exposure_v2(
@@ -257,11 +257,11 @@ def _score_assets_as_of(
 ) -> list[dict]:
     scores: list[dict] = []
     benchmark_history = histories_as_of.get("510300", [])
-    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7", "v8", "v9", "v10"} else {}
+    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7", "v8", "v9", "v10", "v11"} else {}
     theme_breadth = theme_breadth_by_theme(histories_as_of) if score_version == "v6" else {}
     stock_breadth = (
         stock_breadth_by_theme(stock_histories_as_of or {})
-        if score_version in {"v7", "v8", "v9", "v10"}
+        if score_version in {"v7", "v8", "v9", "v10", "v11"}
         else {}
     )
     adaptive_weights = factor_weights_for_regime(regime_state) if score_version in {"v8", "v9", "v10"} else None
@@ -285,7 +285,7 @@ def _score_assets_as_of(
         stock_breadth_score = float(stock_breadth.get(theme, {}).get("breadth_score", 50.0))
         breadth_score = (
             stock_breadth_score
-            if score_version in {"v7", "v8", "v9", "v10"}
+            if score_version in {"v7", "v8", "v9", "v10", "v11"}
             else float(theme_breadth.get(theme, {}).get("breadth_score", 50.0))
         )
         quality_score = anchor_score
@@ -315,7 +315,7 @@ def _score_assets_as_of(
                 + 0.15 * quality_score,
                 2,
             )
-        elif score_version == "v7":
+        elif score_version in {"v7", "v11"}:
             opportunity_score = round(
                 0.20 * relative_strength.strength_score
                 + 0.25 * theme_momentum_score

@@ -174,6 +174,16 @@ def get_final_strategy() -> dict:
     return _build_strategy_diagnosis_report()["diagnosis"]["final_strategy"]
 
 
+@app.get("/api/research/stress")
+def get_stress() -> dict:
+    return _build_strategy_diagnosis_report()["diagnosis"]["stress"]
+
+
+@app.get("/api/research/production-readiness")
+def get_production_readiness() -> dict:
+    return _build_strategy_diagnosis_report()["diagnosis"]["production_readiness"]
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -380,7 +390,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -1298,7 +1308,7 @@ def adaptive_strategy_page() -> str:
     <body>
       <header>
         <h1>Adaptive Strategy</h1>
-        <p>展示当前 Market Regime 与 V10 动态 Selection 权重。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a></p>
+        <p>展示当前 Market Regime 与 V10 动态 Selection 权重。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section>
@@ -1362,7 +1372,7 @@ def risk_exposure_page() -> str:
     <body>
       <header>
         <h1>Risk Exposure</h1>
-        <p>展示 V10 风险敞口优化、波动率目标、组合回撤控制和生产策略评分。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/final-strategy">Final Strategy</a></p>
+        <p>展示 V11 风险敞口优化、波动率目标、组合回撤控制和生产策略评分。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section>
@@ -1456,7 +1466,7 @@ def final_strategy_page() -> str:
     <body>
       <header>
         <h1>Final Strategy</h1>
-        <p>展示 Production Score V2、稳健性分析和最终生产候选。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/risk-exposure">Risk Exposure</a></p>
+        <p>展示 Production Score V2、稳健性分析和最终生产候选。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section>
@@ -1521,6 +1531,85 @@ def final_strategy_page() -> str:
               </tr>
             </thead>
             <tbody>{sensitivity_rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/production-readiness", response_class=HTMLResponse)
+def production_readiness_page() -> str:
+    diagnosis = _build_strategy_diagnosis_report()["diagnosis"]
+    readiness = diagnosis["production_readiness"]
+    stress = diagnosis["stress"]
+    candidate = readiness.get("candidate") or "None"
+    status = readiness.get("status", "not_ready")
+    reason = "; ".join(readiness.get("reason", []))
+    readiness_rows = "\n".join(_production_readiness_rows(readiness.get("rows", [])))
+    stress_rows = "\n".join(_stress_rows(stress.get("rows", [])))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Production Readiness</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Production Readiness</h1>
+        <p>展示 Production Governance V3、V11 融合策略和压力测试准入状态。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/risk-exposure">Risk Exposure</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Current Candidate</h2>
+          <table>
+            <tbody>
+              <tr><td>Candidate</td><td>{escape(str(candidate))}</td></tr>
+              <tr><td>Status</td><td>{escape(str(status))}</td></tr>
+              <tr><td>Confidence</td><td>{float(readiness.get("confidence", 0.0)) * 100:.1f}%</td></tr>
+              <tr><td>Reason</td><td>{escape(reason)}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Production Governance V3</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>版本</th>
+                <th>评分</th>
+                <th>状态</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>Walk Forward</th>
+                <th>Stress</th>
+                <th>Robustness</th>
+              </tr>
+            </thead>
+            <tbody>{readiness_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Stress Validation</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>版本</th>
+                <th>场景</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Recovery</th>
+                <th>观测</th>
+                <th>通过</th>
+              </tr>
+            </thead>
+            <tbody>{stress_rows}</tbody>
           </table>
         </section>
       </main>
@@ -2183,6 +2272,52 @@ def _robustness_score_rows(rows: list[dict]) -> list[str]:
     return html_rows
 
 
+def _production_readiness_rows(rows: list[dict]) -> list[str]:
+    if not rows:
+        return ["<tr><td colspan=\"9\">No production readiness rows recorded</td></tr>"]
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item.get("version", "")))}</td>
+              <td>{float(item.get("production_score_v3", 0.0)):.2f}</td>
+              <td>{escape(str(item.get("ready", False)))}</td>
+              <td>{float(item.get("annual_return", 0.0)):.2f}%</td>
+              <td>{float(item.get("max_drawdown", 0.0)):.2f}%</td>
+              <td>{float(item.get("sharpe", 0.0)):.2f}</td>
+              <td>{float(item.get("walk_forward_win_rate", 0.0)) * 100:.1f}%</td>
+              <td>{float(item.get("stress_score", 0.0)):.2f}</td>
+              <td>{float(item.get("robustness_score", 0.0)):.2f}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _stress_rows(rows: list[dict]) -> list[str]:
+    if not rows:
+        return ["<tr><td colspan=\"7\">No stress rows recorded</td></tr>"]
+    html_rows: list[str] = []
+    for item in rows:
+        recovery = item.get("recovery_time")
+        recovery_text = "-" if recovery is None else str(recovery)
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item.get("version", "")))}</td>
+              <td>{escape(str(item.get("label", item.get("scenario", ""))))}</td>
+              <td>{float(item.get("annual_return", 0.0)):.2f}%</td>
+              <td>{float(item.get("max_drawdown", 0.0)):.2f}%</td>
+              <td>{escape(recovery_text)}</td>
+              <td>{int(item.get("observations", 0) or 0)}</td>
+              <td>{escape(str(item.get("pass", False)))}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
 def _parameter_sensitivity_rows(rows: list[dict]) -> list[str]:
     if not rows:
         return ["<tr><td colspan=\"7\">No parameter sensitivity recorded</td></tr>"]
@@ -2259,20 +2394,25 @@ def _strategy_diagnosis_report_is_current(report: dict) -> bool:
     diagnosis = report.get("diagnosis", {})
     return (
         "V10_ROBUST_EXPOSURE" in versions
+        and "V11_PRODUCTION_FUSION" in versions
         and "validation" in report.get("benchmark", {})
         and "attribution_v3" in diagnosis
         and "attribution_v9" in diagnosis
         and "attribution_v10" in diagnosis
+        and "attribution_v11" in diagnosis
         and "selection_attribution" in diagnosis
         and "selection_analysis" in diagnosis
         and "adaptive_selection" in diagnosis
         and "adaptive_selection_attribution" in diagnosis
         and "exposure_selection_attribution" in diagnosis
         and "robust_exposure_attribution" in diagnosis
+        and "production_fusion_attribution" in diagnosis
         and "exposure_analysis" in diagnosis
         and "strategy_selection" in diagnosis
         and "robustness" in diagnosis
+        and "stress" in diagnosis
         and "final_strategy" in diagnosis
+        and "production_readiness" in diagnosis
         and "stock_breadth" in diagnosis
         and "walk_forward" in diagnosis
         and "promotion" in diagnosis
