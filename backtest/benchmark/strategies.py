@@ -61,6 +61,36 @@ def run_fixed_weight_backtest(
     ).as_dict()
 
 
+def run_classic_saa_backtest(
+    equity_asset_id: str = "510300",
+    bond_asset_id: str = "511010",
+    gold_asset_id: str = "518880",
+    assets: list[dict] | None = None,
+    price_history: dict[str, list[dict]] | None = None,
+    initial_capital: float = 1.0,
+) -> dict:
+    assets_by_id = _assets_by_id(assets)
+    for asset_id in (equity_asset_id, bond_asset_id, gold_asset_id):
+        if asset_id not in assets_by_id:
+            raise ValueError(f"unknown asset_id: {asset_id}")
+
+    strategy = BenchmarkStrategy(
+        strategy_id="SAA_CLASSIC",
+        name="SAA Classic 60/30/10",
+        weights={
+            equity_asset_id: 60.0,
+            bond_asset_id: 30.0,
+            gold_asset_id: 10.0,
+        },
+        description="Classic strategic allocation benchmark with equity, bond, and gold sleeves.",
+    )
+    return _run_static_weight_backtest(
+        strategy,
+        price_history=price_history,
+        initial_capital=initial_capital,
+    ).as_dict()
+
+
 def run_equal_weight_backtest(
     asset_ids: list[str] | None = None,
     assets: list[dict] | None = None,

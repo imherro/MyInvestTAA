@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from backtest.benchmark import compare_strategies
+from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from engine.allocation import build_allocation_recommendation
@@ -70,6 +71,11 @@ def get_taa_backtest() -> dict:
 @app.get("/api/backtest/comparison")
 def get_backtest_comparison() -> dict:
     return compare_strategies()
+
+
+@app.get("/api/research/evaluation")
+def get_research_evaluation() -> dict:
+    return rolling_analysis()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -278,7 +284,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。</p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -399,6 +405,159 @@ def dashboard() -> str:
         <section class="history">
           <h2>收益曲线对比</h2>
           {comparison_curve}
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/research", response_class=HTMLResponse)
+def research_report() -> str:
+    comparison = compare_strategies()
+    evaluation = rolling_analysis(comparison)
+    strategy = comparison["strategies"]["MyInvestTAA"]
+    benchmark_rows = "\n".join(_comparison_rows(comparison))
+    rolling_rows = "\n".join(_rolling_rows(evaluation))
+    risk_rows = "\n".join(_risk_rows(comparison))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Research Report</title>
+      <style>
+        :root {{
+          color-scheme: light;
+          --bg: #f6f7f9;
+          --panel: #ffffff;
+          --text: #1d2433;
+          --muted: #5f6b7a;
+          --line: #d8dee8;
+          --accent: #2563eb;
+        }}
+        * {{ box-sizing: border-box; }}
+        body {{
+          margin: 0;
+          background: var(--bg);
+          color: var(--text);
+          font-family: Arial, "Microsoft YaHei", sans-serif;
+        }}
+        header {{
+          background: var(--panel);
+          border-bottom: 1px solid var(--line);
+          padding: 22px 32px 18px;
+        }}
+        main {{
+          max-width: 1180px;
+          margin: 0 auto;
+          padding: 26px 24px 40px;
+        }}
+        h1 {{ margin: 0 0 8px; font-size: 26px; letter-spacing: 0; }}
+        h2 {{ margin: 24px 0 12px; font-size: 20px; letter-spacing: 0; }}
+        p {{ margin: 0; color: var(--muted); line-height: 1.6; }}
+        a {{ color: var(--accent); }}
+        .summary {{
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 14px;
+        }}
+        .metric {{
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          padding: 16px;
+        }}
+        .metric label {{ display: block; color: var(--muted); font-size: 13px; margin-bottom: 8px; }}
+        .metric strong {{ display: block; font-size: 22px; }}
+        table {{
+          width: 100%;
+          border-collapse: collapse;
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          overflow: hidden;
+        }}
+        th, td {{
+          padding: 13px 14px;
+          border-bottom: 1px solid var(--line);
+          text-align: left;
+          vertical-align: middle;
+          font-size: 14px;
+        }}
+        th {{ background: #eef2f7; color: #344054; font-weight: 700; }}
+        td span {{ display: block; color: var(--muted); font-size: 12px; margin-top: 4px; }}
+        tr:last-child td {{ border-bottom: 0; }}
+        @media (max-width: 820px) {{
+          header {{ padding: 18px 18px 14px; }}
+          main {{ padding: 18px 12px 28px; }}
+          .summary {{ grid-template-columns: 1fr; }}
+          table {{ display: block; overflow-x: auto; }}
+          th, td {{ white-space: nowrap; }}
+        }}
+      </style>
+    </head>
+    <body>
+      <header>
+        <h1>Research Report</h1>
+        <p>真实数据接口已预留，当前报告仍基于 MockProvider 样例数据。<a href="/">Dashboard</a></p>
+      </header>
+      <main>
+        <section class="summary" aria-label="strategy performance">
+          <div class="metric"><label>策略</label><strong>{strategy["name"]}</strong></div>
+          <div class="metric"><label>年化收益</label><strong>{strategy["annual_return"]:.2f}%</strong></div>
+          <div class="metric"><label>最大回撤</label><strong>{strategy["max_drawdown"]:.2f}%</strong></div>
+          <div class="metric"><label>Rolling胜率</label><strong>{evaluation["rolling_win_rate"] * 100:.1f}%</strong></div>
+        </section>
+        <section>
+          <h2>Benchmark比较</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>策略</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>超额收益</th>
+                <th>回撤改善</th>
+                <th>期末净值</th>
+              </tr>
+            </thead>
+            <tbody>{benchmark_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Rolling胜率</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>窗口</th>
+                <th>观测数</th>
+                <th>胜率</th>
+                <th>平均Alpha</th>
+                <th>中位Alpha</th>
+                <th>回撤改善概率</th>
+              </tr>
+            </thead>
+            <tbody>{rolling_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>风险指标</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>策略</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>回撤改善</th>
+                <th>Sharpe差异</th>
+              </tr>
+            </thead>
+            <tbody>{risk_rows}</tbody>
+          </table>
         </section>
       </main>
     </body>
@@ -580,6 +739,42 @@ def _comparison_curve_svg(comparison: dict) -> str:
       </svg>
     </div>
     """
+
+
+def _rolling_rows(evaluation: dict) -> list[str]:
+    rows: list[str] = []
+    for item in evaluation["windows"]:
+        primary = item["benchmarks"].get(evaluation["primary_benchmark"], {})
+        rows.append(
+            f"""
+            <tr>
+              <td>{item["rolling_period"]}</td>
+              <td>{primary.get("observations", 0)}</td>
+              <td>{item["rolling_win_rate"] * 100:.1f}%</td>
+              <td>{item["avg_alpha"]:.2f}%</td>
+              <td>{primary.get("median_alpha", 0.0):.2f}%</td>
+              <td>{primary.get("positive_drawdown_improvement_rate", 0.0) * 100:.1f}%</td>
+            </tr>
+            """
+        )
+    return rows
+
+
+def _risk_rows(comparison: dict) -> list[str]:
+    rows: list[str] = []
+    for item in comparison["rows"]:
+        rows.append(
+            f"""
+            <tr>
+              <td><strong>{item["name"]}</strong><span>{item["strategy_id"]}</span></td>
+              <td>{item["max_drawdown"]:.2f}%</td>
+              <td>{item["sharpe"]:.2f}</td>
+              <td>{item["drawdown_improvement"]:.2f}%</td>
+              <td>{item["sharpe_difference"]:.2f}</td>
+            </tr>
+            """
+        )
+    return rows
 
 
 if __name__ == "__main__":

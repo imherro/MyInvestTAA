@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from backtest.benchmark.strategies import (
     run_buy_hold_backtest,
+    run_classic_saa_backtest,
     run_equal_weight_backtest,
     run_fixed_weight_backtest,
 )
@@ -31,6 +32,11 @@ def compare_strategies(
             initial_capital=initial_capital,
         ),
         run_fixed_weight_backtest(
+            assets=assets,
+            price_history=price_history,
+            initial_capital=initial_capital,
+        ),
+        run_classic_saa_backtest(
             assets=assets,
             price_history=price_history,
             initial_capital=initial_capital,

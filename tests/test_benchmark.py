@@ -6,6 +6,7 @@ from backtest.benchmark import (
     calculate_alpha_metrics,
     compare_strategies,
     run_buy_hold_backtest,
+    run_classic_saa_backtest,
     run_equal_weight_backtest,
     run_fixed_weight_backtest,
 )
@@ -15,6 +16,8 @@ from backtest.benchmark.models import normalize_benchmark_weights
 SAMPLE_ASSETS = [
     {"id": "510300", "name": "沪深300ETF", "anchor_score": 65},
     {"id": "512890", "name": "红利低波ETF", "anchor_score": 85},
+    {"id": "511010", "name": "国债ETF", "anchor_score": 80},
+    {"id": "518880", "name": "黄金ETF", "anchor_score": 70},
 ]
 
 SAMPLE_HISTORY = {
@@ -29,6 +32,18 @@ SAMPLE_HISTORY = {
         {"date": "2024-02-29", "close": 1.02},
         {"date": "2024-03-31", "close": 1.01},
         {"date": "2024-04-30", "close": 1.04},
+    ],
+    "511010": [
+        {"date": "2024-01-31", "close": 1.0},
+        {"date": "2024-02-29", "close": 1.01},
+        {"date": "2024-03-31", "close": 1.02},
+        {"date": "2024-04-30", "close": 1.03},
+    ],
+    "518880": [
+        {"date": "2024-01-31", "close": 1.0},
+        {"date": "2024-02-29", "close": 1.06},
+        {"date": "2024-03-31", "close": 1.02},
+        {"date": "2024-04-30", "close": 1.08},
     ],
 }
 
@@ -156,7 +171,7 @@ def test_fixed_weight_backtest_rejects_non_positive_initial_capital():
 def test_equal_weight_backtest_uses_all_assets_by_default():
     result = run_equal_weight_backtest(assets=SAMPLE_ASSETS, price_history=SAMPLE_HISTORY)
 
-    assert set(result["weights"]) == {"510300", "512890"}
+    assert set(result["weights"]) == {"510300", "512890", "511010", "518880"}
     assert round(sum(result["weights"].values()), 4) == 100.0
 
 
@@ -209,10 +224,31 @@ def test_calculate_alpha_metrics_reports_drawdown_improvement():
     assert alpha["drawdown_improvement"] == 4
 
 
-def test_compare_strategies_returns_four_rows():
+def test_classic_saa_backtest_uses_equity_bond_gold_weights():
+    result = run_classic_saa_backtest(assets=SAMPLE_ASSETS, price_history=SAMPLE_HISTORY)
+
+    assert result["strategy_id"] == "SAA_CLASSIC"
+    assert result["weights"] == {"510300": 60.0, "511010": 30.0, "518880": 10.0}
+
+
+def test_classic_saa_backtest_returns_metrics():
+    result = run_classic_saa_backtest(assets=SAMPLE_ASSETS, price_history=SAMPLE_HISTORY)
+
+    assert result["metrics"]["ending_value"] > 0
+
+
+def test_classic_saa_backtest_rejects_missing_bond_asset():
+    with pytest.raises(ValueError):
+        run_classic_saa_backtest(
+            assets=[{"id": "510300", "name": "沪深300ETF"}, {"id": "518880", "name": "黄金ETF"}],
+            price_history=SAMPLE_HISTORY,
+        )
+
+
+def test_compare_strategies_returns_five_rows():
     result = compare_strategies()
 
-    assert len(result["rows"]) == 4
+    assert len(result["rows"]) == 5
 
 
 def test_compare_strategies_contains_required_strategy_fields():
@@ -225,7 +261,7 @@ def test_compare_strategies_contains_required_strategy_fields():
 def test_compare_strategies_includes_default_benchmarks():
     result = compare_strategies()
 
-    assert {"HS300_BUY_HOLD", "SAA_60_40", "EQUAL_WEIGHT"} <= set(result["strategies"])
+    assert {"HS300_BUY_HOLD", "SAA_60_40", "SAA_CLASSIC", "EQUAL_WEIGHT"} <= set(result["strategies"])
 
 
 def test_compare_strategies_returns_equity_curves_for_each_strategy():

@@ -329,3 +329,18 @@ data/sample/history/prices.json
 - Web 首页增加 `Strategy Comparison` 区块，用表格展示策略、年化收益、最大回撤、Sharpe、超额收益、回撤改善和期末净值。
 
 当前比较仍基于样例月度数据，且 TAA 与基准都未纳入交易成本、滑点、ETF 费率、税费和申赎限制。该模块用于验证框架和相对评估流程，不代表真实策略有效性结论。
+
+## 二十一、Task-008 真实数据接口与研究验证
+
+当前工程增加了真实数据接口预留和研究验证层：
+
+- `data/models.py`：新增统一 `PriceBar` 与 `AssetMetadata`，隔离外部数据源字段。
+- `data_provider/`：新增 `MarketDataProvider` 接口、`MockProvider`、`TushareProvider`、`BaoStockProvider`。
+- `MockProvider` 继续读取现有 `data/sample/` 样例 JSON，保证离线测试和本地演示稳定。
+- `TushareProvider` 预留 ETF 日线、指数日线和 ETF 列表接口，需要本地安装 `tushare` 并配置 `TUSHARE_TOKEN` 后使用。
+- TAA 回测新增 `transaction_cost` 和 `cash_return` 参数，支持调仓成本和现金收益假设。
+- Benchmark V2 新增 `SAA_CLASSIC`，使用 60% 股票、30% 国债 ETF、10% 黄金 ETF 的样例经典配置。
+- `GET /api/research/evaluation`：返回 1Y/3Y/5Y Rolling Evaluation，包括滚动胜率、平均 Alpha 和回撤改善概率。
+- `GET /research`：新增 Research Report 页面，展示策略表现、Benchmark 比较、Rolling 胜率和风险指标。
+
+当前真实数据 Provider 仍是接口预留，默认运行使用 `MockProvider` 和样例数据；Tushare/BaoStock 不会在测试中访问网络或要求凭证。后续需要接入完整真实历史行情、交易日历、真实债券/黄金/现金替代品和数据质量检查。

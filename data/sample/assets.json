@@ -93,5 +93,43 @@
     "max_drawdown": -65,
     "reference_max_drawdown_pct": -65,
     "prices": [1.00, 1.35, 1.60, 1.30, 1.02, 0.86, 0.68, 0.74, 0.70]
+  },
+  {
+    "id": "511010",
+    "name": "国债ETF",
+    "type": "etf",
+    "asset_class": "bond",
+    "style": "government_bond",
+    "category": "china_bond",
+    "market": "CN",
+    "benchmark": "Treasury Bond",
+    "risk_level": "low",
+    "anchor_score": 80,
+    "anchor_reason": "Government bond exposure provides defensive duration and income anchor.",
+    "placeholder_score": 58,
+    "strategic_weight_pct": 20,
+    "current_weight_pct": 18,
+    "max_drawdown": -8,
+    "reference_max_drawdown_pct": -8,
+    "prices": [1.00, 1.01, 1.03, 1.04, 1.05, 1.04, 1.06, 1.08, 1.09]
+  },
+  {
+    "id": "518880",
+    "name": "黄金ETF",
+    "type": "etf",
+    "asset_class": "commodity",
+    "style": "gold",
+    "category": "gold",
+    "market": "CN",
+    "benchmark": "Gold",
+    "risk_level": "medium",
+    "anchor_score": 70,
+    "anchor_reason": "Gold provides inflation, currency and crisis hedge characteristics.",
+    "placeholder_score": 60,
+    "strategic_weight_pct": 10,
+    "current_weight_pct": 8,
+    "max_drawdown": -25,
+    "reference_max_drawdown_pct": -25,
+    "prices": [1.00, 1.06, 1.12, 1.10, 1.18, 1.12, 1.20, 1.28, 1.32]
   }
 ]

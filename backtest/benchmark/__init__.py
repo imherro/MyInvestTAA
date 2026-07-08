@@ -2,6 +2,7 @@ from backtest.benchmark.comparison import calculate_alpha_metrics, compare_strat
 from backtest.benchmark.models import BenchmarkResult, BenchmarkStrategy
 from backtest.benchmark.strategies import (
     run_buy_hold_backtest,
+    run_classic_saa_backtest,
     run_equal_weight_backtest,
     run_fixed_weight_backtest,
 )
@@ -12,6 +13,7 @@ __all__ = [
     "calculate_alpha_metrics",
     "compare_strategies",
     "run_buy_hold_backtest",
+    "run_classic_saa_backtest",
     "run_equal_weight_backtest",
     "run_fixed_weight_backtest",
 ]

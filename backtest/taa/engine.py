@@ -19,11 +19,17 @@ def run_taa_backtest(
     price_history: dict[str, list[dict]] | None = None,
     rebalance_frequency: str = "monthly",
     initial_capital: float = 1.0,
+    transaction_cost: float = 0.0,
+    cash_return: float = 0.0,
 ) -> dict:
     if rebalance_frequency != "monthly":
         raise ValueError("only monthly rebalance is supported")
     if initial_capital <= 0:
         raise ValueError("initial_capital must be positive")
+    if transaction_cost < 0:
+        raise ValueError("transaction_cost cannot be negative")
+    if cash_return <= -1:
+        raise ValueError("cash_return must be greater than -1")
 
     if assets is None:
         assets = load_assets()
@@ -31,7 +37,7 @@ def run_taa_backtest(
         price_history = load_price_histories()
     dates = _all_dates(price_history)
     if len(dates) < 2:
-        return _empty_result(initial_capital)
+        return _empty_result(initial_capital, transaction_cost, cash_return)
 
     weights = {"CASH": 100.0}
     states: list[PortfolioState] = [
@@ -49,9 +55,15 @@ def run_taa_backtest(
     value = initial_capital
 
     for previous_date, current_date in zip(dates, dates[1:]):
-        period_return = _portfolio_return(weights, price_history, previous_date, current_date)
+        previous_value = value
+        period_return = _portfolio_return(
+            weights,
+            price_history,
+            previous_date,
+            current_date,
+            cash_return,
+        )
         value = value * (1.0 + period_return)
-        returns.append(period_return)
 
         histories_as_of = _histories_as_of(price_history, current_date)
         benchmark_history = histories_as_of.get("510300", [])
@@ -59,7 +71,11 @@ def run_taa_backtest(
         risk_budget = build_risk_budget(regime)
         scores = _score_assets_as_of(assets, histories_as_of)
         next_weights = build_rebalance_weights(scores, risk_budget)
-        turnovers.append(turnover(weights, next_weights))
+        period_turnover = turnover(weights, next_weights)
+        turnovers.append(period_turnover)
+        if transaction_cost:
+            value = value * (1.0 - period_turnover * transaction_cost)
+        returns.append(value / previous_value - 1.0)
         weights = next_weights
 
         equity_curve.append(value)
@@ -82,6 +98,10 @@ def run_taa_backtest(
         "strategy": "MyInvestTAA",
         "period": {"start": dates[0].isoformat(), "end": dates[-1].isoformat()},
         "rebalance_frequency": rebalance_frequency,
+        "assumptions": {
+            "transaction_cost": transaction_cost,
+            "cash_return": cash_return,
+        },
         "metrics": metrics,
         "equity_curve": [
             {"date": item.date, "value": item.portfolio_value}
@@ -130,10 +150,13 @@ def _portfolio_return(
     price_history: dict[str, list[dict]],
     previous_date: date,
     current_date: date,
+    cash_return: float = 0.0,
 ) -> float:
     result = 0.0
+    monthly_cash_return = (1.0 + cash_return) ** (1.0 / 12.0) - 1.0
     for asset_id, weight in weights.items():
         if asset_id == "CASH":
+            result += (weight / 100.0) * monthly_cash_return
             continue
         previous_close = _close_on_or_before(price_history[asset_id], previous_date)
         current_close = _close_on_or_before(price_history[asset_id], current_date)
@@ -172,11 +195,15 @@ def _close_on_or_before(history: list[dict], target: date) -> float | None:
     return close
 
 
-def _empty_result(initial_capital: float) -> dict:
+def _empty_result(initial_capital: float, transaction_cost: float = 0.0, cash_return: float = 0.0) -> dict:
     return {
         "strategy": "MyInvestTAA",
         "period": None,
         "rebalance_frequency": "monthly",
+        "assumptions": {
+            "transaction_cost": transaction_cost,
+            "cash_return": cash_return,
+        },
         "metrics": {
             "annual_return": 0.0,
             "max_drawdown": 0.0,

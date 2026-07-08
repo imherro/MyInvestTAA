@@ -70,6 +70,23 @@ def test_backtest_comparison_api_returns_alpha_metrics():
     assert {"annual_return", "max_drawdown", "sharpe", "excess_return"} <= set(payload["rows"][0])
 
 
+def test_research_evaluation_api_returns_rolling_metrics():
+    response = client.get("/api/research/evaluation")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["strategy"] == "MyInvestTAA"
+    assert {"rolling_win_rate", "avg_alpha", "windows"} <= set(payload)
+
+
+def test_research_report_page_returns_sections():
+    response = client.get("/research")
+
+    assert response.status_code == 200
+    assert "Research Report" in response.text
+    assert "Rolling胜率" in response.text
+
+
 def test_recovery_api_returns_summary():
     response = client.get("/api/recovery/512890")
 

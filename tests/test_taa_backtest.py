@@ -116,6 +116,45 @@ def test_run_taa_backtest_rejects_non_positive_capital():
         run_taa_backtest(initial_capital=0)
 
 
+def test_run_taa_backtest_rejects_negative_transaction_cost():
+    with pytest.raises(ValueError):
+        run_taa_backtest(transaction_cost=-0.001)
+
+
+def test_run_taa_backtest_rejects_invalid_cash_return():
+    with pytest.raises(ValueError):
+        run_taa_backtest(cash_return=-1.0)
+
+
+def test_run_taa_backtest_records_assumptions():
+    result = run_taa_backtest(transaction_cost=0.001, cash_return=0.015)
+
+    assert result["assumptions"]["transaction_cost"] == 0.001
+    assert result["assumptions"]["cash_return"] == 0.015
+
+
+def test_run_taa_backtest_transaction_cost_lowers_ending_value():
+    no_cost = run_taa_backtest(transaction_cost=0.0)
+    with_cost = run_taa_backtest(transaction_cost=0.01)
+
+    assert with_cost["metrics"]["ending_value"] <= no_cost["metrics"]["ending_value"]
+
+
+def test_run_taa_backtest_cash_return_applies_to_cash_weight():
+    result = run_taa_backtest(
+        assets=[],
+        price_history={
+            "510300": [
+                {"date": "2024-01-31", "close": 1.0},
+                {"date": "2024-02-29", "close": 1.0},
+            ]
+        },
+        cash_return=0.12,
+    )
+
+    assert result["metrics"]["ending_value"] > 1.0
+
+
 def test_run_taa_backtest_handles_empty_history():
     result = run_taa_backtest(assets=[], price_history={}, initial_capital=1.0)
 
@@ -139,4 +178,3 @@ def test_run_taa_backtest_does_not_create_negative_portfolio_value():
     result = run_taa_backtest()
 
     assert all(point["value"] > 0 for point in result["equity_curve"])
-
