@@ -60,3 +60,22 @@ def test_opportunity_ranking_api_returns_scores():
     ranking = response.json()
     assert len(ranking) >= 5
     assert {"drawdown_pressure", "recovery_probability", "opportunity_score"} <= set(ranking[0])
+
+
+def test_anchor_profiles_api_returns_profiles():
+    response = client.get("/api/anchor/profiles")
+
+    assert response.status_code == 200
+    profiles = response.json()
+    assert len(profiles) >= 5
+    assert {"asset_id", "anchor_score", "confidence"} <= set(profiles[0])
+
+
+def test_allocation_recommendation_api_returns_weights():
+    response = client.get("/api/allocation/recommendation")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["total_weight"] == 100.0
+    assert payload["min_cash"] == 10.0
+    assert any(item["asset_id"] == "CASH" for item in payload["allocation"])

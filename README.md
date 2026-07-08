@@ -285,3 +285,15 @@ data/sample/history/prices.json
 - Web 首页增加 `Recovery Analysis` 区块，展示压力、恢复概率、机会评分和 3 年中位收益。
 
 当前恢复统计只使用样例历史价格中底部日期之后的数据，避免把底部之前的信息混入未来收益统计。该模块仍是研究样例，不构成投资建议。
+
+## 十七、Task-004 资产锚 V2 与配置建议
+
+当前工程增加了资产锚 V2 和 TAA 配置建议：
+
+- `GET /api/anchor/profiles`：返回资产锚分项配置与综合 Anchor Score。
+- `GET /api/allocation/recommendation`：返回满足单资产上限、最低现金和权重归一约束的组合建议。
+- Opportunity Score V2 使用 `40% Drawdown Pressure + 30% Recovery Score + 30% Anchor Score`。
+- Recovery Summary 增加 `sample_confidence`，对小样本恢复概率做低/中/高置信度标记。
+- Web 首页增加 `Allocation Recommendation` 区块，展示机会分、建议权重和配置状态。
+
+当前配置建议仍是研究型输出，不是自动交易或下单指令。

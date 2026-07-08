@@ -12,7 +12,9 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from backtest.simulator import run_sample_backtest
+from engine.allocation import build_allocation_recommendation
 from engine.asset_repository import load_assets, load_price_history
+from engine.anchor import load_anchor_profiles
 from engine.drawdown import calculate_drawdown, calculate_drawdown_percentile, detect_drawdown_events
 from engine.opportunity import build_opportunity_ranking
 from engine.recovery import analyze_recovery_events
@@ -67,6 +69,16 @@ def get_opportunity_ranking() -> list[dict]:
     return build_opportunity_ranking(load_assets())
 
 
+@app.get("/api/anchor/profiles")
+def get_anchor_profiles() -> list[dict]:
+    return [profile.as_dict() for profile in load_anchor_profiles().values()]
+
+
+@app.get("/api/allocation/recommendation")
+def get_allocation_recommendation() -> dict:
+    return build_allocation_recommendation(load_assets()).as_dict()
+
+
 @app.get("/", response_class=HTMLResponse)
 def dashboard() -> str:
     ranking = build_taa_ranking(load_assets())
@@ -87,6 +99,7 @@ def dashboard() -> str:
     )
     event_rows = "\n".join(_drawdown_history_rows(ranking))
     opportunity_rows = "\n".join(_opportunity_rows())
+    allocation_rows = "\n".join(_allocation_rows())
 
     return f"""
     <!doctype html>
@@ -267,11 +280,26 @@ def dashboard() -> str:
                 <th>压力</th>
                 <th>压力区</th>
                 <th>恢复概率</th>
+                <th>资产锚</th>
                 <th>机会评分</th>
                 <th>3年中位收益</th>
               </tr>
             </thead>
-            <tbody>{opportunity_rows}</tbody>
+          <tbody>{opportunity_rows}</tbody>
+          </table>
+        </section>
+        <section class="history">
+          <h2>Allocation Recommendation</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>资产</th>
+                <th>机会分</th>
+                <th>建议权重</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody>{allocation_rows}</tbody>
           </table>
         </section>
       </main>
@@ -322,8 +350,27 @@ def _opportunity_rows() -> list[str]:
               <td>{item["drawdown_pressure"]:.1f}</td>
               <td>{item["pressure_zone"]}</td>
               <td>{item["recovery_probability"]:.1f}%</td>
+              <td>{item["anchor_score"]:.1f}</td>
               <td><strong>{item["opportunity_score"]:.1f}</strong></td>
               <td>{forward_text}</td>
+            </tr>
+            """
+        )
+    return rows
+
+
+def _allocation_rows() -> list[str]:
+    recommendation = build_allocation_recommendation(load_assets())
+    rows: list[str] = []
+    for item in recommendation.allocation:
+        score_text = "-" if item.opportunity_score is None else f"{item.opportunity_score:.1f}"
+        rows.append(
+            f"""
+            <tr>
+              <td><strong>{item.name}</strong><span>{item.asset_id}</span></td>
+              <td>{score_text}</td>
+              <td>{item.weight:.1f}%</td>
+              <td>{item.status}</td>
             </tr>
             """
         )

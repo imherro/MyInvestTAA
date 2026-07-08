@@ -31,6 +31,7 @@ class RecoverySummary:
     event_count: int
     recovered_events: int
     recovery_probability: float
+    sample_confidence: str
     median_recovery_days: int | None
     median_forward_return_1y_pct: float | None
     median_forward_return_2y_pct: float | None
@@ -43,10 +44,10 @@ class RecoverySummary:
             "event_count": self.event_count,
             "recovered_events": self.recovered_events,
             "recovery_probability": self.recovery_probability,
+            "sample_confidence": self.sample_confidence,
             "median_recovery_days": self.median_recovery_days,
             "median_forward_return_1y_pct": self.median_forward_return_1y_pct,
             "median_forward_return_2y_pct": self.median_forward_return_2y_pct,
             "median_forward_return_3y_pct": self.median_forward_return_3y_pct,
             "events": [event.as_dict() for event in self.events],
         }
-

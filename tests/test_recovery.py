@@ -17,6 +17,7 @@ def test_analyze_recovery_events_counts_successful_recovery():
     assert summary.event_count == 1
     assert summary.recovered_events == 1
     assert summary.recovery_probability == 1.0
+    assert summary.sample_confidence == "low"
     assert summary.events[0].forward_return_1y_pct == 50.0
 
 
@@ -53,6 +54,25 @@ def test_analyze_recovery_events_handles_multiple_events():
     assert summary.recovered_events == 2
     assert summary.recovery_probability == 1.0
     assert summary.median_recovery_days is not None
+
+
+def test_analyze_recovery_events_reports_medium_confidence():
+    prices = [{"date": "2020-01-01", "close": 100}]
+    for idx in range(1, 7):
+        year = 2020 + idx
+        prices.extend(
+            [
+                {"date": f"{year}-01-01", "close": 100 + idx},
+                {"date": f"{year}-02-01", "close": 90},
+                {"date": f"{year}-03-01", "close": 101 + idx},
+            ]
+        )
+    events = detect_drawdown_events(prices)
+
+    summary = analyze_recovery_events(events, prices)
+
+    assert summary.event_count >= 5
+    assert summary.sample_confidence == "medium"
 
 
 def test_analyze_recovery_events_uses_bottom_date_forward_only():
@@ -99,4 +119,3 @@ def test_median_number_handles_even_count():
 def test_round_optional_preserves_none():
     assert round_optional(None) is None
     assert round_optional(1.23456, 2) == 1.23
-

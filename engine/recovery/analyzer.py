@@ -23,6 +23,7 @@ def analyze_recovery_events(
         event_count=event_count,
         recovered_events=recovered_events,
         recovery_probability=round(recovery_probability, 4),
+        sample_confidence=_sample_confidence(event_count),
         median_recovery_days=round_optional(median_number([item.recovery_days for item in analyses]), 0),
         median_forward_return_1y_pct=round_optional(
             median_number([item.forward_return_1y_pct for item in analyses])
@@ -35,6 +36,14 @@ def analyze_recovery_events(
         ),
         events=analyses,
     )
+
+
+def _sample_confidence(event_count: int) -> str:
+    if event_count > 10:
+        return "high"
+    if event_count >= 5:
+        return "medium"
+    return "low"
 
 
 def _analyze_event(event: DrawdownEvent, rows: list[tuple[date, float]]) -> RecoveryEventAnalysis:
@@ -91,4 +100,3 @@ def _normalize_price_series(price_series: list[dict]) -> list[tuple[date, float]
             raise ValueError("close must be positive")
         rows.append((date.fromisoformat(str(item["date"])), close))
     return sorted(rows, key=lambda row: row[0])
-
