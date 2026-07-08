@@ -47,6 +47,7 @@ def run_taa_backtest(
             positions={},
             portfolio_value=initial_capital,
             weights=weights,
+            reason="initial cash position before first rebalance",
         )
     ]
     equity_curve = [initial_capital]
@@ -79,6 +80,11 @@ def run_taa_backtest(
         weights = next_weights
 
         equity_curve.append(value)
+        selected_assets = [
+            asset_id
+            for asset_id, weight in next_weights.items()
+            if asset_id != "CASH" and weight > 0
+        ]
         states.append(
             PortfolioState(
                 date=current_date.isoformat(),
@@ -90,6 +96,16 @@ def run_taa_backtest(
                 },
                 portfolio_value=round(value, 4),
                 weights=weights,
+                signals={
+                    "scores": scores,
+                    "risk_budget": risk_budget.as_dict(),
+                    "turnover": period_turnover,
+                    "transaction_cost": transaction_cost,
+                    "cash_return": cash_return,
+                },
+                regime=regime.as_dict(),
+                selected_assets=selected_assets,
+                reason=_rebalance_reason(regime.state, selected_assets),
             )
         )
 
@@ -139,6 +155,9 @@ def _score_assets_as_of(assets: list[dict], histories_as_of: dict[str, list[dict
                 "id": asset["id"],
                 "name": asset["name"],
                 "opportunity_score": opportunity_score,
+                "drawdown_pressure": drawdown_pressure,
+                "recovery_score": recovery_score,
+                "anchor_score": anchor_score,
                 "confidence_adjusted_score": round(opportunity_score * confidence_factor, 2),
             }
         )
@@ -193,6 +212,12 @@ def _close_on_or_before(history: list[dict], target: date) -> float | None:
         else:
             break
     return close
+
+
+def _rebalance_reason(regime_state: str, selected_assets: list[str]) -> str:
+    if not selected_assets:
+        return f"{regime_state} regime selected cash because no positive candidates passed scoring."
+    return f"{regime_state} regime selected {', '.join(selected_assets)} by confidence adjusted opportunity score."
 
 
 def _empty_result(initial_capital: float, transaction_cost: float = 0.0, cash_return: float = 0.0) -> dict:

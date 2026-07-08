@@ -79,12 +79,45 @@ def test_research_evaluation_api_returns_rolling_metrics():
     assert {"rolling_win_rate", "avg_alpha", "windows"} <= set(payload)
 
 
+def test_research_quality_api_returns_reports():
+    response = client.get("/api/research/quality")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"average_score", "reports", "asset_count"} <= set(payload)
+
+
+def test_research_attribution_api_returns_contribution():
+    response = client.get("/api/research/attribution")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["strategy"] == "MyInvestTAA"
+    assert "contribution" in payload
+
+
 def test_research_report_page_returns_sections():
     response = client.get("/research")
 
     assert response.status_code == 200
     assert "Research Report" in response.text
     assert "Rolling胜率" in response.text
+
+
+def test_data_quality_page_returns_sections():
+    response = client.get("/quality")
+
+    assert response.status_code == 200
+    assert "Data Quality" in response.text
+    assert "数据质量评分" in response.text
+
+
+def test_attribution_page_returns_sections():
+    response = client.get("/attribution")
+
+    assert response.status_code == 200
+    assert "Attribution" in response.text
+    assert "收益来源" in response.text
 
 
 def test_recovery_api_returns_summary():

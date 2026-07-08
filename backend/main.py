@@ -19,6 +19,8 @@ from backtest.taa import run_taa_backtest
 from engine.allocation import build_allocation_recommendation
 from engine.asset_repository import load_assets, load_price_history
 from engine.anchor import load_anchor_profiles
+from engine.attribution import analyze_attribution
+from engine.data_quality import build_quality_summary
 from engine.drawdown import calculate_drawdown, calculate_drawdown_percentile, detect_drawdown_events
 from engine.opportunity import build_opportunity_ranking
 from engine.recovery import analyze_recovery_events
@@ -76,6 +78,16 @@ def get_backtest_comparison() -> dict:
 @app.get("/api/research/evaluation")
 def get_research_evaluation() -> dict:
     return rolling_analysis()
+
+
+@app.get("/api/research/quality")
+def get_research_quality() -> dict:
+    return build_quality_summary()
+
+
+@app.get("/api/research/attribution")
+def get_research_attribution() -> dict:
+    return analyze_attribution()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -502,7 +514,7 @@ def research_report() -> str:
     <body>
       <header>
         <h1>Research Report</h1>
-        <p>真实数据接口已预留，当前报告仍基于 MockProvider 样例数据。<a href="/">Dashboard</a></p>
+        <p>真实数据接口已预留，当前报告仍基于 MockProvider 样例数据。<a href="/">Dashboard</a> · <a href="/quality">Data Quality</a> · <a href="/attribution">Attribution</a></p>
       </header>
       <main>
         <section class="summary" aria-label="strategy performance">
@@ -557,6 +569,97 @@ def research_report() -> str:
               </tr>
             </thead>
             <tbody>{risk_rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/quality", response_class=HTMLResponse)
+def data_quality_page() -> str:
+    summary = build_quality_summary()
+    rows = "\n".join(_quality_rows(summary))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Data Quality</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Data Quality</h1>
+        <p>数据源：{summary["source"]}，平均质量评分 {summary["average_score"]:.1f}。<a href="/research">Research Report</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>数据质量评分</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>资产</th>
+                <th>评分</th>
+                <th>行数</th>
+                <th>缺失天数</th>
+                <th>重复行</th>
+                <th>非法价格</th>
+                <th>异常跳变</th>
+                <th>警告</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/attribution", response_class=HTMLResponse)
+def attribution_page() -> str:
+    report = analyze_attribution()
+    rows = "\n".join(_attribution_rows(report))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Attribution</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Attribution</h1>
+        <p>第一版为 Score Attribution，主导因子：{report["dominant_factor"]}。<a href="/research">Research Report</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>收益来源</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>因子</th>
+                <th>贡献</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>说明</h2>
+          <table>
+            <tbody>
+              <tr><td>观测次数</td><td>{report["observations"]}</td></tr>
+              <tr><td>解释边界</td><td>{"; ".join(report["notes"])}</td></tr>
+            </tbody>
           </table>
         </section>
       </main>
@@ -775,6 +878,107 @@ def _risk_rows(comparison: dict) -> list[str]:
             """
         )
     return rows
+
+
+def _quality_rows(summary: dict) -> list[str]:
+    rows: list[str] = []
+    for item in summary["reports"]:
+        warning_text = "; ".join(item["warnings"]) if item["warnings"] else "-"
+        rows.append(
+            f"""
+            <tr>
+              <td><strong>{item["asset_id"]}</strong></td>
+              <td>{item["score"]:.1f}</td>
+              <td>{item["row_count"]}</td>
+              <td>{item["missing_days"]}</td>
+              <td>{item["duplicate_rows"]}</td>
+              <td>{item["invalid_prices"]}</td>
+              <td>{item["abnormal_jumps"]}</td>
+              <td>{escape(warning_text)}</td>
+            </tr>
+            """
+        )
+    return rows
+
+
+def _attribution_rows(report: dict) -> list[str]:
+    rows: list[str] = []
+    labels = {
+        "drawdown": "Drawdown Factor",
+        "recovery": "Recovery Factor",
+        "anchor": "Anchor Factor",
+        "regime": "Regime Control",
+        "allocation": "Allocation/Rebalance",
+    }
+    for key, value in report["contribution"].items():
+        rows.append(
+            f"""
+            <tr>
+              <td>{labels.get(key, key)}</td>
+              <td>{value:.2f}%</td>
+            </tr>
+            """
+        )
+    return rows
+
+
+def _report_page_css() -> str:
+    return """
+        :root {
+          color-scheme: light;
+          --bg: #f6f7f9;
+          --panel: #ffffff;
+          --text: #1d2433;
+          --muted: #5f6b7a;
+          --line: #d8dee8;
+          --accent: #2563eb;
+        }
+        * { box-sizing: border-box; }
+        body {
+          margin: 0;
+          background: var(--bg);
+          color: var(--text);
+          font-family: Arial, "Microsoft YaHei", sans-serif;
+        }
+        header {
+          background: var(--panel);
+          border-bottom: 1px solid var(--line);
+          padding: 22px 32px 18px;
+        }
+        main {
+          max-width: 1180px;
+          margin: 0 auto;
+          padding: 26px 24px 40px;
+        }
+        h1 { margin: 0 0 8px; font-size: 26px; letter-spacing: 0; }
+        h2 { margin: 0 0 12px; font-size: 20px; letter-spacing: 0; }
+        section { margin-bottom: 24px; }
+        p { margin: 0; color: var(--muted); line-height: 1.6; }
+        a { color: var(--accent); }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        th, td {
+          padding: 13px 14px;
+          border-bottom: 1px solid var(--line);
+          text-align: left;
+          vertical-align: middle;
+          font-size: 14px;
+        }
+        th { background: #eef2f7; color: #344054; font-weight: 700; }
+        tr:last-child td { border-bottom: 0; }
+        @media (max-width: 820px) {
+          header { padding: 18px 18px 14px; }
+          main { padding: 18px 12px 28px; }
+          table { display: block; overflow-x: auto; }
+          th, td { white-space: nowrap; }
+        }
+    """
 
 
 if __name__ == "__main__":

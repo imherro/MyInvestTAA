@@ -344,3 +344,18 @@ data/sample/history/prices.json
 - `GET /research`：新增 Research Report 页面，展示策略表现、Benchmark 比较、Rolling 胜率和风险指标。
 
 当前真实数据 Provider 仍是接口预留，默认运行使用 `MockProvider` 和样例数据；Tushare/BaoStock 不会在测试中访问网络或要求凭证。后续需要接入完整真实历史行情、交易日历、真实债券/黄金/现金替代品和数据质量检查。
+
+## 二十二、Task-009 数据质量与收益归因
+
+当前工程增加了数据质量检查和第一版收益归因：
+
+- `engine/data_quality/`：新增 `DataQualityReport`、`validate_price_history()`、`build_quality_summary()`。
+- 数据质量检查覆盖日期排序、重复日期、非法价格、异常跳变和超预期日期缺口。
+- `GET /api/research/quality`：返回样例数据源、平均质量评分、问题数量和逐资产质量报告。
+- `GET /quality`：新增 Data Quality 页面，展示资产、评分、缺失天数、重复行、非法价格、异常跳变和警告。
+- `engine/attribution/`：新增 `AttributionReport` 与 `analyze_attribution()`。
+- TAA 回测状态增加 `signals`、`regime`、`selected_assets`、`reason`，用于解释每次调仓。
+- `GET /api/research/attribution`：返回 Drawdown、Recovery、Anchor、Regime、Allocation/Rebalance 的 Score Attribution。
+- `GET /attribution`：新增 Attribution 页面，展示第一版收益来源解释。
+
+当前 Attribution 是基于调仓评分和权重的解释型归因，不是严格绩效因子分解；数据质量检查默认按样例数据的稀疏日期提示问题。后续需要引入真实交易日历、停牌/成立日处理、复权校验和更严格的收益归因模型。

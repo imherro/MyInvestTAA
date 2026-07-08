@@ -14,6 +14,7 @@ def test_portfolio_state_as_dict():
 
     assert payload["date"] == "2024-01-01"
     assert payload["weights"]["CASH"] == 20
+    assert payload["selected_assets"] == []
 
 
 def test_normalize_weights_sums_to_one_hundred():
@@ -178,3 +179,15 @@ def test_run_taa_backtest_does_not_create_negative_portfolio_value():
     result = run_taa_backtest()
 
     assert all(point["value"] > 0 for point in result["equity_curve"])
+
+
+def test_run_taa_backtest_records_rebalance_signals():
+    result = run_taa_backtest()
+
+    assert any(state["signals"].get("scores") for state in result["states"])
+
+
+def test_run_taa_backtest_records_rebalance_reason():
+    result = run_taa_backtest()
+
+    assert any(state["reason"] for state in result["states"])
