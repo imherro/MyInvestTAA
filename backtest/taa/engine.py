@@ -5,6 +5,7 @@ from datetime import date
 from backtest.taa.metrics import calculate_taa_metrics, drawdown_curve
 from backtest.taa.portfolio import PortfolioState
 from backtest.taa.rebalance import build_rebalance_weights, turnover
+from engine.adaptive import adaptive_score_for_regime, factor_weights_for_regime
 from engine.anchor import calculate_anchor_score
 from engine.asset_repository import load_assets, load_price_histories
 from engine.drawdown import calculate_drawdown, calculate_drawdown_percentile, detect_drawdown_events
@@ -45,8 +46,8 @@ def run_taa_backtest(
         raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
-    if score_version not in {"v1", "v4", "v5", "v6", "v7"}:
-        raise ValueError("score_version must be v1, v4, v5, v6, or v7")
+    if score_version not in {"v1", "v4", "v5", "v6", "v7", "v8"}:
+        raise ValueError("score_version must be v1, v4, v5, v6, v7, or v8")
     if max_weight_step is not None and max_weight_step <= 0:
         raise ValueError("max_weight_step must be positive")
     if equity_floor_by_regime:
@@ -105,7 +106,7 @@ def run_taa_backtest(
         histories_as_of = _histories_as_of(price_history, current_date)
         stock_histories_as_of = (
             _histories_as_of(stock_price_history, current_date)
-            if stock_price_history and score_version == "v7"
+            if stock_price_history and score_version in {"v7", "v8"}
             else {}
         )
         benchmark_history = histories_as_of.get("510300", [])
@@ -117,6 +118,7 @@ def run_taa_backtest(
             histories_as_of,
             score_version=score_version,
             stock_histories_as_of=stock_histories_as_of,
+            regime_state=regime.state,
         )
         scoring_weights = _apply_volatility_adjustment(scores) if volatility_adjustment else scores
         target_weights = build_rebalance_weights(scoring_weights, risk_budget)
@@ -167,6 +169,11 @@ def run_taa_backtest(
                     "volatility_adjustment": volatility_adjustment,
                     "equity_floor_by_regime": equity_floor_by_regime or {},
                     "stock_breadth_assets": len(stock_histories_as_of),
+                    "adaptive_factor_weights": (
+                        factor_weights_for_regime(regime.state).as_dict()
+                        if score_version == "v8"
+                        else {}
+                    ),
                     "target_weights": target_weights,
                 },
                 regime=regime.as_dict(),
@@ -209,16 +216,18 @@ def _score_assets_as_of(
     histories_as_of: dict[str, list[dict]],
     score_version: str = "v1",
     stock_histories_as_of: dict[str, list[dict]] | None = None,
+    regime_state: str = "neutral",
 ) -> list[dict]:
     scores: list[dict] = []
     benchmark_history = histories_as_of.get("510300", [])
-    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7"} else {}
+    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7", "v8"} else {}
     theme_breadth = theme_breadth_by_theme(histories_as_of) if score_version == "v6" else {}
     stock_breadth = (
         stock_breadth_by_theme(stock_histories_as_of or {})
-        if score_version == "v7"
+        if score_version in {"v7", "v8"}
         else {}
     )
+    adaptive_weights = factor_weights_for_regime(regime_state) if score_version == "v8" else None
     for asset in assets:
         history = histories_as_of.get(asset["id"], [])
         if len(history) < 2:
@@ -239,7 +248,7 @@ def _score_assets_as_of(
         stock_breadth_score = float(stock_breadth.get(theme, {}).get("breadth_score", 50.0))
         breadth_score = (
             stock_breadth_score
-            if score_version == "v7"
+            if score_version in {"v7", "v8"}
             else float(theme_breadth.get(theme, {}).get("breadth_score", 50.0))
         )
         quality_score = anchor_score
@@ -278,6 +287,18 @@ def _score_assets_as_of(
                 + 0.15 * quality_score,
                 2,
             )
+        elif score_version == "v8":
+            adaptive_score = adaptive_score_for_regime(
+                regime_state,
+                {
+                    "relative_strength": relative_strength.strength_score,
+                    "theme_momentum": theme_momentum_score,
+                    "breadth": stock_breadth_score,
+                    "trend": trend_score,
+                    "quality": quality_score,
+                },
+            )
+            opportunity_score = adaptive_score.score
         else:
             opportunity_score = round(
                 0.4 * drawdown_pressure + 0.3 * recovery_score + 0.3 * anchor_score,
@@ -302,6 +323,9 @@ def _score_assets_as_of(
                 "breadth": theme_breadth.get(theme, {}),
                 "stock_breadth_score": stock_breadth_score,
                 "stock_breadth": stock_breadth.get(theme, {}),
+                "adaptive_factor_weights": adaptive_weights.as_dict() if adaptive_weights else {},
+                "adaptive_reason": adaptive_weights.reason if adaptive_weights else "",
+                "adaptive_regime": regime_state if score_version == "v8" else "",
                 "quality_score": quality_score,
                 "volatility": volatility,
             }

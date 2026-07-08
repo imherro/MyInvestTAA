@@ -8,6 +8,7 @@ def _rows() -> list[dict]:
         {"version": "V5_RELATIVE_STRENGTH_SELECTION", "annual_return": 4.0, "max_drawdown": -15.0, "sharpe": 0.5, "calmar": 0.25},
         {"version": "V6_THEME_BREADTH_SELECTION", "annual_return": 4.2, "max_drawdown": -14.5, "sharpe": 0.55, "calmar": 0.29},
         {"version": "V7_STOCK_BREADTH_SELECTION", "annual_return": 4.5, "max_drawdown": -12.0, "sharpe": 0.60, "calmar": 0.38},
+        {"version": "V8_ADAPTIVE_SELECTION", "annual_return": 4.7, "max_drawdown": -11.5, "sharpe": 0.65, "calmar": 0.40},
     ]
 
 
@@ -49,6 +50,13 @@ def test_build_strategy_registry_marks_v7_as_testing_without_promotion():
 
     v7 = next(row for row in registry["rows"] if row["version"] == "V7_STOCK_BREADTH_SELECTION")
     assert v7["status"] == "testing"
+
+
+def test_build_strategy_registry_marks_v8_as_testing_without_promotion():
+    registry = build_strategy_registry(_rows())
+
+    v8 = next(row for row in registry["rows"] if row["version"] == "V8_ADAPTIVE_SELECTION")
+    assert v8["status"] == "testing"
 
 
 def test_build_strategy_registry_archives_v1():
@@ -94,7 +102,7 @@ def test_build_strategy_registry_archives_unknown_versions():
 def test_build_strategy_registry_keeps_row_count():
     registry = build_strategy_registry(_rows())
 
-    assert len(registry["rows"]) == 5
+    assert len(registry["rows"]) == 6
 
 
 def test_build_strategy_registry_includes_calmar_metric():

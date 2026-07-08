@@ -75,6 +75,12 @@ def test_run_taa_backtest_accepts_score_version_v7():
     assert result["assumptions"]["score_version"] == "v7"
 
 
+def test_run_taa_backtest_accepts_score_version_v8():
+    result = run_taa_backtest(score_version="v8")
+
+    assert result["assumptions"]["score_version"] == "v8"
+
+
 def test_run_taa_backtest_rejects_unknown_score_version():
     with pytest.raises(ValueError):
         run_taa_backtest(score_version="bad")

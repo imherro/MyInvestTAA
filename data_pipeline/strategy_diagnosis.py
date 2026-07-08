@@ -11,6 +11,7 @@ from data.universe import universe_asset_ids
 from data_pipeline.full_validation import _research_assets
 from data_pipeline.importer import build_provider, import_market_data
 from data_pipeline.normalizer import price_bars_to_history
+from engine.adaptive import adaptive_weight_snapshot
 from engine.asset_repository import load_assets
 from engine.benchmark_validation import validate_benchmark_report
 from engine.diagnosis import analyze_regime_effects, compare_strategy_versions, decompose_vs_static
@@ -18,7 +19,11 @@ from engine.governance import build_promotion_report, build_strategy_registry
 from engine.performance_attribution import analyze_regime_contribution
 from engine.performance_attribution.v3 import decompose_excess_return_v3
 from engine.regime.v3 import detect_market_regime_v3
-from engine.selection import build_selection_analysis, compare_selection_attribution
+from engine.selection import (
+    build_selection_analysis,
+    compare_adaptive_selection_attribution,
+    compare_selection_attribution,
+)
 from engine.stock_breadth import rank_stock_breadth, stock_breadth_coverage, stock_theme_universe, theme_for_stock
 from engine.theme import theme_for_asset
 from storage import MarketDataRepository
@@ -104,6 +109,13 @@ def build_strategy_diagnosis_report(
             volatility_adjustment=True,
             stock_price_history=stock_histories,
         ),
+        "V8_ADAPTIVE_SELECTION": run_taa_backtest(
+            **common_kwargs,
+            score_version="v8",
+            max_weight_step=10.0,
+            volatility_adjustment=True,
+            stock_price_history=stock_histories,
+        ),
     }
     benchmark = compare_strategies(**common_kwargs)
     static_row = benchmark["strategies"].get("SAA_60_40")
@@ -114,6 +126,7 @@ def build_strategy_diagnosis_report(
     attribution_v5 = decompose_excess_return_v3(variants["V5_RELATIVE_STRENGTH_SELECTION"], static_row)
     attribution_v6 = decompose_excess_return_v3(variants["V6_THEME_BREADTH_SELECTION"], static_row)
     attribution_v7 = decompose_excess_return_v3(variants["V7_STOCK_BREADTH_SELECTION"], static_row)
+    attribution_v8 = decompose_excess_return_v3(variants["V8_ADAPTIVE_SELECTION"], static_row)
     selection_attribution = compare_selection_attribution(
         decompose_excess_return_v3(variants["V3_TREND_RISK_ADJUSTED"], static_row),
         attribution_v5,
@@ -130,6 +143,10 @@ def build_strategy_diagnosis_report(
         attribution_v7,
         baseline="V6_THEME_BREADTH_SELECTION",
         candidate="V7_STOCK_BREADTH_SELECTION",
+    )
+    adaptive_selection_attribution = compare_adaptive_selection_attribution(
+        attribution_v7,
+        attribution_v8,
     )
     walk_forward = run_walk_forward_validation(
         assets=assets,
@@ -156,13 +173,19 @@ def build_strategy_diagnosis_report(
                 "periods": walk_forward.get("windows", 0),
                 "improvement": selection_attribution_v3["selection"]["improved"],
                 "stock_breadth_coverage": stock_breadth_coverage(stock_breadth_rows)["coverage_ratio"],
+            },
+            "V8_ADAPTIVE_SELECTION": {
+                "periods": walk_forward.get("windows", 0),
+                "improvement": adaptive_selection_attribution["improved"],
+                "stock_breadth_coverage": stock_breadth_coverage(stock_breadth_rows)["coverage_ratio"],
             }
         },
         promotion_by_version=promotion_by_version,
     )
     regime_contribution = analyze_regime_contribution(variants["V1_CURRENT"])
     regime_v3 = detect_market_regime_v3(histories.get("510300", []), breadth=_estimate_breadth(histories))
-    selection_analysis = build_selection_analysis(variants["V7_STOCK_BREADTH_SELECTION"])
+    selection_analysis = build_selection_analysis(variants["V8_ADAPTIVE_SELECTION"])
+    adaptive_selection = _adaptive_selection_report(variants["V8_ADAPTIVE_SELECTION"])
     report = {
         "dataset": {
             "provider": provider_name,
@@ -180,10 +203,13 @@ def build_strategy_diagnosis_report(
             "attribution_v5": attribution_v5,
             "attribution_v6": attribution_v6,
             "attribution_v7": attribution_v7,
+            "attribution_v8": attribution_v8,
             "selection_attribution": selection_attribution,
             "selection_attribution_v2": selection_attribution_v2,
             "selection_attribution_v3": selection_attribution_v3,
+            "adaptive_selection_attribution": adaptive_selection_attribution,
             "selection_analysis": selection_analysis,
+            "adaptive_selection": adaptive_selection,
             "stock_breadth": {
                 **stock_breadth_meta,
                 "coverage": stock_breadth_coverage(stock_breadth_rows),
@@ -208,6 +234,7 @@ def build_strategy_diagnosis_report(
             "Use relative strength as a selection layer before promoting V5 from testing.",
             "Validate theme momentum and breadth stability before promoting V6.",
             "Use stock breadth and walk-forward promotion rules before promoting V7.",
+            "Use adaptive factor weights to improve V8 risk-return stability before promotion.",
         ],
     }
     if report_path is not None:
@@ -321,6 +348,38 @@ def _mock_stock_histories(etf_histories: dict[str, list[dict]]) -> dict[str, lis
 
 def _mock_stock_theme(stock_id: str) -> str:
     return theme_for_stock(stock_id)
+
+
+def _adaptive_selection_report(backtest_result: dict) -> dict:
+    states = [
+        state for state in backtest_result.get("states", [])
+        if state.get("signals", {}).get("scores")
+    ]
+    if not states:
+        return {"version": "v8", "rows": []}
+    latest = states[-1]
+    regime_state = latest.get("regime", {}).get("state", "neutral")
+    weights = latest.get("signals", {}).get("adaptive_factor_weights") or adaptive_weight_snapshot(regime_state)
+    rows = []
+    for item in latest.get("signals", {}).get("scores", [])[:10]:
+        rows.append(
+            {
+                "asset": item.get("id"),
+                "name": item.get("name"),
+                "theme": item.get("theme"),
+                "opportunity_score": item.get("opportunity_score", 0.0),
+                "adaptive_regime": item.get("adaptive_regime", regime_state),
+                "adaptive_reason": item.get("adaptive_reason", ""),
+                "factor_weights": item.get("adaptive_factor_weights", weights),
+            }
+        )
+    return {
+        "version": backtest_result.get("assumptions", {}).get("score_version", "v8"),
+        "date": latest.get("date"),
+        "regime": regime_state,
+        "factor_weights": weights,
+        "rows": rows,
+    }
 
 
 def _diagnosis_summary(regime_analysis: dict, decomposition: dict, regime_contribution: dict) -> list[dict]:

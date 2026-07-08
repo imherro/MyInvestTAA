@@ -25,6 +25,12 @@ DEFAULT_WALK_FORWARD_SPECS = [
         "max_weight_step": 10.0,
         "volatility_adjustment": True,
     },
+    {
+        "version": "V8_ADAPTIVE_SELECTION",
+        "score_version": "v8",
+        "max_weight_step": 10.0,
+        "volatility_adjustment": True,
+    },
 ]
 
 

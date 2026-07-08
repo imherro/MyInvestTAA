@@ -41,7 +41,11 @@ def build_promotion_report(
     benchmark_version: str = "V3_TREND_RISK_ADJUSTED",
     candidate_versions: list[str] | None = None,
 ) -> dict:
-    candidates = candidate_versions or ["V6_THEME_BREADTH_SELECTION", "V7_STOCK_BREADTH_SELECTION"]
+    candidates = candidate_versions or [
+        "V6_THEME_BREADTH_SELECTION",
+        "V7_STOCK_BREADTH_SELECTION",
+        "V8_ADAPTIVE_SELECTION",
+    ]
     by_version = {str(row.get("version")): row for row in version_rows}
     benchmark = by_version.get(benchmark_version, {})
     wf_versions = walk_forward.get("versions", {})

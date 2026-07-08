@@ -41,7 +41,7 @@ def test_walk_forward_returns_sections():
 
 
 def test_walk_forward_uses_default_specs():
-    assert DEFAULT_WALK_FORWARD_SPECS[-1]["score_version"] == "v7"
+    assert DEFAULT_WALK_FORWARD_SPECS[-1]["score_version"] == "v8"
 
 
 def test_walk_forward_records_windows():
@@ -54,6 +54,12 @@ def test_walk_forward_records_v7_summary():
     report = run_walk_forward_validation(_assets(), _histories(), _stock_histories())
 
     assert "V7_STOCK_BREADTH_SELECTION" in report["versions"]
+
+
+def test_walk_forward_records_v8_summary():
+    report = run_walk_forward_validation(_assets(), _histories(), _stock_histories())
+
+    assert "V8_ADAPTIVE_SELECTION" in report["versions"]
 
 
 def test_walk_forward_summary_has_win_rate():

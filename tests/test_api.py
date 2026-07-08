@@ -159,7 +159,7 @@ def test_strategy_diagnosis_api_compares_versions():
 
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload["versions"]["rows"]) >= 7
+    assert len(payload["versions"]["rows"]) >= 8
 
 
 def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
@@ -168,14 +168,16 @@ def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
     assert _strategy_diagnosis_report_is_current(report) is False
 
 
-def test_strategy_diagnosis_report_current_check_accepts_task018_shape():
+def test_strategy_diagnosis_report_current_check_accepts_task019_shape():
     report = {
-        "versions": {"rows": [{"version": "V7_STOCK_BREADTH_SELECTION"}]},
+        "versions": {"rows": [{"version": "V8_ADAPTIVE_SELECTION"}]},
         "benchmark": {"validation": {}},
         "diagnosis": {
             "attribution_v3": {},
             "selection_attribution": {},
             "selection_analysis": {},
+            "adaptive_selection": {},
+            "adaptive_selection_attribution": {},
             "stock_breadth": {},
             "walk_forward": {},
             "promotion": {},
@@ -242,6 +244,14 @@ def test_promotion_api_returns_rows():
     assert response.status_code == 200
     payload = response.json()
     assert {"benchmark", "rows", "best_candidate"} <= set(payload)
+
+
+def test_adaptive_selection_api_returns_weights():
+    response = client.get("/api/research/adaptive-selection")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"regime", "factor_weights", "rows"} <= set(payload)
 
 
 def test_research_report_page_returns_sections():
@@ -338,6 +348,14 @@ def test_strategy_promotion_page_returns_sections():
     assert "Walk Forward" in response.text
 
 
+def test_adaptive_strategy_page_returns_sections():
+    response = client.get("/adaptive-strategy")
+
+    assert response.status_code == 200
+    assert "Adaptive Strategy" in response.text
+    assert "Selection Weights" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -378,6 +396,13 @@ def test_dashboard_links_strategy_promotion():
 
     assert response.status_code == 200
     assert "/strategy-promotion" in response.text
+
+
+def test_dashboard_links_adaptive_strategy():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/adaptive-strategy" in response.text
 
 
 def test_dashboard_links_benchmark_validation():

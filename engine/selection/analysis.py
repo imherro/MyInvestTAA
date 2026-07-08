@@ -39,6 +39,9 @@ def build_selection_analysis(backtest_result: dict, limit: int = 10) -> dict:
                 "breadth_score": item.get("breadth_score", 0.0),
                 "stock_breadth_score": item.get("stock_breadth_score", item.get("breadth_score", 0.0)),
                 "stock_breadth": item.get("stock_breadth", {}),
+                "adaptive_factor_weights": item.get("adaptive_factor_weights", {}),
+                "adaptive_reason": item.get("adaptive_reason", ""),
+                "adaptive_regime": item.get("adaptive_regime", ""),
                 "trend_score": item.get("trend_score", 0.0),
                 "selection_reason": item.get("selection_reason") or selection_reasons(item),
             }

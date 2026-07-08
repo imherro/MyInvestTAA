@@ -872,6 +872,16 @@
       "interaction": 0.0,
       "check_sum": -0.3207
     },
+    "attribution_v8": {
+      "strategy": "MyInvestTAA",
+      "benchmark": "SAA_60_40",
+      "excess_return": -0.2513,
+      "allocation": 0.4544,
+      "selection": -1.0692,
+      "timing": 0.3635,
+      "interaction": 0.0,
+      "check_sum": -0.2513
+    },
     "selection_attribution": {
       "baseline": "V3_TREND_RISK_ADJUSTED",
       "candidate": "V5_RELATIVE_STRENGTH_SELECTION",
@@ -902,15 +912,28 @@
         "improved": false
       }
     },
+    "adaptive_selection_attribution": {
+      "baseline": "V7_STOCK_BREADTH_SELECTION",
+      "candidate": "V8_ADAPTIVE_SELECTION",
+      "static_factor": -1.1312,
+      "adaptive_factor": 0.062,
+      "improved": true,
+      "selection": {
+        "old": -1.1312,
+        "new": -1.0692,
+        "improvement": 0.062,
+        "improved": true
+      }
+    },
     "selection_analysis": {
-      "version": "v7",
+      "version": "v8",
       "date": "2026-07-08",
       "rows": [
         {
           "asset": "512760",
           "name": "半导体ETF",
           "theme": "semiconductor",
-          "opportunity_score": 79.47,
+          "opportunity_score": 88.4,
           "relative_strength_score": 94.85,
           "theme_momentum_score": 100.0,
           "breadth_score": 52.0,
@@ -935,6 +958,19 @@
             "missing_members": [],
             "source": "stock_daily"
           },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
           "trend_score": 100.0,
           "selection_reason": [
             "Theme momentum high",
@@ -946,7 +982,7 @@
           "asset": "511010",
           "name": "国债ETF",
           "theme": "government_bond",
-          "opportunity_score": 64.35,
+          "opportunity_score": 64.06,
           "relative_strength_score": 50.33,
           "theme_momentum_score": 73.33,
           "breadth_score": 50.0,
@@ -965,6 +1001,19 @@
             "missing_members": [],
             "source": "stock_daily"
           },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
           "trend_score": 76.32,
           "selection_reason": [
             "Theme momentum high",
@@ -976,7 +1025,7 @@
           "asset": "510500",
           "name": "中证500ETF",
           "theme": "mid_cap",
-          "opportunity_score": 54.77,
+          "opportunity_score": 59.28,
           "relative_strength_score": 52.4,
           "theme_momentum_score": 80.0,
           "breadth_score": 29.0,
@@ -1001,6 +1050,19 @@
             "missing_members": [],
             "source": "stock_daily"
           },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
           "trend_score": 53.59,
           "selection_reason": [
             "Theme momentum high",
@@ -1008,80 +1070,10 @@
           ]
         },
         {
-          "asset": "510300",
-          "name": "沪深300ETF",
-          "theme": "large_cap",
-          "opportunity_score": 57.54,
-          "relative_strength_score": 50.0,
-          "theme_momentum_score": 66.67,
-          "breadth_score": 54.0,
-          "stock_breadth_score": 54.0,
-          "stock_breadth": {
-            "theme": "large_cap",
-            "breadth_score": 54.0,
-            "advancers": 5,
-            "total": 5,
-            "expected": 5,
-            "advancer_ratio": 1.0,
-            "above_ma_ratio": 0.4,
-            "new_high_ratio": 0.0,
-            "coverage_ratio": 1.0,
-            "members": [
-              "600519.SH",
-              "601318.SH",
-              "600036.SH",
-              "601166.SH",
-              "600900.SH"
-            ],
-            "missing_members": [],
-            "source": "stock_daily"
-          },
-          "trend_score": 48.65,
-          "selection_reason": [
-            "Quality anchor acceptable"
-          ]
-        },
-        {
-          "asset": "512890",
-          "name": "红利低波ETF",
-          "theme": "dividend",
-          "opportunity_score": 50.52,
-          "relative_strength_score": 45.25,
-          "theme_momentum_score": 40.0,
-          "breadth_score": 68.0,
-          "stock_breadth_score": 68.0,
-          "stock_breadth": {
-            "theme": "dividend",
-            "breadth_score": 68.0,
-            "advancers": 5,
-            "total": 5,
-            "expected": 5,
-            "advancer_ratio": 1.0,
-            "above_ma_ratio": 0.8,
-            "new_high_ratio": 0.0,
-            "coverage_ratio": 1.0,
-            "members": [
-              "601398.SH",
-              "601288.SH",
-              "601988.SH",
-              "600900.SH",
-              "601088.SH"
-            ],
-            "missing_members": [],
-            "source": "stock_daily"
-          },
-          "trend_score": 10.69,
-          "selection_reason": [
-            "Stock breadth improving",
-            "Breadth improving",
-            "Quality anchor acceptable"
-          ]
-        },
-        {
           "asset": "588000",
           "name": "科创50ETF",
           "theme": "innovation",
-          "opportunity_score": 71.65,
+          "opportunity_score": 79.55,
           "relative_strength_score": 80.03,
           "theme_momentum_score": 93.33,
           "breadth_score": 45.0,
@@ -1106,6 +1098,19 @@
             "missing_members": [],
             "source": "stock_daily"
           },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
           "trend_score": 100.0,
           "selection_reason": [
             "Theme momentum high",
@@ -1114,82 +1119,10 @@
           ]
         },
         {
-          "asset": "515100",
-          "name": "红利ETF",
-          "theme": "dividend",
-          "opportunity_score": 47.11,
-          "relative_strength_score": 43.33,
-          "theme_momentum_score": 40.0,
-          "breadth_score": 68.0,
-          "stock_breadth_score": 68.0,
-          "stock_breadth": {
-            "theme": "dividend",
-            "breadth_score": 68.0,
-            "advancers": 5,
-            "total": 5,
-            "expected": 5,
-            "advancer_ratio": 1.0,
-            "above_ma_ratio": 0.8,
-            "new_high_ratio": 0.0,
-            "coverage_ratio": 1.0,
-            "members": [
-              "601398.SH",
-              "601288.SH",
-              "601988.SH",
-              "600900.SH",
-              "601088.SH"
-            ],
-            "missing_members": [],
-            "source": "stock_daily"
-          },
-          "trend_score": 8.31,
-          "selection_reason": [
-            "Stock breadth improving",
-            "Breadth improving",
-            "Quality anchor acceptable"
-          ]
-        },
-        {
-          "asset": "515080",
-          "name": "中证红利ETF",
-          "theme": "dividend",
-          "opportunity_score": 46.52,
-          "relative_strength_score": 43.48,
-          "theme_momentum_score": 40.0,
-          "breadth_score": 68.0,
-          "stock_breadth_score": 68.0,
-          "stock_breadth": {
-            "theme": "dividend",
-            "breadth_score": 68.0,
-            "advancers": 5,
-            "total": 5,
-            "expected": 5,
-            "advancer_ratio": 1.0,
-            "above_ma_ratio": 0.8,
-            "new_high_ratio": 0.0,
-            "coverage_ratio": 1.0,
-            "members": [
-              "601398.SH",
-              "601288.SH",
-              "601988.SH",
-              "600900.SH",
-              "601088.SH"
-            ],
-            "missing_members": [],
-            "source": "stock_daily"
-          },
-          "trend_score": 4.15,
-          "selection_reason": [
-            "Stock breadth improving",
-            "Breadth improving",
-            "Quality anchor acceptable"
-          ]
-        },
-        {
           "asset": "159915",
           "name": "创业板ETF",
           "theme": "growth",
-          "opportunity_score": 51.62,
+          "opportunity_score": 61.42,
           "relative_strength_score": 59.15,
           "theme_momentum_score": 86.67,
           "breadth_score": 7.0,
@@ -1214,6 +1147,19 @@
             "missing_members": [],
             "source": "stock_daily"
           },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
           "trend_score": 62.06,
           "selection_reason": [
             "Theme momentum high",
@@ -1221,10 +1167,204 @@
           ]
         },
         {
+          "asset": "510300",
+          "name": "沪深300ETF",
+          "theme": "large_cap",
+          "opportunity_score": 56.91,
+          "relative_strength_score": 50.0,
+          "theme_momentum_score": 66.67,
+          "breadth_score": 54.0,
+          "stock_breadth_score": 54.0,
+          "stock_breadth": {
+            "theme": "large_cap",
+            "breadth_score": 54.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.4,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "600519.SH",
+              "601318.SH",
+              "600036.SH",
+              "601166.SH",
+              "600900.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
+          "trend_score": 48.65,
+          "selection_reason": [
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "512890",
+          "name": "红利低波ETF",
+          "theme": "dividend",
+          "opportunity_score": 44.82,
+          "relative_strength_score": 45.25,
+          "theme_momentum_score": 40.0,
+          "breadth_score": 68.0,
+          "stock_breadth_score": 68.0,
+          "stock_breadth": {
+            "theme": "dividend",
+            "breadth_score": 68.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.8,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "601398.SH",
+              "601288.SH",
+              "601988.SH",
+              "600900.SH",
+              "601088.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
+          "trend_score": 10.69,
+          "selection_reason": [
+            "Stock breadth improving",
+            "Breadth improving",
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "515100",
+          "name": "红利ETF",
+          "theme": "dividend",
+          "opportunity_score": 42.01,
+          "relative_strength_score": 43.33,
+          "theme_momentum_score": 40.0,
+          "breadth_score": 68.0,
+          "stock_breadth_score": 68.0,
+          "stock_breadth": {
+            "theme": "dividend",
+            "breadth_score": 68.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.8,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "601398.SH",
+              "601288.SH",
+              "601988.SH",
+              "600900.SH",
+              "601088.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
+          "trend_score": 8.31,
+          "selection_reason": [
+            "Stock breadth improving",
+            "Breadth improving",
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "515080",
+          "name": "中证红利ETF",
+          "theme": "dividend",
+          "opportunity_score": 41.44,
+          "relative_strength_score": 43.48,
+          "theme_momentum_score": 40.0,
+          "breadth_score": 68.0,
+          "stock_breadth_score": 68.0,
+          "stock_breadth": {
+            "theme": "dividend",
+            "breadth_score": 68.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.8,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "601398.SH",
+              "601288.SH",
+              "601988.SH",
+              "600900.SH",
+              "601088.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
+          "trend_score": 4.15,
+          "selection_reason": [
+            "Stock breadth improving",
+            "Breadth improving",
+            "Quality anchor acceptable"
+          ]
+        },
+        {
           "asset": "512800",
           "name": "银行ETF",
           "theme": "financial",
-          "opportunity_score": 46.51,
+          "opportunity_score": 45.78,
           "relative_strength_score": 48.02,
           "theme_momentum_score": 53.33,
           "breadth_score": 54.0,
@@ -1249,10 +1389,231 @@
             "missing_members": [],
             "source": "stock_daily"
           },
+          "adaptive_factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          },
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "adaptive_regime": "bull",
           "trend_score": 17.14,
           "selection_reason": [
             "Mixed selection evidence"
           ]
+        }
+      ]
+    },
+    "adaptive_selection": {
+      "version": "v8",
+      "date": "2026-07-08",
+      "regime": "bull",
+      "factor_weights": {
+        "regime": "bull",
+        "weights": {
+          "relative_strength": 0.35,
+          "theme_momentum": 0.3,
+          "breadth": 0.1,
+          "trend": 0.15,
+          "quality": 0.1
+        },
+        "reason": "bull regime increases momentum and relative strength"
+      },
+      "rows": [
+        {
+          "asset": "512760",
+          "name": "半导体ETF",
+          "theme": "semiconductor",
+          "opportunity_score": 88.4,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "511010",
+          "name": "国债ETF",
+          "theme": "government_bond",
+          "opportunity_score": 64.06,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "510500",
+          "name": "中证500ETF",
+          "theme": "mid_cap",
+          "opportunity_score": 59.28,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "588000",
+          "name": "科创50ETF",
+          "theme": "innovation",
+          "opportunity_score": 79.55,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "159915",
+          "name": "创业板ETF",
+          "theme": "growth",
+          "opportunity_score": 61.42,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "510300",
+          "name": "沪深300ETF",
+          "theme": "large_cap",
+          "opportunity_score": 56.91,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "512890",
+          "name": "红利低波ETF",
+          "theme": "dividend",
+          "opportunity_score": 44.82,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "515100",
+          "name": "红利ETF",
+          "theme": "dividend",
+          "opportunity_score": 42.01,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "515080",
+          "name": "中证红利ETF",
+          "theme": "dividend",
+          "opportunity_score": 41.44,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
+        },
+        {
+          "asset": "512800",
+          "name": "银行ETF",
+          "theme": "financial",
+          "opportunity_score": 45.78,
+          "adaptive_regime": "bull",
+          "adaptive_reason": "bull regime increases momentum and relative strength",
+          "factor_weights": {
+            "regime": "bull",
+            "weights": {
+              "relative_strength": 0.35,
+              "theme_momentum": 0.3,
+              "breadth": 0.1,
+              "trend": 0.15,
+              "quality": 0.1
+            },
+            "reason": "bull regime increases momentum and relative strength"
+          }
         }
       ]
     },
@@ -1621,6 +1982,21 @@
           "calmar": 3.8576
         },
         {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2016-01-01",
+          "test_start": "2019-01-01",
+          "test_end": "2019-12-31",
+          "annual_return": 16.8017,
+          "benchmark_return": 16.5604,
+          "alpha": 0.2413,
+          "max_drawdown": -4.3494,
+          "benchmark_drawdown": -3.8944,
+          "drawdown_pass": false,
+          "sharpe": 1.8962,
+          "calmar": 3.863
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2017-01-01",
@@ -1649,6 +2025,21 @@
           "drawdown_pass": false,
           "sharpe": 1.6685,
           "calmar": 5.6847
+        },
+        {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2017-01-01",
+          "test_start": "2020-01-01",
+          "test_end": "2020-12-31",
+          "annual_return": 26.565,
+          "benchmark_return": 20.8945,
+          "alpha": 5.6705,
+          "max_drawdown": -4.771,
+          "benchmark_drawdown": -3.7854,
+          "drawdown_pass": false,
+          "sharpe": 1.6752,
+          "calmar": 5.568
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -1681,6 +2072,21 @@
           "calmar": 2.0169
         },
         {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2018-01-01",
+          "test_start": "2021-01-01",
+          "test_end": "2021-12-31",
+          "annual_return": 6.6053,
+          "benchmark_return": 6.9477,
+          "alpha": -0.3424,
+          "max_drawdown": -3.8576,
+          "benchmark_drawdown": -2.7846,
+          "drawdown_pass": false,
+          "sharpe": 0.9607,
+          "calmar": 1.7123
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2019-01-01",
@@ -1709,6 +2115,21 @@
           "drawdown_pass": true,
           "sharpe": -0.9185,
           "calmar": -0.7348
+        },
+        {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2019-01-01",
+          "test_start": "2022-01-01",
+          "test_end": "2022-12-31",
+          "annual_return": -5.5013,
+          "benchmark_return": -4.9104,
+          "alpha": -0.5909,
+          "max_drawdown": -7.6035,
+          "benchmark_drawdown": -8.3463,
+          "drawdown_pass": true,
+          "sharpe": -0.8906,
+          "calmar": -0.7235
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -1741,6 +2162,21 @@
           "calmar": -1.0766
         },
         {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2020-01-01",
+          "test_start": "2023-01-01",
+          "test_end": "2023-12-31",
+          "annual_return": -2.841,
+          "benchmark_return": -3.6998,
+          "alpha": 0.8588,
+          "max_drawdown": -2.6794,
+          "benchmark_drawdown": -3.3968,
+          "drawdown_pass": true,
+          "sharpe": -1.2054,
+          "calmar": -1.0603
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2021-01-01",
@@ -1769,6 +2205,21 @@
           "drawdown_pass": true,
           "sharpe": 1.2101,
           "calmar": 4.1502
+        },
+        {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2021-01-01",
+          "test_start": "2024-01-01",
+          "test_end": "2024-12-31",
+          "annual_return": 8.0662,
+          "benchmark_return": 9.5018,
+          "alpha": -1.4356,
+          "max_drawdown": -1.9456,
+          "benchmark_drawdown": -2.265,
+          "drawdown_pass": true,
+          "sharpe": 1.2209,
+          "calmar": 4.1459
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -1801,6 +2252,21 @@
           "calmar": 13.4722
         },
         {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2022-01-01",
+          "test_start": "2025-01-01",
+          "test_end": "2025-12-31",
+          "annual_return": 16.7809,
+          "benchmark_return": 13.5535,
+          "alpha": 3.2274,
+          "max_drawdown": -1.3222,
+          "benchmark_drawdown": -0.9506,
+          "drawdown_pass": false,
+          "sharpe": 3.0365,
+          "calmar": 12.6917
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2023-01-01",
@@ -1829,6 +2295,21 @@
           "drawdown_pass": false,
           "sharpe": -1.1095,
           "calmar": -1.6636
+        },
+        {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2023-01-01",
+          "test_start": "2026-01-01",
+          "test_end": "2026-07-08",
+          "annual_return": -10.1459,
+          "benchmark_return": -6.8604,
+          "alpha": -3.2855,
+          "max_drawdown": -6.2123,
+          "benchmark_drawdown": -4.7305,
+          "drawdown_pass": false,
+          "sharpe": -0.9581,
+          "calmar": -1.6332
         }
       ],
       "versions": {
@@ -1849,6 +2330,16 @@
           "win_rate": 0.625,
           "avg_alpha": 0.405,
           "min_alpha": -4.2714,
+          "drawdown_pass_rate": 0.375,
+          "stable": false
+        },
+        "V8_ADAPTIVE_SELECTION": {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "windows": 8,
+          "wins": 4,
+          "win_rate": 0.5,
+          "avg_alpha": 0.5429,
+          "min_alpha": -3.2855,
           "drawdown_pass_rate": 0.375,
           "stable": false
         }
@@ -1896,6 +2387,27 @@
             "return_not_worse": true,
             "walk_forward_present": true,
             "walk_forward_win_rate": true,
+            "walk_forward_drawdown": false
+          }
+        },
+        {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "promotion": false,
+          "approval_status": "pending",
+          "promotion_score": 66.67,
+          "validation_windows": 8,
+          "win_rate": 0.5,
+          "avg_alpha": 0.5429,
+          "reasons": [
+            "Walk-forward win rate below threshold",
+            "Walk-forward drawdown pass rate below threshold"
+          ],
+          "checks": {
+            "sharpe_beats_benchmark": true,
+            "drawdown_not_worse": true,
+            "return_not_worse": true,
+            "walk_forward_present": true,
+            "walk_forward_win_rate": false,
             "walk_forward_drawdown": false
           }
         }
@@ -2054,6 +2566,25 @@
           "equity_floor_by_regime": {},
           "stock_breadth_assets": 60
         }
+      },
+      {
+        "version": "V8_ADAPTIVE_SELECTION",
+        "annual_return": 4.4761,
+        "max_drawdown": -12.731,
+        "sharpe": 0.5698,
+        "calmar": 0.3516,
+        "ending_value": 1.5837,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v8",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": true,
+          "equity_floor_by_regime": {},
+          "stock_breadth_assets": 60
+        }
       }
     ],
     "best_version": "V6_THEME_BREADTH_SELECTION"
@@ -2143,6 +2674,24 @@
           "stock_breadth_coverage": 1.0
         },
         "promotion_score": 83.33,
+        "validation_windows": 8,
+        "approval_status": "pending"
+      },
+      {
+        "version": "V8_ADAPTIVE_SELECTION",
+        "status": "testing",
+        "metrics": {
+          "annual_return": 4.4761,
+          "max_drawdown": -12.731,
+          "sharpe": 0.5698,
+          "calmar": 0.3516
+        },
+        "evidence": {
+          "periods": 8,
+          "improvement": true,
+          "stock_breadth_coverage": 1.0
+        },
+        "promotion_score": 66.67,
         "validation_windows": 8,
         "approval_status": "pending"
       }
@@ -2325,6 +2874,7 @@
     "Prioritize total-return data before declaring investment performance conclusions.",
     "Use relative strength as a selection layer before promoting V5 from testing.",
     "Validate theme momentum and breadth stability before promoting V6.",
-    "Use stock breadth and walk-forward promotion rules before promoting V7."
+    "Use stock breadth and walk-forward promotion rules before promoting V7.",
+    "Use adaptive factor weights to improve V8 risk-return stability before promotion."
   ]
 }
