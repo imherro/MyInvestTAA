@@ -134,6 +134,11 @@ def get_strategy_registry() -> dict:
     return _build_strategy_diagnosis_report()["strategy_registry"]
 
 
+@app.get("/api/research/selection-analysis")
+def get_selection_analysis() -> dict:
+    return _build_strategy_diagnosis_report()["diagnosis"]["selection_analysis"]
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -340,7 +345,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -964,7 +969,7 @@ def strategy_diagnosis_page() -> str:
     <body>
       <header>
         <h1>Strategy Diagnosis</h1>
-        <p>诊断当前 TAA 策略弱点并比较 V1/V2/V3/V4/V5。<a href="/experiment">Experiment Report</a> · <a href="/strategy-governance">Strategy Governance</a></p>
+        <p>诊断当前 TAA 策略弱点并比较 V1/V2/V3/V4/V5/V6。<a href="/experiment">Experiment Report</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a></p>
       </header>
       <main>
         <section>
@@ -1116,6 +1121,50 @@ def strategy_governance_page() -> str:
                 <th>最大回撤</th>
                 <th>Sharpe</th>
                 <th>Calmar</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/selection-research", response_class=HTMLResponse)
+def selection_research_page() -> str:
+    report = _build_strategy_diagnosis_report()["diagnosis"]["selection_analysis"]
+    rows = "\n".join(_selection_analysis_rows(report["rows"]))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Selection Research</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Selection Research</h1>
+        <p>展示 V6 主题动量、宽度和相对强度选择证据。<a href="/diagnosis">Strategy Diagnosis</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Latest Selection</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>资产</th>
+                <th>主题</th>
+                <th>机会分</th>
+                <th>相对强度</th>
+                <th>主题动量</th>
+                <th>宽度</th>
+                <th>趋势</th>
+                <th>理由</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>
@@ -1594,6 +1643,27 @@ def _strategy_registry_rows(rows: list[dict]) -> list[str]:
     return html_rows
 
 
+def _selection_analysis_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        reasons = ", ".join(item.get("selection_reason", []))
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item["name"]))}<span>{escape(str(item["asset"]))}</span></td>
+              <td>{escape(str(item["theme"]))}</td>
+              <td>{float(item.get("opportunity_score", 0.0)):.2f}</td>
+              <td>{float(item.get("relative_strength_score", 0.0)):.2f}</td>
+              <td>{float(item.get("theme_momentum_score", 0.0)):.2f}</td>
+              <td>{float(item.get("breadth_score", 0.0)):.2f}</td>
+              <td>{float(item.get("trend_score", 0.0)):.2f}</td>
+              <td>{escape(reasons)}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
 def _build_live_backtest_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
@@ -1638,10 +1708,11 @@ def _strategy_diagnosis_report_is_current(report: dict) -> bool:
         for row in report.get("versions", {}).get("rows", [])
     }
     return (
-        "V5_RELATIVE_STRENGTH_SELECTION" in versions
+        "V6_THEME_BREADTH_SELECTION" in versions
         and "validation" in report.get("benchmark", {})
         and "attribution_v3" in report.get("diagnosis", {})
         and "selection_attribution" in report.get("diagnosis", {})
+        and "selection_analysis" in report.get("diagnosis", {})
         and "regime_v3" in report.get("diagnosis", {})
         and "strategy_registry" in report
     )

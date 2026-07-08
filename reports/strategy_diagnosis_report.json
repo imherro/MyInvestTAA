@@ -852,6 +852,16 @@
       "interaction": 0.0,
       "check_sum": -0.8858
     },
+    "attribution_v6": {
+      "strategy": "MyInvestTAA",
+      "benchmark": "SAA_60_40",
+      "excess_return": -0.1286,
+      "allocation": 0.4869,
+      "selection": -0.9798,
+      "timing": 0.3643,
+      "interaction": 0.0,
+      "check_sum": -0.1286
+    },
     "selection_attribution": {
       "baseline": "V3_TREND_RISK_ADJUSTED",
       "candidate": "V5_RELATIVE_STRENGTH_SELECTION",
@@ -861,6 +871,161 @@
         "improvement": 0.1166,
         "improved": true
       }
+    },
+    "selection_attribution_v2": {
+      "baseline": "V5_RELATIVE_STRENGTH_SELECTION",
+      "candidate": "V6_THEME_BREADTH_SELECTION",
+      "selection": {
+        "old": -1.6325,
+        "new": -0.9798,
+        "improvement": 0.6527,
+        "improved": true
+      }
+    },
+    "selection_analysis": {
+      "version": "v6",
+      "date": "2026-07-08",
+      "rows": [
+        {
+          "asset": "511010",
+          "name": "国债ETF",
+          "theme": "government_bond",
+          "opportunity_score": 74.36,
+          "relative_strength_score": 50.33,
+          "theme_momentum_score": 73.33,
+          "breadth_score": 100.0,
+          "trend_score": 76.32,
+          "selection_reason": [
+            "Theme momentum high",
+            "Breadth improving",
+            "Trend supportive",
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "512760",
+          "name": "半导体ETF",
+          "theme": "semiconductor",
+          "opportunity_score": 77.21,
+          "relative_strength_score": 94.85,
+          "theme_momentum_score": 100.0,
+          "breadth_score": 30.0,
+          "trend_score": 100.0,
+          "selection_reason": [
+            "Theme momentum high",
+            "Relative strength top tier",
+            "Trend supportive"
+          ]
+        },
+        {
+          "asset": "510500",
+          "name": "中证500ETF",
+          "theme": "mid_cap",
+          "opportunity_score": 56.14,
+          "relative_strength_score": 52.4,
+          "theme_momentum_score": 80.0,
+          "breadth_score": 30.0,
+          "trend_score": 53.59,
+          "selection_reason": [
+            "Theme momentum high",
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "159915",
+          "name": "创业板ETF",
+          "theme": "growth",
+          "opportunity_score": 58.83,
+          "relative_strength_score": 59.15,
+          "theme_momentum_score": 86.67,
+          "breadth_score": 30.0,
+          "trend_score": 62.06,
+          "selection_reason": [
+            "Theme momentum high",
+            "Trend supportive"
+          ]
+        },
+        {
+          "asset": "588000",
+          "name": "科创50ETF",
+          "theme": "innovation",
+          "opportunity_score": 70.4,
+          "relative_strength_score": 80.03,
+          "theme_momentum_score": 93.33,
+          "breadth_score": 30.0,
+          "trend_score": 100.0,
+          "selection_reason": [
+            "Theme momentum high",
+            "Relative strength top tier",
+            "Trend supportive"
+          ]
+        },
+        {
+          "asset": "510300",
+          "name": "沪深300ETF",
+          "theme": "large_cap",
+          "opportunity_score": 52.54,
+          "relative_strength_score": 50.0,
+          "theme_momentum_score": 66.67,
+          "breadth_score": 30.0,
+          "trend_score": 48.65,
+          "selection_reason": [
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "512890",
+          "name": "红利低波ETF",
+          "theme": "dividend",
+          "opportunity_score": 43.78,
+          "relative_strength_score": 45.25,
+          "theme_momentum_score": 40.0,
+          "breadth_score": 40.0,
+          "trend_score": 10.69,
+          "selection_reason": [
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "515100",
+          "name": "红利ETF",
+          "theme": "dividend",
+          "opportunity_score": 40.28,
+          "relative_strength_score": 43.33,
+          "theme_momentum_score": 40.0,
+          "breadth_score": 40.0,
+          "trend_score": 8.31,
+          "selection_reason": [
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "515080",
+          "name": "中证红利ETF",
+          "theme": "dividend",
+          "opportunity_score": 39.69,
+          "relative_strength_score": 43.48,
+          "theme_momentum_score": 40.0,
+          "breadth_score": 40.0,
+          "trend_score": 4.15,
+          "selection_reason": [
+            "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "512800",
+          "name": "银行ETF",
+          "theme": "financial",
+          "opportunity_score": 43.41,
+          "relative_strength_score": 48.02,
+          "theme_momentum_score": 53.33,
+          "breadth_score": 40.0,
+          "trend_score": 17.14,
+          "selection_reason": [
+            "Mixed selection evidence"
+          ]
+        }
+      ]
     },
     "regime_v3": {
       "state": "bull_caution",
@@ -970,9 +1135,27 @@
           "volatility_adjustment": true,
           "equity_floor_by_regime": {}
         }
+      },
+      {
+        "version": "V6_THEME_BREADTH_SELECTION",
+        "annual_return": 4.5988,
+        "max_drawdown": -12.0817,
+        "sharpe": 0.5948,
+        "calmar": 0.3806,
+        "ending_value": 1.6034,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v6",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": true,
+          "equity_floor_by_regime": {}
+        }
       }
     ],
-    "best_version": "V5_RELATIVE_STRENGTH_SELECTION"
+    "best_version": "V6_THEME_BREADTH_SELECTION"
   },
   "strategy_registry": {
     "production_candidate": "V3_TREND_RISK_ADJUSTED",
@@ -1025,6 +1208,20 @@
           "max_drawdown": -14.0822,
           "sharpe": 0.5042,
           "calmar": 0.2728
+        }
+      },
+      {
+        "version": "V6_THEME_BREADTH_SELECTION",
+        "status": "testing",
+        "metrics": {
+          "annual_return": 4.5988,
+          "max_drawdown": -12.0817,
+          "sharpe": 0.5948,
+          "calmar": 0.3806
+        },
+        "evidence": {
+          "periods": 3,
+          "improvement": true
         }
       }
     ]
@@ -1204,6 +1401,7 @@
     "Add trend confirmation so drawdown signals do not buy weakening assets too early.",
     "Use volatility adjustment to avoid oversized high-volatility positions.",
     "Prioritize total-return data before declaring investment performance conclusions.",
-    "Use relative strength as a selection layer before promoting V5 from testing."
+    "Use relative strength as a selection layer before promoting V5 from testing.",
+    "Validate theme momentum and breadth stability before promoting V6."
   ]
 }

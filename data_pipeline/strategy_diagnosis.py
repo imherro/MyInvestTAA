@@ -16,7 +16,7 @@ from engine.governance import build_strategy_registry
 from engine.performance_attribution import analyze_regime_contribution
 from engine.performance_attribution.v3 import decompose_excess_return_v3
 from engine.regime.v3 import detect_market_regime_v3
-from engine.selection import compare_selection_attribution
+from engine.selection import build_selection_analysis, compare_selection_attribution
 from storage import MarketDataRepository
 
 
@@ -81,6 +81,12 @@ def build_strategy_diagnosis_report(
             max_weight_step=10.0,
             volatility_adjustment=True,
         ),
+        "V6_THEME_BREADTH_SELECTION": run_taa_backtest(
+            **common_kwargs,
+            score_version="v6",
+            max_weight_step=10.0,
+            volatility_adjustment=True,
+        ),
     }
     benchmark = compare_strategies(**common_kwargs)
     static_row = benchmark["strategies"].get("SAA_60_40")
@@ -89,14 +95,30 @@ def build_strategy_diagnosis_report(
     decomposition = decompose_vs_static(variants["V1_CURRENT"], static_row)
     attribution_v3 = decompose_excess_return_v3(variants["V4_REGIME_EXPOSURE_FLOOR"], static_row)
     attribution_v5 = decompose_excess_return_v3(variants["V5_RELATIVE_STRENGTH_SELECTION"], static_row)
+    attribution_v6 = decompose_excess_return_v3(variants["V6_THEME_BREADTH_SELECTION"], static_row)
     selection_attribution = compare_selection_attribution(
         decompose_excess_return_v3(variants["V3_TREND_RISK_ADJUSTED"], static_row),
         attribution_v5,
     )
     version_comparison = compare_strategy_versions(variants)
-    strategy_registry = build_strategy_registry(version_comparison["rows"])
+    selection_attribution_v2 = compare_selection_attribution(
+        attribution_v5,
+        attribution_v6,
+        baseline="V5_RELATIVE_STRENGTH_SELECTION",
+        candidate="V6_THEME_BREADTH_SELECTION",
+    )
+    strategy_registry = build_strategy_registry(
+        version_comparison["rows"],
+        evidence_by_version={
+            "V6_THEME_BREADTH_SELECTION": {
+                "periods": 3,
+                "improvement": selection_attribution_v2["selection"]["improved"],
+            }
+        },
+    )
     regime_contribution = analyze_regime_contribution(variants["V1_CURRENT"])
     regime_v3 = detect_market_regime_v3(histories.get("510300", []), breadth=_estimate_breadth(histories))
+    selection_analysis = build_selection_analysis(variants["V6_THEME_BREADTH_SELECTION"])
     report = {
         "dataset": {
             "provider": provider_name,
@@ -112,7 +134,10 @@ def build_strategy_diagnosis_report(
             "regime_contribution": regime_contribution,
             "attribution_v3": attribution_v3,
             "attribution_v5": attribution_v5,
+            "attribution_v6": attribution_v6,
             "selection_attribution": selection_attribution,
+            "selection_attribution_v2": selection_attribution_v2,
+            "selection_analysis": selection_analysis,
             "regime_v3": regime_v3,
         },
         "versions": version_comparison,
@@ -128,6 +153,7 @@ def build_strategy_diagnosis_report(
             "Use volatility adjustment to avoid oversized high-volatility positions.",
             "Prioritize total-return data before declaring investment performance conclusions.",
             "Use relative strength as a selection layer before promoting V5 from testing.",
+            "Validate theme momentum and breadth stability before promoting V6.",
         ],
     }
     if report_path is not None:

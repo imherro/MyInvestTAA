@@ -12,7 +12,9 @@ from engine.opportunity import _confidence_factor, _recovery_score
 from engine.recovery import analyze_recovery_events
 from engine.regime import detect_market_regime
 from engine.risk import build_risk_budget
-from engine.selection import calculate_relative_strength
+from engine.breadth import theme_breadth_by_theme
+from engine.selection import calculate_relative_strength, selection_reasons
+from engine.theme import theme_for_asset, theme_momentum_by_theme
 
 
 def run_taa_backtest(
@@ -41,8 +43,8 @@ def run_taa_backtest(
         raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
-    if score_version not in {"v1", "v4", "v5"}:
-        raise ValueError("score_version must be v1, v4, or v5")
+    if score_version not in {"v1", "v4", "v5", "v6"}:
+        raise ValueError("score_version must be v1, v4, v5, or v6")
     if max_weight_step is not None and max_weight_step <= 0:
         raise ValueError("max_weight_step must be positive")
     if equity_floor_by_regime:
@@ -194,6 +196,8 @@ def _score_assets_as_of(
 ) -> list[dict]:
     scores: list[dict] = []
     benchmark_history = histories_as_of.get("510300", [])
+    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version == "v6" else {}
+    theme_breadth = theme_breadth_by_theme(histories_as_of) if score_version == "v6" else {}
     for asset in assets:
         history = histories_as_of.get(asset["id"], [])
         if len(history) < 2:
@@ -209,6 +213,10 @@ def _score_assets_as_of(
         trend_score = _trend_score(history)
         volatility = _volatility(history)
         relative_strength = calculate_relative_strength(asset["id"], history, benchmark_history)
+        theme = theme_for_asset(asset["id"])
+        theme_momentum_score = float(theme_momentum.get(theme, {}).get("momentum_score", 50.0))
+        breadth_score = float(theme_breadth.get(theme, {}).get("breadth_score", 50.0))
+        quality_score = anchor_score
         if score_version == "v4":
             opportunity_score = round(
                 0.3 * drawdown_pressure
@@ -224,6 +232,15 @@ def _score_assets_as_of(
                 + 0.20 * anchor_score
                 + 0.20 * trend_score
                 + 0.15 * relative_strength.strength_score,
+                2,
+            )
+        elif score_version == "v6":
+            opportunity_score = round(
+                0.25 * relative_strength.strength_score
+                + 0.25 * theme_momentum_score
+                + 0.20 * breadth_score
+                + 0.15 * trend_score
+                + 0.15 * quality_score,
                 2,
             )
         else:
@@ -243,7 +260,24 @@ def _score_assets_as_of(
                 "trend_score": trend_score,
                 "relative_strength_score": relative_strength.strength_score,
                 "relative_strength": relative_strength.as_dict(),
+                "theme": theme,
+                "theme_momentum_score": theme_momentum_score,
+                "theme_momentum": theme_momentum.get(theme, {}),
+                "breadth_score": breadth_score,
+                "breadth": theme_breadth.get(theme, {}),
+                "quality_score": quality_score,
                 "volatility": volatility,
+            }
+            | {
+                "selection_reason": selection_reasons(
+                    {
+                        "theme_momentum_score": theme_momentum_score,
+                        "breadth_score": breadth_score,
+                        "relative_strength_score": relative_strength.strength_score,
+                        "trend_score": trend_score,
+                        "quality_score": quality_score,
+                    }
+                ),
                 "confidence_adjusted_score": round(opportunity_score * confidence_factor, 2),
             }
         )

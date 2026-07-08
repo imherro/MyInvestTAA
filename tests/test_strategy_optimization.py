@@ -63,6 +63,12 @@ def test_run_taa_backtest_accepts_score_version_v5():
     assert result["assumptions"]["score_version"] == "v5"
 
 
+def test_run_taa_backtest_accepts_score_version_v6():
+    result = run_taa_backtest(score_version="v6")
+
+    assert result["assumptions"]["score_version"] == "v6"
+
+
 def test_run_taa_backtest_rejects_unknown_score_version():
     with pytest.raises(ValueError):
         run_taa_backtest(score_version="bad")
@@ -104,6 +110,27 @@ def test_run_taa_backtest_v5_scores_include_relative_strength_details():
     scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
 
     assert {"weighted_excess_return", "windows"} <= set(scores[0]["relative_strength"])
+
+
+def test_run_taa_backtest_v6_scores_include_theme_momentum_and_breadth():
+    result = run_taa_backtest(score_version="v6")
+    scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
+
+    assert {"theme_momentum_score", "breadth_score", "theme"} <= set(scores[0])
+
+
+def test_run_taa_backtest_v6_scores_include_selection_reason():
+    result = run_taa_backtest(score_version="v6")
+    scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
+
+    assert scores[0]["selection_reason"]
+
+
+def test_run_taa_backtest_v6_scores_include_quality_score():
+    result = run_taa_backtest(score_version="v6")
+    scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
+
+    assert "quality_score" in scores[0]
 
 
 def test_run_taa_backtest_v5_records_target_weights_with_smoothing():

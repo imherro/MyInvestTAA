@@ -159,7 +159,7 @@ def test_strategy_diagnosis_api_compares_versions():
 
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload["versions"]["rows"]) >= 5
+    assert len(payload["versions"]["rows"]) >= 6
 
 
 def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
@@ -168,11 +168,11 @@ def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
     assert _strategy_diagnosis_report_is_current(report) is False
 
 
-def test_strategy_diagnosis_report_current_check_accepts_task016_shape():
+def test_strategy_diagnosis_report_current_check_accepts_task017_shape():
     report = {
-        "versions": {"rows": [{"version": "V5_RELATIVE_STRENGTH_SELECTION"}]},
+        "versions": {"rows": [{"version": "V6_THEME_BREADTH_SELECTION"}]},
         "benchmark": {"validation": {}},
-        "diagnosis": {"attribution_v3": {}, "selection_attribution": {}, "regime_v3": {}},
+        "diagnosis": {"attribution_v3": {}, "selection_attribution": {}, "selection_analysis": {}, "regime_v3": {}},
         "strategy_registry": {},
     }
 
@@ -202,6 +202,22 @@ def test_strategy_registry_api_marks_v5_testing():
     payload = response.json()
     v5 = next(row for row in payload["rows"] if row["version"] == "V5_RELATIVE_STRENGTH_SELECTION")
     assert v5["status"] == "testing"
+
+
+def test_selection_analysis_api_returns_rows():
+    response = client.get("/api/research/selection-analysis")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"version", "rows"} <= set(payload)
+
+
+def test_selection_analysis_api_rows_include_reasons():
+    response = client.get("/api/research/selection-analysis")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert "selection_reason" in payload["rows"][0]
 
 
 def test_research_report_page_returns_sections():
@@ -275,6 +291,21 @@ def test_strategy_governance_page_lists_v5():
     assert "V5_RELATIVE_STRENGTH_SELECTION" in response.text
 
 
+def test_selection_research_page_returns_sections():
+    response = client.get("/selection-research")
+
+    assert response.status_code == 200
+    assert "Selection Research" in response.text
+    assert "Latest Selection" in response.text
+
+
+def test_selection_research_page_lists_selection_reasons():
+    response = client.get("/selection-research")
+
+    assert response.status_code == 200
+    assert "Selection" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -301,6 +332,13 @@ def test_dashboard_links_strategy_governance():
 
     assert response.status_code == 200
     assert "/strategy-governance" in response.text
+
+
+def test_dashboard_links_selection_research():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/selection-research" in response.text
 
 
 def test_dashboard_links_benchmark_validation():

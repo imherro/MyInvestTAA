@@ -8,13 +8,17 @@ class StrategyRegistryEntry:
     version: str
     status: str
     metrics: dict
+    evidence: dict | None = None
 
     def as_dict(self) -> dict:
-        return {
+        payload = {
             "version": self.version,
             "status": self.status,
             "metrics": self.metrics,
         }
+        if self.evidence is not None:
+            payload["evidence"] = self.evidence
+        return payload
 
 
 @dataclass(frozen=True)
