@@ -275,3 +275,13 @@ data/sample/history/prices.json
 ```
 
 当前历史压力分位仍是样例研究模型，不代表真实投资建议。后续应接入 Tushare/BaoStock 等真实历史数据，并使用完整历史事件分布校准。
+
+## 十六、Task-003 恢复概率与机会评分
+
+当前工程增加了恢复概率和机会评分：
+
+- `GET /api/recovery/{asset_id}`：按历史回撤事件计算恢复概率、中位恢复天数和底部后 1/2/3 年中位收益。
+- `GET /api/opportunity/ranking`：按 `50% Drawdown Pressure + 50% Recovery Probability` 输出机会排名。
+- Web 首页增加 `Recovery Analysis` 区块，展示压力、恢复概率、机会评分和 3 年中位收益。
+
+当前恢复统计只使用样例历史价格中底部日期之后的数据，避免把底部之前的信息混入未来收益统计。该模块仍是研究样例，不构成投资建议。

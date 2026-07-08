@@ -14,6 +14,8 @@ if str(ROOT) not in sys.path:
 from backtest.simulator import run_sample_backtest
 from engine.asset_repository import load_assets, load_price_history
 from engine.drawdown import calculate_drawdown, calculate_drawdown_percentile, detect_drawdown_events
+from engine.opportunity import build_opportunity_ranking
+from engine.recovery import analyze_recovery_events
 from engine.taa_score import build_taa_ranking
 
 
@@ -53,6 +55,18 @@ def get_sample_backtest() -> dict:
     return run_sample_backtest()
 
 
+@app.get("/api/recovery/{asset_id}")
+def get_recovery(asset_id: str) -> dict:
+    history = load_price_history(asset_id)
+    events = detect_drawdown_events(history)
+    return analyze_recovery_events(events, history, asset_id=asset_id).as_dict()
+
+
+@app.get("/api/opportunity/ranking")
+def get_opportunity_ranking() -> list[dict]:
+    return build_opportunity_ranking(load_assets())
+
+
 @app.get("/", response_class=HTMLResponse)
 def dashboard() -> str:
     ranking = build_taa_ranking(load_assets())
@@ -72,6 +86,7 @@ def dashboard() -> str:
         for item in ranking
     )
     event_rows = "\n".join(_drawdown_history_rows(ranking))
+    opportunity_rows = "\n".join(_opportunity_rows())
 
     return f"""
     <!doctype html>
@@ -243,6 +258,22 @@ def dashboard() -> str:
             <tbody>{event_rows}</tbody>
           </table>
         </section>
+        <section class="history">
+          <h2>Recovery Analysis</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>资产</th>
+                <th>压力</th>
+                <th>压力区</th>
+                <th>恢复概率</th>
+                <th>机会评分</th>
+                <th>3年中位收益</th>
+              </tr>
+            </thead>
+            <tbody>{opportunity_rows}</tbody>
+          </table>
+        </section>
       </main>
     </body>
     </html>
@@ -273,6 +304,26 @@ def _drawdown_history_rows(ranking: list[dict]) -> list[str]:
               <td>{pressure["percentile"]:.2f}</td>
               <td>{pressure["zone"]}</td>
               <td>{backtest_text}</td>
+            </tr>
+            """
+        )
+    return rows
+
+
+def _opportunity_rows() -> list[str]:
+    rows: list[str] = []
+    for item in build_opportunity_ranking(load_assets()):
+        forward_3y = item["median_forward_return_3y_pct"]
+        forward_text = f"{forward_3y:.1f}%" if forward_3y is not None else "insufficient"
+        rows.append(
+            f"""
+            <tr>
+              <td><strong>{item["name"]}</strong><span>{item["id"]}</span></td>
+              <td>{item["drawdown_pressure"]:.1f}</td>
+              <td>{item["pressure_zone"]}</td>
+              <td>{item["recovery_probability"]:.1f}%</td>
+              <td><strong>{item["opportunity_score"]:.1f}</strong></td>
+              <td>{forward_text}</td>
             </tr>
             """
         )

@@ -42,3 +42,21 @@ def test_sample_backtest_api_returns_metrics():
     payload = response.json()
     assert payload["asset_id"] == "512890"
     assert {"annual_return", "max_drawdown", "sharpe", "period"} <= set(payload)
+
+
+def test_recovery_api_returns_summary():
+    response = client.get("/api/recovery/512890")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["asset_id"] == "512890"
+    assert {"event_count", "recovered_events", "recovery_probability", "events"} <= set(payload)
+
+
+def test_opportunity_ranking_api_returns_scores():
+    response = client.get("/api/opportunity/ranking")
+
+    assert response.status_code == 200
+    ranking = response.json()
+    assert len(ranking) >= 5
+    assert {"drawdown_pressure", "recovery_probability", "opportunity_score"} <= set(ranking[0])
