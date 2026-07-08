@@ -12,6 +12,7 @@ from engine.opportunity import _confidence_factor, _recovery_score
 from engine.recovery import analyze_recovery_events
 from engine.regime import detect_market_regime
 from engine.risk import build_risk_budget
+from engine.selection import calculate_relative_strength
 
 
 def run_taa_backtest(
@@ -40,8 +41,8 @@ def run_taa_backtest(
         raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
-    if score_version not in {"v1", "v4"}:
-        raise ValueError("score_version must be v1 or v4")
+    if score_version not in {"v1", "v4", "v5"}:
+        raise ValueError("score_version must be v1, v4, or v5")
     if max_weight_step is not None and max_weight_step <= 0:
         raise ValueError("max_weight_step must be positive")
     if equity_floor_by_regime:
@@ -192,6 +193,7 @@ def _score_assets_as_of(
     score_version: str = "v1",
 ) -> list[dict]:
     scores: list[dict] = []
+    benchmark_history = histories_as_of.get("510300", [])
     for asset in assets:
         history = histories_as_of.get(asset["id"], [])
         if len(history) < 2:
@@ -206,12 +208,22 @@ def _score_assets_as_of(
         anchor_score = calculate_anchor_score(asset)
         trend_score = _trend_score(history)
         volatility = _volatility(history)
+        relative_strength = calculate_relative_strength(asset["id"], history, benchmark_history)
         if score_version == "v4":
             opportunity_score = round(
                 0.3 * drawdown_pressure
                 + 0.25 * recovery_score
                 + 0.25 * anchor_score
                 + 0.2 * trend_score,
+                2,
+            )
+        elif score_version == "v5":
+            opportunity_score = round(
+                0.25 * drawdown_pressure
+                + 0.20 * recovery_score
+                + 0.20 * anchor_score
+                + 0.20 * trend_score
+                + 0.15 * relative_strength.strength_score,
                 2,
             )
         else:
@@ -229,6 +241,8 @@ def _score_assets_as_of(
                 "recovery_score": recovery_score,
                 "anchor_score": anchor_score,
                 "trend_score": trend_score,
+                "relative_strength_score": relative_strength.strength_score,
+                "relative_strength": relative_strength.as_dict(),
                 "volatility": volatility,
                 "confidence_adjusted_score": round(opportunity_score * confidence_factor, 2),
             }

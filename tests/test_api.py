@@ -159,7 +159,7 @@ def test_strategy_diagnosis_api_compares_versions():
 
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload["versions"]["rows"]) >= 4
+    assert len(payload["versions"]["rows"]) >= 5
 
 
 def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
@@ -168,11 +168,12 @@ def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
     assert _strategy_diagnosis_report_is_current(report) is False
 
 
-def test_strategy_diagnosis_report_current_check_accepts_task015_shape():
+def test_strategy_diagnosis_report_current_check_accepts_task016_shape():
     report = {
-        "versions": {"rows": [{"version": "V4_REGIME_EXPOSURE_FLOOR"}]},
+        "versions": {"rows": [{"version": "V5_RELATIVE_STRENGTH_SELECTION"}]},
         "benchmark": {"validation": {}},
-        "diagnosis": {"attribution_v3": {}, "regime_v3": {}},
+        "diagnosis": {"attribution_v3": {}, "selection_attribution": {}, "regime_v3": {}},
+        "strategy_registry": {},
     }
 
     assert _strategy_diagnosis_report_is_current(report) is True
@@ -184,6 +185,23 @@ def test_benchmark_validation_api_returns_checks():
     assert response.status_code == 200
     payload = response.json()
     assert {"weight_check", "return_check", "issues", "unit"} <= set(payload)
+
+
+def test_strategy_registry_api_returns_rows():
+    response = client.get("/api/research/strategy-registry")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"production_candidate", "rows"} <= set(payload)
+
+
+def test_strategy_registry_api_marks_v5_testing():
+    response = client.get("/api/research/strategy-registry")
+
+    assert response.status_code == 200
+    payload = response.json()
+    v5 = next(row for row in payload["rows"] if row["version"] == "V5_RELATIVE_STRENGTH_SELECTION")
+    assert v5["status"] == "testing"
 
 
 def test_research_report_page_returns_sections():
@@ -242,6 +260,21 @@ def test_benchmark_validation_page_returns_sections():
     assert "Weight Check" in response.text
 
 
+def test_strategy_governance_page_returns_sections():
+    response = client.get("/strategy-governance")
+
+    assert response.status_code == 200
+    assert "Strategy Governance" in response.text
+    assert "Production Candidate" in response.text
+
+
+def test_strategy_governance_page_lists_v5():
+    response = client.get("/strategy-governance")
+
+    assert response.status_code == 200
+    assert "V5_RELATIVE_STRENGTH_SELECTION" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -261,6 +294,13 @@ def test_dashboard_links_strategy_diagnosis():
 
     assert response.status_code == 200
     assert "/diagnosis" in response.text
+
+
+def test_dashboard_links_strategy_governance():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/strategy-governance" in response.text
 
 
 def test_dashboard_links_benchmark_validation():

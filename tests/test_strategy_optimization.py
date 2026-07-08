@@ -57,6 +57,12 @@ def test_run_taa_backtest_accepts_score_version_v4():
     assert result["assumptions"]["score_version"] == "v4"
 
 
+def test_run_taa_backtest_accepts_score_version_v5():
+    result = run_taa_backtest(score_version="v5")
+
+    assert result["assumptions"]["score_version"] == "v5"
+
+
 def test_run_taa_backtest_rejects_unknown_score_version():
     with pytest.raises(ValueError):
         run_taa_backtest(score_version="bad")
@@ -84,6 +90,26 @@ def test_run_taa_backtest_v4_scores_include_trend_and_volatility():
     scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
 
     assert {"trend_score", "volatility"} <= set(scores[0])
+
+
+def test_run_taa_backtest_v5_scores_include_relative_strength():
+    result = run_taa_backtest(score_version="v5", volatility_adjustment=True)
+    scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
+
+    assert "relative_strength_score" in scores[0]
+
+
+def test_run_taa_backtest_v5_scores_include_relative_strength_details():
+    result = run_taa_backtest(score_version="v5")
+    scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
+
+    assert {"weighted_excess_return", "windows"} <= set(scores[0]["relative_strength"])
+
+
+def test_run_taa_backtest_v5_records_target_weights_with_smoothing():
+    result = run_taa_backtest(score_version="v5", max_weight_step=10.0)
+
+    assert any(state["signals"].get("target_weights") for state in result["states"][1:])
 
 
 def test_run_taa_backtest_records_target_weights_when_smoothing():

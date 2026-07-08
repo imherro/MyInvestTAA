@@ -12,9 +12,11 @@ from data_pipeline.importer import build_provider, import_market_data
 from engine.asset_repository import load_assets
 from engine.benchmark_validation import validate_benchmark_report
 from engine.diagnosis import analyze_regime_effects, compare_strategy_versions, decompose_vs_static
+from engine.governance import build_strategy_registry
 from engine.performance_attribution import analyze_regime_contribution
 from engine.performance_attribution.v3 import decompose_excess_return_v3
 from engine.regime.v3 import detect_market_regime_v3
+from engine.selection import compare_selection_attribution
 from storage import MarketDataRepository
 
 
@@ -73,6 +75,12 @@ def build_strategy_diagnosis_report(
             volatility_adjustment=True,
             equity_floor_by_regime={"bull": 70.0, "neutral": 40.0, "bear_recovery": 50.0},
         ),
+        "V5_RELATIVE_STRENGTH_SELECTION": run_taa_backtest(
+            **common_kwargs,
+            score_version="v5",
+            max_weight_step=10.0,
+            volatility_adjustment=True,
+        ),
     }
     benchmark = compare_strategies(**common_kwargs)
     static_row = benchmark["strategies"].get("SAA_60_40")
@@ -80,7 +88,13 @@ def build_strategy_diagnosis_report(
     regime_analysis = analyze_regime_effects(variants["V1_CURRENT"])
     decomposition = decompose_vs_static(variants["V1_CURRENT"], static_row)
     attribution_v3 = decompose_excess_return_v3(variants["V4_REGIME_EXPOSURE_FLOOR"], static_row)
+    attribution_v5 = decompose_excess_return_v3(variants["V5_RELATIVE_STRENGTH_SELECTION"], static_row)
+    selection_attribution = compare_selection_attribution(
+        decompose_excess_return_v3(variants["V3_TREND_RISK_ADJUSTED"], static_row),
+        attribution_v5,
+    )
     version_comparison = compare_strategy_versions(variants)
+    strategy_registry = build_strategy_registry(version_comparison["rows"])
     regime_contribution = analyze_regime_contribution(variants["V1_CURRENT"])
     regime_v3 = detect_market_regime_v3(histories.get("510300", []), breadth=_estimate_breadth(histories))
     report = {
@@ -97,9 +111,12 @@ def build_strategy_diagnosis_report(
             "decomposition": decomposition,
             "regime_contribution": regime_contribution,
             "attribution_v3": attribution_v3,
+            "attribution_v5": attribution_v5,
+            "selection_attribution": selection_attribution,
             "regime_v3": regime_v3,
         },
         "versions": version_comparison,
+        "strategy_registry": strategy_registry,
         "benchmark": {
             "static": static_row,
             "rows": benchmark["rows"],
@@ -110,6 +127,7 @@ def build_strategy_diagnosis_report(
             "Add trend confirmation so drawdown signals do not buy weakening assets too early.",
             "Use volatility adjustment to avoid oversized high-volatility positions.",
             "Prioritize total-return data before declaring investment performance conclusions.",
+            "Use relative strength as a selection layer before promoting V5 from testing.",
         ],
     }
     if report_path is not None:

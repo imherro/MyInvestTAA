@@ -28,7 +28,7 @@ def test_strategy_diagnosis_report_returns_sections():
     assert {"dataset", "diagnosis", "versions", "benchmark", "recommendations"} <= set(report)
 
 
-def test_strategy_diagnosis_report_compares_three_versions():
+def test_strategy_diagnosis_report_compares_strategy_versions():
     report = _report()
 
     assert {item["version"] for item in report["versions"]["rows"]} == {
@@ -36,6 +36,7 @@ def test_strategy_diagnosis_report_compares_three_versions():
         "V2_REGIME_SMOOTHING",
         "V3_TREND_RISK_ADJUSTED",
         "V4_REGIME_EXPOSURE_FLOOR",
+        "V5_RELATIVE_STRENGTH_SELECTION",
     }
 
 
@@ -47,6 +48,7 @@ def test_strategy_diagnosis_report_records_best_version():
         "V2_REGIME_SMOOTHING",
         "V3_TREND_RISK_ADJUSTED",
         "V4_REGIME_EXPOSURE_FLOOR",
+        "V5_RELATIVE_STRENGTH_SELECTION",
     }
 
 
@@ -136,11 +138,49 @@ def test_strategy_diagnosis_report_records_regime_v3():
     assert {"state", "confidence", "evidence"} <= set(report["diagnosis"]["regime_v3"])
 
 
+def test_strategy_diagnosis_report_records_attribution_v5():
+    report = _report()
+
+    assert {"allocation", "selection", "timing"} <= set(report["diagnosis"]["attribution_v5"])
+
+
+def test_strategy_diagnosis_report_records_selection_attribution():
+    report = _report()
+
+    assert {"old", "new", "improvement", "improved"} <= set(report["diagnosis"]["selection_attribution"]["selection"])
+
+
+def test_strategy_diagnosis_report_records_strategy_registry():
+    report = _report()
+
+    assert {"production_candidate", "rows"} <= set(report["strategy_registry"])
+
+
+def test_strategy_diagnosis_report_registry_marks_v3_candidate():
+    report = _report()
+
+    assert report["strategy_registry"]["production_candidate"] == "V3_TREND_RISK_ADJUSTED"
+
+
+def test_strategy_diagnosis_report_registry_marks_v5_testing():
+    report = _report()
+    v5 = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V5_RELATIVE_STRENGTH_SELECTION")
+
+    assert v5["status"] == "testing"
+
+
 def test_strategy_diagnosis_report_v4_records_equity_floor_assumption():
     report = _report()
     v4_row = next(row for row in report["versions"]["rows"] if row["version"] == "V4_REGIME_EXPOSURE_FLOOR")
 
     assert v4_row["assumptions"]["equity_floor_by_regime"]["bull"] == 70.0
+
+
+def test_strategy_diagnosis_report_v5_records_score_version():
+    report = _report()
+    v5_row = next(row for row in report["versions"]["rows"] if row["version"] == "V5_RELATIVE_STRENGTH_SELECTION")
+
+    assert v5_row["assumptions"]["score_version"] == "v5"
 
 
 def test_strategy_diagnosis_report_benchmark_validation_passes_for_mock():

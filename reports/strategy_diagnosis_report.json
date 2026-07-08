@@ -842,6 +842,26 @@
       "interaction": 0.0,
       "check_sum": -1.0114
     },
+    "attribution_v5": {
+      "strategy": "MyInvestTAA",
+      "benchmark": "SAA_60_40",
+      "excess_return": -0.8858,
+      "allocation": 0.3869,
+      "selection": -1.6325,
+      "timing": 0.3598,
+      "interaction": 0.0,
+      "check_sum": -0.8858
+    },
+    "selection_attribution": {
+      "baseline": "V3_TREND_RISK_ADJUSTED",
+      "candidate": "V5_RELATIVE_STRENGTH_SELECTION",
+      "selection": {
+        "old": -1.7491,
+        "new": -1.6325,
+        "improvement": 0.1166,
+        "improved": true
+      }
+    },
     "regime_v3": {
       "state": "bull_caution",
       "confidence": 0.4,
@@ -932,9 +952,82 @@
             "bear_recovery": 50.0
           }
         }
+      },
+      {
+        "version": "V5_RELATIVE_STRENGTH_SELECTION",
+        "annual_return": 3.8416,
+        "max_drawdown": -14.0822,
+        "sharpe": 0.5042,
+        "calmar": 0.2728,
+        "ending_value": 1.4856,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v5",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": true,
+          "equity_floor_by_regime": {}
+        }
       }
     ],
-    "best_version": "V3_TREND_RISK_ADJUSTED"
+    "best_version": "V5_RELATIVE_STRENGTH_SELECTION"
+  },
+  "strategy_registry": {
+    "production_candidate": "V3_TREND_RISK_ADJUSTED",
+    "rows": [
+      {
+        "version": "V1_CURRENT",
+        "status": "archive",
+        "metrics": {
+          "annual_return": 3.5763,
+          "max_drawdown": -20.5695,
+          "sharpe": 0.3962,
+          "calmar": 0.1739
+        }
+      },
+      {
+        "version": "V2_REGIME_SMOOTHING",
+        "status": "archive",
+        "metrics": {
+          "annual_return": 3.2492,
+          "max_drawdown": -20.5695,
+          "sharpe": 0.3697,
+          "calmar": 0.158
+        }
+      },
+      {
+        "version": "V3_TREND_RISK_ADJUSTED",
+        "status": "production_candidate",
+        "metrics": {
+          "annual_return": 3.716,
+          "max_drawdown": -14.2028,
+          "sharpe": 0.4922,
+          "calmar": 0.2616
+        }
+      },
+      {
+        "version": "V4_REGIME_EXPOSURE_FLOOR",
+        "status": "archive",
+        "metrics": {
+          "annual_return": 3.716,
+          "max_drawdown": -14.2028,
+          "sharpe": 0.4922,
+          "calmar": 0.2616
+        }
+      },
+      {
+        "version": "V5_RELATIVE_STRENGTH_SELECTION",
+        "status": "testing",
+        "metrics": {
+          "annual_return": 3.8416,
+          "max_drawdown": -14.0822,
+          "sharpe": 0.5042,
+          "calmar": 0.2728
+        }
+      }
+    ]
   },
   "benchmark": {
     "static": {
@@ -1110,6 +1203,7 @@
     "Use exposure smoothing to reduce abrupt bull_caution de-risking.",
     "Add trend confirmation so drawdown signals do not buy weakening assets too early.",
     "Use volatility adjustment to avoid oversized high-volatility positions.",
-    "Prioritize total-return data before declaring investment performance conclusions."
+    "Prioritize total-return data before declaring investment performance conclusions.",
+    "Use relative strength as a selection layer before promoting V5 from testing."
   ]
 }
