@@ -87,6 +87,26 @@ def test_run_live_backtest_report_saves_backtest_result():
     assert repository.list_backtest_results()
 
 
+def test_run_live_backtest_report_respects_date_window():
+    repository = MarketDataRepository(connect_database(":memory:"))
+
+    report = run_live_backtest_report(
+        repository,
+        provider_name="mock",
+        asset_ids=["510300", "512890", "511010", "518880"],
+        start="2024-01-01",
+        end="2024-12-31",
+    )
+    histories = repository.get_all_price_histories()
+
+    assert report["price_rows"] == sum(len(history) for history in histories.values())
+    assert all(
+        "2024-01-01" <= row["date"] <= "2024-12-31"
+        for history in histories.values()
+        for row in history
+    )
+
+
 def test_import_market_data_script_runs_with_mock(tmp_path):
     db_path = tmp_path / "market.sqlite"
     completed = subprocess.run(

@@ -8,6 +8,7 @@ from backtest.evaluation import rolling_analysis
 from data.universe import load_china_etf_universe, universe_asset_ids
 from data_pipeline.importer import run_live_backtest_report
 from engine.asset_repository import load_assets
+from engine.performance_attribution import analyze_performance_contribution
 from storage import MarketDataRepository, StoredDatasetVersion
 
 
@@ -47,6 +48,8 @@ def build_real_performance_report(
         repository,
         provider_name=provider_name,
         asset_ids=asset_ids,
+        start=start_date,
+        end=end_date,
     )
     version = build_dataset_version(
         source=provider_name,
@@ -82,6 +85,49 @@ def build_real_performance_report(
             "windows": stability["windows"],
         },
         "attribution": live["attribution"],
+    }
+
+
+def build_validated_performance_report(
+    repository: MarketDataRepository,
+    provider_name: str = "mock",
+    start_date: str = "2016-01-01",
+    end_date: str = "2026-07-08",
+    asset_ids: list[str] | None = None,
+) -> dict:
+    report = build_real_performance_report(
+        repository=repository,
+        provider_name=provider_name,
+        start_date=start_date,
+        end_date=end_date,
+        asset_ids=asset_ids,
+    )
+    histories = repository.get_all_price_histories()
+    live_backtest = run_live_backtest_report(
+        repository,
+        provider_name=provider_name,
+        asset_ids=asset_ids or _default_asset_ids(provider_name),
+        start=start_date,
+        end=end_date,
+    )["backtest"]
+    performance_attribution = analyze_performance_contribution(
+        backtest_result=live_backtest,
+        price_history=histories,
+    )
+    return {
+        "dataset": report["data"],
+        "performance": report["performance"],
+        "benchmark": report["benchmark"],
+        "attribution": {
+            "decision": report["attribution"],
+            "performance": performance_attribution,
+        },
+        "friction": {
+            "transaction_cost": live_backtest["assumptions"]["transaction_cost"],
+            "slippage": live_backtest["assumptions"]["slippage"],
+            "expense_ratio": live_backtest["assumptions"]["expense_ratio"],
+        },
+        "stability": report["stability"],
     }
 
 

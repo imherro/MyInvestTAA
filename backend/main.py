@@ -16,7 +16,11 @@ from backtest.benchmark import compare_strategies
 from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
-from data_pipeline import build_real_performance_report, run_live_backtest_report
+from data_pipeline import (
+    build_real_performance_report,
+    build_validated_performance_report,
+    run_live_backtest_report,
+)
 from engine.allocation import build_allocation_recommendation
 from engine.asset_repository import load_assets, load_price_history
 from engine.anchor import load_anchor_profiles
@@ -100,6 +104,11 @@ def get_live_backtest() -> dict:
 @app.get("/api/research/real-performance")
 def get_real_performance() -> dict:
     return _build_real_performance_report()
+
+
+@app.get("/api/research/validated-performance")
+def get_validated_performance() -> dict:
+    return _build_validated_performance_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -308,7 +317,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -710,6 +719,69 @@ def real_market_research_page() -> str:
     """
 
 
+@app.get("/validation", response_class=HTMLResponse)
+def validation_report_page() -> str:
+    report = _build_validated_performance_report()
+    dataset = report["dataset"]
+    performance = report["performance"]
+    attribution_rows = "\n".join(_performance_attribution_rows(report["attribution"]["performance"]))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Validation Report</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Validation Report</h1>
+        <p>Real Data Validation 入口。当前默认用 MockProvider，Tushare 验证脚本已提供。<a href="/real-research">Real Market Research</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Real Data Validation</h2>
+          <table>
+            <tbody>
+              <tr><td>Source</td><td>{dataset["provider"]}</td></tr>
+              <tr><td>Period</td><td>{dataset["dataset_version"]["start_date"]} - {dataset["dataset_version"]["end_date"]}</td></tr>
+              <tr><td>Assets</td><td>{dataset["imported_asset_count"]}</td></tr>
+              <tr><td>Quality</td><td>{dataset["quality_score"]:.2f}</td></tr>
+              <tr><td>Dataset</td><td>{dataset["dataset_version"]["dataset_id"]}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Performance</h2>
+          <table>
+            <tbody>
+              <tr><td>Annual Return</td><td>{performance["annual_return"]:.2f}%</td></tr>
+              <tr><td>Max Drawdown</td><td>{performance["max_drawdown"]:.2f}%</td></tr>
+              <tr><td>Sharpe</td><td>{performance["sharpe"]:.2f}</td></tr>
+              <tr><td>Calmar</td><td>{performance["calmar"]:.2f}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Contribution</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>资产</th>
+                <th>收益贡献</th>
+              </tr>
+            </thead>
+            <tbody>{attribution_rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
 @app.get("/quality", response_class=HTMLResponse)
 def data_quality_page() -> str:
     summary = build_quality_summary()
@@ -1072,6 +1144,20 @@ def _real_benchmark_rows(rows: list[dict]) -> list[str]:
     return html_rows
 
 
+def _performance_attribution_rows(report: dict) -> list[str]:
+    rows: list[str] = []
+    for item in report["top_contributors"]:
+        rows.append(
+            f"""
+            <tr>
+              <td>{item["asset_id"]}</td>
+              <td>{item["contribution"]:.2f}%</td>
+            </tr>
+            """
+        )
+    return rows
+
+
 def _build_live_backtest_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
@@ -1082,6 +1168,12 @@ def _build_real_performance_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
     return build_real_performance_report(repository, provider_name="mock")
+
+
+def _build_validated_performance_report() -> dict:
+    connection = connect_database(":memory:")
+    repository = MarketDataRepository(connection)
+    return build_validated_performance_report(repository, provider_name="mock")
 
 
 def _report_page_css() -> str:

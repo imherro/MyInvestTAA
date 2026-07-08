@@ -85,6 +85,7 @@ def _price_bars_from_frame(asset_id: str, frame) -> list[PriceBar]:
             low=_optional_float(row.get("low")),
             volume=_optional_float(row.get("vol")),
             source="tushare",
+            adjust_type="none",
         )
         for row in rows
         if row.get("trade_date") and row.get("close") is not None

@@ -52,13 +52,17 @@ class MarketDataRepository:
     def upsert_prices(self, prices: list[PriceBar]) -> int:
         self.connection.executemany(
             """
-            INSERT INTO prices (asset_id, date, close, source)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO prices (asset_id, date, close, source, adjust_type)
+            VALUES (?, ?, ?, ?, ?)
             ON CONFLICT(asset_id, date) DO UPDATE SET
               close=excluded.close,
-              source=excluded.source
+              source=excluded.source,
+              adjust_type=excluded.adjust_type
             """,
-            [(price.asset_id, price.date, price.close, price.source) for price in prices],
+            [
+                (price.asset_id, price.date, price.close, price.source, price.adjust_type)
+                for price in prices
+            ],
         )
         self.connection.commit()
         return len(prices)
@@ -66,7 +70,7 @@ class MarketDataRepository:
     def get_price_history(self, asset_id: str) -> list[StoredPrice]:
         rows = self.connection.execute(
             """
-            SELECT asset_id, date, close, source
+            SELECT asset_id, date, close, source, adjust_type
             FROM prices
             WHERE asset_id = ?
             ORDER BY date
@@ -77,12 +81,16 @@ class MarketDataRepository:
 
     def get_all_price_histories(self) -> dict[str, list[dict]]:
         rows = self.connection.execute(
-            "SELECT asset_id, date, close FROM prices ORDER BY asset_id, date"
+            "SELECT asset_id, date, close, adjust_type FROM prices ORDER BY asset_id, date"
         ).fetchall()
         histories: dict[str, list[dict]] = {}
         for row in rows:
             histories.setdefault(row["asset_id"], []).append(
-                {"date": row["date"], "close": row["close"]}
+                {
+                    "date": row["date"],
+                    "close": row["close"],
+                    "adjust_type": row["adjust_type"],
+                }
             )
         return histories
 

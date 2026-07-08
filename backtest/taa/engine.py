@@ -21,6 +21,8 @@ def run_taa_backtest(
     initial_capital: float = 1.0,
     transaction_cost: float = 0.0,
     cash_return: float = 0.0,
+    slippage: float = 0.0,
+    expense_ratio: float = 0.0,
 ) -> dict:
     if rebalance_frequency != "monthly":
         raise ValueError("only monthly rebalance is supported")
@@ -28,6 +30,10 @@ def run_taa_backtest(
         raise ValueError("initial_capital must be positive")
     if transaction_cost < 0:
         raise ValueError("transaction_cost cannot be negative")
+    if slippage < 0:
+        raise ValueError("slippage cannot be negative")
+    if expense_ratio < 0:
+        raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
 
@@ -37,7 +43,7 @@ def run_taa_backtest(
         price_history = load_price_histories()
     dates = _all_dates(price_history)
     if len(dates) < 2:
-        return _empty_result(initial_capital, transaction_cost, cash_return)
+        return _empty_result(initial_capital, transaction_cost, cash_return, slippage, expense_ratio)
 
     weights = {"CASH": 100.0}
     states: list[PortfolioState] = [
@@ -65,17 +71,21 @@ def run_taa_backtest(
             cash_return,
         )
         value = value * (1.0 + period_return)
+        if expense_ratio:
+            value = value * (1.0 - expense_ratio / 12.0)
 
         histories_as_of = _histories_as_of(price_history, current_date)
         benchmark_history = histories_as_of.get("510300", [])
         regime = detect_market_regime(benchmark_history)
         risk_budget = build_risk_budget(regime)
-        scores = _score_assets_as_of(assets, histories_as_of)
+        assets_as_of = _assets_available_as_of(assets, current_date)
+        scores = _score_assets_as_of(assets_as_of, histories_as_of)
         next_weights = build_rebalance_weights(scores, risk_budget)
         period_turnover = turnover(weights, next_weights)
         turnovers.append(period_turnover)
-        if transaction_cost:
-            value = value * (1.0 - period_turnover * transaction_cost)
+        friction = transaction_cost + slippage
+        if friction:
+            value = value * (1.0 - period_turnover * friction)
         returns.append(value / previous_value - 1.0)
         weights = next_weights
 
@@ -102,6 +112,8 @@ def run_taa_backtest(
                     "turnover": period_turnover,
                     "transaction_cost": transaction_cost,
                     "cash_return": cash_return,
+                    "slippage": slippage,
+                    "expense_ratio": expense_ratio,
                 },
                 regime=regime.as_dict(),
                 selected_assets=selected_assets,
@@ -117,6 +129,8 @@ def run_taa_backtest(
         "assumptions": {
             "transaction_cost": transaction_cost,
             "cash_return": cash_return,
+            "slippage": slippage,
+            "expense_ratio": expense_ratio,
         },
         "metrics": metrics,
         "equity_curve": [
@@ -214,13 +228,32 @@ def _close_on_or_before(history: list[dict], target: date) -> float | None:
     return close
 
 
+def _assets_available_as_of(assets: list[dict], current_date: date) -> list[dict]:
+    available = []
+    for asset in assets:
+        start = asset.get("start_date")
+        end = asset.get("end_date")
+        if start and current_date < date.fromisoformat(str(start)):
+            continue
+        if end and current_date > date.fromisoformat(str(end)):
+            continue
+        available.append(asset)
+    return available
+
+
 def _rebalance_reason(regime_state: str, selected_assets: list[str]) -> str:
     if not selected_assets:
         return f"{regime_state} regime selected cash because no positive candidates passed scoring."
     return f"{regime_state} regime selected {', '.join(selected_assets)} by confidence adjusted opportunity score."
 
 
-def _empty_result(initial_capital: float, transaction_cost: float = 0.0, cash_return: float = 0.0) -> dict:
+def _empty_result(
+    initial_capital: float,
+    transaction_cost: float = 0.0,
+    cash_return: float = 0.0,
+    slippage: float = 0.0,
+    expense_ratio: float = 0.0,
+) -> dict:
     return {
         "strategy": "MyInvestTAA",
         "period": None,
@@ -228,6 +261,8 @@ def _empty_result(initial_capital: float, transaction_cost: float = 0.0, cash_re
         "assumptions": {
             "transaction_cost": transaction_cost,
             "cash_return": cash_return,
+            "slippage": slippage,
+            "expense_ratio": expense_ratio,
         },
         "metrics": {
             "annual_return": 0.0,

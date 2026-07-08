@@ -33,6 +33,7 @@ def initialize_database(connection: sqlite3.Connection) -> None:
             date TEXT NOT NULL,
             close REAL NOT NULL,
             source TEXT NOT NULL,
+            adjust_type TEXT NOT NULL DEFAULT 'none',
             PRIMARY KEY (asset_id, date)
         );
 

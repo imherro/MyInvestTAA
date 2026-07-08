@@ -78,6 +78,7 @@ class BaoStockProvider:
                     close=float(row["close"]),
                     volume=_optional_float(row.get("volume")),
                     source=self.name,
+                    adjust_type="qfq",
                 )
             )
         return bars

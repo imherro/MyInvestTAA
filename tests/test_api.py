@@ -113,6 +113,23 @@ def test_real_performance_api_returns_dataset_version():
     assert {"annual_return", "max_drawdown", "sharpe", "calmar"} <= set(payload["performance"])
 
 
+def test_validated_performance_api_returns_dataset_and_attribution():
+    response = client.get("/api/research/validated-performance")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"dataset", "performance", "benchmark", "attribution"} <= set(payload)
+    assert "performance" in payload["attribution"]
+
+
+def test_validated_performance_api_returns_friction_assumptions():
+    response = client.get("/api/research/validated-performance")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"transaction_cost", "slippage", "expense_ratio"} <= set(payload["friction"])
+
+
 def test_research_report_page_returns_sections():
     response = client.get("/research")
 
@@ -135,6 +152,21 @@ def test_real_market_research_page_returns_sections():
     assert response.status_code == 200
     assert "Real Market Research" in response.text
     assert "Dataset Version" in response.text
+
+
+def test_validation_report_page_returns_sections():
+    response = client.get("/validation")
+
+    assert response.status_code == 200
+    assert "Validation Report" in response.text
+    assert "Real Data Validation" in response.text
+
+
+def test_dashboard_links_validation_report():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/validation" in response.text
 
 
 def test_data_quality_page_returns_sections():

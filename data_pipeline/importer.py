@@ -71,11 +71,13 @@ def run_live_backtest_report(
     repository: MarketDataRepository,
     provider_name: str = "mock",
     asset_ids: list[str] | None = None,
+    start: str | None = None,
+    end: str | None = None,
 ) -> dict:
     if asset_ids is None:
         asset_ids = [asset["id"] for asset in load_assets()]
     provider = build_provider(provider_name)
-    import_summary = import_market_data(provider, repository, asset_ids)
+    import_summary = import_market_data(provider, repository, asset_ids, start=start, end=end)
     histories = repository.get_all_price_histories()
     assets = [
         asset for asset in load_assets()

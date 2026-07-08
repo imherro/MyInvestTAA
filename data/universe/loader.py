@@ -15,7 +15,7 @@ def load_china_etf_universe() -> list[dict]:
     if not isinstance(data, list):
         raise ValueError("china_etf_universe.json must contain a list")
     for item in data:
-        missing = {"id", "name", "category", "asset_class"} - set(item)
+        missing = {"id", "name", "category", "asset_class", "start_date", "end_date"} - set(item)
         if missing:
             raise ValueError(f"universe item missing fields: {sorted(missing)}")
     return data
@@ -30,3 +30,14 @@ def universe_by_category() -> dict[str, list[dict]]:
     for item in load_china_etf_universe():
         grouped.setdefault(item["category"], []).append(item)
     return grouped
+
+
+def available_universe(as_of: str) -> list[dict]:
+    available = []
+    for item in load_china_etf_universe():
+        if item["start_date"] and as_of < item["start_date"]:
+            continue
+        if item["end_date"] and as_of > item["end_date"]:
+            continue
+        available.append(item)
+    return available

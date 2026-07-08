@@ -25,6 +25,7 @@ class StoredPrice:
     date: str
     close: float
     source: str
+    adjust_type: str = "none"
 
     def as_dict(self) -> dict:
         return {
@@ -32,6 +33,7 @@ class StoredPrice:
             "date": self.date,
             "close": self.close,
             "source": self.source,
+            "adjust_type": self.adjust_type,
         }
 
 
