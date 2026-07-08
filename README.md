@@ -259,3 +259,19 @@ python -m pytest
 ```
 
 当前版本使用 `data/sample/assets.json` 的样例资产和价格序列，不连接真实行情源，不执行任何交易。
+
+## 十五、Task-002 历史回撤与回测基础
+
+当前工程增加了历史回撤事件识别和样例回测基础：
+
+- `GET /api/drawdown/events/{asset_id}`：读取样例历史价格，返回历史回撤事件和当前压力分位。
+- `GET /api/backtest/sample`：返回红利低波 ETF 的样例权重回测结果。
+- Web 首页增加 `Drawdown History` 区块，展示历史事件数、最深回撤、当前压力分位和样例回测摘要。
+
+样例历史价格文件：
+
+```text
+data/sample/history/prices.json
+```
+
+当前历史压力分位仍是样例研究模型，不代表真实投资建议。后续应接入 Tushare/BaoStock 等真实历史数据，并使用完整历史事件分布校准。

@@ -11,7 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from engine.asset_repository import load_assets
+from backtest.simulator import run_sample_backtest
+from engine.asset_repository import load_assets, load_price_history
+from engine.drawdown import calculate_drawdown, calculate_drawdown_percentile, detect_drawdown_events
 from engine.taa_score import build_taa_ranking
 
 
@@ -32,6 +34,25 @@ def get_taa_ranking() -> list[dict]:
     return build_taa_ranking(load_assets())
 
 
+@app.get("/api/drawdown/events/{asset_id}")
+def get_drawdown_events(asset_id: str) -> dict:
+    history = load_price_history(asset_id)
+    events = detect_drawdown_events(history)
+    closes = [float(row["close"]) for row in history]
+    current = calculate_drawdown(closes)
+    pressure = calculate_drawdown_percentile(events, current.current_drawdown_pct)
+    return {
+        "asset_id": asset_id,
+        "events": [event.as_dict() for event in events],
+        "current_pressure": pressure,
+    }
+
+
+@app.get("/api/backtest/sample")
+def get_sample_backtest() -> dict:
+    return run_sample_backtest()
+
+
 @app.get("/", response_class=HTMLResponse)
 def dashboard() -> str:
     ranking = build_taa_ranking(load_assets())
@@ -50,6 +71,7 @@ def dashboard() -> str:
         """
         for item in ranking
     )
+    event_rows = "\n".join(_drawdown_history_rows(ranking))
 
     return f"""
     <!doctype html>
@@ -129,6 +151,14 @@ def dashboard() -> str:
           border-radius: 8px;
           overflow: hidden;
         }}
+        .history {{
+          margin-top: 22px;
+        }}
+        h2 {{
+          margin: 0 0 12px;
+          font-size: 20px;
+          letter-spacing: 0;
+        }}
         th, td {{
           padding: 13px 14px;
           border-bottom: 1px solid var(--line);
@@ -197,12 +227,57 @@ def dashboard() -> str:
           </thead>
           <tbody>{rows}</tbody>
         </table>
+        <section class="history">
+          <h2>Drawdown History</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>资产</th>
+                <th>历史事件数</th>
+                <th>最深回撤</th>
+                <th>当前压力分位</th>
+                <th>压力区</th>
+                <th>样例回测</th>
+              </tr>
+            </thead>
+            <tbody>{event_rows}</tbody>
+          </table>
+        </section>
       </main>
     </body>
     </html>
     """
 
 
+def _drawdown_history_rows(ranking: list[dict]) -> list[str]:
+    rows: list[str] = []
+    sample_backtest = run_sample_backtest()
+    for item in ranking:
+        history = load_price_history(item["id"])
+        events = detect_drawdown_events(history)
+        current = calculate_drawdown([float(row["close"]) for row in history])
+        pressure = calculate_drawdown_percentile(events, current.current_drawdown_pct)
+        worst = min((event.drawdown_pct for event in events), default=0.0)
+        backtest_text = (
+            f"{sample_backtest['annual_return']:.1f}% annual / "
+            f"{sample_backtest['max_drawdown']:.1f}% DD"
+            if item["id"] == sample_backtest["asset_id"]
+            else "-"
+        )
+        rows.append(
+            f"""
+            <tr>
+              <td><strong>{item["name"]}</strong><span>{item["id"]}</span></td>
+              <td>{len(events)}</td>
+              <td>{worst:.1f}%</td>
+              <td>{pressure["percentile"]:.2f}</td>
+              <td>{pressure["zone"]}</td>
+              <td>{backtest_text}</td>
+            </tr>
+            """
+        )
+    return rows
+
+
 if __name__ == "__main__":
     uvicorn.run("backend.main:app", host="127.0.0.1", port=8025, reload=False)
-

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from engine.drawdown.statistics import pressure_zone
+
 
 @dataclass(frozen=True)
 class DrawdownMetrics:
@@ -46,16 +48,6 @@ def calculate_drawdown(prices: list[float]) -> DrawdownMetrics:
 
 def drawdown_score(metrics: DrawdownMetrics) -> float:
     return round(metrics.drawdown_percentile * 100, 2)
-
-
-def pressure_zone(percentile: float) -> str:
-    if percentile >= 0.9:
-        return "extreme"
-    if percentile >= 0.75:
-        return "high"
-    if percentile >= 0.5:
-        return "medium"
-    return "normal"
 
 
 def _drawdown_percentile(current_drawdown: float, drawdowns: list[float]) -> float:
