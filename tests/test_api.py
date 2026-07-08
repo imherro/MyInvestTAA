@@ -104,6 +104,15 @@ def test_live_backtest_api_returns_database_report():
     assert {"data_source", "quality", "backtest", "benchmark", "attribution"} <= set(payload)
 
 
+def test_real_performance_api_returns_dataset_version():
+    response = client.get("/api/research/real-performance")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert "dataset_version" in payload["data"]
+    assert {"annual_return", "max_drawdown", "sharpe", "calmar"} <= set(payload["performance"])
+
+
 def test_research_report_page_returns_sections():
     response = client.get("/research")
 
@@ -118,6 +127,14 @@ def test_data_pipeline_page_returns_sections():
     assert response.status_code == 200
     assert "Data Pipeline" in response.text
     assert "真实回测报告" in response.text
+
+
+def test_real_market_research_page_returns_sections():
+    response = client.get("/real-research")
+
+    assert response.status_code == 200
+    assert "Real Market Research" in response.text
+    assert "Dataset Version" in response.text
 
 
 def test_data_quality_page_returns_sections():

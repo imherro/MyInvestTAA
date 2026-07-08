@@ -53,6 +53,16 @@ def initialize_database(connection: sqlite3.Connection) -> None:
             metrics_json TEXT NOT NULL,
             PRIMARY KEY (strategy, period)
         );
+
+        CREATE TABLE IF NOT EXISTS dataset_versions (
+            dataset_id TEXT PRIMARY KEY,
+            source TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            start_date TEXT NOT NULL,
+            end_date TEXT NOT NULL,
+            asset_count INTEGER NOT NULL,
+            checksum TEXT NOT NULL
+        );
         """
     )
     connection.commit()

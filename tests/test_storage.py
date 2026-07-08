@@ -2,6 +2,7 @@ from data.models import AssetMetadata, PriceBar
 from storage import (
     MarketDataRepository,
     StoredBacktestResult,
+    StoredDatasetVersion,
     StoredPrice,
     StoredSignal,
     connect_database,
@@ -119,3 +120,43 @@ def test_repository_saves_backtest_result_json():
     repository.save_backtest_result(StoredBacktestResult("S", "P", {"annual_return": 1}))
 
     assert repository.list_backtest_results()[0].metrics["annual_return"] == 1
+
+
+def test_stored_dataset_version_as_dict():
+    version = StoredDatasetVersion("D", "mock", "now", "2024-01-01", "2024-12-31", 1, "abc")
+
+    assert version.as_dict()["dataset_id"] == "D"
+
+
+def test_repository_saves_dataset_version():
+    repository = MarketDataRepository(connect_database(":memory:"))
+    version = StoredDatasetVersion("D", "mock", "now", "2024-01-01", "2024-12-31", 1, "abc")
+
+    repository.save_dataset_version(version)
+
+    assert repository.get_dataset_version("D").checksum == "abc"
+
+
+def test_repository_updates_dataset_version_on_conflict():
+    repository = MarketDataRepository(connect_database(":memory:"))
+    repository.save_dataset_version(StoredDatasetVersion("D", "mock", "now", "2024-01-01", "2024-12-31", 1, "abc"))
+    repository.save_dataset_version(StoredDatasetVersion("D", "mock", "later", "2024-01-01", "2024-12-31", 2, "def"))
+
+    version = repository.get_dataset_version("D")
+
+    assert version.asset_count == 2
+    assert version.checksum == "def"
+
+
+def test_repository_get_missing_dataset_version_returns_none():
+    repository = MarketDataRepository(connect_database(":memory:"))
+
+    assert repository.get_dataset_version("missing") is None
+
+
+def test_repository_lists_dataset_versions():
+    repository = MarketDataRepository(connect_database(":memory:"))
+    repository.save_dataset_version(StoredDatasetVersion("D1", "mock", "now", "2024-01-01", "2024-12-31", 1, "abc"))
+    repository.save_dataset_version(StoredDatasetVersion("D2", "mock", "later", "2024-01-01", "2024-12-31", 1, "def"))
+
+    assert len(repository.list_dataset_versions()) == 2

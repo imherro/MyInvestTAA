@@ -16,7 +16,7 @@ from backtest.benchmark import compare_strategies
 from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
-from data_pipeline import run_live_backtest_report
+from data_pipeline import build_real_performance_report, run_live_backtest_report
 from engine.allocation import build_allocation_recommendation
 from engine.asset_repository import load_assets, load_price_history
 from engine.anchor import load_anchor_profiles
@@ -95,6 +95,11 @@ def get_research_attribution() -> dict:
 @app.get("/api/research/live-backtest")
 def get_live_backtest() -> dict:
     return _build_live_backtest_report()
+
+
+@app.get("/api/research/real-performance")
+def get_real_performance() -> dict:
+    return _build_real_performance_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -303,7 +308,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -628,6 +633,75 @@ def data_pipeline_page() -> str:
               <tr><td>Sharpe</td><td>{metrics["sharpe"]:.2f}</td></tr>
               <tr><td>归因主导因子</td><td>{report["attribution"]["dominant_factor"]}</td></tr>
             </tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/real-research", response_class=HTMLResponse)
+def real_market_research_page() -> str:
+    report = _build_real_performance_report()
+    data = report["data"]
+    performance = report["performance"]
+    benchmark_rows = "\n".join(_real_benchmark_rows(report["benchmark"]))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Real Market Research</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Real Market Research</h1>
+        <p>真实 A 股研究工作流入口，当前默认用 MockProvider 跑完整管道。<a href="/pipeline">Data Pipeline</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>数据</h2>
+          <table>
+            <tbody>
+              <tr><td>数据源</td><td>{data["provider"]}</td></tr>
+              <tr><td>周期</td><td>{data["dataset_version"]["start_date"]} - {data["dataset_version"]["end_date"]}</td></tr>
+              <tr><td>ETF Universe</td><td>{data["universe_asset_count"]} ETFs</td></tr>
+              <tr><td>导入资产</td><td>{data["imported_asset_count"]}</td></tr>
+              <tr><td>质量评分</td><td>{data["quality_score"]:.2f}</td></tr>
+              <tr><td>Dataset Version</td><td>{data["dataset_version"]["dataset_id"]}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>策略表现</h2>
+          <table>
+            <tbody>
+              <tr><td>年化收益</td><td>{performance["annual_return"]:.2f}%</td></tr>
+              <tr><td>最大回撤</td><td>{performance["max_drawdown"]:.2f}%</td></tr>
+              <tr><td>Sharpe</td><td>{performance["sharpe"]:.2f}</td></tr>
+              <tr><td>Calmar</td><td>{performance["calmar"]:.2f}</td></tr>
+              <tr><td>Rolling Alpha</td><td>{report["stability"]["rolling_alpha"]:.2f}%</td></tr>
+              <tr><td>Win Rate</td><td>{report["stability"]["win_rate"] * 100:.1f}%</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Benchmark</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>策略</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>超额收益</th>
+              </tr>
+            </thead>
+            <tbody>{benchmark_rows}</tbody>
           </table>
         </section>
       </main>
@@ -981,10 +1055,33 @@ def _attribution_rows(report: dict) -> list[str]:
     return rows
 
 
+def _real_benchmark_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td><strong>{item["name"]}</strong><span>{item["strategy_id"]}</span></td>
+              <td>{item["annual_return"]:.2f}%</td>
+              <td>{item["max_drawdown"]:.2f}%</td>
+              <td>{item["sharpe"]:.2f}</td>
+              <td>{item["excess_return"]:.2f}%</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
 def _build_live_backtest_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
     return run_live_backtest_report(repository, provider_name="mock")
+
+
+def _build_real_performance_report() -> dict:
+    connection = connect_database(":memory:")
+    repository = MarketDataRepository(connection)
+    return build_real_performance_report(repository, provider_name="mock")
 
 
 def _report_page_css() -> str:

@@ -69,3 +69,25 @@ class StoredBacktestResult:
             "period": self.period,
             "metrics": self.metrics,
         }
+
+
+@dataclass(frozen=True)
+class StoredDatasetVersion:
+    dataset_id: str
+    source: str
+    created_at: str
+    start_date: str
+    end_date: str
+    asset_count: int
+    checksum: str
+
+    def as_dict(self) -> dict:
+        return {
+            "dataset_id": self.dataset_id,
+            "source": self.source,
+            "created_at": self.created_at,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "asset_count": self.asset_count,
+            "checksum": self.checksum,
+        }

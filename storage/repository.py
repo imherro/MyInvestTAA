@@ -4,7 +4,13 @@ import json
 import sqlite3
 
 from data.models import AssetMetadata, PriceBar
-from storage.models import StoredAsset, StoredBacktestResult, StoredPrice, StoredSignal
+from storage.models import (
+    StoredAsset,
+    StoredBacktestResult,
+    StoredDatasetVersion,
+    StoredPrice,
+    StoredSignal,
+)
 
 
 class MarketDataRepository:
@@ -140,3 +146,51 @@ class MarketDataRepository:
             )
             for row in rows
         ]
+
+    def save_dataset_version(self, version: StoredDatasetVersion) -> None:
+        self.connection.execute(
+            """
+            INSERT INTO dataset_versions (
+              dataset_id, source, created_at, start_date, end_date, asset_count, checksum
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(dataset_id) DO UPDATE SET
+              source=excluded.source,
+              created_at=excluded.created_at,
+              start_date=excluded.start_date,
+              end_date=excluded.end_date,
+              asset_count=excluded.asset_count,
+              checksum=excluded.checksum
+            """,
+            (
+                version.dataset_id,
+                version.source,
+                version.created_at,
+                version.start_date,
+                version.end_date,
+                version.asset_count,
+                version.checksum,
+            ),
+        )
+        self.connection.commit()
+
+    def get_dataset_version(self, dataset_id: str) -> StoredDatasetVersion | None:
+        row = self.connection.execute(
+            """
+            SELECT dataset_id, source, created_at, start_date, end_date, asset_count, checksum
+            FROM dataset_versions
+            WHERE dataset_id = ?
+            """,
+            (dataset_id,),
+        ).fetchone()
+        return StoredDatasetVersion(**dict(row)) if row else None
+
+    def list_dataset_versions(self) -> list[StoredDatasetVersion]:
+        rows = self.connection.execute(
+            """
+            SELECT dataset_id, source, created_at, start_date, end_date, asset_count, checksum
+            FROM dataset_versions
+            ORDER BY created_at DESC, dataset_id
+            """
+        ).fetchall()
+        return [StoredDatasetVersion(**dict(row)) for row in rows]

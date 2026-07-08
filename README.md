@@ -378,3 +378,18 @@ python scripts/import_market_data.py --provider mock --assets 510300,512890
 - `GET /pipeline`：新增 Data Pipeline 页面，展示数据源、更新时间、质量评分、资产数量、价格行数和真实回测报告摘要。
 
 当前默认仍使用 MockProvider，TushareProvider 已支持接口但未默认联网导入；SQLite 默认可写入 `data/local/`，该目录不进入 Git。后续需要补齐真实交易日历、增量更新、失败重试、数据库迁移和真实 Tushare 全市场验证。
+
+## 二十四、Task-011 真实 A 股验证工作流
+
+当前工程增加了真实市场研究验证入口：
+
+- `data/universe/china_etf_universe.json`：新增 20 个 A 股 ETF 研究资产池，覆盖宽基、风格、行业、防御资产、黄金和国债。
+- `engine/calendar/`：新增 `is_trading_day()` 和 `previous_trading_day()`，用于后续数据质量和调仓日历。
+- SQLite 新增 `dataset_versions` 表，用于记录 `dataset_id`、source、created_at、start_date、end_date、asset_count、checksum。
+- `data_pipeline/research.py`：新增 `build_dataset_version()` 和 `build_real_performance_report()`。
+- `scripts/download_market_dataset.py`：支持按 provider/start/end/assets 下载并写入 SQLite。
+- `scripts/build_research_dataset.py`：支持生成并保存 dataset version。
+- `GET /api/research/real-performance`：返回真实研究报告结构，包括 Performance、Benchmark、Stability、Data 和 Attribution。
+- `GET /real-research`：新增 Real Market Research 页面，展示数据源、周期、ETF Universe、质量评分、Dataset Version、策略表现、Benchmark、Rolling Alpha 和 Win Rate。
+
+当前默认仍用 MockProvider 跑完整真实研究流程，以保证测试可重复；Tushare 路径和脚本参数已预留，但真实联网下载需要本地安装依赖并配置 `TUSHARE_TOKEN`。Task-011 的重点是把真实研究工作流打通，不代表已经完成真实 A 股十年有效性验证。
