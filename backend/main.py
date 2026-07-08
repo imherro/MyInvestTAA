@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from backtest.simulator import run_sample_backtest
+from backtest.taa import run_taa_backtest
 from engine.allocation import build_allocation_recommendation
 from engine.asset_repository import load_assets, load_price_history
 from engine.anchor import load_anchor_profiles
@@ -57,6 +58,11 @@ def get_drawdown_events(asset_id: str) -> dict:
 @app.get("/api/backtest/sample")
 def get_sample_backtest() -> dict:
     return run_sample_backtest()
+
+
+@app.get("/api/backtest/taa")
+def get_taa_backtest() -> dict:
+    return run_taa_backtest()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -115,6 +121,8 @@ def dashboard() -> str:
     event_rows = "\n".join(_drawdown_history_rows(ranking))
     opportunity_rows = "\n".join(_opportunity_rows())
     allocation_rows = "\n".join(_allocation_rows())
+    taa_backtest = run_taa_backtest()
+    taa_metrics = taa_backtest["metrics"]
 
     return f"""
     <!doctype html>
@@ -319,6 +327,33 @@ def dashboard() -> str:
               </tr>
             </thead>
             <tbody>{allocation_rows}</tbody>
+          </table>
+        </section>
+        <section class="history">
+          <h2>TAA Backtest</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>周期</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>Calmar</th>
+                <th>换手</th>
+                <th>期末净值</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{taa_backtest["period"]["start"]} - {taa_backtest["period"]["end"]}</td>
+                <td>{taa_metrics["annual_return"]:.2f}%</td>
+                <td>{taa_metrics["max_drawdown"]:.2f}%</td>
+                <td>{taa_metrics["sharpe"]:.2f}</td>
+                <td>{taa_metrics["calmar"]:.2f}</td>
+                <td>{taa_metrics["turnover"]:.2f}</td>
+                <td>{taa_metrics["ending_value"]:.4f}</td>
+              </tr>
+            </tbody>
           </table>
         </section>
       </main>

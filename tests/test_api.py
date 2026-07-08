@@ -44,6 +44,15 @@ def test_sample_backtest_api_returns_metrics():
     assert {"annual_return", "max_drawdown", "sharpe", "period"} <= set(payload)
 
 
+def test_taa_backtest_api_returns_strategy_metrics():
+    response = client.get("/api/backtest/taa")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["strategy"] == "MyInvestTAA"
+    assert {"annual_return", "max_drawdown", "sharpe", "calmar"} <= set(payload["metrics"])
+
+
 def test_recovery_api_returns_summary():
     response = client.get("/api/recovery/512890")
 

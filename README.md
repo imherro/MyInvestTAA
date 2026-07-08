@@ -308,3 +308,13 @@ data/sample/history/prices.json
 - Opportunity Ranking 增加 `confidence_adjusted_score`，按样本置信度折减机会分。
 
 当前 Market Regime 使用规则模型，不使用 AI。风险预算仅用于约束研究型配置建议，不生成交易指令。
+
+## 十九、Task-006 动态 TAA 回测
+
+当前工程增加了动态 TAA 回测基础：
+
+- `GET /api/backtest/taa`：按样例历史价格逐期推进，月度调仓，输出组合净值、回撤曲线和绩效指标。
+- 回测流程按日期切片历史数据，在每个调仓点只使用当时及以前的数据计算 Regime、Opportunity 和 Allocation。
+- Web 首页增加 `TAA Backtest` 区块，展示年化收益、最大回撤、Sharpe、Calmar、换手和期末净值。
+
+当前回测仍基于样例月度数据，不能代表真实策略表现。后续需要接入真实历史行情并增加基准组合对照。
