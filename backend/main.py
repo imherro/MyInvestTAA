@@ -154,6 +154,16 @@ def get_adaptive_selection() -> dict:
     return _build_strategy_diagnosis_report()["diagnosis"]["adaptive_selection"]
 
 
+@app.get("/api/research/exposure-analysis")
+def get_exposure_analysis() -> dict:
+    return _build_strategy_diagnosis_report()["diagnosis"]["exposure_analysis"]
+
+
+@app.get("/api/research/strategy-selection")
+def get_strategy_selection() -> dict:
+    return _build_strategy_diagnosis_report()["diagnosis"]["strategy_selection"]
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -360,7 +370,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -984,7 +994,7 @@ def strategy_diagnosis_page() -> str:
     <body>
       <header>
         <h1>Strategy Diagnosis</h1>
-        <p>诊断当前 TAA 策略弱点并比较 V1/V2/V3/V4/V5/V6/V7/V8。<a href="/experiment">Experiment Report</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a></p>
+        <p>诊断当前 TAA 策略弱点并比较 V1/V2/V3/V4/V5/V6/V7/V8/V9。<a href="/experiment">Experiment Report</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a></p>
       </header>
       <main>
         <section>
@@ -1278,7 +1288,7 @@ def adaptive_strategy_page() -> str:
     <body>
       <header>
         <h1>Adaptive Strategy</h1>
-        <p>展示当前 Market Regime 与 V8 动态 Selection 权重。<a href="/diagnosis">Strategy Diagnosis</a></p>
+        <p>展示当前 Market Regime 与 V9 动态 Selection 权重。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/risk-exposure">Risk Exposure</a></p>
       </header>
       <main>
         <section>
@@ -1312,6 +1322,99 @@ def adaptive_strategy_page() -> str:
               </tr>
             </thead>
             <tbody>{rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/risk-exposure", response_class=HTMLResponse)
+def risk_exposure_page() -> str:
+    diagnosis = _build_strategy_diagnosis_report()["diagnosis"]
+    exposure = diagnosis["exposure_analysis"]
+    selection = diagnosis["strategy_selection"]
+    current = exposure.get("current", {})
+    reason = ", ".join(current.get("reason", []))
+    exposure_rows = "\n".join(_exposure_history_rows(exposure.get("rows", [])))
+    selection_rows = "\n".join(_strategy_selection_rows(selection.get("rows", [])))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Risk Exposure</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Risk Exposure</h1>
+        <p>展示 V9 风险敞口优化、波动率目标、组合回撤控制和生产策略评分。<a href="/diagnosis">Strategy Diagnosis</a> · <a href="/strategy-promotion">Strategy Promotion</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Current Exposure</h2>
+          <table>
+            <tbody>
+              <tr><td>Date</td><td>{escape(str(exposure.get("date", "-")))}</td></tr>
+              <tr><td>Regime</td><td>{escape(str(current.get("regime", "-")))}</td></tr>
+              <tr><td>Target Equity</td><td>{float(current.get("equity_target", 0.0)):.2f}%</td></tr>
+              <tr><td>Volatility</td><td>{float(current.get("volatility", 0.0)):.2f}%</td></tr>
+              <tr><td>Portfolio Drawdown</td><td>{float(current.get("drawdown", 0.0)):.2f}%</td></tr>
+              <tr><td>Breadth</td><td>{_format_optional_percent(current.get("breadth"))}</td></tr>
+              <tr><td>Confidence</td><td>{float(current.get("confidence", 0.0)) * 100:.1f}%</td></tr>
+              <tr><td>Reason</td><td>{escape(reason)}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Strategy Selection</h2>
+          <table>
+            <tbody>
+              <tr><td>Winner</td><td>{escape(str(selection.get("winner", "-")))}</td></tr>
+              <tr><td>Confidence</td><td>{float(selection.get("confidence", 0.0)) * 100:.1f}%</td></tr>
+              <tr><td>Production Benchmark</td><td>{escape(str(selection.get("production_version", "-")))}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Production Score</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>版本</th>
+                <th>生产评分</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>Calmar</th>
+                <th>Walk Forward</th>
+                <th>Worst Window</th>
+                <th>Stability</th>
+              </tr>
+            </thead>
+            <tbody>{selection_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Exposure History</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>Regime</th>
+                <th>目标权益</th>
+                <th>波动率</th>
+                <th>回撤</th>
+                <th>宽度</th>
+                <th>置信度</th>
+                <th>原因</th>
+              </tr>
+            </thead>
+            <tbody>{exposure_rows}</tbody>
           </table>
         </section>
       </main>
@@ -1883,6 +1986,61 @@ def _adaptive_selection_rows(rows: list[dict]) -> list[str]:
     return html_rows
 
 
+def _exposure_history_rows(rows: list[dict]) -> list[str]:
+    if not rows:
+        return ["<tr><td colspan=\"8\">No exposure decision recorded</td></tr>"]
+    html_rows: list[str] = []
+    for item in rows:
+        reasons = ", ".join(item.get("reason", []))
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item.get("date", "")))}</td>
+              <td>{escape(str(item.get("regime", "")))}</td>
+              <td>{float(item.get("equity_target", 0.0)):.2f}%</td>
+              <td>{float(item.get("volatility", 0.0)):.2f}%</td>
+              <td>{float(item.get("drawdown", 0.0)):.2f}%</td>
+              <td>{_format_optional_percent(item.get("breadth"))}</td>
+              <td>{float(item.get("confidence", 0.0)) * 100:.1f}%</td>
+              <td>{escape(reasons)}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _strategy_selection_rows(rows: list[dict]) -> list[str]:
+    if not rows:
+        return ["<tr><td colspan=\"9\">No strategy selection score recorded</td></tr>"]
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item.get("version", "")))}</td>
+              <td>{float(item.get("production_score", 0.0)):.2f}</td>
+              <td>{float(item.get("annual_return", 0.0)):.2f}%</td>
+              <td>{float(item.get("max_drawdown", 0.0)):.2f}%</td>
+              <td>{float(item.get("sharpe", 0.0)):.2f}</td>
+              <td>{float(item.get("calmar", 0.0)):.2f}</td>
+              <td>{float(item.get("walk_forward_win_rate", 0.0)) * 100:.1f}%</td>
+              <td>{float(item.get("walk_forward_min_alpha", 0.0)):.2f}%</td>
+              <td>{float(item.get("stability_score", 0.0)):.2f}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _format_optional_percent(value: object) -> str:
+    if value is None:
+        return "-"
+    try:
+        return f"{float(value) * 100:.1f}%"
+    except (TypeError, ValueError):
+        return escape(str(value))
+
+
 def _build_live_backtest_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
@@ -1926,18 +2084,23 @@ def _strategy_diagnosis_report_is_current(report: dict) -> bool:
         row.get("version")
         for row in report.get("versions", {}).get("rows", [])
     }
+    diagnosis = report.get("diagnosis", {})
     return (
-        "V8_ADAPTIVE_SELECTION" in versions
+        "V9_EXPOSURE_OPTIMIZED" in versions
         and "validation" in report.get("benchmark", {})
-        and "attribution_v3" in report.get("diagnosis", {})
-        and "selection_attribution" in report.get("diagnosis", {})
-        and "selection_analysis" in report.get("diagnosis", {})
-        and "adaptive_selection" in report.get("diagnosis", {})
-        and "adaptive_selection_attribution" in report.get("diagnosis", {})
-        and "stock_breadth" in report.get("diagnosis", {})
-        and "walk_forward" in report.get("diagnosis", {})
-        and "promotion" in report.get("diagnosis", {})
-        and "regime_v3" in report.get("diagnosis", {})
+        and "attribution_v3" in diagnosis
+        and "attribution_v9" in diagnosis
+        and "selection_attribution" in diagnosis
+        and "selection_analysis" in diagnosis
+        and "adaptive_selection" in diagnosis
+        and "adaptive_selection_attribution" in diagnosis
+        and "exposure_selection_attribution" in diagnosis
+        and "exposure_analysis" in diagnosis
+        and "strategy_selection" in diagnosis
+        and "stock_breadth" in diagnosis
+        and "walk_forward" in diagnosis
+        and "promotion" in diagnosis
+        and "regime_v3" in diagnosis
         and "strategy_registry" in report
     )
 

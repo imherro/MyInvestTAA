@@ -882,6 +882,16 @@
       "interaction": 0.0,
       "check_sum": -0.2513
     },
+    "attribution_v9": {
+      "strategy": "MyInvestTAA",
+      "benchmark": "SAA_60_40",
+      "excess_return": -1.9588,
+      "allocation": 0.5927,
+      "selection": -1.9512,
+      "timing": -0.6003,
+      "interaction": 0.0,
+      "check_sum": -1.9588
+    },
     "selection_attribution": {
       "baseline": "V3_TREND_RISK_ADJUSTED",
       "candidate": "V5_RELATIVE_STRENGTH_SELECTION",
@@ -925,8 +935,21 @@
         "improved": true
       }
     },
+    "exposure_selection_attribution": {
+      "baseline": "V8_ADAPTIVE_SELECTION",
+      "candidate": "V9_EXPOSURE_OPTIMIZED",
+      "static_factor": -1.0692,
+      "adaptive_factor": -0.882,
+      "improved": false,
+      "selection": {
+        "old": -1.0692,
+        "new": -1.9512,
+        "improvement": -0.882,
+        "improved": false
+      }
+    },
     "selection_analysis": {
-      "version": "v8",
+      "version": "v9",
       "date": "2026-07-08",
       "rows": [
         {
@@ -1410,7 +1433,7 @@
       ]
     },
     "adaptive_selection": {
-      "version": "v8",
+      "version": "v9",
       "date": "2026-07-08",
       "regime": "bull",
       "factor_weights": {
@@ -1614,6 +1637,185 @@
             },
             "reason": "bull regime increases momentum and relative strength"
           }
+        }
+      ]
+    },
+    "exposure_analysis": {
+      "version": "v9",
+      "date": "2026-07-08",
+      "current": {
+        "date": "2026-07-08",
+        "regime": "bull",
+        "equity_target": 59.71,
+        "confidence": 0.65,
+        "reason": [
+          "bull base equity 90%",
+          "volatility rising",
+          "breadth weakening"
+        ],
+        "volatility": 15.3745,
+        "drawdown": -3.9395,
+        "breadth": 0.3
+      },
+      "rows": [
+        {
+          "date": "2025-08-29",
+          "regime": "neutral",
+          "equity_target": 31.45,
+          "confidence": 0.6,
+          "reason": [
+            "neutral base equity 70%",
+            "volatility rising"
+          ],
+          "volatility": 26.7133,
+          "drawdown": -2.1492,
+          "breadth": 0.9
+        },
+        {
+          "date": "2025-09-30",
+          "regime": "neutral",
+          "equity_target": 59.31,
+          "confidence": 0.75,
+          "reason": [
+            "neutral base equity 70%",
+            "volatility rising"
+          ],
+          "volatility": 14.1618,
+          "drawdown": 0.0,
+          "breadth": 0.65
+        },
+        {
+          "date": "2025-10-31",
+          "regime": "neutral",
+          "equity_target": 70.25,
+          "confidence": 0.75,
+          "reason": [
+            "neutral base equity 70%"
+          ],
+          "volatility": 11.9569,
+          "drawdown": 0.0,
+          "breadth": 0.5
+        },
+        {
+          "date": "2025-11-28",
+          "regime": "neutral",
+          "equity_target": 56.52,
+          "confidence": 0.65,
+          "reason": [
+            "neutral base equity 70%",
+            "volatility rising",
+            "breadth weakening"
+          ],
+          "volatility": 12.6325,
+          "drawdown": 0.0,
+          "breadth": 0.2
+        },
+        {
+          "date": "2025-12-31",
+          "regime": "neutral",
+          "equity_target": 66.52,
+          "confidence": 0.75,
+          "reason": [
+            "neutral base equity 70%",
+            "volatility rising"
+          ],
+          "volatility": 12.627,
+          "drawdown": -1.097,
+          "breadth": 0.65
+        },
+        {
+          "date": "2026-01-30",
+          "regime": "bull",
+          "equity_target": 90.0,
+          "confidence": 0.75,
+          "reason": [
+            "bull base equity 90%"
+          ],
+          "volatility": 11.7195,
+          "drawdown": -0.0702,
+          "breadth": 0.85
+        },
+        {
+          "date": "2026-02-27",
+          "regime": "bull",
+          "equity_target": 90.0,
+          "confidence": 0.75,
+          "reason": [
+            "bull base equity 90%"
+          ],
+          "volatility": 11.8327,
+          "drawdown": 0.0,
+          "breadth": 0.55
+        },
+        {
+          "date": "2026-03-31",
+          "regime": "neutral",
+          "equity_target": 52.05,
+          "confidence": 0.65,
+          "reason": [
+            "neutral base equity 70%",
+            "volatility rising",
+            "breadth weakening"
+          ],
+          "volatility": 13.7182,
+          "drawdown": 0.0,
+          "breadth": 0.15
+        },
+        {
+          "date": "2026-04-30",
+          "regime": "bull",
+          "equity_target": 60.63,
+          "confidence": 0.75,
+          "reason": [
+            "bull base equity 90%",
+            "volatility rising",
+            "portfolio drawdown control"
+          ],
+          "volatility": 14.2491,
+          "drawdown": -6.1204,
+          "breadth": 0.75
+        },
+        {
+          "date": "2026-05-29",
+          "regime": "bull",
+          "equity_target": 71.99,
+          "confidence": 0.65,
+          "reason": [
+            "bull base equity 90%",
+            "volatility rising",
+            "breadth weakening"
+          ],
+          "volatility": 14.2518,
+          "drawdown": -4.4654,
+          "breadth": 0.4
+        },
+        {
+          "date": "2026-06-30",
+          "regime": "bull",
+          "equity_target": 72.03,
+          "confidence": 0.75,
+          "reason": [
+            "bull base equity 90%",
+            "volatility rising",
+            "breadth weakening"
+          ],
+          "volatility": 14.2447,
+          "drawdown": -4.4296,
+          "breadth": 0.45
+        },
+        {
+          "date": "2026-07-08",
+          "regime": "bull",
+          "equity_target": 59.71,
+          "confidence": 0.65,
+          "reason": [
+            "bull base equity 90%",
+            "volatility rising",
+            "breadth weakening"
+          ],
+          "volatility": 15.3745,
+          "drawdown": -3.9395,
+          "breadth": 0.3
         }
       ]
     },
@@ -1997,6 +2199,21 @@
           "calmar": 3.863
         },
         {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2016-01-01",
+          "test_start": "2019-01-01",
+          "test_end": "2019-12-31",
+          "annual_return": 9.0354,
+          "benchmark_return": 16.5604,
+          "alpha": -7.525,
+          "max_drawdown": -1.6379,
+          "benchmark_drawdown": -3.8944,
+          "drawdown_pass": true,
+          "sharpe": 2.0879,
+          "calmar": 5.5165
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2017-01-01",
@@ -2040,6 +2257,21 @@
           "drawdown_pass": false,
           "sharpe": 1.6752,
           "calmar": 5.568
+        },
+        {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2017-01-01",
+          "test_start": "2020-01-01",
+          "test_end": "2020-12-31",
+          "annual_return": 19.84,
+          "benchmark_return": 20.8945,
+          "alpha": -1.0545,
+          "max_drawdown": -3.0328,
+          "benchmark_drawdown": -3.7854,
+          "drawdown_pass": true,
+          "sharpe": 1.587,
+          "calmar": 6.5418
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -2087,6 +2319,21 @@
           "calmar": 1.7123
         },
         {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2018-01-01",
+          "test_start": "2021-01-01",
+          "test_end": "2021-12-31",
+          "annual_return": 5.0708,
+          "benchmark_return": 6.9477,
+          "alpha": -1.8769,
+          "max_drawdown": -2.3701,
+          "benchmark_drawdown": -2.7846,
+          "drawdown_pass": true,
+          "sharpe": 1.0658,
+          "calmar": 2.1395
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2019-01-01",
@@ -2130,6 +2377,21 @@
           "drawdown_pass": true,
           "sharpe": -0.8906,
           "calmar": -0.7235
+        },
+        {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2019-01-01",
+          "test_start": "2022-01-01",
+          "test_end": "2022-12-31",
+          "annual_return": -2.7776,
+          "benchmark_return": -4.9104,
+          "alpha": 2.1328,
+          "max_drawdown": -4.4618,
+          "benchmark_drawdown": -8.3463,
+          "drawdown_pass": true,
+          "sharpe": -0.6382,
+          "calmar": -0.6225
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -2177,6 +2439,21 @@
           "calmar": -1.0603
         },
         {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2020-01-01",
+          "test_start": "2023-01-01",
+          "test_end": "2023-12-31",
+          "annual_return": -1.0158,
+          "benchmark_return": -3.6998,
+          "alpha": 2.684,
+          "max_drawdown": -1.2731,
+          "benchmark_drawdown": -3.3968,
+          "drawdown_pass": true,
+          "sharpe": -0.8228,
+          "calmar": -0.7979
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2021-01-01",
@@ -2220,6 +2497,21 @@
           "drawdown_pass": true,
           "sharpe": 1.2209,
           "calmar": 4.1459
+        },
+        {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2021-01-01",
+          "test_start": "2024-01-01",
+          "test_end": "2024-12-31",
+          "annual_return": 5.882,
+          "benchmark_return": 9.5018,
+          "alpha": -3.6198,
+          "max_drawdown": -1.2927,
+          "benchmark_drawdown": -2.265,
+          "drawdown_pass": true,
+          "sharpe": 1.315,
+          "calmar": 4.5502
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -2267,6 +2559,21 @@
           "calmar": 12.6917
         },
         {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2022-01-01",
+          "test_start": "2025-01-01",
+          "test_end": "2025-12-31",
+          "annual_return": 7.5148,
+          "benchmark_return": 13.5535,
+          "alpha": -6.0387,
+          "max_drawdown": -1.3296,
+          "benchmark_drawdown": -0.9506,
+          "drawdown_pass": false,
+          "sharpe": 2.4751,
+          "calmar": 5.6519
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2023-01-01",
@@ -2310,6 +2617,21 @@
           "drawdown_pass": false,
           "sharpe": -0.9581,
           "calmar": -1.6332
+        },
+        {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2023-01-01",
+          "test_start": "2026-01-01",
+          "test_end": "2026-07-08",
+          "annual_return": -10.2164,
+          "benchmark_return": -6.8604,
+          "alpha": -3.356,
+          "max_drawdown": -6.25,
+          "benchmark_drawdown": -4.7305,
+          "drawdown_pass": false,
+          "sharpe": -1.0298,
+          "calmar": -1.6346
         }
       ],
       "versions": {
@@ -2342,6 +2664,16 @@
           "min_alpha": -3.2855,
           "drawdown_pass_rate": 0.375,
           "stable": false
+        },
+        "V9_EXPOSURE_OPTIMIZED": {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "windows": 8,
+          "wins": 2,
+          "win_rate": 0.25,
+          "avg_alpha": -2.3318,
+          "min_alpha": -7.525,
+          "drawdown_pass_rate": 0.75,
+          "stable": false
         }
       },
       "best_version": "V7_STOCK_BREADTH_SELECTION"
@@ -2353,10 +2685,11 @@
           "version": "V6_THEME_BREADTH_SELECTION",
           "promotion": false,
           "approval_status": "pending",
-          "promotion_score": 66.67,
+          "promotion_score": 71.43,
           "validation_windows": 8,
           "win_rate": 0.375,
           "avg_alpha": 0.6857,
+          "min_alpha": -2.5236,
           "reasons": [
             "Walk-forward win rate below threshold",
             "Walk-forward drawdown pass rate below threshold"
@@ -2367,17 +2700,19 @@
             "return_not_worse": true,
             "walk_forward_present": true,
             "walk_forward_win_rate": false,
-            "walk_forward_drawdown": false
+            "walk_forward_drawdown": false,
+            "no_single_window_collapse": true
           }
         },
         {
           "version": "V7_STOCK_BREADTH_SELECTION",
           "promotion": false,
           "approval_status": "pending",
-          "promotion_score": 83.33,
+          "promotion_score": 85.71,
           "validation_windows": 8,
           "win_rate": 0.625,
           "avg_alpha": 0.405,
+          "min_alpha": -4.2714,
           "reasons": [
             "Walk-forward drawdown pass rate below threshold"
           ],
@@ -2387,17 +2722,19 @@
             "return_not_worse": true,
             "walk_forward_present": true,
             "walk_forward_win_rate": true,
-            "walk_forward_drawdown": false
+            "walk_forward_drawdown": false,
+            "no_single_window_collapse": true
           }
         },
         {
           "version": "V8_ADAPTIVE_SELECTION",
           "promotion": false,
           "approval_status": "pending",
-          "promotion_score": 66.67,
+          "promotion_score": 71.43,
           "validation_windows": 8,
           "win_rate": 0.5,
           "avg_alpha": 0.5429,
+          "min_alpha": -3.2855,
           "reasons": [
             "Walk-forward win rate below threshold",
             "Walk-forward drawdown pass rate below threshold"
@@ -2408,12 +2745,153 @@
             "return_not_worse": true,
             "walk_forward_present": true,
             "walk_forward_win_rate": false,
-            "walk_forward_drawdown": false
+            "walk_forward_drawdown": false,
+            "no_single_window_collapse": true
+          }
+        },
+        {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "promotion": false,
+          "approval_status": "pending",
+          "promotion_score": 42.86,
+          "validation_windows": 8,
+          "win_rate": 0.25,
+          "avg_alpha": -2.3318,
+          "min_alpha": -7.525,
+          "reasons": [
+            "Sharpe does not beat benchmark",
+            "Annual return is below benchmark",
+            "Walk-forward win rate below threshold",
+            "Single walk-forward window collapsed"
+          ],
+          "checks": {
+            "sharpe_beats_benchmark": false,
+            "drawdown_not_worse": true,
+            "return_not_worse": false,
+            "walk_forward_present": true,
+            "walk_forward_win_rate": false,
+            "walk_forward_drawdown": true,
+            "no_single_window_collapse": false
           }
         }
       ],
       "best_candidate": "V7_STOCK_BREADTH_SELECTION",
       "approved_versions": []
+    },
+    "strategy_selection": {
+      "winner": "V7_STOCK_BREADTH_SELECTION",
+      "confidence": 0.7026,
+      "production_version": "V3_TREND_RISK_ADJUSTED",
+      "rows": [
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "production_score": 70.26,
+          "annual_return": 4.4067,
+          "max_drawdown": -12.8415,
+          "sharpe": 0.5669,
+          "calmar": 0.3432,
+          "walk_forward_win_rate": 0.625,
+          "walk_forward_avg_alpha": 0.405,
+          "walk_forward_min_alpha": -4.2714,
+          "stability_score": 50.0
+        },
+        {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "production_score": 67.09,
+          "annual_return": 4.4761,
+          "max_drawdown": -12.731,
+          "sharpe": 0.5698,
+          "calmar": 0.3516,
+          "walk_forward_win_rate": 0.5,
+          "walk_forward_avg_alpha": 0.5429,
+          "walk_forward_min_alpha": -3.2855,
+          "stability_score": 43.75
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "production_score": 66.38,
+          "annual_return": 4.5988,
+          "max_drawdown": -12.0817,
+          "sharpe": 0.5948,
+          "calmar": 0.3806,
+          "walk_forward_win_rate": 0.375,
+          "walk_forward_avg_alpha": 0.6857,
+          "walk_forward_min_alpha": -2.5236,
+          "stability_score": 37.5
+        },
+        {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "production_score": 53.1,
+          "annual_return": 2.7686,
+          "max_drawdown": -9.9646,
+          "sharpe": 0.4578,
+          "calmar": 0.2778,
+          "walk_forward_win_rate": 0.25,
+          "walk_forward_avg_alpha": -2.3318,
+          "walk_forward_min_alpha": -7.525,
+          "stability_score": 25.0
+        },
+        {
+          "version": "V5_RELATIVE_STRENGTH_SELECTION",
+          "production_score": 42.49,
+          "annual_return": 3.8416,
+          "max_drawdown": -14.0822,
+          "sharpe": 0.5042,
+          "calmar": 0.2728,
+          "walk_forward_win_rate": 0.0,
+          "walk_forward_avg_alpha": 0.0,
+          "walk_forward_min_alpha": 0.0,
+          "stability_score": 0.0
+        },
+        {
+          "version": "V3_TREND_RISK_ADJUSTED",
+          "production_score": 41.33,
+          "annual_return": 3.716,
+          "max_drawdown": -14.2028,
+          "sharpe": 0.4922,
+          "calmar": 0.2616,
+          "walk_forward_win_rate": 0.0,
+          "walk_forward_avg_alpha": 0.0,
+          "walk_forward_min_alpha": 0.0,
+          "stability_score": 0.0
+        },
+        {
+          "version": "V4_REGIME_EXPOSURE_FLOOR",
+          "production_score": 41.33,
+          "annual_return": 3.716,
+          "max_drawdown": -14.2028,
+          "sharpe": 0.4922,
+          "calmar": 0.2616,
+          "walk_forward_win_rate": 0.0,
+          "walk_forward_avg_alpha": 0.0,
+          "walk_forward_min_alpha": 0.0,
+          "stability_score": 0.0
+        },
+        {
+          "version": "V1_CURRENT",
+          "production_score": 26.84,
+          "annual_return": 3.5763,
+          "max_drawdown": -20.5695,
+          "sharpe": 0.3962,
+          "calmar": 0.1739,
+          "walk_forward_win_rate": 0.0,
+          "walk_forward_avg_alpha": 0.0,
+          "walk_forward_min_alpha": 0.0,
+          "stability_score": 0.0
+        },
+        {
+          "version": "V2_REGIME_SMOOTHING",
+          "production_score": 24.87,
+          "annual_return": 3.2492,
+          "max_drawdown": -20.5695,
+          "sharpe": 0.3697,
+          "calmar": 0.158,
+          "walk_forward_win_rate": 0.0,
+          "walk_forward_avg_alpha": 0.0,
+          "walk_forward_min_alpha": 0.0,
+          "stability_score": 0.0
+        }
+      ]
     },
     "regime_v3": {
       "state": "bull_caution",
@@ -2585,6 +3063,25 @@
           "equity_floor_by_regime": {},
           "stock_breadth_assets": 60
         }
+      },
+      {
+        "version": "V9_EXPOSURE_OPTIMIZED",
+        "annual_return": 2.7686,
+        "max_drawdown": -9.9646,
+        "sharpe": 0.4578,
+        "calmar": 0.2778,
+        "ending_value": 1.3321,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v9",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": true,
+          "equity_floor_by_regime": {},
+          "stock_breadth_assets": 60
+        }
       }
     ],
     "best_version": "V6_THEME_BREADTH_SELECTION"
@@ -2655,7 +3152,7 @@
           "periods": 3,
           "improvement": true
         },
-        "promotion_score": 66.67,
+        "promotion_score": 71.43,
         "validation_windows": 8,
         "approval_status": "pending"
       },
@@ -2673,7 +3170,7 @@
           "improvement": false,
           "stock_breadth_coverage": 1.0
         },
-        "promotion_score": 83.33,
+        "promotion_score": 85.71,
         "validation_windows": 8,
         "approval_status": "pending"
       },
@@ -2691,7 +3188,25 @@
           "improvement": true,
           "stock_breadth_coverage": 1.0
         },
-        "promotion_score": 66.67,
+        "promotion_score": 71.43,
+        "validation_windows": 8,
+        "approval_status": "pending"
+      },
+      {
+        "version": "V9_EXPOSURE_OPTIMIZED",
+        "status": "testing",
+        "metrics": {
+          "annual_return": 2.7686,
+          "max_drawdown": -9.9646,
+          "sharpe": 0.4578,
+          "calmar": 0.2778
+        },
+        "evidence": {
+          "periods": 8,
+          "improvement": false,
+          "stock_breadth_coverage": 1.0
+        },
+        "promotion_score": 42.86,
         "validation_windows": 8,
         "approval_status": "pending"
       }
@@ -2875,6 +3390,7 @@
     "Use relative strength as a selection layer before promoting V5 from testing.",
     "Validate theme momentum and breadth stability before promoting V6.",
     "Use stock breadth and walk-forward promotion rules before promoting V7.",
-    "Use adaptive factor weights to improve V8 risk-return stability before promotion."
+    "Use adaptive factor weights to improve V8 risk-return stability before promotion.",
+    "Use exposure optimization and strategy selection scoring before promoting V9."
   ]
 }

@@ -68,6 +68,17 @@ def test_evaluate_promotion_rejects_lower_sharpe():
     assert "Sharpe does not beat benchmark" in result["reasons"]
 
 
+def test_evaluate_promotion_rejects_single_window_collapse():
+    result = evaluate_promotion(
+        "V9",
+        {"annual_return": 4, "max_drawdown": -10, "sharpe": 0.6},
+        {"annual_return": 3, "max_drawdown": -12, "sharpe": 0.4},
+        {"windows": 4, "win_rate": 0.75, "drawdown_pass_rate": 0.75, "min_alpha": -8.0},
+    )
+
+    assert "Single walk-forward window collapsed" in result["reasons"]
+
+
 def test_evaluate_promotion_score_is_percent_passed():
     result = evaluate_promotion("V7", {}, {}, {})
 
@@ -126,3 +137,9 @@ def test_build_promotion_report_row_contains_checks():
     report = build_promotion_report(_version_rows(), _walk_forward())
 
     assert "checks" in report["rows"][0]
+
+
+def test_build_promotion_report_row_contains_min_alpha():
+    report = build_promotion_report(_version_rows(), _walk_forward())
+
+    assert "min_alpha" in report["rows"][0]

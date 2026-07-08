@@ -31,6 +31,12 @@ DEFAULT_WALK_FORWARD_SPECS = [
         "max_weight_step": 10.0,
         "volatility_adjustment": True,
     },
+    {
+        "version": "V9_EXPOSURE_OPTIMIZED",
+        "score_version": "v9",
+        "max_weight_step": 10.0,
+        "volatility_adjustment": True,
+    },
 ]
 
 

@@ -8,6 +8,7 @@ def evaluate_promotion(
     walk_forward: dict | None = None,
     min_win_rate: float = 0.6,
     min_windows: int = 3,
+    min_window_alpha: float = -5.0,
 ) -> dict:
     benchmark_metrics = benchmark_metrics or {}
     walk_forward = walk_forward or {}
@@ -18,6 +19,7 @@ def evaluate_promotion(
         "walk_forward_present": int(walk_forward.get("windows", 0)) >= min_windows,
         "walk_forward_win_rate": _float(walk_forward.get("win_rate")) >= min_win_rate,
         "walk_forward_drawdown": _float(walk_forward.get("drawdown_pass_rate")) >= min_win_rate,
+        "no_single_window_collapse": _float(walk_forward.get("min_alpha")) >= min_window_alpha,
     }
     reasons = _failure_reasons(checks)
     promotion_score = round(100.0 * sum(1 for passed in checks.values() if passed) / len(checks), 2)
@@ -30,6 +32,7 @@ def evaluate_promotion(
         "validation_windows": int(walk_forward.get("windows", 0)),
         "win_rate": _float(walk_forward.get("win_rate")),
         "avg_alpha": _float(walk_forward.get("avg_alpha")),
+        "min_alpha": _float(walk_forward.get("min_alpha")),
         "reasons": ["Promotion rule passed"] if promotion else reasons,
         "checks": checks,
     }
@@ -45,6 +48,7 @@ def build_promotion_report(
         "V6_THEME_BREADTH_SELECTION",
         "V7_STOCK_BREADTH_SELECTION",
         "V8_ADAPTIVE_SELECTION",
+        "V9_EXPOSURE_OPTIMIZED",
     ]
     by_version = {str(row.get("version")): row for row in version_rows}
     benchmark = by_version.get(benchmark_version, {})
@@ -78,6 +82,7 @@ def _failure_reasons(checks: dict[str, bool]) -> list[str]:
         "walk_forward_present": "rolling validation missing",
         "walk_forward_win_rate": "Walk-forward win rate below threshold",
         "walk_forward_drawdown": "Walk-forward drawdown pass rate below threshold",
+        "no_single_window_collapse": "Single walk-forward window collapsed",
     }
     return [label for key, label in labels.items() if not checks.get(key)]
 

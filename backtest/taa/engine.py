@@ -9,10 +9,12 @@ from engine.adaptive import adaptive_score_for_regime, factor_weights_for_regime
 from engine.anchor import calculate_anchor_score
 from engine.asset_repository import load_assets, load_price_histories
 from engine.drawdown import calculate_drawdown, calculate_drawdown_percentile, detect_drawdown_events
+from engine.exposure import optimize_equity_exposure
 from engine.opportunity import _confidence_factor, _recovery_score
 from engine.recovery import analyze_recovery_events
 from engine.regime import detect_market_regime
 from engine.risk import build_risk_budget
+from engine.risk.models import RiskBudget
 from engine.breadth import theme_breadth_by_theme
 from engine.selection import calculate_relative_strength, selection_reasons
 from engine.stock_breadth import stock_breadth_by_theme
@@ -46,8 +48,8 @@ def run_taa_backtest(
         raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
-    if score_version not in {"v1", "v4", "v5", "v6", "v7", "v8"}:
-        raise ValueError("score_version must be v1, v4, v5, v6, v7, or v8")
+    if score_version not in {"v1", "v4", "v5", "v6", "v7", "v8", "v9"}:
+        raise ValueError("score_version must be v1, v4, v5, v6, v7, v8, or v9")
     if max_weight_step is not None and max_weight_step <= 0:
         raise ValueError("max_weight_step must be positive")
     if equity_floor_by_regime:
@@ -106,12 +108,22 @@ def run_taa_backtest(
         histories_as_of = _histories_as_of(price_history, current_date)
         stock_histories_as_of = (
             _histories_as_of(stock_price_history, current_date)
-            if stock_price_history and score_version in {"v7", "v8"}
+            if stock_price_history and score_version in {"v7", "v8", "v9"}
             else {}
         )
         benchmark_history = histories_as_of.get("510300", [])
         regime = detect_market_regime(benchmark_history)
         risk_budget = build_risk_budget(regime)
+        exposure_decision = None
+        if score_version == "v9":
+            exposure_decision = optimize_equity_exposure(
+                regime.state,
+                risk_budget.equity_limit,
+                _annualized_volatility_pct(benchmark_history),
+                _current_portfolio_drawdown_pct(equity_curve),
+                _estimate_current_breadth(histories_as_of),
+            )
+            risk_budget = _risk_budget_from_exposure(risk_budget, exposure_decision.equity_target)
         assets_as_of = _assets_available_as_of(assets, current_date)
         scores = _score_assets_as_of(
             assets_as_of,
@@ -171,9 +183,10 @@ def run_taa_backtest(
                     "stock_breadth_assets": len(stock_histories_as_of),
                     "adaptive_factor_weights": (
                         factor_weights_for_regime(regime.state).as_dict()
-                        if score_version == "v8"
+                        if score_version in {"v8", "v9"}
                         else {}
                     ),
+                    "exposure_decision": exposure_decision.as_dict() if exposure_decision else {},
                     "target_weights": target_weights,
                 },
                 regime=regime.as_dict(),
@@ -220,14 +233,14 @@ def _score_assets_as_of(
 ) -> list[dict]:
     scores: list[dict] = []
     benchmark_history = histories_as_of.get("510300", [])
-    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7", "v8"} else {}
+    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7", "v8", "v9"} else {}
     theme_breadth = theme_breadth_by_theme(histories_as_of) if score_version == "v6" else {}
     stock_breadth = (
         stock_breadth_by_theme(stock_histories_as_of or {})
-        if score_version in {"v7", "v8"}
+        if score_version in {"v7", "v8", "v9"}
         else {}
     )
-    adaptive_weights = factor_weights_for_regime(regime_state) if score_version == "v8" else None
+    adaptive_weights = factor_weights_for_regime(regime_state) if score_version in {"v8", "v9"} else None
     for asset in assets:
         history = histories_as_of.get(asset["id"], [])
         if len(history) < 2:
@@ -248,7 +261,7 @@ def _score_assets_as_of(
         stock_breadth_score = float(stock_breadth.get(theme, {}).get("breadth_score", 50.0))
         breadth_score = (
             stock_breadth_score
-            if score_version in {"v7", "v8"}
+            if score_version in {"v7", "v8", "v9"}
             else float(theme_breadth.get(theme, {}).get("breadth_score", 50.0))
         )
         quality_score = anchor_score
@@ -287,7 +300,7 @@ def _score_assets_as_of(
                 + 0.15 * quality_score,
                 2,
             )
-        elif score_version == "v8":
+        elif score_version in {"v8", "v9"}:
             adaptive_score = adaptive_score_for_regime(
                 regime_state,
                 {
@@ -325,7 +338,7 @@ def _score_assets_as_of(
                 "stock_breadth": stock_breadth.get(theme, {}),
                 "adaptive_factor_weights": adaptive_weights.as_dict() if adaptive_weights else {},
                 "adaptive_reason": adaptive_weights.reason if adaptive_weights else "",
-                "adaptive_regime": regime_state if score_version == "v8" else "",
+                "adaptive_regime": regime_state if score_version in {"v8", "v9"} else "",
                 "quality_score": quality_score,
                 "volatility": volatility,
             }
@@ -375,6 +388,55 @@ def _volatility(history: list[dict]) -> float:
     mean = sum(returns) / len(returns)
     variance = sum((item - mean) ** 2 for item in returns) / len(returns)
     return round(variance ** 0.5, 6)
+
+
+def _annualized_volatility_pct(history: list[dict]) -> float:
+    rows = sorted(history, key=lambda item: str(item["date"]))
+    closes = [float(row["close"]) for row in rows[-13:]]
+    returns = [
+        current / previous - 1.0
+        for previous, current in zip(closes, closes[1:])
+        if previous > 0
+    ]
+    if not returns:
+        return 0.0
+    mean = sum(returns) / len(returns)
+    variance = sum((item - mean) ** 2 for item in returns) / len(returns)
+    return round((variance ** 0.5) * (12 ** 0.5) * 100.0, 4)
+
+
+def _current_portfolio_drawdown_pct(equity_curve: list[float]) -> float:
+    if not equity_curve:
+        return 0.0
+    peak = max(equity_curve)
+    current = equity_curve[-1]
+    return round((current / peak - 1.0) * 100.0, 4) if peak > 0 else 0.0
+
+
+def _estimate_current_breadth(histories: dict[str, list[dict]]) -> float | None:
+    positives = 0
+    total = 0
+    for history in histories.values():
+        rows = sorted(history, key=lambda item: str(item["date"]))
+        if len(rows) < 2:
+            continue
+        previous = float(rows[-2]["close"])
+        current = float(rows[-1]["close"])
+        if previous <= 0:
+            continue
+        positives += 1 if current > previous else 0
+        total += 1
+    return round(positives / total, 4) if total else None
+
+
+def _risk_budget_from_exposure(risk_budget: RiskBudget, equity_target: float) -> RiskBudget:
+    return RiskBudget(
+        regime_state=risk_budget.regime_state,
+        equity_limit=equity_target,
+        min_cash=round(100.0 - equity_target, 2),
+        max_single_asset=risk_budget.max_single_asset,
+        description=f"{risk_budget.regime_state} regime dynamic equity target {equity_target:.0f}%.",
+    )
 
 
 def _apply_volatility_adjustment(scores: list[dict]) -> list[dict]:

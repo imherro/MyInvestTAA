@@ -159,7 +159,7 @@ def test_strategy_diagnosis_api_compares_versions():
 
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload["versions"]["rows"]) >= 8
+    assert len(payload["versions"]["rows"]) >= 9
 
 
 def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
@@ -168,16 +168,20 @@ def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
     assert _strategy_diagnosis_report_is_current(report) is False
 
 
-def test_strategy_diagnosis_report_current_check_accepts_task019_shape():
+def test_strategy_diagnosis_report_current_check_accepts_task020_shape():
     report = {
-        "versions": {"rows": [{"version": "V8_ADAPTIVE_SELECTION"}]},
+        "versions": {"rows": [{"version": "V9_EXPOSURE_OPTIMIZED"}]},
         "benchmark": {"validation": {}},
         "diagnosis": {
             "attribution_v3": {},
+            "attribution_v9": {},
             "selection_attribution": {},
             "selection_analysis": {},
             "adaptive_selection": {},
             "adaptive_selection_attribution": {},
+            "exposure_selection_attribution": {},
+            "exposure_analysis": {},
+            "strategy_selection": {},
             "stock_breadth": {},
             "walk_forward": {},
             "promotion": {},
@@ -252,6 +256,23 @@ def test_adaptive_selection_api_returns_weights():
     assert response.status_code == 200
     payload = response.json()
     assert {"regime", "factor_weights", "rows"} <= set(payload)
+
+
+def test_exposure_analysis_api_returns_current_target():
+    response = client.get("/api/research/exposure-analysis")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"current", "rows"} <= set(payload)
+    assert "equity_target" in payload["current"]
+
+
+def test_strategy_selection_api_returns_winner():
+    response = client.get("/api/research/strategy-selection")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"winner", "confidence", "rows"} <= set(payload)
 
 
 def test_research_report_page_returns_sections():
@@ -356,6 +377,15 @@ def test_adaptive_strategy_page_returns_sections():
     assert "Selection Weights" in response.text
 
 
+def test_risk_exposure_page_returns_sections():
+    response = client.get("/risk-exposure")
+
+    assert response.status_code == 200
+    assert "Risk Exposure" in response.text
+    assert "Current Exposure" in response.text
+    assert "Strategy Selection" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -403,6 +433,13 @@ def test_dashboard_links_adaptive_strategy():
 
     assert response.status_code == 200
     assert "/adaptive-strategy" in response.text
+
+
+def test_dashboard_links_risk_exposure():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/risk-exposure" in response.text
 
 
 def test_dashboard_links_benchmark_validation():

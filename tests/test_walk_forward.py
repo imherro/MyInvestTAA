@@ -41,7 +41,7 @@ def test_walk_forward_returns_sections():
 
 
 def test_walk_forward_uses_default_specs():
-    assert DEFAULT_WALK_FORWARD_SPECS[-1]["score_version"] == "v8"
+    assert DEFAULT_WALK_FORWARD_SPECS[-1]["score_version"] == "v9"
 
 
 def test_walk_forward_records_windows():
@@ -60,6 +60,12 @@ def test_walk_forward_records_v8_summary():
     report = run_walk_forward_validation(_assets(), _histories(), _stock_histories())
 
     assert "V8_ADAPTIVE_SELECTION" in report["versions"]
+
+
+def test_walk_forward_records_v9_summary():
+    report = run_walk_forward_validation(_assets(), _histories(), _stock_histories())
+
+    assert "V9_EXPOSURE_OPTIMIZED" in report["versions"]
 
 
 def test_walk_forward_summary_has_win_rate():
@@ -130,6 +136,12 @@ def test_walk_forward_summary_has_drawdown_pass_rate():
     report = run_walk_forward_validation(_assets(), _histories(), _stock_histories())
 
     assert "drawdown_pass_rate" in report["versions"]["V7_STOCK_BREADTH_SELECTION"]
+
+
+def test_walk_forward_summary_has_worst_window():
+    report = run_walk_forward_validation(_assets(), _histories(), _stock_histories())
+
+    assert "min_alpha" in report["versions"]["V9_EXPOSURE_OPTIMIZED"]
 
 
 def test_walk_forward_rows_include_sharpe_and_calmar():

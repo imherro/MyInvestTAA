@@ -40,6 +40,7 @@ def test_strategy_diagnosis_report_compares_strategy_versions():
         "V6_THEME_BREADTH_SELECTION",
         "V7_STOCK_BREADTH_SELECTION",
         "V8_ADAPTIVE_SELECTION",
+        "V9_EXPOSURE_OPTIMIZED",
     }
 
 
@@ -55,6 +56,7 @@ def test_strategy_diagnosis_report_records_best_version():
         "V6_THEME_BREADTH_SELECTION",
         "V7_STOCK_BREADTH_SELECTION",
         "V8_ADAPTIVE_SELECTION",
+        "V9_EXPOSURE_OPTIMIZED",
     }
 
 
@@ -168,6 +170,12 @@ def test_strategy_diagnosis_report_records_attribution_v8():
     assert {"allocation", "selection", "timing"} <= set(report["diagnosis"]["attribution_v8"])
 
 
+def test_strategy_diagnosis_report_records_attribution_v9():
+    report = _report()
+
+    assert {"allocation", "selection", "timing"} <= set(report["diagnosis"]["attribution_v9"])
+
+
 def test_strategy_diagnosis_report_records_selection_attribution():
     report = _report()
 
@@ -190,6 +198,12 @@ def test_strategy_diagnosis_report_records_adaptive_selection_attribution():
     report = _report()
 
     assert {"static_factor", "adaptive_factor", "selection"} <= set(report["diagnosis"]["adaptive_selection_attribution"])
+
+
+def test_strategy_diagnosis_report_records_exposure_selection_attribution():
+    report = _report()
+
+    assert {"static_factor", "adaptive_factor", "selection"} <= set(report["diagnosis"]["exposure_selection_attribution"])
 
 
 def test_strategy_diagnosis_report_records_selection_analysis():
@@ -240,6 +254,30 @@ def test_strategy_diagnosis_report_records_adaptive_selection():
     assert {"regime", "factor_weights", "rows"} <= set(report["diagnosis"]["adaptive_selection"])
 
 
+def test_strategy_diagnosis_report_records_exposure_analysis():
+    report = _report()
+
+    assert {"version", "date", "current", "rows"} <= set(report["diagnosis"]["exposure_analysis"])
+
+
+def test_strategy_diagnosis_report_exposure_current_has_reason():
+    report = _report()
+
+    assert "reason" in report["diagnosis"]["exposure_analysis"]["current"]
+
+
+def test_strategy_diagnosis_report_records_strategy_selection():
+    report = _report()
+
+    assert {"winner", "confidence", "rows", "production_version"} <= set(report["diagnosis"]["strategy_selection"])
+
+
+def test_strategy_diagnosis_report_strategy_selection_scores_v9():
+    report = _report()
+
+    assert any(row["version"] == "V9_EXPOSURE_OPTIMIZED" for row in report["diagnosis"]["strategy_selection"]["rows"])
+
+
 def test_strategy_diagnosis_report_records_strategy_registry():
     report = _report()
 
@@ -287,6 +325,13 @@ def test_strategy_diagnosis_report_registry_records_v8_evidence():
     assert {"periods", "improvement", "stock_breadth_coverage"} <= set(v8["evidence"])
 
 
+def test_strategy_diagnosis_report_registry_records_v9_evidence():
+    report = _report()
+    v9 = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V9_EXPOSURE_OPTIMIZED")
+
+    assert {"periods", "improvement", "stock_breadth_coverage"} <= set(v9["evidence"])
+
+
 def test_strategy_diagnosis_report_registry_records_promotion_fields():
     report = _report()
     v7 = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V7_STOCK_BREADTH_SELECTION")
@@ -327,6 +372,13 @@ def test_strategy_diagnosis_report_v8_records_score_version():
     v8_row = next(row for row in report["versions"]["rows"] if row["version"] == "V8_ADAPTIVE_SELECTION")
 
     assert v8_row["assumptions"]["score_version"] == "v8"
+
+
+def test_strategy_diagnosis_report_v9_records_score_version():
+    report = _report()
+    v9_row = next(row for row in report["versions"]["rows"] if row["version"] == "V9_EXPOSURE_OPTIMIZED")
+
+    assert v9_row["assumptions"]["score_version"] == "v9"
 
 
 def test_strategy_diagnosis_report_benchmark_validation_passes_for_mock():
