@@ -231,3 +231,31 @@ TAA 有价值，但也有明显风险：
 本项目做的 TAA，是在长期资产配置不失控的前提下，用估值、景气、趋势、情绪和宏观信号，对不同资产的比例做有纪律的阶段性调整。
 
 它既不是纯长期躺平，也不是短线追涨杀跌，而是介于两者之间的系统化资产配置方法：长期有底座，短期有弹性，调整有证据，风险有边界。
+
+## 十四、MVP 运行方式
+
+当前 MVP 已实现 `Drawdown + Asset Anchor` 的基础工程骨架：
+
+- `GET /`：Web Dashboard。
+- `GET /api/assets`：样例资产池。
+- `GET /api/taa/ranking`：TAA 机会排名。
+
+本地启动：
+
+```powershell
+python backend/main.py
+```
+
+访问：
+
+```text
+http://localhost:8025
+```
+
+运行测试：
+
+```powershell
+python -m pytest
+```
+
+当前版本使用 `data/sample/assets.json` 的样例资产和价格序列，不连接真实行情源，不执行任何交易。
