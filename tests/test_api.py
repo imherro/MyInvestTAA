@@ -77,5 +77,23 @@ def test_allocation_recommendation_api_returns_weights():
     assert response.status_code == 200
     payload = response.json()
     assert payload["total_weight"] == 100.0
-    assert payload["min_cash"] == 10.0
+    assert "market_regime" in payload
+    assert "equity_limit" in payload
+    assert "cash_weight" in payload
     assert any(item["asset_id"] == "CASH" for item in payload["allocation"])
+
+
+def test_regime_current_api_returns_state():
+    response = client.get("/api/regime/current")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"state", "confidence", "equity_limit", "description"} <= set(payload)
+
+
+def test_risk_budget_api_returns_limits():
+    response = client.get("/api/risk/budget")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"regime_state", "equity_limit", "min_cash", "max_single_asset"} <= set(payload)

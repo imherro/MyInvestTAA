@@ -18,6 +18,8 @@ from engine.anchor import load_anchor_profiles
 from engine.drawdown import calculate_drawdown, calculate_drawdown_percentile, detect_drawdown_events
 from engine.opportunity import build_opportunity_ranking
 from engine.recovery import analyze_recovery_events
+from engine.regime import detect_market_regime
+from engine.risk import build_risk_budget
 from engine.taa_score import build_taa_ranking
 
 
@@ -79,9 +81,22 @@ def get_allocation_recommendation() -> dict:
     return build_allocation_recommendation(load_assets()).as_dict()
 
 
+@app.get("/api/regime/current")
+def get_current_regime() -> dict:
+    return detect_market_regime(load_price_history("510300")).as_dict()
+
+
+@app.get("/api/risk/budget")
+def get_risk_budget() -> dict:
+    regime = detect_market_regime(load_price_history("510300"))
+    return build_risk_budget(regime).as_dict()
+
+
 @app.get("/", response_class=HTMLResponse)
 def dashboard() -> str:
     ranking = build_taa_ranking(load_assets())
+    regime = detect_market_regime(load_price_history("510300"))
+    budget = build_risk_budget(regime)
     rows = "\n".join(
         f"""
         <tr>
@@ -238,6 +253,9 @@ def dashboard() -> str:
         <section class="summary" aria-label="summary">
           <div class="metric"><label>资产数量</label><strong>{len(ranking)}</strong></div>
           <div class="metric"><label>最高 TAA Score</label><strong>{ranking[0]["taa_score"]:.1f}</strong></div>
+          <div class="metric"><label>市场状态</label><strong>{regime.state}</strong></div>
+          <div class="metric"><label>权益上限</label><strong>{budget.equity_limit:.0f}%</strong></div>
+          <div class="metric"><label>最低现金</label><strong>{budget.min_cash:.0f}%</strong></div>
           <div class="metric"><label>服务端口</label><strong>8025</strong></div>
         </section>
         <table>
@@ -282,6 +300,7 @@ def dashboard() -> str:
                 <th>恢复概率</th>
                 <th>资产锚</th>
                 <th>机会评分</th>
+                <th>置信调整</th>
                 <th>3年中位收益</th>
               </tr>
             </thead>
@@ -352,6 +371,7 @@ def _opportunity_rows() -> list[str]:
               <td>{item["recovery_probability"]:.1f}%</td>
               <td>{item["anchor_score"]:.1f}</td>
               <td><strong>{item["opportunity_score"]:.1f}</strong></td>
+              <td>{item["confidence_adjusted_score"]:.1f}</td>
               <td>{forward_text}</td>
             </tr>
             """

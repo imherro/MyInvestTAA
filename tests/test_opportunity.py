@@ -31,3 +31,12 @@ def test_opportunity_score_uses_anchor_v2():
     assert score["anchor_score"] == 85.75
     assert "sample_confidence" in score
 
+
+def test_confidence_adjusted_score_discounts_low_confidence():
+    asset = next(item for item in load_assets() if item["id"] == "512890")
+
+    score = score_asset_opportunity(asset)
+
+    assert score["sample_confidence"] == "low"
+    assert score["confidence_factor"] == 0.7
+    assert score["confidence_adjusted_score"] == round(score["opportunity_score"] * 0.7, 2)

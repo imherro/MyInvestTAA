@@ -8,7 +8,7 @@ from engine.recovery import analyze_recovery_events
 
 def build_opportunity_ranking(assets: list[dict]) -> list[dict]:
     ranking = [score_asset_opportunity(asset) for asset in assets]
-    return sorted(ranking, key=lambda item: item["opportunity_score"], reverse=True)
+    return sorted(ranking, key=lambda item: item["confidence_adjusted_score"], reverse=True)
 
 
 def score_asset_opportunity(asset: dict) -> dict:
@@ -25,6 +25,8 @@ def score_asset_opportunity(asset: dict) -> dict:
         0.4 * drawdown_pressure + 0.3 * recovery_score + 0.3 * anchor_score,
         2,
     )
+    confidence_factor = _confidence_factor(recovery.sample_confidence)
+    confidence_adjusted_score = round(opportunity_score * confidence_factor, 2)
 
     return {
         "id": asset["id"],
@@ -43,6 +45,8 @@ def score_asset_opportunity(asset: dict) -> dict:
         "median_forward_return_2y_pct": recovery.median_forward_return_2y_pct,
         "median_forward_return_3y_pct": recovery.median_forward_return_3y_pct,
         "opportunity_score": opportunity_score,
+        "confidence_factor": confidence_factor,
+        "confidence_adjusted_score": confidence_adjusted_score,
     }
 
 
@@ -69,3 +73,11 @@ def _speed_score(median_recovery_days: float | int | None) -> float:
     if median_recovery_days <= 1095:
         return 50.0
     return 30.0
+
+
+def _confidence_factor(sample_confidence: str) -> float:
+    if sample_confidence == "high":
+        return 1.0
+    if sample_confidence == "medium":
+        return 0.9
+    return 0.7

@@ -297,3 +297,14 @@ data/sample/history/prices.json
 - Web 首页增加 `Allocation Recommendation` 区块，展示机会分、建议权重和配置状态。
 
 当前配置建议仍是研究型输出，不是自动交易或下单指令。
+
+## 十八、Task-005 市场状态与风险预算
+
+当前工程增加了市场状态和风险预算层：
+
+- `GET /api/regime/current`：返回当前市场状态、置信度、权益风险上限和解释。
+- `GET /api/risk/budget`：根据市场状态返回权益上限、最低现金和单资产上限。
+- `GET /api/allocation/recommendation`：返回中增加 `market_regime`、`equity_limit`、`cash_weight`。
+- Opportunity Ranking 增加 `confidence_adjusted_score`，按样本置信度折减机会分。
+
+当前 Market Regime 使用规则模型，不使用 AI。风险预算仅用于约束研究型配置建议，不生成交易指令。

@@ -1,29 +1,42 @@
 from __future__ import annotations
 
 from engine.allocation.models import AllocationItem, AllocationRecommendation
+from engine.asset_repository import load_price_history
 from engine.opportunity import build_opportunity_ranking
+from engine.regime import MarketRegime, detect_market_regime
+from engine.risk import RiskBudget, build_risk_budget
 
 
 def build_allocation_recommendation(
     assets: list[dict],
     max_weight: float = 40.0,
     min_cash: float = 10.0,
+    regime: MarketRegime | None = None,
+    risk_budget: RiskBudget | None = None,
 ) -> AllocationRecommendation:
     if max_weight <= 0 or max_weight > 100:
         raise ValueError("max_weight must be within (0, 100]")
     if min_cash < 0 or min_cash > 100:
         raise ValueError("min_cash must be within [0, 100]")
+    if regime is None:
+        regime = detect_market_regime(load_price_history("510300"))
+    if risk_budget is None:
+        risk_budget = build_risk_budget(regime)
+
+    max_weight = min(max_weight, risk_budget.max_single_asset)
+    min_cash = max(min_cash, risk_budget.min_cash)
+
     if not assets:
-        return _cash_only(max_weight=max_weight, min_cash=min_cash)
+        return _cash_only(max_weight=max_weight, min_cash=min_cash, regime=regime, risk_budget=risk_budget)
 
     asset_by_id = {asset["id"]: asset for asset in assets}
     candidates = [
         item for item in build_opportunity_ranking(assets) if item["opportunity_score"] > 0
     ]
-    invest_budget = 100.0 - min_cash
+    invest_budget = min(100.0 - min_cash, risk_budget.equity_limit)
 
     if not candidates or invest_budget <= 0:
-        return _cash_only(max_weight=max_weight, min_cash=min_cash)
+        return _cash_only(max_weight=max_weight, min_cash=min_cash, regime=regime, risk_budget=risk_budget)
 
     weights = _allocate_capped(candidates, invest_budget=invest_budget, max_weight=max_weight)
     allocation = []
@@ -58,6 +71,9 @@ def build_allocation_recommendation(
         risk_level="neutral",
         max_weight=max_weight,
         min_cash=min_cash,
+        market_regime=regime.state,
+        equity_limit=risk_budget.equity_limit,
+        cash_weight=cash_weight,
         allocation=allocation,
     )
 
@@ -91,7 +107,7 @@ def _enforce_cash_floor_after_rounding(
 
 
 def _allocate_capped(candidates: list[dict], invest_budget: float, max_weight: float) -> dict[str, float]:
-    scores = {item["id"]: float(item["opportunity_score"]) for item in candidates}
+    scores = {item["id"]: float(item["confidence_adjusted_score"]) for item in candidates}
     weights = {asset_id: 0.0 for asset_id in scores}
     remaining = invest_budget
     open_ids = set(scores)
@@ -118,11 +134,19 @@ def _allocate_capped(candidates: list[dict], invest_budget: float, max_weight: f
     return weights
 
 
-def _cash_only(max_weight: float, min_cash: float) -> AllocationRecommendation:
+def _cash_only(
+    max_weight: float,
+    min_cash: float,
+    regime: MarketRegime,
+    risk_budget: RiskBudget,
+) -> AllocationRecommendation:
     return AllocationRecommendation(
         risk_level="defensive",
         max_weight=max_weight,
         min_cash=min_cash,
+        market_regime=regime.state,
+        equity_limit=risk_budget.equity_limit,
+        cash_weight=100.0,
         allocation=[
             AllocationItem(
                 asset_id="CASH",
