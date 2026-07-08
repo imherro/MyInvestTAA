@@ -40,6 +40,7 @@ def build_real_performance_report(
     start_date: str = "2016-01-01",
     end_date: str = "2026-07-08",
     asset_ids: list[str] | None = None,
+    return_type: str = "price",
 ) -> dict:
     if asset_ids is None:
         asset_ids = _default_asset_ids(provider_name)
@@ -50,6 +51,7 @@ def build_real_performance_report(
         asset_ids=asset_ids,
         start=start_date,
         end=end_date,
+        return_type=return_type,
     )
     version = build_dataset_version(
         source=provider_name,
@@ -68,6 +70,7 @@ def build_real_performance_report(
             "universe_asset_count": len(load_china_etf_universe()),
             "imported_asset_count": live["asset_count"],
             "price_rows": live["price_rows"],
+            "return_type": return_type,
         },
         "performance": {
             "strategy": live["backtest"]["strategy"],
@@ -94,6 +97,7 @@ def build_validated_performance_report(
     start_date: str = "2016-01-01",
     end_date: str = "2026-07-08",
     asset_ids: list[str] | None = None,
+    return_type: str = "price",
 ) -> dict:
     report = build_real_performance_report(
         repository=repository,
@@ -101,6 +105,7 @@ def build_validated_performance_report(
         start_date=start_date,
         end_date=end_date,
         asset_ids=asset_ids,
+        return_type=return_type,
     )
     histories = repository.get_all_price_histories()
     live_backtest = run_live_backtest_report(
@@ -109,6 +114,7 @@ def build_validated_performance_report(
         asset_ids=asset_ids or _default_asset_ids(provider_name),
         start=start_date,
         end=end_date,
+        return_type=return_type,
     )["backtest"]
     performance_attribution = analyze_performance_contribution(
         backtest_result=live_backtest,

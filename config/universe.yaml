@@ -1,0 +1,6 @@
+source: china_etf_universe
+default_asset_count: 20
+benchmark_equity: 510300
+benchmark_bond: 511010
+benchmark_gold: 518880
+min_quality_score: 50.0

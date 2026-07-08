@@ -3,6 +3,7 @@ from storage.models import (
     StoredAsset,
     StoredBacktestResult,
     StoredDatasetVersion,
+    StoredExperiment,
     StoredPrice,
     StoredSignal,
 )
@@ -13,6 +14,7 @@ __all__ = [
     "StoredAsset",
     "StoredBacktestResult",
     "StoredDatasetVersion",
+    "StoredExperiment",
     "StoredPrice",
     "StoredSignal",
     "connect_database",

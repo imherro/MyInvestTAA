@@ -14,6 +14,7 @@ class PriceBar:
     volume: float | None = None
     source: str = "mock"
     adjust_type: str = "none"
+    return_type: str = "price"
 
     @classmethod
     def from_mapping(cls, asset_id: str, row: dict, source: str = "mock") -> "PriceBar":
@@ -27,6 +28,7 @@ class PriceBar:
             volume=_optional_float(row.get("volume")),
             source=source,
             adjust_type=str(row.get("adjust_type") or row.get("adjust") or "none"),
+            return_type=str(row.get("return_type") or "price"),
         )
 
     def as_dict(self) -> dict:
@@ -36,6 +38,7 @@ class PriceBar:
             "close": self.close,
             "source": self.source,
             "adjust_type": self.adjust_type,
+            "return_type": self.return_type,
         }
         for field in ("open", "high", "low", "volume"):
             value = getattr(self, field)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from html import escape
+import json
 import sys
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from data_pipeline import (
+    build_full_validation_report,
     build_real_performance_report,
     build_validated_performance_report,
     run_live_backtest_report,
@@ -109,6 +111,11 @@ def get_real_performance() -> dict:
 @app.get("/api/research/validated-performance")
 def get_validated_performance() -> dict:
     return _build_validated_performance_report()
+
+
+@app.get("/api/research/full-validation")
+def get_full_validation() -> dict:
+    return _build_full_validation_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -317,7 +324,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -782,6 +789,101 @@ def validation_report_page() -> str:
     """
 
 
+@app.get("/experiment", response_class=HTMLResponse)
+def experiment_report_page() -> str:
+    report = _build_full_validation_report()
+    dataset = report["dataset"]
+    experiment = report["experiment"]
+    performance = report["performance"]
+    benchmark_rows = "\n".join(_full_validation_benchmark_rows(report["benchmark"]["rows"]))
+    contribution_rows = "\n".join(_full_validation_contribution_rows(report["attribution"]["top_contributors"]))
+    regime_rows = "\n".join(_regime_contribution_rows(report["attribution"]["regime_contribution"]))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Experiment Report</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Experiment Report</h1>
+        <p>Full Validation 研究实验报告。默认使用 MockProvider，真实长周期验证请运行脚本。<a href="/validation">Validation Report</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Experiment</h2>
+          <table>
+            <tbody>
+              <tr><td>Experiment ID</td><td>{experiment["experiment_id"]}</td></tr>
+              <tr><td>Dataset</td><td>{dataset["dataset_id"]}</td></tr>
+              <tr><td>Config Hash</td><td>{experiment["config_hash"]}</td></tr>
+              <tr><td>Return Type</td><td>{dataset["return_type"]}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Dataset</h2>
+          <table>
+            <tbody>
+              <tr><td>Provider</td><td>{dataset["provider"]}</td></tr>
+              <tr><td>Period</td><td>{dataset["period"]["start"]} - {dataset["period"]["end"]}</td></tr>
+              <tr><td>Assets</td><td>{dataset["asset_count"]}</td></tr>
+              <tr><td>Rows</td><td>{dataset["rows"]}</td></tr>
+              <tr><td>Quality</td><td>{dataset["quality_score"]:.2f}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Performance</h2>
+          <table>
+            <tbody>
+              <tr><td>Annual Return</td><td>{performance["annual_return"]:.2f}%</td></tr>
+              <tr><td>Max Drawdown</td><td>{performance["max_drawdown"]:.2f}%</td></tr>
+              <tr><td>Sharpe</td><td>{performance["sharpe"]:.2f}</td></tr>
+              <tr><td>Calmar</td><td>{performance["calmar"]:.2f}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Benchmark</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>策略</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>Alpha</th>
+                <th>回撤改善</th>
+              </tr>
+            </thead>
+            <tbody>{benchmark_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Attribution</h2>
+          <table>
+            <thead><tr><th>资产</th><th>贡献</th></tr></thead>
+            <tbody>{contribution_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Regime Contribution</h2>
+          <table>
+            <thead><tr><th>状态</th><th>贡献</th></tr></thead>
+            <tbody>{regime_rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
 @app.get("/quality", response_class=HTMLResponse)
 def data_quality_page() -> str:
     summary = build_quality_summary()
@@ -1158,6 +1260,52 @@ def _performance_attribution_rows(report: dict) -> list[str]:
     return rows
 
 
+def _full_validation_benchmark_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td><strong>{item["name"]}</strong><span>{item["strategy_id"]}</span></td>
+              <td>{item["annual_return"]:.2f}%</td>
+              <td>{item["max_drawdown"]:.2f}%</td>
+              <td>{item["sharpe"]:.2f}</td>
+              <td>{item["excess_return"]:.2f}%</td>
+              <td>{item["drawdown_improvement"]:.2f}%</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _full_validation_contribution_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{item["asset_id"]}</td>
+              <td>{item["contribution"]:.2f}%</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _regime_contribution_rows(report: dict) -> list[str]:
+    rows: list[str] = []
+    for regime, contribution in report["contribution"].items():
+        rows.append(
+            f"""
+            <tr>
+              <td>{regime}</td>
+              <td>{contribution:.2f}%</td>
+            </tr>
+            """
+        )
+    return rows
+
+
 def _build_live_backtest_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
@@ -1174,6 +1322,15 @@ def _build_validated_performance_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
     return build_validated_performance_report(repository, provider_name="mock")
+
+
+def _build_full_validation_report() -> dict:
+    report_path = ROOT / "reports" / "full_validation_report.json"
+    if report_path.exists():
+        return json.loads(report_path.read_text(encoding="utf-8"))
+    connection = connect_database(":memory:")
+    repository = MarketDataRepository(connection)
+    return build_full_validation_report(repository, provider_name="mock", report_path=None)
 
 
 def _report_page_css() -> str:

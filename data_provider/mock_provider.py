@@ -11,9 +11,11 @@ class MockProvider:
         self,
         assets: list[dict] | None = None,
         histories: dict[str, list[dict]] | None = None,
+        return_type: str = "price",
     ) -> None:
         self._assets = assets
         self._histories = histories
+        self.return_type = return_type
 
     def get_price_history(
         self,
@@ -25,7 +27,15 @@ class MockProvider:
         if asset_id not in histories:
             raise ValueError(f"history not found for asset_id: {asset_id}")
         return [
-            PriceBar.from_mapping(asset_id, row, source=self.name)
+            PriceBar.from_mapping(
+                asset_id,
+                {
+                    **row,
+                    "adjust_type": row.get("adjust_type") or _adjust_type_from_return_type(self.return_type),
+                    "return_type": row.get("return_type") or self.return_type,
+                },
+                source=self.name,
+            )
             for row in histories[asset_id]
             if _in_range(str(row["date"]), start, end)
         ]
@@ -56,3 +66,7 @@ def _in_range(value: str, start: str | None, end: str | None) -> bool:
     if end is not None and value > end:
         return False
     return True
+
+
+def _adjust_type_from_return_type(return_type: str) -> str:
+    return "none" if return_type == "price" else return_type

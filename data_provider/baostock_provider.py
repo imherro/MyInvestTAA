@@ -6,6 +6,9 @@ from data.models import AssetMetadata, PriceBar
 class BaoStockProvider:
     name = "baostock"
 
+    def __init__(self, return_type: str = "qfq") -> None:
+        self.return_type = return_type
+
     def get_price_history(
         self,
         asset_id: str,
@@ -30,6 +33,7 @@ class BaoStockProvider:
             "name": self.name,
             "available": False,
             "mode": "reserved_adapter",
+            "return_type": self.return_type,
             "requires": ["baostock"],
         }
 
@@ -78,7 +82,8 @@ class BaoStockProvider:
                     close=float(row["close"]),
                     volume=_optional_float(row.get("volume")),
                     source=self.name,
-                    adjust_type="qfq",
+                    adjust_type=_adjust_type_from_return_type(self.return_type),
+                    return_type=self.return_type,
                 )
             )
         return bars
@@ -95,3 +100,7 @@ def _optional_float(value: object) -> float | None:
     if value is None or value == "":
         return None
     return float(value)
+
+
+def _adjust_type_from_return_type(return_type: str) -> str:
+    return "none" if return_type == "price" else return_type

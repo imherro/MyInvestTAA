@@ -8,6 +8,7 @@ from storage.models import (
     StoredAsset,
     StoredBacktestResult,
     StoredDatasetVersion,
+    StoredExperiment,
     StoredPrice,
     StoredSignal,
 )
@@ -52,15 +53,23 @@ class MarketDataRepository:
     def upsert_prices(self, prices: list[PriceBar]) -> int:
         self.connection.executemany(
             """
-            INSERT INTO prices (asset_id, date, close, source, adjust_type)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO prices (asset_id, date, close, source, adjust_type, return_type)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(asset_id, date) DO UPDATE SET
               close=excluded.close,
               source=excluded.source,
-              adjust_type=excluded.adjust_type
+              adjust_type=excluded.adjust_type,
+              return_type=excluded.return_type
             """,
             [
-                (price.asset_id, price.date, price.close, price.source, price.adjust_type)
+                (
+                    price.asset_id,
+                    price.date,
+                    price.close,
+                    price.source,
+                    price.adjust_type,
+                    price.return_type,
+                )
                 for price in prices
             ],
         )
@@ -70,7 +79,7 @@ class MarketDataRepository:
     def get_price_history(self, asset_id: str) -> list[StoredPrice]:
         rows = self.connection.execute(
             """
-            SELECT asset_id, date, close, source, adjust_type
+            SELECT asset_id, date, close, source, adjust_type, return_type
             FROM prices
             WHERE asset_id = ?
             ORDER BY date
@@ -81,7 +90,11 @@ class MarketDataRepository:
 
     def get_all_price_histories(self) -> dict[str, list[dict]]:
         rows = self.connection.execute(
-            "SELECT asset_id, date, close, adjust_type FROM prices ORDER BY asset_id, date"
+            """
+            SELECT asset_id, date, close, adjust_type, return_type
+            FROM prices
+            ORDER BY asset_id, date
+            """
         ).fetchall()
         histories: dict[str, list[dict]] = {}
         for row in rows:
@@ -90,6 +103,7 @@ class MarketDataRepository:
                     "date": row["date"],
                     "close": row["close"],
                     "adjust_type": row["adjust_type"],
+                    "return_type": row["return_type"],
                 }
             )
         return histories
@@ -202,3 +216,64 @@ class MarketDataRepository:
             """
         ).fetchall()
         return [StoredDatasetVersion(**dict(row)) for row in rows]
+
+    def save_experiment(self, experiment: StoredExperiment) -> None:
+        self.connection.execute(
+            """
+            INSERT INTO experiments (
+              experiment_id, config_hash, dataset_id, created_at, result_json
+            )
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(experiment_id) DO UPDATE SET
+              config_hash=excluded.config_hash,
+              dataset_id=excluded.dataset_id,
+              created_at=excluded.created_at,
+              result_json=excluded.result_json
+            """,
+            (
+                experiment.experiment_id,
+                experiment.config_hash,
+                experiment.dataset_id,
+                experiment.created_at,
+                json.dumps(experiment.result, ensure_ascii=False, sort_keys=True),
+            ),
+        )
+        self.connection.commit()
+
+    def get_experiment(self, experiment_id: str) -> StoredExperiment | None:
+        row = self.connection.execute(
+            """
+            SELECT experiment_id, config_hash, dataset_id, created_at, result_json
+            FROM experiments
+            WHERE experiment_id = ?
+            """,
+            (experiment_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return StoredExperiment(
+            experiment_id=row["experiment_id"],
+            config_hash=row["config_hash"],
+            dataset_id=row["dataset_id"],
+            created_at=row["created_at"],
+            result=json.loads(row["result_json"]),
+        )
+
+    def list_experiments(self) -> list[StoredExperiment]:
+        rows = self.connection.execute(
+            """
+            SELECT experiment_id, config_hash, dataset_id, created_at, result_json
+            FROM experiments
+            ORDER BY created_at DESC, experiment_id
+            """
+        ).fetchall()
+        return [
+            StoredExperiment(
+                experiment_id=row["experiment_id"],
+                config_hash=row["config_hash"],
+                dataset_id=row["dataset_id"],
+                created_at=row["created_at"],
+                result=json.loads(row["result_json"]),
+            )
+            for row in rows
+        ]

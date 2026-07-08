@@ -34,6 +34,7 @@ def initialize_database(connection: sqlite3.Connection) -> None:
             close REAL NOT NULL,
             source TEXT NOT NULL,
             adjust_type TEXT NOT NULL DEFAULT 'none',
+            return_type TEXT NOT NULL DEFAULT 'price',
             PRIMARY KEY (asset_id, date)
         );
 
@@ -64,6 +65,25 @@ def initialize_database(connection: sqlite3.Connection) -> None:
             asset_count INTEGER NOT NULL,
             checksum TEXT NOT NULL
         );
+
+        CREATE TABLE IF NOT EXISTS experiments (
+            experiment_id TEXT PRIMARY KEY,
+            config_hash TEXT NOT NULL,
+            dataset_id TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            result_json TEXT NOT NULL
+        );
         """
     )
+    _ensure_column(connection, "prices", "adjust_type", "TEXT NOT NULL DEFAULT 'none'")
+    _ensure_column(connection, "prices", "return_type", "TEXT NOT NULL DEFAULT 'price'")
     connection.commit()
+
+
+def _ensure_column(connection: sqlite3.Connection, table: str, column: str, definition: str) -> None:
+    columns = {
+        row["name"] if isinstance(row, sqlite3.Row) else row[1]
+        for row in connection.execute(f"PRAGMA table_info({table})").fetchall()
+    }
+    if column not in columns:
+        connection.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")

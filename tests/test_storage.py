@@ -3,6 +3,7 @@ from storage import (
     MarketDataRepository,
     StoredBacktestResult,
     StoredDatasetVersion,
+    StoredExperiment,
     StoredPrice,
     StoredSignal,
     connect_database,
@@ -16,7 +17,7 @@ def test_connect_database_initializes_tables():
 
     rows = connection.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
 
-    assert {"assets", "prices", "signals", "backtest_results"} <= {row["name"] for row in rows}
+    assert {"assets", "prices", "signals", "backtest_results", "experiments"} <= {row["name"] for row in rows}
 
 
 def test_initialize_database_is_idempotent():
@@ -63,6 +64,7 @@ def test_stored_price_as_dict():
     price = StoredPrice("A", "2024-01-01", 1.0, "mock")
 
     assert price.as_dict()["close"] == 1.0
+    assert price.as_dict()["return_type"] == "price"
 
 
 def test_repository_upserts_prices_in_order():
@@ -85,6 +87,14 @@ def test_repository_updates_price_on_conflict():
     repository.upsert_prices([PriceBar("A", "2024-01-01", 1.2)])
 
     assert repository.get_price_history("A")[0].close == 1.2
+
+
+def test_repository_updates_price_return_type_on_conflict():
+    repository = MarketDataRepository(connect_database(":memory:"))
+    repository.upsert_prices([PriceBar("A", "2024-01-01", 1.0, return_type="price")])
+    repository.upsert_prices([PriceBar("A", "2024-01-01", 1.0, return_type="total_return")])
+
+    assert repository.get_price_history("A")[0].return_type == "total_return"
 
 
 def test_repository_get_all_price_histories_groups_by_asset():
@@ -160,3 +170,43 @@ def test_repository_lists_dataset_versions():
     repository.save_dataset_version(StoredDatasetVersion("D2", "mock", "later", "2024-01-01", "2024-12-31", 1, "def"))
 
     assert len(repository.list_dataset_versions()) == 2
+
+
+def test_stored_experiment_as_dict():
+    experiment = StoredExperiment("E", "hash", "D", "now", {"annual_return": 1})
+
+    assert experiment.as_dict()["result"]["annual_return"] == 1
+
+
+def test_repository_saves_experiment():
+    repository = MarketDataRepository(connect_database(":memory:"))
+    experiment = StoredExperiment("E", "hash", "D", "now", {"annual_return": 1})
+
+    repository.save_experiment(experiment)
+
+    assert repository.get_experiment("E").result["annual_return"] == 1
+
+
+def test_repository_updates_experiment_on_conflict():
+    repository = MarketDataRepository(connect_database(":memory:"))
+    repository.save_experiment(StoredExperiment("E", "hash1", "D1", "now", {"annual_return": 1}))
+    repository.save_experiment(StoredExperiment("E", "hash2", "D2", "later", {"annual_return": 2}))
+
+    experiment = repository.get_experiment("E")
+
+    assert experiment.config_hash == "hash2"
+    assert experiment.result["annual_return"] == 2
+
+
+def test_repository_lists_experiments():
+    repository = MarketDataRepository(connect_database(":memory:"))
+    repository.save_experiment(StoredExperiment("E1", "hash1", "D1", "now", {}))
+    repository.save_experiment(StoredExperiment("E2", "hash2", "D2", "later", {}))
+
+    assert len(repository.list_experiments()) == 2
+
+
+def test_repository_get_missing_experiment_returns_none():
+    repository = MarketDataRepository(connect_database(":memory:"))
+
+    assert repository.get_experiment("missing") is None

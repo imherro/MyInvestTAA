@@ -130,6 +130,22 @@ def test_validated_performance_api_returns_friction_assumptions():
     assert {"transaction_cost", "slippage", "expense_ratio"} <= set(payload["friction"])
 
 
+def test_full_validation_api_returns_experiment_report():
+    response = client.get("/api/research/full-validation")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"experiment", "dataset", "performance", "benchmark", "attribution"} <= set(payload)
+
+
+def test_full_validation_api_returns_reproducibility_keys():
+    response = client.get("/api/research/full-validation")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["reproducibility"]["config_hash"] == payload["experiment"]["config_hash"]
+
+
 def test_research_report_page_returns_sections():
     response = client.get("/research")
 
@@ -162,11 +178,26 @@ def test_validation_report_page_returns_sections():
     assert "Real Data Validation" in response.text
 
 
+def test_experiment_report_page_returns_sections():
+    response = client.get("/experiment")
+
+    assert response.status_code == 200
+    assert "Experiment Report" in response.text
+    assert "Regime Contribution" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
     assert response.status_code == 200
     assert "/validation" in response.text
+
+
+def test_dashboard_links_experiment_report():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/experiment" in response.text
 
 
 def test_data_quality_page_returns_sections():

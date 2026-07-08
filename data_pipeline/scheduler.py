@@ -10,10 +10,11 @@ def run_import_job(
     database_path: str | None = None,
     start: str | None = None,
     end: str | None = None,
+    return_type: str = "price",
 ) -> dict:
     connection = connect_database(database_path)
     repository = MarketDataRepository(connection)
-    provider = build_provider(provider_name)
+    provider = build_provider(provider_name, return_type=return_type)
     return import_market_data(
         provider,
         repository,

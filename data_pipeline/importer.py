@@ -13,14 +13,14 @@ from engine.data_quality import build_quality_summary
 from storage import MarketDataRepository, StoredBacktestResult
 
 
-def build_provider(provider_name: str):
+def build_provider(provider_name: str, return_type: str = "price"):
     normalized = provider_name.lower()
     if normalized == "mock":
-        return MockProvider()
+        return MockProvider(return_type=return_type)
     if normalized == "tushare":
-        return TushareProvider()
+        return TushareProvider(return_type=return_type)
     if normalized == "baostock":
-        return BaoStockProvider()
+        return BaoStockProvider(return_type=return_type)
     raise ValueError(f"unknown provider: {provider_name}")
 
 
@@ -73,10 +73,11 @@ def run_live_backtest_report(
     asset_ids: list[str] | None = None,
     start: str | None = None,
     end: str | None = None,
+    return_type: str = "price",
 ) -> dict:
     if asset_ids is None:
         asset_ids = [asset["id"] for asset in load_assets()]
-    provider = build_provider(provider_name)
+    provider = build_provider(provider_name, return_type=return_type)
     import_summary = import_market_data(provider, repository, asset_ids, start=start, end=end)
     histories = repository.get_all_price_histories()
     assets = [

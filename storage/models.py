@@ -26,6 +26,7 @@ class StoredPrice:
     close: float
     source: str
     adjust_type: str = "none"
+    return_type: str = "price"
 
     def as_dict(self) -> dict:
         return {
@@ -34,6 +35,7 @@ class StoredPrice:
             "close": self.close,
             "source": self.source,
             "adjust_type": self.adjust_type,
+            "return_type": self.return_type,
         }
 
 
@@ -92,4 +94,22 @@ class StoredDatasetVersion:
             "end_date": self.end_date,
             "asset_count": self.asset_count,
             "checksum": self.checksum,
+        }
+
+
+@dataclass(frozen=True)
+class StoredExperiment:
+    experiment_id: str
+    config_hash: str
+    dataset_id: str
+    created_at: str
+    result: dict
+
+    def as_dict(self) -> dict:
+        return {
+            "experiment_id": self.experiment_id,
+            "config_hash": self.config_hash,
+            "dataset_id": self.dataset_id,
+            "created_at": self.created_at,
+            "result": self.result,
         }

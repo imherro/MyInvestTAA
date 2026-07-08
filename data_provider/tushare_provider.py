@@ -8,8 +8,9 @@ from data.models import AssetMetadata, PriceBar
 class TushareProvider:
     name = "tushare"
 
-    def __init__(self, token: str | None = None) -> None:
+    def __init__(self, token: str | None = None, return_type: str = "price") -> None:
         self.token = token or os.getenv("TUSHARE_TOKEN")
+        self.return_type = return_type
 
     def get_price_history(
         self,
@@ -23,7 +24,7 @@ class TushareProvider:
             start_date=_to_tushare_date(start),
             end_date=_to_tushare_date(end),
         )
-        return _price_bars_from_frame(asset_id, frame)
+        return _price_bars_from_frame(asset_id, frame, self.return_type)
 
     def get_index_history(
         self,
@@ -37,7 +38,7 @@ class TushareProvider:
             start_date=_to_tushare_date(start),
             end_date=_to_tushare_date(end),
         )
-        return _price_bars_from_frame(index_id, frame)
+        return _price_bars_from_frame(index_id, frame, self.return_type)
 
     def get_etf_list(self) -> list[AssetMetadata]:
         pro = self._client()
@@ -59,6 +60,7 @@ class TushareProvider:
             "name": self.name,
             "available": bool(self.token),
             "mode": "live_adapter",
+            "return_type": self.return_type,
             "requires": ["tushare", "TUSHARE_TOKEN"],
         }
 
@@ -73,7 +75,7 @@ class TushareProvider:
         return ts.pro_api()
 
 
-def _price_bars_from_frame(asset_id: str, frame) -> list[PriceBar]:
+def _price_bars_from_frame(asset_id: str, frame, return_type: str = "price") -> list[PriceBar]:
     rows = frame.to_dict("records") if hasattr(frame, "to_dict") else []
     bars = [
         PriceBar(
@@ -85,7 +87,8 @@ def _price_bars_from_frame(asset_id: str, frame) -> list[PriceBar]:
             low=_optional_float(row.get("low")),
             volume=_optional_float(row.get("vol")),
             source="tushare",
-            adjust_type="none",
+            adjust_type=_adjust_type_from_return_type(return_type),
+            return_type=return_type,
         )
         for row in rows
         if row.get("trade_date") and row.get("close") is not None
@@ -106,6 +109,10 @@ def _to_tushare_date(value: str | None) -> str | None:
 
 def _from_tushare_date(value: str) -> str:
     return f"{value[0:4]}-{value[4:6]}-{value[6:8]}"
+
+
+def _adjust_type_from_return_type(return_type: str) -> str:
+    return "none" if return_type == "price" else return_type
 
 
 def _optional_float(value: object) -> float | None:

@@ -14,6 +14,10 @@ def compare_strategies(
     assets: list[dict] | None = None,
     price_history: dict[str, list[dict]] | None = None,
     initial_capital: float = 1.0,
+    transaction_cost: float = 0.0,
+    cash_return: float = 0.0,
+    slippage: float = 0.0,
+    expense_ratio: float = 0.0,
 ) -> dict:
     if assets is None:
         assets = load_assets()
@@ -24,6 +28,10 @@ def compare_strategies(
         assets=assets,
         price_history=price_history,
         initial_capital=initial_capital,
+        transaction_cost=transaction_cost,
+        cash_return=cash_return,
+        slippage=slippage,
+        expense_ratio=expense_ratio,
     )
     benchmarks = [
         run_buy_hold_backtest(
@@ -35,6 +43,7 @@ def compare_strategies(
             assets=assets,
             price_history=price_history,
             initial_capital=initial_capital,
+            cash_annual_return=cash_return,
         ),
         run_classic_saa_backtest(
             assets=assets,
