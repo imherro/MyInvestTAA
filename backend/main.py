@@ -124,6 +124,11 @@ def get_strategy_diagnosis() -> dict:
     return _build_strategy_diagnosis_report()
 
 
+@app.get("/api/research/benchmark-validation")
+def get_benchmark_validation() -> dict:
+    return _build_strategy_diagnosis_report()["benchmark"]["validation"]
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -330,7 +335,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -1012,6 +1017,60 @@ def strategy_diagnosis_page() -> str:
     """
 
 
+@app.get("/benchmark-validation", response_class=HTMLResponse)
+def benchmark_validation_page() -> str:
+    report = _build_strategy_diagnosis_report()["benchmark"]["validation"]
+    rows = "\n".join(_benchmark_validation_rows(report["rows"]))
+    issues = "; ".join(report["issues"]) if report["issues"] else "No benchmark sanity issue detected"
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Benchmark Validation</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Benchmark Validation</h1>
+        <p>Benchmark sanity check，收益和回撤单位均为百分比。<a href="/diagnosis">Strategy Diagnosis</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Summary</h2>
+          <table>
+            <tbody>
+              <tr><td>Weight Check</td><td>{report["weight_check"]}</td></tr>
+              <tr><td>Return Check</td><td>{report["return_check"]}</td></tr>
+              <tr><td>Unit</td><td>{report["unit"]}</td></tr>
+              <tr><td>Issues</td><td>{escape(issues)}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Rows</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>策略</th>
+                <th>权重检查</th>
+                <th>收益检查</th>
+                <th>权重合计</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
 @app.get("/attribution", response_class=HTMLResponse)
 def attribution_page() -> str:
     report = analyze_attribution()
@@ -1442,6 +1501,24 @@ def _diagnosis_regime_rows(rows: list[dict]) -> list[str]:
     return html_rows
 
 
+def _benchmark_validation_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{item["strategy"]}</td>
+              <td>{item["weight_check"]}</td>
+              <td>{item["return_check"]}</td>
+              <td>{item["weight_sum"]:.2f}%</td>
+              <td>{item["annual_return"]:.2f}%</td>
+              <td>{item["max_drawdown"]:.2f}%</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
 def _build_live_backtest_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
@@ -1472,10 +1549,25 @@ def _build_full_validation_report() -> dict:
 def _build_strategy_diagnosis_report() -> dict:
     report_path = ROOT / "reports" / "strategy_diagnosis_report.json"
     if report_path.exists():
-        return json.loads(report_path.read_text(encoding="utf-8"))
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        if _strategy_diagnosis_report_is_current(report):
+            return report
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
     return build_strategy_diagnosis_report(repository, provider_name="mock", report_path=None)
+
+
+def _strategy_diagnosis_report_is_current(report: dict) -> bool:
+    versions = {
+        row.get("version")
+        for row in report.get("versions", {}).get("rows", [])
+    }
+    return (
+        "V4_REGIME_EXPOSURE_FLOOR" in versions
+        and "validation" in report.get("benchmark", {})
+        and "attribution_v3" in report.get("diagnosis", {})
+        and "regime_v3" in report.get("diagnosis", {})
+    )
 
 
 def _report_page_css() -> str:

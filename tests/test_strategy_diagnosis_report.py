@@ -35,6 +35,7 @@ def test_strategy_diagnosis_report_compares_three_versions():
         "V1_CURRENT",
         "V2_REGIME_SMOOTHING",
         "V3_TREND_RISK_ADJUSTED",
+        "V4_REGIME_EXPOSURE_FLOOR",
     }
 
 
@@ -45,6 +46,7 @@ def test_strategy_diagnosis_report_records_best_version():
         "V1_CURRENT",
         "V2_REGIME_SMOOTHING",
         "V3_TREND_RISK_ADJUSTED",
+        "V4_REGIME_EXPOSURE_FLOOR",
     }
 
 
@@ -108,6 +110,49 @@ def test_strategy_diagnosis_report_records_recommendations():
     report = _report()
 
     assert report["recommendations"]
+
+
+def test_strategy_diagnosis_report_records_benchmark_validation():
+    report = _report()
+
+    assert report["benchmark"]["validation"]["unit"] == "percent"
+
+
+def test_strategy_diagnosis_report_records_attribution_v3():
+    report = _report()
+
+    assert {"allocation", "selection", "timing"} <= set(report["diagnosis"]["attribution_v3"])
+
+
+def test_strategy_diagnosis_report_attribution_v3_uses_static_benchmark():
+    report = _report()
+
+    assert report["diagnosis"]["attribution_v3"]["benchmark"] == "SAA_60_40"
+
+
+def test_strategy_diagnosis_report_records_regime_v3():
+    report = _report()
+
+    assert {"state", "confidence", "evidence"} <= set(report["diagnosis"]["regime_v3"])
+
+
+def test_strategy_diagnosis_report_v4_records_equity_floor_assumption():
+    report = _report()
+    v4_row = next(row for row in report["versions"]["rows"] if row["version"] == "V4_REGIME_EXPOSURE_FLOOR")
+
+    assert v4_row["assumptions"]["equity_floor_by_regime"]["bull"] == 70.0
+
+
+def test_strategy_diagnosis_report_benchmark_validation_passes_for_mock():
+    report = _report()
+
+    assert report["benchmark"]["validation"]["weight_check"] is True
+
+
+def test_strategy_diagnosis_report_dataset_records_frequency():
+    report = _report()
+
+    assert report["dataset"]["frequency"] == "month_end"
 
 
 def test_month_end_histories_keeps_last_row_per_month():

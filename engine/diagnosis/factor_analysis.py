@@ -35,6 +35,7 @@ def compare_strategy_versions(results: dict[str, dict]) -> dict:
                 "sharpe": metrics.get("sharpe", 0.0),
                 "calmar": metrics.get("calmar", 0.0),
                 "ending_value": metrics.get("ending_value", 0.0),
+                "assumptions": result.get("assumptions", {}),
             }
         )
     best = None

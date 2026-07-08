@@ -26,6 +26,7 @@ def run_taa_backtest(
     score_version: str = "v1",
     max_weight_step: float | None = None,
     volatility_adjustment: bool = False,
+    equity_floor_by_regime: dict[str, float] | None = None,
 ) -> dict:
     if rebalance_frequency != "monthly":
         raise ValueError("only monthly rebalance is supported")
@@ -43,6 +44,10 @@ def run_taa_backtest(
         raise ValueError("score_version must be v1 or v4")
     if max_weight_step is not None and max_weight_step <= 0:
         raise ValueError("max_weight_step must be positive")
+    if equity_floor_by_regime:
+        for state, floor in equity_floor_by_regime.items():
+            if floor < 0 or floor > 100:
+                raise ValueError(f"equity floor must be between 0 and 100: {state}")
 
     if assets is None:
         assets = load_assets()
@@ -59,6 +64,7 @@ def run_taa_backtest(
             score_version,
             max_weight_step,
             volatility_adjustment,
+            equity_floor_by_regime,
         )
 
     weights = {"CASH": 100.0}
@@ -103,6 +109,10 @@ def run_taa_backtest(
             if max_weight_step is not None
             else target_weights
         )
+        if equity_floor_by_regime:
+            floor = equity_floor_by_regime.get(regime.state)
+            if floor is not None:
+                next_weights = _apply_equity_floor(next_weights, scoring_weights, floor)
         period_turnover = turnover(weights, next_weights)
         turnovers.append(period_turnover)
         friction = transaction_cost + slippage
@@ -139,6 +149,7 @@ def run_taa_backtest(
                     "score_version": score_version,
                     "max_weight_step": max_weight_step,
                     "volatility_adjustment": volatility_adjustment,
+                    "equity_floor_by_regime": equity_floor_by_regime or {},
                     "target_weights": target_weights,
                 },
                 regime=regime.as_dict(),
@@ -160,6 +171,7 @@ def run_taa_backtest(
             "score_version": score_version,
             "max_weight_step": max_weight_step,
             "volatility_adjustment": volatility_adjustment,
+            "equity_floor_by_regime": equity_floor_by_regime or {},
         },
         "metrics": metrics,
         "equity_curve": [
@@ -295,6 +307,30 @@ def _smooth_weight_transition(
     return {asset_id: weight for asset_id, weight in smoothed.items() if weight > 0}
 
 
+def _apply_equity_floor(
+    weights: dict[str, float],
+    scores: list[dict],
+    floor: float,
+) -> dict[str, float]:
+    invested = sum(weight for asset_id, weight in weights.items() if asset_id != "CASH")
+    if invested >= floor:
+        return weights
+    candidates = [item["id"] for item in scores if item["id"] != "CASH"]
+    if not candidates:
+        return weights
+    deficit = min(floor - invested, weights.get("CASH", 0.0))
+    if deficit <= 0:
+        return weights
+    adjusted = dict(weights)
+    per_asset = deficit / min(len(candidates), 3)
+    for asset_id in candidates[:3]:
+        adjusted[asset_id] = round(adjusted.get(asset_id, 0.0) + per_asset, 4)
+    adjusted["CASH"] = round(adjusted.get("CASH", 0.0) - deficit, 4)
+    drift = round(100.0 - sum(adjusted.values()), 4)
+    adjusted["CASH"] = round(adjusted.get("CASH", 0.0) + drift, 4)
+    return {asset_id: weight for asset_id, weight in adjusted.items() if weight > 0}
+
+
 def _portfolio_return(
     weights: dict[str, float],
     price_history: dict[str, list[dict]],
@@ -373,6 +409,7 @@ def _empty_result(
     score_version: str = "v1",
     max_weight_step: float | None = None,
     volatility_adjustment: bool = False,
+    equity_floor_by_regime: dict[str, float] | None = None,
 ) -> dict:
     return {
         "strategy": "MyInvestTAA",
@@ -386,6 +423,7 @@ def _empty_result(
             "score_version": score_version,
             "max_weight_step": max_weight_step,
             "volatility_adjustment": volatility_adjustment,
+            "equity_floor_by_regime": equity_floor_by_regime or {},
         },
         "metrics": {
             "annual_return": 0.0,

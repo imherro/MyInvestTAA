@@ -10,8 +10,11 @@ from data.universe import universe_asset_ids
 from data_pipeline.full_validation import _research_assets
 from data_pipeline.importer import build_provider, import_market_data
 from engine.asset_repository import load_assets
+from engine.benchmark_validation import validate_benchmark_report
 from engine.diagnosis import analyze_regime_effects, compare_strategy_versions, decompose_vs_static
 from engine.performance_attribution import analyze_regime_contribution
+from engine.performance_attribution.v3 import decompose_excess_return_v3
+from engine.regime.v3 import detect_market_regime_v3
 from storage import MarketDataRepository
 
 
@@ -63,13 +66,23 @@ def build_strategy_diagnosis_report(
             max_weight_step=10.0,
             volatility_adjustment=True,
         ),
+        "V4_REGIME_EXPOSURE_FLOOR": run_taa_backtest(
+            **common_kwargs,
+            score_version="v4",
+            max_weight_step=10.0,
+            volatility_adjustment=True,
+            equity_floor_by_regime={"bull": 70.0, "neutral": 40.0, "bear_recovery": 50.0},
+        ),
     }
     benchmark = compare_strategies(**common_kwargs)
     static_row = benchmark["strategies"].get("SAA_60_40")
+    benchmark_validation = validate_benchmark_report(benchmark)
     regime_analysis = analyze_regime_effects(variants["V1_CURRENT"])
     decomposition = decompose_vs_static(variants["V1_CURRENT"], static_row)
+    attribution_v3 = decompose_excess_return_v3(variants["V4_REGIME_EXPOSURE_FLOOR"], static_row)
     version_comparison = compare_strategy_versions(variants)
     regime_contribution = analyze_regime_contribution(variants["V1_CURRENT"])
+    regime_v3 = detect_market_regime_v3(histories.get("510300", []), breadth=_estimate_breadth(histories))
     report = {
         "dataset": {
             "provider": provider_name,
@@ -83,11 +96,14 @@ def build_strategy_diagnosis_report(
             "regime_analysis": regime_analysis,
             "decomposition": decomposition,
             "regime_contribution": regime_contribution,
+            "attribution_v3": attribution_v3,
+            "regime_v3": regime_v3,
         },
         "versions": version_comparison,
         "benchmark": {
             "static": static_row,
             "rows": benchmark["rows"],
+            "validation": benchmark_validation,
         },
         "recommendations": [
             "Use exposure smoothing to reduce abrupt bull_caution de-risking.",
@@ -118,6 +134,23 @@ def _month_end_histories(histories: dict[str, list[dict]]) -> dict[str, list[dic
             by_month[str(row["date"])[:7]] = row
         result[asset_id] = [by_month[key] for key in sorted(by_month)]
     return result
+
+
+def _estimate_breadth(histories: dict[str, list[dict]]) -> float | None:
+    positives = 0
+    observations = 0
+    for history in histories.values():
+        if len(history) < 2:
+            continue
+        previous = float(history[-2]["close"])
+        current = float(history[-1]["close"])
+        if previous <= 0:
+            continue
+        positives += 1 if current > previous else 0
+        observations += 1
+    if observations == 0:
+        return None
+    return round(positives / observations, 4)
 
 
 def _diagnosis_summary(regime_analysis: dict, decomposition: dict, regime_contribution: dict) -> list[dict]:

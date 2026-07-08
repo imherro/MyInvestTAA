@@ -19,12 +19,20 @@ class TushareProvider:
         end: str | None = None,
     ) -> list[PriceBar]:
         pro = self._client()
+        ts_code = _to_ts_code(asset_id)
         frame = pro.fund_daily(
-            ts_code=_to_ts_code(asset_id),
+            ts_code=ts_code,
             start_date=_to_tushare_date(start),
             end_date=_to_tushare_date(end),
         )
-        return _price_bars_from_frame(asset_id, frame, self.return_type)
+        adjustment_frame = None
+        if self.return_type != "price":
+            adjustment_frame = pro.fund_adj(
+                ts_code=ts_code,
+                start_date=_to_tushare_date(start),
+                end_date=_to_tushare_date(end),
+            )
+        return _price_bars_from_frame(asset_id, frame, self.return_type, adjustment_frame)
 
     def get_index_history(
         self,
@@ -75,16 +83,17 @@ class TushareProvider:
         return ts.pro_api()
 
 
-def _price_bars_from_frame(asset_id: str, frame, return_type: str = "price") -> list[PriceBar]:
+def _price_bars_from_frame(asset_id: str, frame, return_type: str = "price", adjustment_frame=None) -> list[PriceBar]:
     rows = frame.to_dict("records") if hasattr(frame, "to_dict") else []
+    factors = _adjustment_factors(adjustment_frame)
     bars = [
         PriceBar(
             asset_id=asset_id,
             date=_from_tushare_date(str(row["trade_date"])),
-            close=float(row["close"]),
-            open=_optional_float(row.get("open")),
-            high=_optional_float(row.get("high")),
-            low=_optional_float(row.get("low")),
+            close=_adjusted_value(str(row["trade_date"]), row.get("close"), return_type, factors),
+            open=_adjusted_value(str(row["trade_date"]), row.get("open"), return_type, factors),
+            high=_adjusted_value(str(row["trade_date"]), row.get("high"), return_type, factors),
+            low=_adjusted_value(str(row["trade_date"]), row.get("low"), return_type, factors),
             volume=_optional_float(row.get("vol")),
             source="tushare",
             adjust_type=_adjust_type_from_return_type(return_type),
@@ -113,6 +122,43 @@ def _from_tushare_date(value: str) -> str:
 
 def _adjust_type_from_return_type(return_type: str) -> str:
     return "none" if return_type == "price" else return_type
+
+
+def _adjustment_factors(frame) -> dict[str, float]:
+    rows = frame.to_dict("records") if hasattr(frame, "to_dict") else []
+    return {
+        str(row["trade_date"]): float(row["adj_factor"])
+        for row in rows
+        if row.get("trade_date") and row.get("adj_factor") is not None
+    }
+
+
+def _adjusted_value(trade_date: str, value: object, return_type: str, factors: dict[str, float]) -> float | None:
+    raw = _optional_float(value)
+    if raw is None or return_type == "price":
+        return raw
+    factor = _factor_for_date(trade_date, factors)
+    if return_type == "qfq":
+        latest_factor = _latest_factor(factors)
+        return round(raw * factor / latest_factor, 6)
+    return round(raw * factor, 6)
+
+
+def _factor_for_date(trade_date: str, factors: dict[str, float]) -> float:
+    if not factors:
+        raise RuntimeError("Tushare fund_adj returned no adjustment factors")
+    if trade_date in factors:
+        return factors[trade_date]
+    earlier_dates = [date for date in factors if date <= trade_date]
+    if earlier_dates:
+        return factors[max(earlier_dates)]
+    return factors[min(factors)]
+
+
+def _latest_factor(factors: dict[str, float]) -> float:
+    if not factors:
+        raise RuntimeError("Tushare fund_adj returned no adjustment factors")
+    return factors[max(factors)]
 
 
 def _optional_float(value: object) -> float | None:

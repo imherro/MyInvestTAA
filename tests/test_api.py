@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from backend.main import app
+from backend.main import app, _strategy_diagnosis_report_is_current
 
 
 client = TestClient(app)
@@ -159,7 +159,31 @@ def test_strategy_diagnosis_api_compares_versions():
 
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload["versions"]["rows"]) == 3
+    assert len(payload["versions"]["rows"]) >= 4
+
+
+def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
+    report = {"versions": {"rows": [{"version": "V3_TREND_RISK_ADJUSTED"}]}, "benchmark": {}, "diagnosis": {}}
+
+    assert _strategy_diagnosis_report_is_current(report) is False
+
+
+def test_strategy_diagnosis_report_current_check_accepts_task015_shape():
+    report = {
+        "versions": {"rows": [{"version": "V4_REGIME_EXPOSURE_FLOOR"}]},
+        "benchmark": {"validation": {}},
+        "diagnosis": {"attribution_v3": {}, "regime_v3": {}},
+    }
+
+    assert _strategy_diagnosis_report_is_current(report) is True
+
+
+def test_benchmark_validation_api_returns_checks():
+    response = client.get("/api/research/benchmark-validation")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"weight_check", "return_check", "issues", "unit"} <= set(payload)
 
 
 def test_research_report_page_returns_sections():
@@ -210,6 +234,14 @@ def test_strategy_diagnosis_page_returns_sections():
     assert "Version Comparison" in response.text
 
 
+def test_benchmark_validation_page_returns_sections():
+    response = client.get("/benchmark-validation")
+
+    assert response.status_code == 200
+    assert "Benchmark Validation" in response.text
+    assert "Weight Check" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -229,6 +261,13 @@ def test_dashboard_links_strategy_diagnosis():
 
     assert response.status_code == 200
     assert "/diagnosis" in response.text
+
+
+def test_dashboard_links_benchmark_validation():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/benchmark-validation" in response.text
 
 
 def test_data_quality_page_returns_sections():

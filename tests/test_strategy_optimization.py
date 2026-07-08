@@ -2,6 +2,7 @@ import pytest
 
 from backtest.taa import run_taa_backtest
 from backtest.taa.engine import (
+    _apply_equity_floor,
     _apply_volatility_adjustment,
     _smooth_weight_transition,
     _trend_score,
@@ -89,3 +90,27 @@ def test_run_taa_backtest_records_target_weights_when_smoothing():
     result = run_taa_backtest(max_weight_step=10.0)
 
     assert any("target_weights" in state["signals"] for state in result["states"][1:])
+
+
+def test_apply_equity_floor_increases_invested_weight():
+    result = _apply_equity_floor({"A": 20.0, "CASH": 80.0}, [{"id": "A"}], 50.0)
+
+    assert result["A"] == 50.0
+    assert result["CASH"] == 50.0
+
+
+def test_apply_equity_floor_keeps_weights_when_floor_met():
+    weights = {"A": 60.0, "CASH": 40.0}
+
+    assert _apply_equity_floor(weights, [{"id": "A"}], 50.0) == weights
+
+
+def test_run_taa_backtest_records_equity_floor_by_regime():
+    result = run_taa_backtest(equity_floor_by_regime={"neutral": 40.0})
+
+    assert result["assumptions"]["equity_floor_by_regime"] == {"neutral": 40.0}
+
+
+def test_run_taa_backtest_rejects_invalid_equity_floor():
+    with pytest.raises(ValueError):
+        run_taa_backtest(equity_floor_by_regime={"neutral": 120.0})

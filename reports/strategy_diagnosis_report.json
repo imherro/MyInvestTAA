@@ -6,7 +6,7 @@
       "end": "2026-07-08"
     },
     "asset_count": 20,
-    "return_type": "price",
+    "return_type": "total_return",
     "frequency": "month_end"
   },
   "diagnosis": {
@@ -19,7 +19,7 @@
       {
         "source": "static allocation return gap",
         "severity": "high",
-        "evidence": "Return gap vs SAA_60_40: -1.3791"
+        "evidence": "Return gap vs SAA_60_40: -1.1511"
       }
     ],
     "regime_analysis": {
@@ -27,31 +27,31 @@
       "regimes": [
         {
           "state": "neutral",
-          "periods": 38,
-          "avg_return": -0.1763,
+          "periods": 44,
+          "avg_return": 0.0106,
           "avg_equity_exposure": 70.0,
-          "allocation_effect": -0.6701
+          "allocation_effect": 0.0468
         },
         {
           "state": "bear_recovery",
-          "periods": 12,
-          "avg_return": 1.0744,
+          "periods": 6,
+          "avg_return": 1.9913,
           "avg_equity_exposure": 70.0,
-          "allocation_effect": 1.2893
+          "allocation_effect": 1.1948
         },
         {
           "state": "bear",
-          "periods": 42,
-          "avg_return": -0.4247,
+          "periods": 34,
+          "avg_return": -0.8368,
           "avg_equity_exposure": 40.0,
-          "allocation_effect": 3.5676
+          "allocation_effect": 5.6904
         },
         {
           "state": "bull",
-          "periods": 34,
-          "avg_return": 1.2533,
+          "periods": 42,
+          "avg_return": 1.3875,
           "avg_equity_exposure": 90.0,
-          "allocation_effect": 12.784
+          "allocation_effect": 17.4826
         }
       ],
       "worst_regime": "neutral"
@@ -59,18 +59,18 @@
     "decomposition": {
       "strategy": "MyInvestTAA",
       "benchmark": "SAA_60_40",
-      "return_gap": -1.3791,
-      "drawdown_improvement": 2.053,
-      "market_exposure_gap": 4.8819,
-      "timing_contribution": -0.8275,
-      "selection_contribution": -0.5516
+      "return_gap": -1.1511,
+      "drawdown_improvement": 1.2499,
+      "market_exposure_gap": 8.0315,
+      "timing_contribution": -0.6907,
+      "selection_contribution": -0.4604
     },
     "regime_contribution": {
       "contribution": {
-        "neutral": -6.7011,
-        "bull": 42.6133,
-        "bear_recovery": 12.8933,
-        "bear": -17.838
+        "neutral": 0.468,
+        "bull": 58.2753,
+        "bear_recovery": 11.9479,
+        "bear": -28.452
       },
       "periods": [
         {
@@ -287,49 +287,49 @@
           "period": "2018-12-28:2019-01-31",
           "date": "2019-01-31",
           "regime": "bear",
-          "contribution": 0.8879
+          "contribution": 1.0041
         },
         {
           "period": "2019-01-31:2019-02-28",
           "date": "2019-02-28",
-          "regime": "neutral",
-          "contribution": 6.7365
+          "regime": "bear_recovery",
+          "contribution": 6.7392
         },
         {
           "period": "2019-02-28:2019-03-29",
           "date": "2019-03-29",
           "regime": "neutral",
-          "contribution": 4.5544
+          "contribution": 4.5392
         },
         {
           "period": "2019-03-29:2019-04-30",
           "date": "2019-04-30",
           "regime": "neutral",
-          "contribution": -1.5208
+          "contribution": -1.5099
         },
         {
           "period": "2019-04-30:2019-05-31",
           "date": "2019-05-31",
           "regime": "neutral",
-          "contribution": -3.4414
+          "contribution": -3.4374
         },
         {
           "period": "2019-05-31:2019-06-28",
           "date": "2019-06-28",
           "regime": "neutral",
-          "contribution": 2.5373
+          "contribution": 2.5343
         },
         {
           "period": "2019-06-28:2019-07-31",
           "date": "2019-07-31",
           "regime": "neutral",
-          "contribution": 0.7125
+          "contribution": 0.7021
         },
         {
           "period": "2019-07-31:2019-08-30",
           "date": "2019-08-30",
           "regime": "neutral",
-          "contribution": 1.6922
+          "contribution": 1.6999
         },
         {
           "period": "2019-08-30:2019-09-30",
@@ -341,523 +341,597 @@
           "period": "2019-09-30:2019-10-31",
           "date": "2019-10-31",
           "regime": "neutral",
-          "contribution": 0.9122
+          "contribution": 0.9111
         },
         {
           "period": "2019-10-31:2019-11-29",
           "date": "2019-11-29",
           "regime": "neutral",
-          "contribution": -0.7548
+          "contribution": -0.7447
         },
         {
           "period": "2019-11-29:2019-12-31",
           "date": "2019-12-31",
           "regime": "bull",
-          "contribution": 4.0094
+          "contribution": 4.1452
         },
         {
           "period": "2019-12-31:2020-01-23",
           "date": "2020-01-23",
-          "regime": "neutral",
-          "contribution": 0.8305
+          "regime": "bull",
+          "contribution": 0.9635
         },
         {
           "period": "2020-01-23:2020-02-28",
           "date": "2020-02-28",
-          "regime": "neutral",
-          "contribution": 0.2507
+          "regime": "bull",
+          "contribution": 0.3032
         },
         {
           "period": "2020-02-28:2020-03-31",
           "date": "2020-03-31",
-          "regime": "neutral",
-          "contribution": -3.1616
+          "regime": "bear_recovery",
+          "contribution": -4.0903
         },
         {
           "period": "2020-03-31:2020-04-30",
           "date": "2020-04-30",
           "regime": "neutral",
-          "contribution": 4.7127
+          "contribution": 4.7098
         },
         {
           "period": "2020-04-30:2020-05-29",
           "date": "2020-05-29",
           "regime": "neutral",
-          "contribution": 0.4932
+          "contribution": 0.5047
         },
         {
           "period": "2020-05-29:2020-06-30",
           "date": "2020-06-30",
           "regime": "bull",
-          "contribution": 5.2147
+          "contribution": 5.2066
         },
         {
           "period": "2020-06-30:2020-07-31",
           "date": "2020-07-31",
           "regime": "bull",
-          "contribution": 11.6701
+          "contribution": 11.6563
         },
         {
           "period": "2020-07-31:2020-08-31",
           "date": "2020-08-31",
           "regime": "bull",
-          "contribution": 1.186
+          "contribution": 1.1924
         },
         {
           "period": "2020-08-31:2020-09-30",
           "date": "2020-09-30",
           "regime": "bull",
-          "contribution": -7.0181
+          "contribution": -4.3578
         },
         {
           "period": "2020-09-30:2020-10-30",
           "date": "2020-10-30",
           "regime": "bull",
-          "contribution": 1.4192
+          "contribution": 1.4336
         },
         {
           "period": "2020-10-30:2020-11-30",
           "date": "2020-11-30",
           "regime": "bull",
-          "contribution": 1.8605
+          "contribution": 1.9251
         },
         {
           "period": "2020-11-30:2020-12-31",
           "date": "2020-12-31",
           "regime": "bull",
-          "contribution": 5.1113
+          "contribution": 5.2391
         },
         {
           "period": "2020-12-31:2021-01-29",
           "date": "2021-01-29",
           "regime": "bull",
-          "contribution": 0.1168
+          "contribution": 0.1353
         },
         {
           "period": "2021-01-29:2021-02-26",
           "date": "2021-02-26",
           "regime": "bull",
-          "contribution": -2.6181
+          "contribution": -0.4765
         },
         {
           "period": "2021-02-26:2021-03-31",
           "date": "2021-03-31",
           "regime": "neutral",
-          "contribution": -3.3401
+          "contribution": -3.2802
         },
         {
           "period": "2021-03-31:2021-04-30",
           "date": "2021-04-30",
           "regime": "bull",
-          "contribution": 3.7654
+          "contribution": 3.7018
         },
         {
           "period": "2021-04-30:2021-05-31",
           "date": "2021-05-31",
           "regime": "bull",
-          "contribution": 3.3749
+          "contribution": 5.3295
         },
         {
           "period": "2021-05-31:2021-06-30",
           "date": "2021-06-30",
           "regime": "bull",
-          "contribution": -2.9469
+          "contribution": 0.9335
         },
         {
           "period": "2021-06-30:2021-07-30",
           "date": "2021-07-30",
           "regime": "neutral",
-          "contribution": -2.188
+          "contribution": -1.4677
         },
         {
           "period": "2021-07-30:2021-08-31",
           "date": "2021-08-31",
           "regime": "neutral",
-          "contribution": 0.8065
+          "contribution": 0.8842
         },
         {
           "period": "2021-08-31:2021-09-30",
           "date": "2021-09-30",
           "regime": "neutral",
-          "contribution": 0.4302
+          "contribution": 0.4113
         },
         {
           "period": "2021-09-30:2021-10-29",
           "date": "2021-10-29",
           "regime": "neutral",
-          "contribution": -1.3603
+          "contribution": 0.0739
         },
         {
           "period": "2021-10-29:2021-11-30",
           "date": "2021-11-30",
           "regime": "neutral",
-          "contribution": 0.9676
+          "contribution": 1.0064
         },
         {
           "period": "2021-11-30:2021-12-31",
           "date": "2021-12-31",
           "regime": "neutral",
-          "contribution": -1.3055
+          "contribution": -0.0664
         },
         {
           "period": "2021-12-31:2022-01-28",
           "date": "2022-01-28",
           "regime": "neutral",
-          "contribution": -6.3384
+          "contribution": -6.4278
         },
         {
           "period": "2022-01-28:2022-02-28",
           "date": "2022-02-28",
           "regime": "neutral",
-          "contribution": 2.3837
+          "contribution": 2.4153
         },
         {
           "period": "2022-02-28:2022-03-31",
           "date": "2022-03-31",
           "regime": "neutral",
-          "contribution": -3.7713
+          "contribution": -4.03
         },
         {
           "period": "2022-03-31:2022-04-29",
           "date": "2022-04-29",
           "regime": "bear",
-          "contribution": -5.1288
+          "contribution": -5.3122
         },
         {
           "period": "2022-04-29:2022-05-31",
           "date": "2022-05-31",
-          "regime": "bear",
-          "contribution": 1.7642
+          "regime": "neutral",
+          "contribution": 1.7632
         },
         {
           "period": "2022-05-31:2022-06-30",
           "date": "2022-06-30",
           "regime": "neutral",
-          "contribution": 3.5015
+          "contribution": 6.3456
         },
         {
           "period": "2022-06-30:2022-07-29",
           "date": "2022-07-29",
           "regime": "neutral",
-          "contribution": -2.9934
+          "contribution": -3.0681
         },
         {
           "period": "2022-07-29:2022-08-31",
           "date": "2022-08-31",
-          "regime": "bear",
-          "contribution": -1.6839
+          "regime": "neutral",
+          "contribution": -1.1933
         },
         {
           "period": "2022-08-31:2022-09-30",
           "date": "2022-09-30",
           "regime": "bear",
-          "contribution": -0.1478
+          "contribution": -4.2566
         },
         {
           "period": "2022-09-30:2022-10-31",
           "date": "2022-10-31",
           "regime": "bear",
-          "contribution": -0.6966
+          "contribution": -0.6692
         },
         {
           "period": "2022-10-31:2022-11-30",
           "date": "2022-11-30",
           "regime": "bear",
-          "contribution": 2.42
+          "contribution": 2.4779
         },
         {
           "period": "2022-11-30:2022-12-30",
           "date": "2022-12-30",
           "regime": "bear",
-          "contribution": -0.3681
+          "contribution": -0.2947
         },
         {
           "period": "2022-12-30:2023-01-31",
           "date": "2023-01-31",
-          "regime": "bear",
-          "contribution": 2.5262
+          "regime": "neutral",
+          "contribution": 2.5464
         },
         {
           "period": "2023-01-31:2023-02-28",
           "date": "2023-02-28",
-          "regime": "bear",
-          "contribution": -0.5196
+          "regime": "neutral",
+          "contribution": -1.0642
         },
         {
           "period": "2023-02-28:2023-03-31",
           "date": "2023-03-31",
-          "regime": "bear",
-          "contribution": -0.2696
+          "regime": "neutral",
+          "contribution": -0.4855
         },
         {
           "period": "2023-03-31:2023-04-28",
           "date": "2023-04-28",
           "regime": "bear",
-          "contribution": -0.1436
+          "contribution": -0.5555
         },
         {
           "period": "2023-04-28:2023-05-31",
           "date": "2023-05-31",
           "regime": "bear",
-          "contribution": -1.5904
+          "contribution": -1.6002
         },
         {
           "period": "2023-05-31:2023-06-30",
           "date": "2023-06-30",
           "regime": "bear",
-          "contribution": -0.0086
+          "contribution": -0.0153
         },
         {
           "period": "2023-06-30:2023-07-31",
           "date": "2023-07-31",
-          "regime": "bear",
-          "contribution": 1.2638
+          "regime": "neutral",
+          "contribution": 1.2199
         },
         {
           "period": "2023-07-31:2023-08-31",
           "date": "2023-08-31",
           "regime": "bear",
-          "contribution": -1.9866
+          "contribution": -3.5701
         },
         {
           "period": "2023-08-31:2023-09-28",
           "date": "2023-09-28",
           "regime": "bear",
-          "contribution": -0.4158
+          "contribution": -0.448
         },
         {
           "period": "2023-09-28:2023-10-31",
           "date": "2023-10-31",
           "regime": "bear",
-          "contribution": -0.6436
+          "contribution": -0.6159
         },
         {
           "period": "2023-10-31:2023-11-30",
           "date": "2023-11-30",
           "regime": "bear",
-          "contribution": -0.5077
+          "contribution": -0.5323
         },
         {
           "period": "2023-11-30:2023-12-29",
           "date": "2023-12-29",
           "regime": "bear",
-          "contribution": -1.355
+          "contribution": -0.7428
         },
         {
           "period": "2023-12-29:2024-01-31",
           "date": "2024-01-31",
           "regime": "bear",
-          "contribution": -3.8444
+          "contribution": -3.7821
         },
         {
           "period": "2024-01-31:2024-02-29",
           "date": "2024-02-29",
           "regime": "bear",
-          "contribution": 3.9425
+          "contribution": 3.9809
         },
         {
           "period": "2024-02-29:2024-03-29",
           "date": "2024-03-29",
           "regime": "bear",
-          "contribution": 0.0357
+          "contribution": 0.0161
         },
         {
           "period": "2024-03-29:2024-04-30",
           "date": "2024-04-30",
           "regime": "bear",
-          "contribution": 0.5977
+          "contribution": 0.571
         },
         {
           "period": "2024-04-30:2024-05-31",
           "date": "2024-05-31",
           "regime": "bear",
-          "contribution": -0.2394
+          "contribution": -0.2559
         },
         {
           "period": "2024-05-31:2024-06-28",
           "date": "2024-06-28",
           "regime": "bear",
-          "contribution": -2.178
+          "contribution": -2.1725
         },
         {
           "period": "2024-06-28:2024-07-31",
           "date": "2024-07-31",
           "regime": "bear",
-          "contribution": 0.4089
+          "contribution": 0.4507
         },
         {
           "period": "2024-07-31:2024-08-30",
           "date": "2024-08-30",
           "regime": "bear",
-          "contribution": -1.5839
+          "contribution": -1.6071
         },
         {
           "period": "2024-08-30:2024-09-30",
           "date": "2024-09-30",
           "regime": "bear_recovery",
-          "contribution": 13.3254
+          "contribution": 8.4902
         },
         {
           "period": "2024-09-30:2024-10-31",
           "date": "2024-10-31",
           "regime": "bear",
-          "contribution": -0.6005
+          "contribution": -0.4127
         },
         {
           "period": "2024-10-31:2024-11-29",
           "date": "2024-11-29",
           "regime": "bear",
-          "contribution": 0.3674
+          "contribution": 0.3684
         },
         {
           "period": "2024-11-29:2024-12-31",
           "date": "2024-12-31",
           "regime": "bear",
-          "contribution": -0.5694
+          "contribution": -0.5811
         },
         {
           "period": "2024-12-31:2025-01-27",
           "date": "2025-01-27",
           "regime": "bear",
-          "contribution": -1.1453
+          "contribution": -1.0921
         },
         {
           "period": "2025-01-27:2025-02-28",
           "date": "2025-02-28",
           "regime": "bear",
-          "contribution": 1.4068
+          "contribution": 1.4307
         },
         {
           "period": "2025-02-28:2025-03-31",
           "date": "2025-03-31",
           "regime": "bear",
-          "contribution": 0.1551
+          "contribution": 0.161
         },
         {
           "period": "2025-03-31:2025-04-30",
           "date": "2025-04-30",
           "regime": "bear",
-          "contribution": -1.0022
+          "contribution": -0.9949
         },
         {
           "period": "2025-04-30:2025-05-30",
           "date": "2025-05-30",
           "regime": "bear",
-          "contribution": 0.749
+          "contribution": 0.688
         },
         {
           "period": "2025-05-30:2025-06-30",
           "date": "2025-06-30",
-          "regime": "bear",
-          "contribution": 1.1845
+          "regime": "neutral",
+          "contribution": 1.1977
         },
         {
           "period": "2025-06-30:2025-07-31",
           "date": "2025-07-31",
-          "regime": "bear",
-          "contribution": 1.1707
+          "regime": "bear_recovery",
+          "contribution": 3.2395
         },
         {
           "period": "2025-07-31:2025-08-29",
           "date": "2025-08-29",
-          "regime": "bear_recovery",
-          "contribution": 3.623
+          "regime": "neutral",
+          "contribution": 6.8489
         },
         {
           "period": "2025-08-29:2025-09-30",
           "date": "2025-09-30",
-          "regime": "bear_recovery",
-          "contribution": 1.9946
+          "regime": "neutral",
+          "contribution": 2.4347
         },
         {
           "period": "2025-09-30:2025-10-31",
           "date": "2025-10-31",
-          "regime": "bear_recovery",
+          "regime": "neutral",
           "contribution": 0.0604
         },
         {
           "period": "2025-10-31:2025-11-28",
           "date": "2025-11-28",
-          "regime": "bear_recovery",
-          "contribution": -1.4488
+          "regime": "neutral",
+          "contribution": -1.5769
         },
         {
           "period": "2025-11-28:2025-12-31",
           "date": "2025-12-31",
-          "regime": "bear_recovery",
-          "contribution": 0.6355
+          "regime": "neutral",
+          "contribution": 1.0704
         },
         {
           "period": "2025-12-31:2026-01-30",
           "date": "2026-01-30",
-          "regime": "bear_recovery",
-          "contribution": 3.1271
+          "regime": "bull",
+          "contribution": 3.3187
         },
         {
           "period": "2026-01-30:2026-02-27",
           "date": "2026-02-27",
-          "regime": "bear_recovery",
-          "contribution": 0.5829
+          "regime": "bull",
+          "contribution": 0.7247
         },
         {
           "period": "2026-02-27:2026-03-31",
           "date": "2026-03-31",
-          "regime": "bear_recovery",
-          "contribution": -5.1639
+          "regime": "neutral",
+          "contribution": -5.6261
         },
         {
           "period": "2026-03-31:2026-04-30",
           "date": "2026-04-30",
-          "regime": "neutral",
-          "contribution": 3.5192
+          "regime": "bull",
+          "contribution": 3.908
         },
         {
           "period": "2026-04-30:2026-05-29",
           "date": "2026-05-29",
-          "regime": "neutral",
-          "contribution": -1.1207
+          "regime": "bull",
+          "contribution": -1.6657
         },
         {
           "period": "2026-05-29:2026-06-30",
           "date": "2026-06-30",
-          "regime": "neutral",
-          "contribution": -1.0125
+          "regime": "bull",
+          "contribution": -1.4385
         },
         {
           "period": "2026-06-30:2026-07-08",
           "date": "2026-07-08",
-          "regime": "bear_recovery",
-          "contribution": -1.4122
+          "regime": "bull",
+          "contribution": -1.3708
         }
       ],
       "dominant_regime": "bull"
+    },
+    "attribution_v3": {
+      "strategy": "MyInvestTAA",
+      "benchmark": "SAA_60_40",
+      "excess_return": -1.0114,
+      "allocation": 0.3808,
+      "selection": -1.7491,
+      "timing": 0.3569,
+      "interaction": 0.0,
+      "check_sum": -1.0114
+    },
+    "regime_v3": {
+      "state": "bull_caution",
+      "confidence": 0.4,
+      "evidence": [
+        "momentum positive",
+        "volatility contained"
+      ],
+      "trend_score": 0.4,
+      "momentum": 0.0154,
+      "breadth": 0.3,
+      "volatility_state": "low"
     }
   },
   "versions": {
     "rows": [
       {
         "version": "V1_CURRENT",
-        "annual_return": 2.4662,
-        "max_drawdown": -22.1436,
-        "sharpe": 0.2877,
-        "calmar": 0.1114,
-        "ending_value": 1.2915
+        "annual_return": 3.5763,
+        "max_drawdown": -20.5695,
+        "sharpe": 0.3962,
+        "calmar": 0.1739,
+        "ending_value": 1.4462,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v1",
+          "max_weight_step": null,
+          "volatility_adjustment": false,
+          "equity_floor_by_regime": {}
+        }
       },
       {
         "version": "V2_REGIME_SMOOTHING",
-        "annual_return": 2.1426,
-        "max_drawdown": -22.1436,
-        "sharpe": 0.2596,
-        "calmar": 0.0968,
-        "ending_value": 1.2493
+        "annual_return": 3.2492,
+        "max_drawdown": -20.5695,
+        "sharpe": 0.3697,
+        "calmar": 0.158,
+        "ending_value": 1.399,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v1",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": false,
+          "equity_floor_by_regime": {}
+        }
       },
       {
         "version": "V3_TREND_RISK_ADJUSTED",
-        "annual_return": 2.9329,
-        "max_drawdown": -14.8785,
-        "sharpe": 0.3972,
-        "calmar": 0.1971,
-        "ending_value": 1.3546
+        "annual_return": 3.716,
+        "max_drawdown": -14.2028,
+        "sharpe": 0.4922,
+        "calmar": 0.2616,
+        "ending_value": 1.4668,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v4",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": true,
+          "equity_floor_by_regime": {}
+        }
+      },
+      {
+        "version": "V4_REGIME_EXPOSURE_FLOOR",
+        "annual_return": 3.716,
+        "max_drawdown": -14.2028,
+        "sharpe": 0.4922,
+        "calmar": 0.2616,
+        "ending_value": 1.4668,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v4",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": true,
+          "equity_floor_by_regime": {
+            "bull": 70.0,
+            "neutral": 40.0,
+            "bear_recovery": 50.0
+          }
+        }
       }
     ],
     "best_version": "V3_TREND_RISK_ADJUSTED"
@@ -871,14 +945,14 @@
         "510300": 60.0,
         "CASH": 40.0
       },
-      "annual_return": 3.8453,
-      "max_drawdown": -24.1966,
-      "sharpe": 0.4049,
-      "ending_value": 1.4861,
-      "excess_return": -1.3791,
-      "drawdown_improvement": 2.053,
-      "sharpe_difference": -0.1172,
-      "ending_value_difference": -0.1946
+      "annual_return": 4.7274,
+      "max_drawdown": -21.8194,
+      "sharpe": 0.4835,
+      "ending_value": 1.6242,
+      "excess_return": -1.1511,
+      "drawdown_improvement": 1.2499,
+      "sharpe_difference": -0.0873,
+      "ending_value_difference": -0.178
     },
     "rows": [
       {
@@ -886,10 +960,10 @@
         "name": "MyInvestTAA",
         "description": "Dynamic TAA strategy.",
         "weights": {},
-        "annual_return": 2.4662,
-        "max_drawdown": -22.1436,
-        "sharpe": 0.2877,
-        "ending_value": 1.2915,
+        "annual_return": 3.5763,
+        "max_drawdown": -20.5695,
+        "sharpe": 0.3962,
+        "ending_value": 1.4462,
         "excess_return": 0.0,
         "drawdown_improvement": 0.0,
         "sharpe_difference": 0.0,
@@ -902,14 +976,14 @@
         "weights": {
           "510300": 100.0
         },
-        "annual_return": 4.8092,
-        "max_drawdown": -39.7532,
-        "sharpe": 0.3492,
-        "ending_value": 1.6375,
-        "excess_return": -2.343,
-        "drawdown_improvement": 17.6096,
-        "sharpe_difference": -0.0615,
-        "ending_value_difference": -0.346
+        "annual_return": 6.295,
+        "max_drawdown": -36.5209,
+        "sharpe": 0.4279,
+        "ending_value": 1.8984,
+        "excess_return": -2.7187,
+        "drawdown_improvement": 15.9514,
+        "sharpe_difference": -0.0317,
+        "ending_value_difference": -0.4522
       },
       {
         "strategy_id": "SAA_60_40",
@@ -919,14 +993,14 @@
           "510300": 60.0,
           "CASH": 40.0
         },
-        "annual_return": 3.8453,
-        "max_drawdown": -24.1966,
-        "sharpe": 0.4049,
-        "ending_value": 1.4861,
-        "excess_return": -1.3791,
-        "drawdown_improvement": 2.053,
-        "sharpe_difference": -0.1172,
-        "ending_value_difference": -0.1946
+        "annual_return": 4.7274,
+        "max_drawdown": -21.8194,
+        "sharpe": 0.4835,
+        "ending_value": 1.6242,
+        "excess_return": -1.1511,
+        "drawdown_improvement": 1.2499,
+        "sharpe_difference": -0.0873,
+        "ending_value_difference": -0.178
       },
       {
         "strategy_id": "SAA_CLASSIC",
@@ -937,14 +1011,14 @@
           "511010": 30.0,
           "518880": 10.0
         },
-        "annual_return": 5.358,
-        "max_drawdown": -21.735,
-        "sharpe": 0.5397,
-        "ending_value": 1.7298,
-        "excess_return": -2.8918,
-        "drawdown_improvement": -0.4086,
-        "sharpe_difference": -0.252,
-        "ending_value_difference": -0.4383
+        "annual_return": 6.324,
+        "max_drawdown": -19.2833,
+        "sharpe": 0.6231,
+        "ending_value": 1.9038,
+        "excess_return": -2.7477,
+        "drawdown_improvement": -1.2862,
+        "sharpe_difference": -0.2269,
+        "ending_value_difference": -0.4576
       },
       {
         "strategy_id": "EQUAL_WEIGHT",
@@ -972,16 +1046,65 @@
           "518880": 5.0,
           "588000": 5.0
         },
-        "annual_return": 5.0534,
-        "max_drawdown": -28.8395,
-        "sharpe": 0.3725,
-        "ending_value": 1.6781,
-        "excess_return": -2.5872,
-        "drawdown_improvement": 6.6959,
-        "sharpe_difference": -0.0848,
-        "ending_value_difference": -0.3866
+        "annual_return": 5.76,
+        "max_drawdown": -30.788,
+        "sharpe": 0.4609,
+        "ending_value": 1.8004,
+        "excess_return": -2.1837,
+        "drawdown_improvement": 10.2185,
+        "sharpe_difference": -0.0647,
+        "ending_value_difference": -0.3542
       }
-    ]
+    ],
+    "validation": {
+      "strategy": "benchmark_suite",
+      "weight_check": true,
+      "return_check": true,
+      "issues": [],
+      "rows": [
+        {
+          "strategy": "HS300_BUY_HOLD",
+          "weight_check": true,
+          "return_check": true,
+          "weight_sum": 100.0,
+          "annual_return": 6.295,
+          "max_drawdown": -36.5209,
+          "issues": []
+        },
+        {
+          "strategy": "SAA_60_40",
+          "weight_check": true,
+          "return_check": true,
+          "weight_sum": 100.0,
+          "annual_return": 4.7274,
+          "max_drawdown": -21.8194,
+          "issues": []
+        },
+        {
+          "strategy": "SAA_CLASSIC",
+          "weight_check": true,
+          "return_check": true,
+          "weight_sum": 100.0,
+          "annual_return": 6.324,
+          "max_drawdown": -19.2833,
+          "issues": []
+        },
+        {
+          "strategy": "EQUAL_WEIGHT",
+          "weight_check": true,
+          "return_check": true,
+          "weight_sum": 100.0,
+          "annual_return": 5.76,
+          "max_drawdown": -30.788,
+          "issues": []
+        }
+      ],
+      "unit": "percent",
+      "notes": [
+        "annual_return and max_drawdown are reported in percentage points.",
+        "SAA_60_40 cash sleeve uses configured annual cash_return, not a 40 percent annual return."
+      ]
+    }
   },
   "recommendations": [
     "Use exposure smoothing to reduce abrupt bull_caution de-risking.",
