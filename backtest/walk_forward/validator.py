@@ -37,6 +37,13 @@ DEFAULT_WALK_FORWARD_SPECS = [
         "max_weight_step": 10.0,
         "volatility_adjustment": True,
     },
+    {
+        "version": "V10_ROBUST_EXPOSURE",
+        "score_version": "v10",
+        "max_weight_step": 10.0,
+        "volatility_adjustment": True,
+        "robust_exposure_config": {"monthly_max_change": 10.0},
+    },
 ]
 
 
@@ -133,7 +140,13 @@ def _taa_kwargs(spec: dict) -> dict:
     return {
         key: value
         for key, value in spec.items()
-        if key in {"score_version", "max_weight_step", "volatility_adjustment", "equity_floor_by_regime"}
+        if key in {
+            "score_version",
+            "max_weight_step",
+            "volatility_adjustment",
+            "equity_floor_by_regime",
+            "robust_exposure_config",
+        }
     }
 
 

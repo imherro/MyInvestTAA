@@ -159,7 +159,7 @@ def test_strategy_diagnosis_api_compares_versions():
 
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload["versions"]["rows"]) >= 9
+    assert len(payload["versions"]["rows"]) >= 10
 
 
 def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
@@ -168,20 +168,24 @@ def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
     assert _strategy_diagnosis_report_is_current(report) is False
 
 
-def test_strategy_diagnosis_report_current_check_accepts_task020_shape():
+def test_strategy_diagnosis_report_current_check_accepts_task021_shape():
     report = {
-        "versions": {"rows": [{"version": "V9_EXPOSURE_OPTIMIZED"}]},
+        "versions": {"rows": [{"version": "V10_ROBUST_EXPOSURE"}]},
         "benchmark": {"validation": {}},
         "diagnosis": {
             "attribution_v3": {},
             "attribution_v9": {},
+            "attribution_v10": {},
             "selection_attribution": {},
             "selection_analysis": {},
             "adaptive_selection": {},
             "adaptive_selection_attribution": {},
             "exposure_selection_attribution": {},
+            "robust_exposure_attribution": {},
             "exposure_analysis": {},
             "strategy_selection": {},
+            "robustness": {},
+            "final_strategy": {},
             "stock_breadth": {},
             "walk_forward": {},
             "promotion": {},
@@ -273,6 +277,22 @@ def test_strategy_selection_api_returns_winner():
     assert response.status_code == 200
     payload = response.json()
     assert {"winner", "confidence", "rows"} <= set(payload)
+
+
+def test_robustness_api_returns_parameter_sensitivity():
+    response = client.get("/api/research/robustness")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"parameter_sensitivity", "bootstrap", "version_scores"} <= set(payload)
+
+
+def test_final_strategy_api_returns_candidate():
+    response = client.get("/api/research/final-strategy")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"candidate", "confidence", "rows"} <= set(payload)
 
 
 def test_research_report_page_returns_sections():
@@ -386,6 +406,15 @@ def test_risk_exposure_page_returns_sections():
     assert "Strategy Selection" in response.text
 
 
+def test_final_strategy_page_returns_sections():
+    response = client.get("/final-strategy")
+
+    assert response.status_code == 200
+    assert "Final Strategy" in response.text
+    assert "Production Score V2" in response.text
+    assert "Robustness" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -440,6 +469,13 @@ def test_dashboard_links_risk_exposure():
 
     assert response.status_code == 200
     assert "/risk-exposure" in response.text
+
+
+def test_dashboard_links_final_strategy():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/final-strategy" in response.text
 
 
 def test_dashboard_links_benchmark_validation():

@@ -9,7 +9,7 @@ from engine.adaptive import adaptive_score_for_regime, factor_weights_for_regime
 from engine.anchor import calculate_anchor_score
 from engine.asset_repository import load_assets, load_price_histories
 from engine.drawdown import calculate_drawdown, calculate_drawdown_percentile, detect_drawdown_events
-from engine.exposure import optimize_equity_exposure
+from engine.exposure import optimize_equity_exposure, optimize_equity_exposure_v2
 from engine.opportunity import _confidence_factor, _recovery_score
 from engine.recovery import analyze_recovery_events
 from engine.regime import detect_market_regime
@@ -35,6 +35,7 @@ def run_taa_backtest(
     volatility_adjustment: bool = False,
     equity_floor_by_regime: dict[str, float] | None = None,
     stock_price_history: dict[str, list[dict]] | None = None,
+    robust_exposure_config: dict | None = None,
 ) -> dict:
     if rebalance_frequency != "monthly":
         raise ValueError("only monthly rebalance is supported")
@@ -48,8 +49,8 @@ def run_taa_backtest(
         raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
-    if score_version not in {"v1", "v4", "v5", "v6", "v7", "v8", "v9"}:
-        raise ValueError("score_version must be v1, v4, v5, v6, v7, v8, or v9")
+    if score_version not in {"v1", "v4", "v5", "v6", "v7", "v8", "v9", "v10"}:
+        raise ValueError("score_version must be v1, v4, v5, v6, v7, v8, v9, or v10")
     if max_weight_step is not None and max_weight_step <= 0:
         raise ValueError("max_weight_step must be positive")
     if equity_floor_by_regime:
@@ -74,6 +75,7 @@ def run_taa_backtest(
             volatility_adjustment,
             equity_floor_by_regime,
             stock_price_history,
+            robust_exposure_config,
         )
 
     weights = {"CASH": 100.0}
@@ -91,6 +93,7 @@ def run_taa_backtest(
     returns: list[float] = []
     turnovers: list[float] = []
     value = initial_capital
+    last_exposure_target: float | None = None
 
     for previous_date, current_date in zip(dates, dates[1:]):
         previous_value = value
@@ -108,7 +111,7 @@ def run_taa_backtest(
         histories_as_of = _histories_as_of(price_history, current_date)
         stock_histories_as_of = (
             _histories_as_of(stock_price_history, current_date)
-            if stock_price_history and score_version in {"v7", "v8", "v9"}
+            if stock_price_history and score_version in {"v7", "v8", "v9", "v10"}
             else {}
         )
         benchmark_history = histories_as_of.get("510300", [])
@@ -123,6 +126,25 @@ def run_taa_backtest(
                 _current_portfolio_drawdown_pct(equity_curve),
                 _estimate_current_breadth(histories_as_of),
             )
+            risk_budget = _risk_budget_from_exposure(risk_budget, exposure_decision.equity_target)
+        elif score_version == "v10":
+            config = robust_exposure_config or {}
+            current_curve = equity_curve + [value]
+            exposure_decision = optimize_equity_exposure_v2(
+                regime.state,
+                risk_budget.equity_limit,
+                _annualized_volatility_pct(benchmark_history),
+                _trend_score(benchmark_history),
+                _current_portfolio_drawdown_pct(current_curve),
+                _estimate_current_breadth(histories_as_of),
+                previous_equity_target=last_exposure_target,
+                previous_drawdown=_current_portfolio_drawdown_pct(equity_curve),
+                target_volatility=float(config.get("target_volatility", 12.0)),
+                monthly_max_change=float(config.get("monthly_max_change", 10.0)),
+                moderate_drawdown=float(config.get("moderate_drawdown", -5.0)),
+                deep_drawdown=float(config.get("deep_drawdown", -10.0)),
+            )
+            last_exposure_target = exposure_decision.equity_target
             risk_budget = _risk_budget_from_exposure(risk_budget, exposure_decision.equity_target)
         assets_as_of = _assets_available_as_of(assets, current_date)
         scores = _score_assets_as_of(
@@ -180,10 +202,11 @@ def run_taa_backtest(
                     "max_weight_step": max_weight_step,
                     "volatility_adjustment": volatility_adjustment,
                     "equity_floor_by_regime": equity_floor_by_regime or {},
+                    "robust_exposure_config": robust_exposure_config or {},
                     "stock_breadth_assets": len(stock_histories_as_of),
                     "adaptive_factor_weights": (
                         factor_weights_for_regime(regime.state).as_dict()
-                        if score_version in {"v8", "v9"}
+                        if score_version in {"v8", "v9", "v10"}
                         else {}
                     ),
                     "exposure_decision": exposure_decision.as_dict() if exposure_decision else {},
@@ -209,6 +232,7 @@ def run_taa_backtest(
             "max_weight_step": max_weight_step,
             "volatility_adjustment": volatility_adjustment,
             "equity_floor_by_regime": equity_floor_by_regime or {},
+            "robust_exposure_config": robust_exposure_config or {},
             "stock_breadth_assets": len(stock_price_history or {}),
         },
         "metrics": metrics,
@@ -233,14 +257,14 @@ def _score_assets_as_of(
 ) -> list[dict]:
     scores: list[dict] = []
     benchmark_history = histories_as_of.get("510300", [])
-    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7", "v8", "v9"} else {}
+    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7", "v8", "v9", "v10"} else {}
     theme_breadth = theme_breadth_by_theme(histories_as_of) if score_version == "v6" else {}
     stock_breadth = (
         stock_breadth_by_theme(stock_histories_as_of or {})
-        if score_version in {"v7", "v8", "v9"}
+        if score_version in {"v7", "v8", "v9", "v10"}
         else {}
     )
-    adaptive_weights = factor_weights_for_regime(regime_state) if score_version in {"v8", "v9"} else None
+    adaptive_weights = factor_weights_for_regime(regime_state) if score_version in {"v8", "v9", "v10"} else None
     for asset in assets:
         history = histories_as_of.get(asset["id"], [])
         if len(history) < 2:
@@ -261,7 +285,7 @@ def _score_assets_as_of(
         stock_breadth_score = float(stock_breadth.get(theme, {}).get("breadth_score", 50.0))
         breadth_score = (
             stock_breadth_score
-            if score_version in {"v7", "v8", "v9"}
+            if score_version in {"v7", "v8", "v9", "v10"}
             else float(theme_breadth.get(theme, {}).get("breadth_score", 50.0))
         )
         quality_score = anchor_score
@@ -300,7 +324,7 @@ def _score_assets_as_of(
                 + 0.15 * quality_score,
                 2,
             )
-        elif score_version in {"v8", "v9"}:
+        elif score_version in {"v8", "v9", "v10"}:
             adaptive_score = adaptive_score_for_regime(
                 regime_state,
                 {
@@ -338,7 +362,7 @@ def _score_assets_as_of(
                 "stock_breadth": stock_breadth.get(theme, {}),
                 "adaptive_factor_weights": adaptive_weights.as_dict() if adaptive_weights else {},
                 "adaptive_reason": adaptive_weights.reason if adaptive_weights else "",
-                "adaptive_regime": regime_state if score_version in {"v8", "v9"} else "",
+                "adaptive_regime": regime_state if score_version in {"v8", "v9", "v10"} else "",
                 "quality_score": quality_score,
                 "volatility": volatility,
             }
@@ -583,6 +607,7 @@ def _empty_result(
     volatility_adjustment: bool = False,
     equity_floor_by_regime: dict[str, float] | None = None,
     stock_price_history: dict[str, list[dict]] | None = None,
+    robust_exposure_config: dict | None = None,
 ) -> dict:
     return {
         "strategy": "MyInvestTAA",
@@ -597,6 +622,7 @@ def _empty_result(
             "max_weight_step": max_weight_step,
             "volatility_adjustment": volatility_adjustment,
             "equity_floor_by_regime": equity_floor_by_regime or {},
+            "robust_exposure_config": robust_exposure_config or {},
             "stock_breadth_assets": len(stock_price_history or {}),
         },
         "metrics": {

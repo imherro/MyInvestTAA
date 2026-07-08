@@ -29,6 +29,12 @@ def test_report_includes_v9_version():
     assert any(row["version"] == "V9_EXPOSURE_OPTIMIZED" for row in report["versions"]["rows"])
 
 
+def test_report_includes_v10_version():
+    report = _report()
+
+    assert any(row["version"] == "V10_ROBUST_EXPOSURE" for row in report["versions"]["rows"])
+
+
 def test_report_records_attribution_v8():
     report = _report()
 
@@ -39,6 +45,12 @@ def test_report_records_attribution_v9():
     report = _report()
 
     assert "attribution_v9" in report["diagnosis"]
+
+
+def test_report_records_attribution_v10():
+    report = _report()
+
+    assert "attribution_v10" in report["diagnosis"]
 
 
 def test_report_records_adaptive_selection_attribution():
@@ -53,6 +65,12 @@ def test_report_records_exposure_selection_attribution():
     assert "adaptive_factor" in report["diagnosis"]["exposure_selection_attribution"]
 
 
+def test_report_records_robust_exposure_attribution():
+    report = _report()
+
+    assert "adaptive_factor" in report["diagnosis"]["robust_exposure_attribution"]
+
+
 def test_report_records_adaptive_selection():
     report = _report()
 
@@ -65,10 +83,10 @@ def test_report_adaptive_selection_rows_include_reason():
     assert "adaptive_reason" in report["diagnosis"]["adaptive_selection"]["rows"][0]
 
 
-def test_report_selection_analysis_is_v9():
+def test_report_selection_analysis_is_v10():
     report = _report()
 
-    assert report["diagnosis"]["selection_analysis"]["version"] == "v9"
+    assert report["diagnosis"]["selection_analysis"]["version"] == "v10"
 
 
 def test_report_walk_forward_includes_v8():
@@ -83,6 +101,12 @@ def test_report_walk_forward_includes_v9():
     assert "V9_EXPOSURE_OPTIMIZED" in report["diagnosis"]["walk_forward"]["versions"]
 
 
+def test_report_walk_forward_includes_v10():
+    report = _report()
+
+    assert "V10_ROBUST_EXPOSURE" in report["diagnosis"]["walk_forward"]["versions"]
+
+
 def test_report_promotion_includes_v8():
     report = _report()
 
@@ -93,6 +117,12 @@ def test_report_promotion_includes_v9():
     report = _report()
 
     assert any(row["version"] == "V9_EXPOSURE_OPTIMIZED" for row in report["diagnosis"]["promotion"]["rows"])
+
+
+def test_report_promotion_includes_v10():
+    report = _report()
+
+    assert any(row["version"] == "V10_ROBUST_EXPOSURE" for row in report["diagnosis"]["promotion"]["rows"])
 
 
 def test_report_registry_records_v8():
@@ -111,6 +141,13 @@ def test_report_registry_v8_has_promotion_fields():
 def test_report_registry_v9_has_promotion_fields():
     report = _report()
     row = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V9_EXPOSURE_OPTIMIZED")
+
+    assert {"promotion_score", "validation_windows", "approval_status"} <= set(row)
+
+
+def test_report_registry_v10_has_promotion_fields():
+    report = _report()
+    row = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V10_ROBUST_EXPOSURE")
 
     assert {"promotion_score", "validation_windows", "approval_status"} <= set(row)
 
@@ -143,3 +180,15 @@ def test_report_records_strategy_selection():
     report = _report()
 
     assert {"winner", "confidence", "rows"} <= set(report["diagnosis"]["strategy_selection"])
+
+
+def test_report_records_robustness():
+    report = _report()
+
+    assert {"parameter_sensitivity", "version_scores"} <= set(report["diagnosis"]["robustness"])
+
+
+def test_report_records_final_strategy():
+    report = _report()
+
+    assert {"candidate", "rows"} <= set(report["diagnosis"]["final_strategy"])

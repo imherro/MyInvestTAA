@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from backtest.benchmark import compare_strategies
+from backtest.robustness import build_robustness_report
 from backtest.taa import run_taa_backtest
 from backtest.walk_forward import run_walk_forward_validation
 from config import load_research_config
@@ -15,7 +16,12 @@ from engine.adaptive import adaptive_weight_snapshot
 from engine.asset_repository import load_assets
 from engine.benchmark_validation import validate_benchmark_report
 from engine.diagnosis import analyze_regime_effects, compare_strategy_versions, decompose_vs_static
-from engine.governance import build_promotion_report, build_strategy_registry, build_strategy_selection_report
+from engine.governance import (
+    build_final_strategy_report,
+    build_promotion_report,
+    build_strategy_registry,
+    build_strategy_selection_report,
+)
 from engine.performance_attribution import analyze_regime_contribution
 from engine.performance_attribution.v3 import decompose_excess_return_v3
 from engine.regime.v3 import detect_market_regime_v3
@@ -123,6 +129,14 @@ def build_strategy_diagnosis_report(
             volatility_adjustment=True,
             stock_price_history=stock_histories,
         ),
+        "V10_ROBUST_EXPOSURE": run_taa_backtest(
+            **common_kwargs,
+            score_version="v10",
+            max_weight_step=10.0,
+            volatility_adjustment=True,
+            stock_price_history=stock_histories,
+            robust_exposure_config={"monthly_max_change": 10.0},
+        ),
     }
     benchmark = compare_strategies(**common_kwargs)
     static_row = benchmark["strategies"].get("SAA_60_40")
@@ -135,6 +149,7 @@ def build_strategy_diagnosis_report(
     attribution_v7 = decompose_excess_return_v3(variants["V7_STOCK_BREADTH_SELECTION"], static_row)
     attribution_v8 = decompose_excess_return_v3(variants["V8_ADAPTIVE_SELECTION"], static_row)
     attribution_v9 = decompose_excess_return_v3(variants["V9_EXPOSURE_OPTIMIZED"], static_row)
+    attribution_v10 = decompose_excess_return_v3(variants["V10_ROBUST_EXPOSURE"], static_row)
     selection_attribution = compare_selection_attribution(
         decompose_excess_return_v3(variants["V3_TREND_RISK_ADJUSTED"], static_row),
         attribution_v5,
@@ -162,7 +177,34 @@ def build_strategy_diagnosis_report(
         baseline="V8_ADAPTIVE_SELECTION",
         candidate="V9_EXPOSURE_OPTIMIZED",
     )
+    robust_exposure_attribution = compare_adaptive_selection_attribution(
+        attribution_v9,
+        attribution_v10,
+        baseline="V9_EXPOSURE_OPTIMIZED",
+        candidate="V10_ROBUST_EXPOSURE",
+    )
     walk_forward = run_walk_forward_validation(
+        assets=assets,
+        price_history=histories,
+        stock_price_history=stock_histories,
+        common_kwargs={
+            "transaction_cost": common_kwargs["transaction_cost"],
+            "cash_return": common_kwargs["cash_return"],
+            "slippage": common_kwargs["slippage"],
+            "expense_ratio": common_kwargs["expense_ratio"],
+        },
+    )
+    robustness = build_robustness_report(
+        {
+            version: variants[version]
+            for version in [
+                "V6_THEME_BREADTH_SELECTION",
+                "V7_STOCK_BREADTH_SELECTION",
+                "V8_ADAPTIVE_SELECTION",
+                "V9_EXPOSURE_OPTIMIZED",
+                "V10_ROBUST_EXPOSURE",
+            ]
+        },
         assets=assets,
         price_history=histories,
         stock_price_history=stock_histories,
@@ -175,6 +217,7 @@ def build_strategy_diagnosis_report(
     )
     promotion = build_promotion_report(version_comparison["rows"], walk_forward)
     strategy_selection = build_strategy_selection_report(version_comparison["rows"], walk_forward)
+    final_strategy = build_final_strategy_report(version_comparison["rows"], walk_forward, robustness)
     promotion_by_version = {row["version"]: row for row in promotion["rows"]}
     stock_breadth_rows = rank_stock_breadth(stock_histories, source=stock_breadth_meta["source"])
     strategy_registry = build_strategy_registry(
@@ -198,15 +241,28 @@ def build_strategy_diagnosis_report(
                 "periods": walk_forward.get("windows", 0),
                 "improvement": exposure_selection_attribution["improved"],
                 "stock_breadth_coverage": stock_breadth_coverage(stock_breadth_rows)["coverage_ratio"],
+            },
+            "V10_ROBUST_EXPOSURE": {
+                "periods": walk_forward.get("windows", 0),
+                "improvement": robust_exposure_attribution["improved"],
+                "stock_breadth_coverage": stock_breadth_coverage(stock_breadth_rows)["coverage_ratio"],
+                "robustness_score": next(
+                    (
+                        row["robustness_score"]
+                        for row in robustness.get("version_scores", [])
+                        if row.get("version") == "V10_ROBUST_EXPOSURE"
+                    ),
+                    0.0,
+                ),
             }
         },
         promotion_by_version=promotion_by_version,
     )
     regime_contribution = analyze_regime_contribution(variants["V1_CURRENT"])
     regime_v3 = detect_market_regime_v3(histories.get("510300", []), breadth=_estimate_breadth(histories))
-    selection_analysis = build_selection_analysis(variants["V9_EXPOSURE_OPTIMIZED"])
-    adaptive_selection = _adaptive_selection_report(variants["V9_EXPOSURE_OPTIMIZED"])
-    exposure_analysis = _exposure_analysis_report(variants["V9_EXPOSURE_OPTIMIZED"])
+    selection_analysis = build_selection_analysis(variants["V10_ROBUST_EXPOSURE"])
+    adaptive_selection = _adaptive_selection_report(variants["V10_ROBUST_EXPOSURE"])
+    exposure_analysis = _exposure_analysis_report(variants["V10_ROBUST_EXPOSURE"])
     report = {
         "dataset": {
             "provider": provider_name,
@@ -226,14 +282,17 @@ def build_strategy_diagnosis_report(
             "attribution_v7": attribution_v7,
             "attribution_v8": attribution_v8,
             "attribution_v9": attribution_v9,
+            "attribution_v10": attribution_v10,
             "selection_attribution": selection_attribution,
             "selection_attribution_v2": selection_attribution_v2,
             "selection_attribution_v3": selection_attribution_v3,
             "adaptive_selection_attribution": adaptive_selection_attribution,
             "exposure_selection_attribution": exposure_selection_attribution,
+            "robust_exposure_attribution": robust_exposure_attribution,
             "selection_analysis": selection_analysis,
             "adaptive_selection": adaptive_selection,
             "exposure_analysis": exposure_analysis,
+            "robustness": robustness,
             "stock_breadth": {
                 **stock_breadth_meta,
                 "coverage": stock_breadth_coverage(stock_breadth_rows),
@@ -242,6 +301,7 @@ def build_strategy_diagnosis_report(
             "walk_forward": walk_forward,
             "promotion": promotion,
             "strategy_selection": strategy_selection,
+            "final_strategy": final_strategy,
             "regime_v3": regime_v3,
         },
         "versions": version_comparison,
@@ -261,6 +321,7 @@ def build_strategy_diagnosis_report(
             "Use stock breadth and walk-forward promotion rules before promoting V7.",
             "Use adaptive factor weights to improve V8 risk-return stability before promotion.",
             "Use exposure optimization and strategy selection scoring before promoting V9.",
+            "Use robust exposure and final strategy selection before declaring production readiness.",
         ],
     }
     if report_path is not None:

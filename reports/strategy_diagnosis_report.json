@@ -892,6 +892,16 @@
       "interaction": 0.0,
       "check_sum": -1.9588
     },
+    "attribution_v10": {
+      "strategy": "MyInvestTAA",
+      "benchmark": "SAA_60_40",
+      "excess_return": -1.135,
+      "allocation": 0.55,
+      "selection": -1.7354,
+      "timing": 0.0504,
+      "interaction": 0.0,
+      "check_sum": -1.135
+    },
     "selection_attribution": {
       "baseline": "V3_TREND_RISK_ADJUSTED",
       "candidate": "V5_RELATIVE_STRENGTH_SELECTION",
@@ -948,8 +958,21 @@
         "improved": false
       }
     },
+    "robust_exposure_attribution": {
+      "baseline": "V9_EXPOSURE_OPTIMIZED",
+      "candidate": "V10_ROBUST_EXPOSURE",
+      "static_factor": -1.9512,
+      "adaptive_factor": 0.2158,
+      "improved": true,
+      "selection": {
+        "old": -1.9512,
+        "new": -1.7354,
+        "improvement": 0.2158,
+        "improved": true
+      }
+    },
     "selection_analysis": {
-      "version": "v9",
+      "version": "v10",
       "date": "2026-07-08",
       "rows": [
         {
@@ -1433,7 +1456,7 @@
       ]
     },
     "adaptive_selection": {
-      "version": "v9",
+      "version": "v10",
       "date": "2026-07-08",
       "regime": "bull",
       "factor_weights": {
@@ -1641,183 +1664,894 @@
       ]
     },
     "exposure_analysis": {
-      "version": "v9",
+      "version": "v10",
       "date": "2026-07-08",
       "current": {
         "date": "2026-07-08",
         "regime": "bull",
-        "equity_target": 59.71,
-        "confidence": 0.65,
+        "equity_target": 80.0,
+        "raw_equity_target": 65.61,
+        "confidence": 0.75,
         "reason": [
           "bull base equity 90%",
-          "volatility rising",
-          "breadth weakening"
+          "high volatility without strong trend gets a light trim",
+          "moderate drawdown reduces exposure 10%",
+          "breadth weak only penalized when trend is not supportive",
+          "monthly exposure smoothing"
         ],
         "volatility": 15.3745,
-        "drawdown": -3.9395,
-        "breadth": 0.3
+        "trend_score": 48.65,
+        "drawdown": -5.741,
+        "breadth": 0.3,
+        "previous_equity_target": 90.0,
+        "monthly_max_change": 10.0,
+        "volatility_control": {
+          "volatility_state": "high_mixed_trend",
+          "action": "trim_exposure",
+          "multiplier": 0.9,
+          "current_volatility": 15.3745,
+          "target_volatility": 12.0,
+          "trend_score": 48.65,
+          "reason": "high volatility without strong trend gets a light trim"
+        },
+        "drawdown_control": {
+          "drawdown_state": "moderate_drawdown",
+          "multiplier": 0.9,
+          "drawdown": -5.741,
+          "previous_drawdown": -2.9476,
+          "recovering": false,
+          "reason": "moderate drawdown reduces exposure 10%"
+        }
       },
       "rows": [
         {
           "date": "2025-08-29",
           "regime": "neutral",
-          "equity_target": 31.45,
-          "confidence": 0.6,
+          "equity_target": 62.4,
+          "raw_equity_target": 73.5,
+          "confidence": 0.75,
           "reason": [
             "neutral base equity 70%",
-            "volatility rising"
+            "high volatility is acceptable while trend is positive",
+            "drawdown recovery restores exposure gradually",
+            "monthly exposure smoothing"
           ],
           "volatility": 26.7133,
-          "drawdown": -2.1492,
-          "breadth": 0.9
+          "trend_score": 100.0,
+          "drawdown": -1.2066,
+          "breadth": 0.9,
+          "previous_equity_target": 52.4,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_positive_trend",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 26.7133,
+            "target_volatility": 12.0,
+            "trend_score": 100.0,
+            "reason": "high volatility is acceptable while trend is positive"
+          },
+          "drawdown_control": {
+            "drawdown_state": "recovering",
+            "multiplier": 1.05,
+            "drawdown": -1.2066,
+            "previous_drawdown": -4.602,
+            "recovering": true,
+            "reason": "drawdown recovery restores exposure gradually"
+          }
         },
         {
           "date": "2025-09-30",
           "regime": "neutral",
-          "equity_target": 59.31,
-          "confidence": 0.75,
+          "equity_target": 70.0,
+          "raw_equity_target": 70.0,
+          "confidence": 0.78,
           "reason": [
             "neutral base equity 70%",
-            "volatility rising"
+            "high volatility is acceptable while trend is positive",
+            "drawdown within normal range"
           ],
           "volatility": 14.1618,
+          "trend_score": 100.0,
           "drawdown": 0.0,
-          "breadth": 0.65
+          "breadth": 0.65,
+          "previous_equity_target": 62.4,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_positive_trend",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 14.1618,
+            "target_volatility": 12.0,
+            "trend_score": 100.0,
+            "reason": "high volatility is acceptable while trend is positive"
+          },
+          "drawdown_control": {
+            "drawdown_state": "normal_drawdown",
+            "multiplier": 1.0,
+            "drawdown": 0.0,
+            "previous_drawdown": -1.2248,
+            "recovering": true,
+            "reason": "drawdown within normal range"
+          }
         },
         {
           "date": "2025-10-31",
           "regime": "neutral",
-          "equity_target": 70.25,
-          "confidence": 0.75,
+          "equity_target": 70.0,
+          "raw_equity_target": 70.0,
+          "confidence": 0.78,
           "reason": [
-            "neutral base equity 70%"
+            "neutral base equity 70%",
+            "volatility is within trend-aware tolerance",
+            "drawdown within normal range"
           ],
           "volatility": 11.9569,
+          "trend_score": 100.0,
           "drawdown": 0.0,
-          "breadth": 0.5
+          "breadth": 0.5,
+          "previous_equity_target": 70.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "normal_volatility",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 11.9569,
+            "target_volatility": 12.0,
+            "trend_score": 100.0,
+            "reason": "volatility is within trend-aware tolerance"
+          },
+          "drawdown_control": {
+            "drawdown_state": "normal_drawdown",
+            "multiplier": 1.0,
+            "drawdown": 0.0,
+            "previous_drawdown": 0.0,
+            "recovering": false,
+            "reason": "drawdown within normal range"
+          }
         },
         {
           "date": "2025-11-28",
           "regime": "neutral",
-          "equity_target": 56.52,
-          "confidence": 0.65,
+          "equity_target": 60.0,
+          "raw_equity_target": 56.7,
+          "confidence": 0.75,
           "reason": [
             "neutral base equity 70%",
-            "volatility rising",
-            "breadth weakening"
+            "high volatility without strong trend gets a light trim",
+            "drawdown within normal range",
+            "breadth weak only penalized when trend is not supportive",
+            "monthly exposure smoothing"
           ],
           "volatility": 12.6325,
-          "drawdown": 0.0,
-          "breadth": 0.2
+          "trend_score": 51.85,
+          "drawdown": -1.0713,
+          "breadth": 0.2,
+          "previous_equity_target": 70.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_mixed_trend",
+            "action": "trim_exposure",
+            "multiplier": 0.9,
+            "current_volatility": 12.6325,
+            "target_volatility": 12.0,
+            "trend_score": 51.85,
+            "reason": "high volatility without strong trend gets a light trim"
+          },
+          "drawdown_control": {
+            "drawdown_state": "normal_drawdown",
+            "multiplier": 1.0,
+            "drawdown": -1.0713,
+            "previous_drawdown": 0.0,
+            "recovering": false,
+            "reason": "drawdown within normal range"
+          }
         },
         {
           "date": "2025-12-31",
           "regime": "neutral",
-          "equity_target": 66.52,
-          "confidence": 0.75,
+          "equity_target": 70.0,
+          "raw_equity_target": 70.0,
+          "confidence": 0.78,
           "reason": [
             "neutral base equity 70%",
-            "volatility rising"
+            "high volatility is acceptable while trend is positive",
+            "drawdown within normal range"
           ],
           "volatility": 12.627,
-          "drawdown": -1.097,
-          "breadth": 0.65
+          "trend_score": 75.63,
+          "drawdown": 0.0,
+          "breadth": 0.65,
+          "previous_equity_target": 60.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_positive_trend",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 12.627,
+            "target_volatility": 12.0,
+            "trend_score": 75.63,
+            "reason": "high volatility is acceptable while trend is positive"
+          },
+          "drawdown_control": {
+            "drawdown_state": "normal_drawdown",
+            "multiplier": 1.0,
+            "drawdown": 0.0,
+            "previous_drawdown": -1.0885,
+            "recovering": true,
+            "reason": "drawdown within normal range"
+          }
         },
         {
           "date": "2026-01-30",
           "regime": "bull",
-          "equity_target": 90.0,
+          "equity_target": 80.0,
+          "raw_equity_target": 90.0,
           "confidence": 0.75,
           "reason": [
-            "bull base equity 90%"
+            "bull base equity 90%",
+            "volatility is within trend-aware tolerance",
+            "drawdown within normal range",
+            "monthly exposure smoothing"
           ],
           "volatility": 11.7195,
-          "drawdown": -0.0702,
-          "breadth": 0.85
+          "trend_score": 79.07,
+          "drawdown": 0.0,
+          "breadth": 0.85,
+          "previous_equity_target": 70.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "normal_volatility",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 11.7195,
+            "target_volatility": 12.0,
+            "trend_score": 79.07,
+            "reason": "volatility is within trend-aware tolerance"
+          },
+          "drawdown_control": {
+            "drawdown_state": "normal_drawdown",
+            "multiplier": 1.0,
+            "drawdown": 0.0,
+            "previous_drawdown": -0.0021,
+            "recovering": false,
+            "reason": "drawdown within normal range"
+          }
         },
         {
           "date": "2026-02-27",
           "regime": "bull",
           "equity_target": 90.0,
-          "confidence": 0.75,
+          "raw_equity_target": 90.0,
+          "confidence": 0.78,
           "reason": [
-            "bull base equity 90%"
+            "bull base equity 90%",
+            "volatility is within trend-aware tolerance",
+            "drawdown within normal range"
           ],
           "volatility": 11.8327,
+          "trend_score": 86.48,
           "drawdown": 0.0,
-          "breadth": 0.55
+          "breadth": 0.55,
+          "previous_equity_target": 80.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "normal_volatility",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 11.8327,
+            "target_volatility": 12.0,
+            "trend_score": 86.48,
+            "reason": "volatility is within trend-aware tolerance"
+          },
+          "drawdown_control": {
+            "drawdown_state": "normal_drawdown",
+            "multiplier": 1.0,
+            "drawdown": 0.0,
+            "previous_drawdown": 0.0,
+            "recovering": false,
+            "reason": "drawdown within normal range"
+          }
         },
         {
           "date": "2026-03-31",
           "regime": "neutral",
-          "equity_target": 52.05,
-          "confidence": 0.65,
+          "equity_target": 80.0,
+          "raw_equity_target": 49.6,
+          "confidence": 0.57,
           "reason": [
             "neutral base equity 70%",
-            "volatility rising",
-            "breadth weakening"
+            "high volatility with weak trend is risk",
+            "moderate drawdown reduces exposure 10%",
+            "breadth weak only penalized when trend is not supportive",
+            "monthly exposure smoothing"
           ],
           "volatility": 13.7182,
-          "drawdown": 0.0,
-          "breadth": 0.15
+          "trend_score": 15.85,
+          "drawdown": -6.0667,
+          "breadth": 0.15,
+          "previous_equity_target": 90.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_negative_trend",
+            "action": "reduce_exposure",
+            "multiplier": 0.8748,
+            "current_volatility": 13.7182,
+            "target_volatility": 12.0,
+            "trend_score": 15.85,
+            "reason": "high volatility with weak trend is risk"
+          },
+          "drawdown_control": {
+            "drawdown_state": "moderate_drawdown",
+            "multiplier": 0.9,
+            "drawdown": -6.0667,
+            "previous_drawdown": 0.0,
+            "recovering": false,
+            "reason": "moderate drawdown reduces exposure 10%"
+          }
         },
         {
           "date": "2026-04-30",
           "regime": "bull",
-          "equity_target": 60.63,
-          "confidence": 0.75,
+          "equity_target": 90.0,
+          "raw_equity_target": 90.0,
+          "confidence": 0.78,
           "reason": [
             "bull base equity 90%",
-            "volatility rising",
-            "portfolio drawdown control"
+            "high volatility is acceptable while trend is positive",
+            "drawdown recovery restores exposure gradually"
           ],
           "volatility": 14.2491,
-          "drawdown": -6.1204,
-          "breadth": 0.75
+          "trend_score": 81.0,
+          "drawdown": -3.5624,
+          "breadth": 0.75,
+          "previous_equity_target": 80.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_positive_trend",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 14.2491,
+            "target_volatility": 12.0,
+            "trend_score": 81.0,
+            "reason": "high volatility is acceptable while trend is positive"
+          },
+          "drawdown_control": {
+            "drawdown_state": "recovering",
+            "multiplier": 1.05,
+            "drawdown": -3.5624,
+            "previous_drawdown": -6.0954,
+            "recovering": true,
+            "reason": "drawdown recovery restores exposure gradually"
+          }
         },
         {
           "date": "2026-05-29",
           "regime": "bull",
-          "equity_target": 71.99,
-          "confidence": 0.65,
+          "equity_target": 90.0,
+          "raw_equity_target": 90.0,
+          "confidence": 0.78,
           "reason": [
             "bull base equity 90%",
-            "volatility rising",
-            "breadth weakening"
+            "high volatility is acceptable while trend is positive",
+            "drawdown within normal range"
           ],
           "volatility": 14.2518,
-          "drawdown": -4.4654,
-          "breadth": 0.4
+          "trend_score": 85.48,
+          "drawdown": -3.5395,
+          "breadth": 0.4,
+          "previous_equity_target": 90.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_positive_trend",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 14.2518,
+            "target_volatility": 12.0,
+            "trend_score": 85.48,
+            "reason": "high volatility is acceptable while trend is positive"
+          },
+          "drawdown_control": {
+            "drawdown_state": "normal_drawdown",
+            "multiplier": 1.0,
+            "drawdown": -3.5395,
+            "previous_drawdown": -3.5862,
+            "recovering": false,
+            "reason": "drawdown within normal range"
+          }
         },
         {
           "date": "2026-06-30",
           "regime": "bull",
-          "equity_target": 72.03,
-          "confidence": 0.75,
+          "equity_target": 90.0,
+          "raw_equity_target": 90.0,
+          "confidence": 0.78,
           "reason": [
             "bull base equity 90%",
-            "volatility rising",
-            "breadth weakening"
+            "high volatility is acceptable while trend is positive",
+            "drawdown recovery restores exposure gradually"
           ],
           "volatility": 14.2447,
-          "drawdown": -4.4296,
-          "breadth": 0.45
+          "trend_score": 100.0,
+          "drawdown": -2.9303,
+          "breadth": 0.45,
+          "previous_equity_target": 90.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_positive_trend",
+            "action": "hold_exposure",
+            "multiplier": 1.0,
+            "current_volatility": 14.2447,
+            "target_volatility": 12.0,
+            "trend_score": 100.0,
+            "reason": "high volatility is acceptable while trend is positive"
+          },
+          "drawdown_control": {
+            "drawdown_state": "recovering",
+            "multiplier": 1.05,
+            "drawdown": -2.9303,
+            "previous_drawdown": -3.5481,
+            "recovering": true,
+            "reason": "drawdown recovery restores exposure gradually"
+          }
         },
         {
           "date": "2026-07-08",
           "regime": "bull",
-          "equity_target": 59.71,
-          "confidence": 0.65,
+          "equity_target": 80.0,
+          "raw_equity_target": 65.61,
+          "confidence": 0.75,
           "reason": [
             "bull base equity 90%",
-            "volatility rising",
-            "breadth weakening"
+            "high volatility without strong trend gets a light trim",
+            "moderate drawdown reduces exposure 10%",
+            "breadth weak only penalized when trend is not supportive",
+            "monthly exposure smoothing"
           ],
           "volatility": 15.3745,
-          "drawdown": -3.9395,
-          "breadth": 0.3
+          "trend_score": 48.65,
+          "drawdown": -5.741,
+          "breadth": 0.3,
+          "previous_equity_target": 90.0,
+          "monthly_max_change": 10.0,
+          "volatility_control": {
+            "volatility_state": "high_mixed_trend",
+            "action": "trim_exposure",
+            "multiplier": 0.9,
+            "current_volatility": 15.3745,
+            "target_volatility": 12.0,
+            "trend_score": 48.65,
+            "reason": "high volatility without strong trend gets a light trim"
+          },
+          "drawdown_control": {
+            "drawdown_state": "moderate_drawdown",
+            "multiplier": 0.9,
+            "drawdown": -5.741,
+            "previous_drawdown": -2.9476,
+            "recovering": false,
+            "reason": "moderate drawdown reduces exposure 10%"
+          }
         }
       ]
+    },
+    "robustness": {
+      "version": "robustness_v1",
+      "parameter_sensitivity": {
+        "version": "V10_ROBUST_EXPOSURE",
+        "parameter_count": 9,
+        "stable_parameters": 9,
+        "pass_rate": 1.0,
+        "stability_score": 67.96,
+        "rows": [
+          {
+            "target_volatility": 10.0,
+            "drawdown_threshold": -5.0,
+            "deep_drawdown": -10.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 3.8153,
+            "max_drawdown": -9.8145,
+            "sharpe": 0.5781,
+            "calmar": 0.3887,
+            "ending_value": 1.4816,
+            "stable": true,
+            "stability_score": 70.89
+          },
+          {
+            "target_volatility": 10.0,
+            "drawdown_threshold": -8.0,
+            "deep_drawdown": -12.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 3.7807,
+            "max_drawdown": -10.1085,
+            "sharpe": 0.5697,
+            "calmar": 0.374,
+            "ending_value": 1.4765,
+            "stable": true,
+            "stability_score": 69.79
+          },
+          {
+            "target_volatility": 10.0,
+            "drawdown_threshold": -10.0,
+            "deep_drawdown": -15.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 3.8375,
+            "max_drawdown": -10.23,
+            "sharpe": 0.5739,
+            "calmar": 0.3751,
+            "ending_value": 1.485,
+            "stable": true,
+            "stability_score": 70.21
+          },
+          {
+            "target_volatility": 12.0,
+            "drawdown_threshold": -5.0,
+            "deep_drawdown": -10.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 3.5924,
+            "max_drawdown": -10.8203,
+            "sharpe": 0.5227,
+            "calmar": 0.332,
+            "ending_value": 1.4486,
+            "stable": true,
+            "stability_score": 65.05
+          },
+          {
+            "target_volatility": 12.0,
+            "drawdown_threshold": -8.0,
+            "deep_drawdown": -12.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 3.7844,
+            "max_drawdown": -11.0646,
+            "sharpe": 0.539,
+            "calmar": 0.342,
+            "ending_value": 1.477,
+            "stable": true,
+            "stability_score": 66.84
+          },
+          {
+            "target_volatility": 12.0,
+            "drawdown_threshold": -10.0,
+            "deep_drawdown": -15.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 3.7652,
+            "max_drawdown": -11.0771,
+            "sharpe": 0.5353,
+            "calmar": 0.3399,
+            "ending_value": 1.4742,
+            "stable": true,
+            "stability_score": 66.51
+          },
+          {
+            "target_volatility": 15.0,
+            "drawdown_threshold": -5.0,
+            "deep_drawdown": -10.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 3.8392,
+            "max_drawdown": -11.1287,
+            "sharpe": 0.5324,
+            "calmar": 0.345,
+            "ending_value": 1.4852,
+            "stable": true,
+            "stability_score": 66.8
+          },
+          {
+            "target_volatility": 15.0,
+            "drawdown_threshold": -8.0,
+            "deep_drawdown": -12.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 4.0229,
+            "max_drawdown": -11.5875,
+            "sharpe": 0.5446,
+            "calmar": 0.3472,
+            "ending_value": 1.5131,
+            "stable": true,
+            "stability_score": 68.01
+          },
+          {
+            "target_volatility": 15.0,
+            "drawdown_threshold": -10.0,
+            "deep_drawdown": -15.0,
+            "monthly_max_change": 10.0,
+            "annual_return": 3.9992,
+            "max_drawdown": -11.67,
+            "sharpe": 0.541,
+            "calmar": 0.3427,
+            "ending_value": 1.5094,
+            "stable": true,
+            "stability_score": 67.54
+          }
+        ]
+      },
+      "bootstrap": {
+        "simulations": 200,
+        "versions": {
+          "V6_THEME_BREADTH_SELECTION": {
+            "median_return": 4.7769,
+            "worst_5_percent": 0.3669,
+            "best_5_percent": 9.3243,
+            "median_max_drawdown": -12.7066,
+            "return_spread": 8.9574,
+            "pass": true
+          },
+          "V7_STOCK_BREADTH_SELECTION": {
+            "median_return": 4.6069,
+            "worst_5_percent": 0.4,
+            "best_5_percent": 9.1178,
+            "median_max_drawdown": -13.1944,
+            "return_spread": 8.7178,
+            "pass": true
+          },
+          "V8_ADAPTIVE_SELECTION": {
+            "median_return": 4.6931,
+            "worst_5_percent": 0.3991,
+            "best_5_percent": 9.3035,
+            "median_max_drawdown": -13.3421,
+            "return_spread": 8.9044,
+            "pass": true
+          },
+          "V9_EXPOSURE_OPTIMIZED": {
+            "median_return": 3.0131,
+            "worst_5_percent": -0.4294,
+            "best_5_percent": 6.6249,
+            "median_max_drawdown": -11.3826,
+            "return_spread": 7.0543,
+            "pass": true
+          },
+          "V10_ROBUST_EXPOSURE": {
+            "median_return": 3.8922,
+            "worst_5_percent": -0.1007,
+            "best_5_percent": 7.9183,
+            "median_max_drawdown": -12.7322,
+            "return_spread": 8.019,
+            "pass": true
+          }
+        },
+        "rows": [
+          {
+            "version": "V6_THEME_BREADTH_SELECTION",
+            "median_return": 4.7769,
+            "worst_5_percent": 0.3669,
+            "best_5_percent": 9.3243,
+            "median_max_drawdown": -12.7066,
+            "return_spread": 8.9574,
+            "pass": true
+          },
+          {
+            "version": "V7_STOCK_BREADTH_SELECTION",
+            "median_return": 4.6069,
+            "worst_5_percent": 0.4,
+            "best_5_percent": 9.1178,
+            "median_max_drawdown": -13.1944,
+            "return_spread": 8.7178,
+            "pass": true
+          },
+          {
+            "version": "V8_ADAPTIVE_SELECTION",
+            "median_return": 4.6931,
+            "worst_5_percent": 0.3991,
+            "best_5_percent": 9.3035,
+            "median_max_drawdown": -13.3421,
+            "return_spread": 8.9044,
+            "pass": true
+          },
+          {
+            "version": "V9_EXPOSURE_OPTIMIZED",
+            "median_return": 3.0131,
+            "worst_5_percent": -0.4294,
+            "best_5_percent": 6.6249,
+            "median_max_drawdown": -11.3826,
+            "return_spread": 7.0543,
+            "pass": true
+          },
+          {
+            "version": "V10_ROBUST_EXPOSURE",
+            "median_return": 3.8922,
+            "worst_5_percent": -0.1007,
+            "best_5_percent": 7.9183,
+            "median_max_drawdown": -12.7322,
+            "return_spread": 8.019,
+            "pass": true
+          }
+        ]
+      },
+      "version_scores": [
+        {
+          "version": "V10_ROBUST_EXPOSURE",
+          "robustness_score": 50.68,
+          "pass": true,
+          "bootstrap": {
+            "median_return": 3.8922,
+            "worst_5_percent": -0.1007,
+            "best_5_percent": 7.9183,
+            "median_max_drawdown": -12.7322,
+            "return_spread": 8.019,
+            "pass": true
+          },
+          "parameter_sensitivity": {
+            "version": "V10_ROBUST_EXPOSURE",
+            "parameter_count": 9,
+            "stable_parameters": 9,
+            "pass_rate": 1.0,
+            "stability_score": 67.96,
+            "rows": [
+              {
+                "target_volatility": 10.0,
+                "drawdown_threshold": -5.0,
+                "deep_drawdown": -10.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 3.8153,
+                "max_drawdown": -9.8145,
+                "sharpe": 0.5781,
+                "calmar": 0.3887,
+                "ending_value": 1.4816,
+                "stable": true,
+                "stability_score": 70.89
+              },
+              {
+                "target_volatility": 10.0,
+                "drawdown_threshold": -8.0,
+                "deep_drawdown": -12.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 3.7807,
+                "max_drawdown": -10.1085,
+                "sharpe": 0.5697,
+                "calmar": 0.374,
+                "ending_value": 1.4765,
+                "stable": true,
+                "stability_score": 69.79
+              },
+              {
+                "target_volatility": 10.0,
+                "drawdown_threshold": -10.0,
+                "deep_drawdown": -15.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 3.8375,
+                "max_drawdown": -10.23,
+                "sharpe": 0.5739,
+                "calmar": 0.3751,
+                "ending_value": 1.485,
+                "stable": true,
+                "stability_score": 70.21
+              },
+              {
+                "target_volatility": 12.0,
+                "drawdown_threshold": -5.0,
+                "deep_drawdown": -10.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 3.5924,
+                "max_drawdown": -10.8203,
+                "sharpe": 0.5227,
+                "calmar": 0.332,
+                "ending_value": 1.4486,
+                "stable": true,
+                "stability_score": 65.05
+              },
+              {
+                "target_volatility": 12.0,
+                "drawdown_threshold": -8.0,
+                "deep_drawdown": -12.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 3.7844,
+                "max_drawdown": -11.0646,
+                "sharpe": 0.539,
+                "calmar": 0.342,
+                "ending_value": 1.477,
+                "stable": true,
+                "stability_score": 66.84
+              },
+              {
+                "target_volatility": 12.0,
+                "drawdown_threshold": -10.0,
+                "deep_drawdown": -15.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 3.7652,
+                "max_drawdown": -11.0771,
+                "sharpe": 0.5353,
+                "calmar": 0.3399,
+                "ending_value": 1.4742,
+                "stable": true,
+                "stability_score": 66.51
+              },
+              {
+                "target_volatility": 15.0,
+                "drawdown_threshold": -5.0,
+                "deep_drawdown": -10.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 3.8392,
+                "max_drawdown": -11.1287,
+                "sharpe": 0.5324,
+                "calmar": 0.345,
+                "ending_value": 1.4852,
+                "stable": true,
+                "stability_score": 66.8
+              },
+              {
+                "target_volatility": 15.0,
+                "drawdown_threshold": -8.0,
+                "deep_drawdown": -12.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 4.0229,
+                "max_drawdown": -11.5875,
+                "sharpe": 0.5446,
+                "calmar": 0.3472,
+                "ending_value": 1.5131,
+                "stable": true,
+                "stability_score": 68.01
+              },
+              {
+                "target_volatility": 15.0,
+                "drawdown_threshold": -10.0,
+                "deep_drawdown": -15.0,
+                "monthly_max_change": 10.0,
+                "annual_return": 3.9992,
+                "max_drawdown": -11.67,
+                "sharpe": 0.541,
+                "calmar": 0.3427,
+                "ending_value": 1.5094,
+                "stable": true,
+                "stability_score": 67.54
+              }
+            ]
+          }
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "robustness_score": 49.73,
+          "pass": true,
+          "bootstrap": {
+            "median_return": 4.7769,
+            "worst_5_percent": 0.3669,
+            "best_5_percent": 9.3243,
+            "median_max_drawdown": -12.7066,
+            "return_spread": 8.9574,
+            "pass": true
+          },
+          "parameter_sensitivity": {}
+        },
+        {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "robustness_score": 48.38,
+          "pass": true,
+          "bootstrap": {
+            "median_return": 4.6931,
+            "worst_5_percent": 0.3991,
+            "best_5_percent": 9.3035,
+            "median_max_drawdown": -13.3421,
+            "return_spread": 8.9044,
+            "pass": true
+          },
+          "parameter_sensitivity": {}
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "robustness_score": 48.28,
+          "pass": true,
+          "bootstrap": {
+            "median_return": 4.6069,
+            "worst_5_percent": 0.4,
+            "best_5_percent": 9.1178,
+            "median_max_drawdown": -13.1944,
+            "return_spread": 8.7178,
+            "pass": true
+          },
+          "parameter_sensitivity": {}
+        },
+        {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "robustness_score": 39.43,
+          "pass": false,
+          "bootstrap": {
+            "median_return": 3.0131,
+            "worst_5_percent": -0.4294,
+            "best_5_percent": 6.6249,
+            "median_max_drawdown": -11.3826,
+            "return_spread": 7.0543,
+            "pass": true
+          },
+          "parameter_sensitivity": {}
+        }
+      ],
+      "best_version": "V10_ROBUST_EXPOSURE"
     },
     "stock_breadth": {
       "source": "tushare_stock_daily",
@@ -2214,6 +2948,21 @@
           "calmar": 5.5165
         },
         {
+          "version": "V10_ROBUST_EXPOSURE",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2016-01-01",
+          "test_start": "2019-01-01",
+          "test_end": "2019-12-31",
+          "annual_return": 12.2245,
+          "benchmark_return": 16.5604,
+          "alpha": -4.3359,
+          "max_drawdown": -3.3656,
+          "benchmark_drawdown": -3.8944,
+          "drawdown_pass": true,
+          "sharpe": 1.8254,
+          "calmar": 3.6322
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2017-01-01",
@@ -2272,6 +3021,21 @@
           "drawdown_pass": true,
           "sharpe": 1.587,
           "calmar": 6.5418
+        },
+        {
+          "version": "V10_ROBUST_EXPOSURE",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2017-01-01",
+          "test_start": "2020-01-01",
+          "test_end": "2020-12-31",
+          "annual_return": 21.5787,
+          "benchmark_return": 20.8945,
+          "alpha": 0.6842,
+          "max_drawdown": -4.7734,
+          "benchmark_drawdown": -3.7854,
+          "drawdown_pass": false,
+          "sharpe": 1.6193,
+          "calmar": 4.5206
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -2334,6 +3098,21 @@
           "calmar": 2.1395
         },
         {
+          "version": "V10_ROBUST_EXPOSURE",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2018-01-01",
+          "test_start": "2021-01-01",
+          "test_end": "2021-12-31",
+          "annual_return": 5.9398,
+          "benchmark_return": 6.9477,
+          "alpha": -1.0079,
+          "max_drawdown": -3.8471,
+          "benchmark_drawdown": -2.7846,
+          "drawdown_pass": false,
+          "sharpe": 0.9284,
+          "calmar": 1.544
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2019-01-01",
@@ -2392,6 +3171,21 @@
           "drawdown_pass": true,
           "sharpe": -0.6382,
           "calmar": -0.6225
+        },
+        {
+          "version": "V10_ROBUST_EXPOSURE",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2019-01-01",
+          "test_start": "2022-01-01",
+          "test_end": "2022-12-31",
+          "annual_return": -3.3521,
+          "benchmark_return": -4.9104,
+          "alpha": 1.5583,
+          "max_drawdown": -5.0921,
+          "benchmark_drawdown": -8.3463,
+          "drawdown_pass": true,
+          "sharpe": -0.6172,
+          "calmar": -0.6583
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -2454,6 +3248,21 @@
           "calmar": -0.7979
         },
         {
+          "version": "V10_ROBUST_EXPOSURE",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2020-01-01",
+          "test_start": "2023-01-01",
+          "test_end": "2023-12-31",
+          "annual_return": -1.6594,
+          "benchmark_return": -3.6998,
+          "alpha": 2.0404,
+          "max_drawdown": -1.9414,
+          "benchmark_drawdown": -3.3968,
+          "drawdown_pass": true,
+          "sharpe": -0.9467,
+          "calmar": -0.8547
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2021-01-01",
@@ -2512,6 +3321,21 @@
           "drawdown_pass": true,
           "sharpe": 1.315,
           "calmar": 4.5502
+        },
+        {
+          "version": "V10_ROBUST_EXPOSURE",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2021-01-01",
+          "test_start": "2024-01-01",
+          "test_end": "2024-12-31",
+          "annual_return": 6.5821,
+          "benchmark_return": 9.5018,
+          "alpha": -2.9197,
+          "max_drawdown": -1.7008,
+          "benchmark_drawdown": -2.265,
+          "drawdown_pass": true,
+          "sharpe": 1.2358,
+          "calmar": 3.87
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -2574,6 +3398,21 @@
           "calmar": 5.6519
         },
         {
+          "version": "V10_ROBUST_EXPOSURE",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2022-01-01",
+          "test_start": "2025-01-01",
+          "test_end": "2025-12-31",
+          "annual_return": 15.3858,
+          "benchmark_return": 13.5535,
+          "alpha": 1.8323,
+          "max_drawdown": -1.3317,
+          "benchmark_drawdown": -0.9506,
+          "drawdown_pass": false,
+          "sharpe": 2.6909,
+          "calmar": 11.5535
+        },
+        {
           "version": "V6_THEME_BREADTH_SELECTION",
           "benchmark": "V3_TREND_RISK_ADJUSTED",
           "train_start": "2023-01-01",
@@ -2632,9 +3471,34 @@
           "drawdown_pass": false,
           "sharpe": -1.0298,
           "calmar": -1.6346
+        },
+        {
+          "version": "V10_ROBUST_EXPOSURE",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2023-01-01",
+          "test_start": "2026-01-01",
+          "test_end": "2026-07-08",
+          "annual_return": -9.5913,
+          "benchmark_return": -6.8604,
+          "alpha": -2.7309,
+          "max_drawdown": -6.033,
+          "benchmark_drawdown": -4.7305,
+          "drawdown_pass": false,
+          "sharpe": -0.8799,
+          "calmar": -1.5898
         }
       ],
       "versions": {
+        "V10_ROBUST_EXPOSURE": {
+          "version": "V10_ROBUST_EXPOSURE",
+          "windows": 8,
+          "wins": 4,
+          "win_rate": 0.5,
+          "avg_alpha": -0.6099,
+          "min_alpha": -4.3359,
+          "drawdown_pass_rate": 0.5,
+          "stable": false
+        },
         "V6_THEME_BREADTH_SELECTION": {
           "version": "V6_THEME_BREADTH_SELECTION",
           "windows": 8,
@@ -2773,6 +3637,30 @@
             "walk_forward_drawdown": true,
             "no_single_window_collapse": false
           }
+        },
+        {
+          "version": "V10_ROBUST_EXPOSURE",
+          "promotion": false,
+          "approval_status": "pending",
+          "promotion_score": 57.14,
+          "validation_windows": 8,
+          "win_rate": 0.5,
+          "avg_alpha": -0.6099,
+          "min_alpha": -4.3359,
+          "reasons": [
+            "Annual return is below benchmark",
+            "Walk-forward win rate below threshold",
+            "Walk-forward drawdown pass rate below threshold"
+          ],
+          "checks": {
+            "sharpe_beats_benchmark": true,
+            "drawdown_not_worse": true,
+            "return_not_worse": false,
+            "walk_forward_present": true,
+            "walk_forward_win_rate": false,
+            "walk_forward_drawdown": false,
+            "no_single_window_collapse": true
+          }
         }
       ],
       "best_candidate": "V7_STOCK_BREADTH_SELECTION",
@@ -2806,6 +3694,18 @@
           "walk_forward_avg_alpha": 0.5429,
           "walk_forward_min_alpha": -3.2855,
           "stability_score": 43.75
+        },
+        {
+          "version": "V10_ROBUST_EXPOSURE",
+          "production_score": 66.43,
+          "annual_return": 3.5924,
+          "max_drawdown": -10.8203,
+          "sharpe": 0.5227,
+          "calmar": 0.332,
+          "walk_forward_win_rate": 0.5,
+          "walk_forward_avg_alpha": -0.6099,
+          "walk_forward_min_alpha": -4.3359,
+          "stability_score": 50.0
         },
         {
           "version": "V6_THEME_BREADTH_SELECTION",
@@ -2893,6 +3793,113 @@
         }
       ]
     },
+    "final_strategy": {
+      "production_candidate": "V7_STOCK_BREADTH_SELECTION",
+      "candidate": "V7_STOCK_BREADTH_SELECTION",
+      "confidence": 0.6273,
+      "production_version": "V3_TREND_RISK_ADJUSTED",
+      "rows": [
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "production_score_v2": 62.73,
+          "annual_return": 4.4067,
+          "max_drawdown": -12.8415,
+          "sharpe": 0.5669,
+          "calmar": 0.3432,
+          "walk_forward_win_rate": 0.625,
+          "walk_forward_min_alpha": -4.2714,
+          "robustness_score": 48.28,
+          "robustness_pass": true,
+          "checks": {
+            "highest_score": true,
+            "walk_forward_win_rate": true,
+            "worst_window": true,
+            "robustness_pass": true
+          },
+          "final_rule_pass": true
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "production_score_v2": 61.14,
+          "annual_return": 4.5988,
+          "max_drawdown": -12.0817,
+          "sharpe": 0.5948,
+          "calmar": 0.3806,
+          "walk_forward_win_rate": 0.375,
+          "walk_forward_min_alpha": -2.5236,
+          "robustness_score": 49.73,
+          "robustness_pass": true,
+          "checks": {
+            "highest_score": false,
+            "walk_forward_win_rate": false,
+            "worst_window": true,
+            "robustness_pass": true
+          },
+          "final_rule_pass": false
+        },
+        {
+          "version": "V8_ADAPTIVE_SELECTION",
+          "production_score_v2": 60.84,
+          "annual_return": 4.4761,
+          "max_drawdown": -12.731,
+          "sharpe": 0.5698,
+          "calmar": 0.3516,
+          "walk_forward_win_rate": 0.5,
+          "walk_forward_min_alpha": -3.2855,
+          "robustness_score": 48.38,
+          "robustness_pass": true,
+          "checks": {
+            "highest_score": false,
+            "walk_forward_win_rate": false,
+            "worst_window": true,
+            "robustness_pass": true
+          },
+          "final_rule_pass": false
+        },
+        {
+          "version": "V10_ROBUST_EXPOSURE",
+          "production_score_v2": 58.34,
+          "annual_return": 3.5924,
+          "max_drawdown": -10.8203,
+          "sharpe": 0.5227,
+          "calmar": 0.332,
+          "walk_forward_win_rate": 0.5,
+          "walk_forward_min_alpha": -4.3359,
+          "robustness_score": 50.68,
+          "robustness_pass": true,
+          "checks": {
+            "highest_score": false,
+            "walk_forward_win_rate": false,
+            "worst_window": true,
+            "robustness_pass": true
+          },
+          "final_rule_pass": false
+        },
+        {
+          "version": "V9_EXPOSURE_OPTIMIZED",
+          "production_score_v2": 46.68,
+          "annual_return": 2.7686,
+          "max_drawdown": -9.9646,
+          "sharpe": 0.4578,
+          "calmar": 0.2778,
+          "walk_forward_win_rate": 0.25,
+          "walk_forward_min_alpha": -7.525,
+          "robustness_score": 39.43,
+          "robustness_pass": false,
+          "checks": {
+            "highest_score": false,
+            "walk_forward_win_rate": false,
+            "worst_window": false,
+            "robustness_pass": false
+          },
+          "final_rule_pass": false
+        }
+      ],
+      "reason": [
+        "V7_STOCK_BREADTH_SELECTION has the highest Production Score V2",
+        "Walk Forward, worst window, and robustness rules passed"
+      ]
+    },
     "regime_v3": {
       "state": "bull_caution",
       "confidence": 0.4,
@@ -2924,6 +3931,7 @@
           "max_weight_step": null,
           "volatility_adjustment": false,
           "equity_floor_by_regime": {},
+          "robust_exposure_config": {},
           "stock_breadth_assets": 0
         }
       },
@@ -2943,6 +3951,7 @@
           "max_weight_step": 10.0,
           "volatility_adjustment": false,
           "equity_floor_by_regime": {},
+          "robust_exposure_config": {},
           "stock_breadth_assets": 0
         }
       },
@@ -2962,6 +3971,7 @@
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
           "equity_floor_by_regime": {},
+          "robust_exposure_config": {},
           "stock_breadth_assets": 0
         }
       },
@@ -2985,6 +3995,7 @@
             "neutral": 40.0,
             "bear_recovery": 50.0
           },
+          "robust_exposure_config": {},
           "stock_breadth_assets": 0
         }
       },
@@ -3004,6 +4015,7 @@
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
           "equity_floor_by_regime": {},
+          "robust_exposure_config": {},
           "stock_breadth_assets": 0
         }
       },
@@ -3023,6 +4035,7 @@
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
           "equity_floor_by_regime": {},
+          "robust_exposure_config": {},
           "stock_breadth_assets": 0
         }
       },
@@ -3042,6 +4055,7 @@
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
           "equity_floor_by_regime": {},
+          "robust_exposure_config": {},
           "stock_breadth_assets": 60
         }
       },
@@ -3061,6 +4075,7 @@
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
           "equity_floor_by_regime": {},
+          "robust_exposure_config": {},
           "stock_breadth_assets": 60
         }
       },
@@ -3080,6 +4095,29 @@
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
           "equity_floor_by_regime": {},
+          "robust_exposure_config": {},
+          "stock_breadth_assets": 60
+        }
+      },
+      {
+        "version": "V10_ROBUST_EXPOSURE",
+        "annual_return": 3.5924,
+        "max_drawdown": -10.8203,
+        "sharpe": 0.5227,
+        "calmar": 0.332,
+        "ending_value": 1.4486,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v10",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": true,
+          "equity_floor_by_regime": {},
+          "robust_exposure_config": {
+            "monthly_max_change": 10.0
+          },
           "stock_breadth_assets": 60
         }
       }
@@ -3207,6 +4245,25 @@
           "stock_breadth_coverage": 1.0
         },
         "promotion_score": 42.86,
+        "validation_windows": 8,
+        "approval_status": "pending"
+      },
+      {
+        "version": "V10_ROBUST_EXPOSURE",
+        "status": "testing",
+        "metrics": {
+          "annual_return": 3.5924,
+          "max_drawdown": -10.8203,
+          "sharpe": 0.5227,
+          "calmar": 0.332
+        },
+        "evidence": {
+          "periods": 8,
+          "improvement": true,
+          "stock_breadth_coverage": 1.0,
+          "robustness_score": 50.68
+        },
+        "promotion_score": 57.14,
         "validation_windows": 8,
         "approval_status": "pending"
       }
@@ -3391,6 +4448,7 @@
     "Validate theme momentum and breadth stability before promoting V6.",
     "Use stock breadth and walk-forward promotion rules before promoting V7.",
     "Use adaptive factor weights to improve V8 risk-return stability before promotion.",
-    "Use exposure optimization and strategy selection scoring before promoting V9."
+    "Use exposure optimization and strategy selection scoring before promoting V9.",
+    "Use robust exposure and final strategy selection before declaring production readiness."
   ]
 }
