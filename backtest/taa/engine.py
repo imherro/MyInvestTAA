@@ -23,6 +23,9 @@ def run_taa_backtest(
     cash_return: float = 0.0,
     slippage: float = 0.0,
     expense_ratio: float = 0.0,
+    score_version: str = "v1",
+    max_weight_step: float | None = None,
+    volatility_adjustment: bool = False,
 ) -> dict:
     if rebalance_frequency != "monthly":
         raise ValueError("only monthly rebalance is supported")
@@ -36,6 +39,10 @@ def run_taa_backtest(
         raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
+    if score_version not in {"v1", "v4"}:
+        raise ValueError("score_version must be v1 or v4")
+    if max_weight_step is not None and max_weight_step <= 0:
+        raise ValueError("max_weight_step must be positive")
 
     if assets is None:
         assets = load_assets()
@@ -43,7 +50,16 @@ def run_taa_backtest(
         price_history = load_price_histories()
     dates = _all_dates(price_history)
     if len(dates) < 2:
-        return _empty_result(initial_capital, transaction_cost, cash_return, slippage, expense_ratio)
+        return _empty_result(
+            initial_capital,
+            transaction_cost,
+            cash_return,
+            slippage,
+            expense_ratio,
+            score_version,
+            max_weight_step,
+            volatility_adjustment,
+        )
 
     weights = {"CASH": 100.0}
     states: list[PortfolioState] = [
@@ -79,8 +95,14 @@ def run_taa_backtest(
         regime = detect_market_regime(benchmark_history)
         risk_budget = build_risk_budget(regime)
         assets_as_of = _assets_available_as_of(assets, current_date)
-        scores = _score_assets_as_of(assets_as_of, histories_as_of)
-        next_weights = build_rebalance_weights(scores, risk_budget)
+        scores = _score_assets_as_of(assets_as_of, histories_as_of, score_version=score_version)
+        scoring_weights = _apply_volatility_adjustment(scores) if volatility_adjustment else scores
+        target_weights = build_rebalance_weights(scoring_weights, risk_budget)
+        next_weights = (
+            _smooth_weight_transition(weights, target_weights, max_weight_step)
+            if max_weight_step is not None
+            else target_weights
+        )
         period_turnover = turnover(weights, next_weights)
         turnovers.append(period_turnover)
         friction = transaction_cost + slippage
@@ -114,6 +136,10 @@ def run_taa_backtest(
                     "cash_return": cash_return,
                     "slippage": slippage,
                     "expense_ratio": expense_ratio,
+                    "score_version": score_version,
+                    "max_weight_step": max_weight_step,
+                    "volatility_adjustment": volatility_adjustment,
+                    "target_weights": target_weights,
                 },
                 regime=regime.as_dict(),
                 selected_assets=selected_assets,
@@ -131,6 +157,9 @@ def run_taa_backtest(
             "cash_return": cash_return,
             "slippage": slippage,
             "expense_ratio": expense_ratio,
+            "score_version": score_version,
+            "max_weight_step": max_weight_step,
+            "volatility_adjustment": volatility_adjustment,
         },
         "metrics": metrics,
         "equity_curve": [
@@ -145,7 +174,11 @@ def run_taa_backtest(
     }
 
 
-def _score_assets_as_of(assets: list[dict], histories_as_of: dict[str, list[dict]]) -> list[dict]:
+def _score_assets_as_of(
+    assets: list[dict],
+    histories_as_of: dict[str, list[dict]],
+    score_version: str = "v1",
+) -> list[dict]:
     scores: list[dict] = []
     for asset in assets:
         history = histories_as_of.get(asset["id"], [])
@@ -159,10 +192,21 @@ def _score_assets_as_of(assets: list[dict], histories_as_of: dict[str, list[dict
         drawdown_pressure = round(pressure["percentile"] * 100, 2)
         recovery_score = _recovery_score(recovery)
         anchor_score = calculate_anchor_score(asset)
-        opportunity_score = round(
-            0.4 * drawdown_pressure + 0.3 * recovery_score + 0.3 * anchor_score,
-            2,
-        )
+        trend_score = _trend_score(history)
+        volatility = _volatility(history)
+        if score_version == "v4":
+            opportunity_score = round(
+                0.3 * drawdown_pressure
+                + 0.25 * recovery_score
+                + 0.25 * anchor_score
+                + 0.2 * trend_score,
+                2,
+            )
+        else:
+            opportunity_score = round(
+                0.4 * drawdown_pressure + 0.3 * recovery_score + 0.3 * anchor_score,
+                2,
+            )
         confidence_factor = _confidence_factor(recovery.sample_confidence)
         scores.append(
             {
@@ -172,10 +216,83 @@ def _score_assets_as_of(assets: list[dict], histories_as_of: dict[str, list[dict
                 "drawdown_pressure": drawdown_pressure,
                 "recovery_score": recovery_score,
                 "anchor_score": anchor_score,
+                "trend_score": trend_score,
+                "volatility": volatility,
                 "confidence_adjusted_score": round(opportunity_score * confidence_factor, 2),
             }
         )
     return sorted(scores, key=lambda item: item["confidence_adjusted_score"], reverse=True)
+
+
+def _trend_score(history: list[dict]) -> float:
+    closes = [float(row["close"]) for row in history]
+    if len(closes) < 3:
+        return 0.0
+    current = closes[-1]
+    short_ma = sum(closes[-3:]) / min(3, len(closes))
+    long_sample = closes[-6:] if len(closes) >= 6 else closes
+    long_ma = sum(long_sample) / len(long_sample)
+    lookback = closes[-4] if len(closes) >= 4 else closes[0]
+    momentum = current / lookback - 1.0 if lookback > 0 else 0.0
+    ma_component = 50.0 if current >= short_ma >= long_ma else 25.0 if current >= long_ma else 0.0
+    momentum_component = max(0.0, min(50.0, 25.0 + momentum * 250.0))
+    return round(ma_component + momentum_component, 2)
+
+
+def _volatility(history: list[dict]) -> float:
+    closes = [float(row["close"]) for row in history]
+    if len(closes) < 3:
+        return 0.0
+    returns = [
+        current / previous - 1.0
+        for previous, current in zip(closes, closes[1:])
+        if previous > 0
+    ]
+    if not returns:
+        return 0.0
+    mean = sum(returns) / len(returns)
+    variance = sum((item - mean) ** 2 for item in returns) / len(returns)
+    return round(variance ** 0.5, 6)
+
+
+def _apply_volatility_adjustment(scores: list[dict]) -> list[dict]:
+    adjusted = []
+    for item in scores:
+        volatility = max(float(item.get("volatility", 0.0)), 0.02)
+        score = dict(item)
+        score["confidence_adjusted_score"] = round(
+            float(item.get("confidence_adjusted_score", 0.0)) / volatility,
+            2,
+        )
+        adjusted.append(score)
+    return sorted(adjusted, key=lambda item: item["confidence_adjusted_score"], reverse=True)
+
+
+def _smooth_weight_transition(
+    previous: dict[str, float],
+    target: dict[str, float],
+    max_step: float,
+) -> dict[str, float]:
+    asset_ids = set(previous) | set(target)
+    smoothed: dict[str, float] = {}
+    for asset_id in asset_ids:
+        old = previous.get(asset_id, 0.0)
+        desired = target.get(asset_id, 0.0)
+        change = desired - old
+        if change > max_step:
+            value = old + max_step
+        elif change < -max_step:
+            value = old - max_step
+        else:
+            value = desired
+        if value > 0:
+            smoothed[asset_id] = round(value, 4)
+    total = sum(smoothed.values())
+    if total <= 0:
+        return {"CASH": 100.0}
+    drift = round(100.0 - total, 4)
+    smoothed["CASH"] = round(smoothed.get("CASH", 0.0) + drift, 4)
+    return {asset_id: weight for asset_id, weight in smoothed.items() if weight > 0}
 
 
 def _portfolio_return(
@@ -253,6 +370,9 @@ def _empty_result(
     cash_return: float = 0.0,
     slippage: float = 0.0,
     expense_ratio: float = 0.0,
+    score_version: str = "v1",
+    max_weight_step: float | None = None,
+    volatility_adjustment: bool = False,
 ) -> dict:
     return {
         "strategy": "MyInvestTAA",
@@ -263,6 +383,9 @@ def _empty_result(
             "cash_return": cash_return,
             "slippage": slippage,
             "expense_ratio": expense_ratio,
+            "score_version": score_version,
+            "max_weight_step": max_weight_step,
+            "volatility_adjustment": volatility_adjustment,
         },
         "metrics": {
             "annual_return": 0.0,

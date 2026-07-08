@@ -146,6 +146,22 @@ def test_full_validation_api_returns_reproducibility_keys():
     assert payload["reproducibility"]["config_hash"] == payload["experiment"]["config_hash"]
 
 
+def test_strategy_diagnosis_api_returns_sections():
+    response = client.get("/api/research/diagnosis")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"dataset", "diagnosis", "versions", "benchmark"} <= set(payload)
+
+
+def test_strategy_diagnosis_api_compares_versions():
+    response = client.get("/api/research/diagnosis")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert len(payload["versions"]["rows"]) == 3
+
+
 def test_research_report_page_returns_sections():
     response = client.get("/research")
 
@@ -186,6 +202,14 @@ def test_experiment_report_page_returns_sections():
     assert "Regime Contribution" in response.text
 
 
+def test_strategy_diagnosis_page_returns_sections():
+    response = client.get("/diagnosis")
+
+    assert response.status_code == 200
+    assert "Strategy Diagnosis" in response.text
+    assert "Version Comparison" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -198,6 +222,13 @@ def test_dashboard_links_experiment_report():
 
     assert response.status_code == 200
     assert "/experiment" in response.text
+
+
+def test_dashboard_links_strategy_diagnosis():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/diagnosis" in response.text
 
 
 def test_data_quality_page_returns_sections():

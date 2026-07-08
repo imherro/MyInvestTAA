@@ -20,6 +20,7 @@ from backtest.taa import run_taa_backtest
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
+    build_strategy_diagnosis_report,
     build_validated_performance_report,
     run_live_backtest_report,
 )
@@ -116,6 +117,11 @@ def get_validated_performance() -> dict:
 @app.get("/api/research/full-validation")
 def get_full_validation() -> dict:
     return _build_full_validation_report()
+
+
+@app.get("/api/research/diagnosis")
+def get_strategy_diagnosis() -> dict:
+    return _build_strategy_diagnosis_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -324,7 +330,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -928,6 +934,84 @@ def data_quality_page() -> str:
     """
 
 
+@app.get("/diagnosis", response_class=HTMLResponse)
+def strategy_diagnosis_page() -> str:
+    report = _build_strategy_diagnosis_report()
+    dataset = report["dataset"]
+    issues = "\n".join(_diagnosis_issue_rows(report["diagnosis"]["summary"]))
+    version_rows = "\n".join(_diagnosis_version_rows(report["versions"]["rows"]))
+    regime_rows = "\n".join(_diagnosis_regime_rows(report["diagnosis"]["regime_analysis"]["regimes"]))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Strategy Diagnosis</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Strategy Diagnosis</h1>
+        <p>诊断当前 TAA 策略弱点并比较 V1/V2/V3。<a href="/experiment">Experiment Report</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Dataset</h2>
+          <table>
+            <tbody>
+              <tr><td>Provider</td><td>{dataset["provider"]}</td></tr>
+              <tr><td>Period</td><td>{dataset["period"]["start"]} - {dataset["period"]["end"]}</td></tr>
+              <tr><td>Assets</td><td>{dataset["asset_count"]}</td></tr>
+              <tr><td>Return Type</td><td>{dataset["return_type"]}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>主要损失来源</h2>
+          <table>
+            <thead><tr><th>来源</th><th>严重性</th><th>证据</th></tr></thead>
+            <tbody>{issues}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Version Comparison</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>版本</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>Calmar</th>
+                <th>期末净值</th>
+              </tr>
+            </thead>
+            <tbody>{version_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Regime Analysis</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>状态</th>
+                <th>期数</th>
+                <th>平均收益</th>
+                <th>平均权益暴露</th>
+                <th>配置影响</th>
+              </tr>
+            </thead>
+            <tbody>{regime_rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
 @app.get("/attribution", response_class=HTMLResponse)
 def attribution_page() -> str:
     report = analyze_attribution()
@@ -1306,6 +1390,58 @@ def _regime_contribution_rows(report: dict) -> list[str]:
     return rows
 
 
+def _diagnosis_issue_rows(rows: list[dict]) -> list[str]:
+    if not rows:
+        return "<tr><td colspan=\"3\">No major issue detected</td></tr>"
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item["source"]))}</td>
+              <td>{escape(str(item["severity"]))}</td>
+              <td>{escape(str(item["evidence"]))}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _diagnosis_version_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{item["version"]}</td>
+              <td>{item["annual_return"]:.2f}%</td>
+              <td>{item["max_drawdown"]:.2f}%</td>
+              <td>{item["sharpe"]:.2f}</td>
+              <td>{item["calmar"]:.2f}</td>
+              <td>{item["ending_value"]:.4f}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _diagnosis_regime_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{item["state"]}</td>
+              <td>{item["periods"]}</td>
+              <td>{item["avg_return"]:.2f}%</td>
+              <td>{item["avg_equity_exposure"]:.2f}%</td>
+              <td>{item["allocation_effect"]:.2f}%</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
 def _build_live_backtest_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
@@ -1331,6 +1467,15 @@ def _build_full_validation_report() -> dict:
     connection = connect_database(":memory:")
     repository = MarketDataRepository(connection)
     return build_full_validation_report(repository, provider_name="mock", report_path=None)
+
+
+def _build_strategy_diagnosis_report() -> dict:
+    report_path = ROOT / "reports" / "strategy_diagnosis_report.json"
+    if report_path.exists():
+        return json.loads(report_path.read_text(encoding="utf-8"))
+    connection = connect_database(":memory:")
+    repository = MarketDataRepository(connection)
+    return build_strategy_diagnosis_report(repository, provider_name="mock", report_path=None)
 
 
 def _report_page_css() -> str:

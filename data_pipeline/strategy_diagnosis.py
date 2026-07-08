@@ -1,0 +1,156 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from backtest.benchmark import compare_strategies
+from backtest.taa import run_taa_backtest
+from config import load_research_config
+from data.universe import universe_asset_ids
+from data_pipeline.full_validation import _research_assets
+from data_pipeline.importer import build_provider, import_market_data
+from engine.asset_repository import load_assets
+from engine.diagnosis import analyze_regime_effects, compare_strategy_versions, decompose_vs_static
+from engine.performance_attribution import analyze_regime_contribution
+from storage import MarketDataRepository
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DIAGNOSIS_PATH = ROOT / "reports" / "strategy_diagnosis_report.json"
+
+
+def build_strategy_diagnosis_report(
+    repository: MarketDataRepository,
+    provider_name: str = "mock",
+    start_date: str = "2016-01-01",
+    end_date: str = "2026-07-08",
+    asset_ids: list[str] | None = None,
+    return_type: str = "price",
+    import_data: bool = True,
+    report_path: str | Path | None = DEFAULT_DIAGNOSIS_PATH,
+) -> dict:
+    config = load_research_config()
+    backtest_config = config["backtest"]
+    if asset_ids is None:
+        asset_ids = _default_asset_ids(provider_name, repository)
+    if import_data or not repository.get_all_price_histories():
+        provider = build_provider(provider_name, return_type=return_type)
+        import_market_data(
+            provider,
+            repository,
+            asset_ids,
+            start=start_date,
+            end=end_date,
+            min_quality_score=float(config["universe"].get("min_quality_score", 50.0)),
+        )
+
+    histories = _month_end_histories(repository.get_all_price_histories())
+    assets = _research_assets(asset_ids, repository)
+    common_kwargs = {
+        "assets": assets,
+        "price_history": histories,
+        "transaction_cost": float(backtest_config.get("transaction_cost", 0.0)),
+        "cash_return": float(backtest_config.get("cash_return", 0.0)),
+        "slippage": float(backtest_config.get("slippage", 0.0)),
+        "expense_ratio": float(backtest_config.get("expense_ratio", 0.0)),
+    }
+    variants = {
+        "V1_CURRENT": run_taa_backtest(**common_kwargs),
+        "V2_REGIME_SMOOTHING": run_taa_backtest(**common_kwargs, max_weight_step=10.0),
+        "V3_TREND_RISK_ADJUSTED": run_taa_backtest(
+            **common_kwargs,
+            score_version="v4",
+            max_weight_step=10.0,
+            volatility_adjustment=True,
+        ),
+    }
+    benchmark = compare_strategies(**common_kwargs)
+    static_row = benchmark["strategies"].get("SAA_60_40")
+    regime_analysis = analyze_regime_effects(variants["V1_CURRENT"])
+    decomposition = decompose_vs_static(variants["V1_CURRENT"], static_row)
+    version_comparison = compare_strategy_versions(variants)
+    regime_contribution = analyze_regime_contribution(variants["V1_CURRENT"])
+    report = {
+        "dataset": {
+            "provider": provider_name,
+            "period": {"start": start_date, "end": end_date},
+            "asset_count": len(asset_ids),
+            "return_type": return_type,
+            "frequency": "month_end",
+        },
+        "diagnosis": {
+            "summary": _diagnosis_summary(regime_analysis, decomposition, regime_contribution),
+            "regime_analysis": regime_analysis,
+            "decomposition": decomposition,
+            "regime_contribution": regime_contribution,
+        },
+        "versions": version_comparison,
+        "benchmark": {
+            "static": static_row,
+            "rows": benchmark["rows"],
+        },
+        "recommendations": [
+            "Use exposure smoothing to reduce abrupt bull_caution de-risking.",
+            "Add trend confirmation so drawdown signals do not buy weakening assets too early.",
+            "Use volatility adjustment to avoid oversized high-volatility positions.",
+            "Prioritize total-return data before declaring investment performance conclusions.",
+        ],
+    }
+    if report_path is not None:
+        _write_report(Path(report_path), report)
+    return report
+
+
+def _default_asset_ids(provider_name: str, repository: MarketDataRepository) -> list[str]:
+    histories = repository.get_all_price_histories()
+    if histories:
+        return sorted(histories)
+    if provider_name == "mock":
+        return [asset["id"] for asset in load_assets()]
+    return universe_asset_ids()
+
+
+def _month_end_histories(histories: dict[str, list[dict]]) -> dict[str, list[dict]]:
+    result: dict[str, list[dict]] = {}
+    for asset_id, history in histories.items():
+        by_month: dict[str, dict] = {}
+        for row in sorted(history, key=lambda item: str(item["date"])):
+            by_month[str(row["date"])[:7]] = row
+        result[asset_id] = [by_month[key] for key in sorted(by_month)]
+    return result
+
+
+def _diagnosis_summary(regime_analysis: dict, decomposition: dict, regime_contribution: dict) -> list[dict]:
+    sources = []
+    worst_regime = regime_analysis.get("worst_regime")
+    if worst_regime:
+        sources.append(
+            {
+                "source": f"{worst_regime} allocation drag",
+                "severity": "high",
+                "evidence": f"Worst regime allocation effect: {worst_regime}",
+            }
+        )
+    if decomposition.get("return_gap", 0.0) < 0:
+        sources.append(
+            {
+                "source": "static allocation return gap",
+                "severity": "high",
+                "evidence": f"Return gap vs {decomposition['benchmark']}: {decomposition['return_gap']}",
+            }
+        )
+    contribution = regime_contribution.get("contribution", {})
+    if contribution.get("bull_caution", 0.0) < 0:
+        sources.append(
+            {
+                "source": "bull_caution de-risking",
+                "severity": "medium",
+                "evidence": f"bull_caution contribution: {contribution['bull_caution']}",
+            }
+        )
+    return sources
+
+
+def _write_report(path: Path, report: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
