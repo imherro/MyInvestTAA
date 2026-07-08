@@ -69,6 +69,12 @@ def test_run_taa_backtest_accepts_score_version_v6():
     assert result["assumptions"]["score_version"] == "v6"
 
 
+def test_run_taa_backtest_accepts_score_version_v7():
+    result = run_taa_backtest(score_version="v7")
+
+    assert result["assumptions"]["score_version"] == "v7"
+
+
 def test_run_taa_backtest_rejects_unknown_score_version():
     with pytest.raises(ValueError):
         run_taa_backtest(score_version="bad")
@@ -131,6 +137,19 @@ def test_run_taa_backtest_v6_scores_include_quality_score():
     scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
 
     assert "quality_score" in scores[0]
+
+
+def test_run_taa_backtest_v7_scores_include_stock_breadth():
+    result = run_taa_backtest(score_version="v7")
+    scores = next(state["signals"]["scores"] for state in result["states"] if state["signals"].get("scores"))
+
+    assert {"stock_breadth_score", "stock_breadth"} <= set(scores[0])
+
+
+def test_run_taa_backtest_v7_records_stock_breadth_asset_count():
+    result = run_taa_backtest(score_version="v7", stock_price_history={"688981.SH": _history([1, 2])})
+
+    assert result["assumptions"]["stock_breadth_assets"] == 1
 
 
 def test_run_taa_backtest_v5_records_target_weights_with_smoothing():

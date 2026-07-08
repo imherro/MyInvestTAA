@@ -48,6 +48,14 @@ class MockProvider:
     ) -> list[PriceBar]:
         return self.get_price_history(index_id, start=start, end=end)
 
+    def get_stock_price_history(
+        self,
+        stock_id: str,
+        start: str | None = None,
+        end: str | None = None,
+    ) -> list[PriceBar]:
+        return self.get_price_history(stock_id, start=start, end=end)
+
     def get_etf_list(self) -> list[AssetMetadata]:
         assets = self._assets if self._assets is not None else load_assets()
         return [AssetMetadata.from_mapping(asset, source=self.name) for asset in assets]

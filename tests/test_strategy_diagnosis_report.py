@@ -38,6 +38,7 @@ def test_strategy_diagnosis_report_compares_strategy_versions():
         "V4_REGIME_EXPOSURE_FLOOR",
         "V5_RELATIVE_STRENGTH_SELECTION",
         "V6_THEME_BREADTH_SELECTION",
+        "V7_STOCK_BREADTH_SELECTION",
     }
 
 
@@ -51,6 +52,7 @@ def test_strategy_diagnosis_report_records_best_version():
         "V4_REGIME_EXPOSURE_FLOOR",
         "V5_RELATIVE_STRENGTH_SELECTION",
         "V6_THEME_BREADTH_SELECTION",
+        "V7_STOCK_BREADTH_SELECTION",
     }
 
 
@@ -152,6 +154,12 @@ def test_strategy_diagnosis_report_records_attribution_v6():
     assert {"allocation", "selection", "timing"} <= set(report["diagnosis"]["attribution_v6"])
 
 
+def test_strategy_diagnosis_report_records_attribution_v7():
+    report = _report()
+
+    assert {"allocation", "selection", "timing"} <= set(report["diagnosis"]["attribution_v7"])
+
+
 def test_strategy_diagnosis_report_records_selection_attribution():
     report = _report()
 
@@ -164,6 +172,12 @@ def test_strategy_diagnosis_report_records_selection_attribution_v2():
     assert {"old", "new", "improvement", "improved"} <= set(report["diagnosis"]["selection_attribution_v2"]["selection"])
 
 
+def test_strategy_diagnosis_report_records_selection_attribution_v3():
+    report = _report()
+
+    assert {"old", "new", "improvement", "improved"} <= set(report["diagnosis"]["selection_attribution_v3"]["selection"])
+
+
 def test_strategy_diagnosis_report_records_selection_analysis():
     report = _report()
 
@@ -174,6 +188,36 @@ def test_strategy_diagnosis_report_selection_analysis_rows_include_theme():
     report = _report()
 
     assert "theme" in report["diagnosis"]["selection_analysis"]["rows"][0]
+
+
+def test_strategy_diagnosis_report_selection_analysis_rows_include_stock_breadth():
+    report = _report()
+
+    assert "stock_breadth_score" in report["diagnosis"]["selection_analysis"]["rows"][0]
+
+
+def test_strategy_diagnosis_report_records_stock_breadth():
+    report = _report()
+
+    assert {"coverage", "rows", "source"} <= set(report["diagnosis"]["stock_breadth"])
+
+
+def test_strategy_diagnosis_report_stock_breadth_records_coverage_ratio():
+    report = _report()
+
+    assert "coverage_ratio" in report["diagnosis"]["stock_breadth"]["coverage"]
+
+
+def test_strategy_diagnosis_report_records_walk_forward():
+    report = _report()
+
+    assert {"windows", "versions", "rows"} <= set(report["diagnosis"]["walk_forward"])
+
+
+def test_strategy_diagnosis_report_records_promotion():
+    report = _report()
+
+    assert {"benchmark", "rows", "best_candidate"} <= set(report["diagnosis"]["promotion"])
 
 
 def test_strategy_diagnosis_report_records_strategy_registry():
@@ -209,6 +253,20 @@ def test_strategy_diagnosis_report_registry_records_v6_evidence():
     assert {"periods", "improvement"} <= set(v6["evidence"])
 
 
+def test_strategy_diagnosis_report_registry_records_v7_evidence():
+    report = _report()
+    v7 = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V7_STOCK_BREADTH_SELECTION")
+
+    assert {"periods", "improvement", "stock_breadth_coverage"} <= set(v7["evidence"])
+
+
+def test_strategy_diagnosis_report_registry_records_promotion_fields():
+    report = _report()
+    v7 = next(row for row in report["strategy_registry"]["rows"] if row["version"] == "V7_STOCK_BREADTH_SELECTION")
+
+    assert {"promotion_score", "validation_windows", "approval_status"} <= set(v7)
+
+
 def test_strategy_diagnosis_report_v4_records_equity_floor_assumption():
     report = _report()
     v4_row = next(row for row in report["versions"]["rows"] if row["version"] == "V4_REGIME_EXPOSURE_FLOOR")
@@ -228,6 +286,13 @@ def test_strategy_diagnosis_report_v6_records_score_version():
     v6_row = next(row for row in report["versions"]["rows"] if row["version"] == "V6_THEME_BREADTH_SELECTION")
 
     assert v6_row["assumptions"]["score_version"] == "v6"
+
+
+def test_strategy_diagnosis_report_v7_records_score_version():
+    report = _report()
+    v7_row = next(row for row in report["versions"]["rows"] if row["version"] == "V7_STOCK_BREADTH_SELECTION")
+
+    assert v7_row["assumptions"]["score_version"] == "v7"
 
 
 def test_strategy_diagnosis_report_benchmark_validation_passes_for_mock():

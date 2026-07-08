@@ -7,6 +7,7 @@ def _rows() -> list[dict]:
         {"version": "V3_TREND_RISK_ADJUSTED", "annual_return": 3.0, "max_drawdown": -14.0, "sharpe": 0.4, "calmar": 0.2},
         {"version": "V5_RELATIVE_STRENGTH_SELECTION", "annual_return": 4.0, "max_drawdown": -15.0, "sharpe": 0.5, "calmar": 0.25},
         {"version": "V6_THEME_BREADTH_SELECTION", "annual_return": 4.2, "max_drawdown": -14.5, "sharpe": 0.55, "calmar": 0.29},
+        {"version": "V7_STOCK_BREADTH_SELECTION", "annual_return": 4.5, "max_drawdown": -12.0, "sharpe": 0.60, "calmar": 0.38},
     ]
 
 
@@ -26,7 +27,7 @@ def test_build_strategy_registry_marks_v3_as_production_candidate():
     registry = build_strategy_registry(_rows())
 
     v3 = next(row for row in registry["rows"] if row["version"] == "V3_TREND_RISK_ADJUSTED")
-    assert v3["status"] == "production_candidate"
+    assert v3["status"] == "candidate"
 
 
 def test_build_strategy_registry_marks_v5_as_testing():
@@ -41,6 +42,13 @@ def test_build_strategy_registry_marks_v6_as_testing():
 
     v6 = next(row for row in registry["rows"] if row["version"] == "V6_THEME_BREADTH_SELECTION")
     assert v6["status"] == "testing"
+
+
+def test_build_strategy_registry_marks_v7_as_testing_without_promotion():
+    registry = build_strategy_registry(_rows())
+
+    v7 = next(row for row in registry["rows"] if row["version"] == "V7_STOCK_BREADTH_SELECTION")
+    assert v7["status"] == "testing"
 
 
 def test_build_strategy_registry_archives_v1():
@@ -86,7 +94,7 @@ def test_build_strategy_registry_archives_unknown_versions():
 def test_build_strategy_registry_keeps_row_count():
     registry = build_strategy_registry(_rows())
 
-    assert len(registry["rows"]) == 4
+    assert len(registry["rows"]) == 5
 
 
 def test_build_strategy_registry_includes_calmar_metric():
@@ -106,3 +114,21 @@ def test_strategy_registry_entry_omits_missing_evidence():
     entry = StrategyRegistryEntry("V3", "production_candidate", {})
 
     assert "evidence" not in entry.as_dict()
+
+
+def test_build_strategy_registry_accepts_promotion_fields():
+    registry = build_strategy_registry(
+        _rows(),
+        promotion_by_version={
+            "V7_STOCK_BREADTH_SELECTION": {
+                "promotion": True,
+                "promotion_score": 100.0,
+                "validation_windows": 5,
+                "approval_status": "approved",
+            }
+        },
+    )
+
+    v7 = next(row for row in registry["rows"] if row["version"] == "V7_STOCK_BREADTH_SELECTION")
+    assert v7["status"] == "candidate"
+    assert v7["promotion_score"] == 100.0

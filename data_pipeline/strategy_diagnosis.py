@@ -5,18 +5,22 @@ from pathlib import Path
 
 from backtest.benchmark import compare_strategies
 from backtest.taa import run_taa_backtest
+from backtest.walk_forward import run_walk_forward_validation
 from config import load_research_config
 from data.universe import universe_asset_ids
 from data_pipeline.full_validation import _research_assets
 from data_pipeline.importer import build_provider, import_market_data
+from data_pipeline.normalizer import price_bars_to_history
 from engine.asset_repository import load_assets
 from engine.benchmark_validation import validate_benchmark_report
 from engine.diagnosis import analyze_regime_effects, compare_strategy_versions, decompose_vs_static
-from engine.governance import build_strategy_registry
+from engine.governance import build_promotion_report, build_strategy_registry
 from engine.performance_attribution import analyze_regime_contribution
 from engine.performance_attribution.v3 import decompose_excess_return_v3
 from engine.regime.v3 import detect_market_regime_v3
 from engine.selection import build_selection_analysis, compare_selection_attribution
+from engine.stock_breadth import rank_stock_breadth, stock_breadth_coverage, stock_theme_universe, theme_for_stock
+from engine.theme import theme_for_asset
 from storage import MarketDataRepository
 
 
@@ -50,6 +54,12 @@ def build_strategy_diagnosis_report(
         )
 
     histories = _month_end_histories(repository.get_all_price_histories())
+    stock_histories, stock_breadth_meta = _load_stock_breadth_histories(
+        provider_name,
+        histories,
+        start_date=start_date,
+        end_date=end_date,
+    )
     assets = _research_assets(asset_ids, repository)
     common_kwargs = {
         "assets": assets,
@@ -87,6 +97,13 @@ def build_strategy_diagnosis_report(
             max_weight_step=10.0,
             volatility_adjustment=True,
         ),
+        "V7_STOCK_BREADTH_SELECTION": run_taa_backtest(
+            **common_kwargs,
+            score_version="v7",
+            max_weight_step=10.0,
+            volatility_adjustment=True,
+            stock_price_history=stock_histories,
+        ),
     }
     benchmark = compare_strategies(**common_kwargs)
     static_row = benchmark["strategies"].get("SAA_60_40")
@@ -96,6 +113,7 @@ def build_strategy_diagnosis_report(
     attribution_v3 = decompose_excess_return_v3(variants["V4_REGIME_EXPOSURE_FLOOR"], static_row)
     attribution_v5 = decompose_excess_return_v3(variants["V5_RELATIVE_STRENGTH_SELECTION"], static_row)
     attribution_v6 = decompose_excess_return_v3(variants["V6_THEME_BREADTH_SELECTION"], static_row)
+    attribution_v7 = decompose_excess_return_v3(variants["V7_STOCK_BREADTH_SELECTION"], static_row)
     selection_attribution = compare_selection_attribution(
         decompose_excess_return_v3(variants["V3_TREND_RISK_ADJUSTED"], static_row),
         attribution_v5,
@@ -107,18 +125,44 @@ def build_strategy_diagnosis_report(
         baseline="V5_RELATIVE_STRENGTH_SELECTION",
         candidate="V6_THEME_BREADTH_SELECTION",
     )
+    selection_attribution_v3 = compare_selection_attribution(
+        attribution_v6,
+        attribution_v7,
+        baseline="V6_THEME_BREADTH_SELECTION",
+        candidate="V7_STOCK_BREADTH_SELECTION",
+    )
+    walk_forward = run_walk_forward_validation(
+        assets=assets,
+        price_history=histories,
+        stock_price_history=stock_histories,
+        common_kwargs={
+            "transaction_cost": common_kwargs["transaction_cost"],
+            "cash_return": common_kwargs["cash_return"],
+            "slippage": common_kwargs["slippage"],
+            "expense_ratio": common_kwargs["expense_ratio"],
+        },
+    )
+    promotion = build_promotion_report(version_comparison["rows"], walk_forward)
+    promotion_by_version = {row["version"]: row for row in promotion["rows"]}
+    stock_breadth_rows = rank_stock_breadth(stock_histories, source=stock_breadth_meta["source"])
     strategy_registry = build_strategy_registry(
         version_comparison["rows"],
         evidence_by_version={
             "V6_THEME_BREADTH_SELECTION": {
                 "periods": 3,
                 "improvement": selection_attribution_v2["selection"]["improved"],
+            },
+            "V7_STOCK_BREADTH_SELECTION": {
+                "periods": walk_forward.get("windows", 0),
+                "improvement": selection_attribution_v3["selection"]["improved"],
+                "stock_breadth_coverage": stock_breadth_coverage(stock_breadth_rows)["coverage_ratio"],
             }
         },
+        promotion_by_version=promotion_by_version,
     )
     regime_contribution = analyze_regime_contribution(variants["V1_CURRENT"])
     regime_v3 = detect_market_regime_v3(histories.get("510300", []), breadth=_estimate_breadth(histories))
-    selection_analysis = build_selection_analysis(variants["V6_THEME_BREADTH_SELECTION"])
+    selection_analysis = build_selection_analysis(variants["V7_STOCK_BREADTH_SELECTION"])
     report = {
         "dataset": {
             "provider": provider_name,
@@ -135,9 +179,18 @@ def build_strategy_diagnosis_report(
             "attribution_v3": attribution_v3,
             "attribution_v5": attribution_v5,
             "attribution_v6": attribution_v6,
+            "attribution_v7": attribution_v7,
             "selection_attribution": selection_attribution,
             "selection_attribution_v2": selection_attribution_v2,
+            "selection_attribution_v3": selection_attribution_v3,
             "selection_analysis": selection_analysis,
+            "stock_breadth": {
+                **stock_breadth_meta,
+                "coverage": stock_breadth_coverage(stock_breadth_rows),
+                "rows": stock_breadth_rows,
+            },
+            "walk_forward": walk_forward,
+            "promotion": promotion,
             "regime_v3": regime_v3,
         },
         "versions": version_comparison,
@@ -154,6 +207,7 @@ def build_strategy_diagnosis_report(
             "Prioritize total-return data before declaring investment performance conclusions.",
             "Use relative strength as a selection layer before promoting V5 from testing.",
             "Validate theme momentum and breadth stability before promoting V6.",
+            "Use stock breadth and walk-forward promotion rules before promoting V7.",
         ],
     }
     if report_path is not None:
@@ -195,6 +249,78 @@ def _estimate_breadth(histories: dict[str, list[dict]]) -> float | None:
     if observations == 0:
         return None
     return round(positives / observations, 4)
+
+
+def _load_stock_breadth_histories(
+    provider_name: str,
+    etf_histories: dict[str, list[dict]],
+    start_date: str,
+    end_date: str,
+) -> tuple[dict[str, list[dict]], dict]:
+    if provider_name == "mock":
+        histories = _mock_stock_histories(etf_histories)
+        return histories, {
+            "source": "mock_stock_constituents",
+            "mode": "mock",
+            "requested": len(stock_theme_universe()),
+            "loaded": len(histories),
+            "failures": [],
+        }
+    if provider_name != "tushare":
+        return {}, {
+            "source": "unavailable_stock_daily",
+            "mode": provider_name,
+            "requested": len(stock_theme_universe()),
+            "loaded": 0,
+            "failures": [f"{provider_name} stock breadth adapter is not configured"],
+        }
+
+    provider = build_provider("tushare", return_type="price")
+    histories: dict[str, list[dict]] = {}
+    failures: list[str] = []
+    for stock_id in stock_theme_universe():
+        try:
+            bars = provider.get_stock_price_history(stock_id, start=start_date, end=end_date)
+        except Exception as exc:  # pragma: no cover - live provider failures depend on local credentials.
+            failures.append(f"{stock_id}: {exc}")
+            continue
+        history = price_bars_to_history(bars)
+        if history:
+            histories[stock_id] = history
+        else:
+            failures.append(f"{stock_id}: empty history")
+    return histories, {
+        "source": "tushare_stock_daily",
+        "mode": "live",
+        "requested": len(stock_theme_universe()),
+        "loaded": len(histories),
+        "failures": failures[:20],
+    }
+
+
+def _mock_stock_histories(etf_histories: dict[str, list[dict]]) -> dict[str, list[dict]]:
+    representative_by_theme: dict[str, list[dict]] = {}
+    for asset_id, history in etf_histories.items():
+        representative_by_theme.setdefault(theme_for_asset(asset_id), history)
+    histories: dict[str, list[dict]] = {}
+    for index, stock_id in enumerate(stock_theme_universe()):
+        theme = _mock_stock_theme(stock_id)
+        base_history = representative_by_theme.get(theme) or next(iter(etf_histories.values()), [])
+        if not base_history:
+            continue
+        scale = 1.0 + ((index % 7) - 3) * 0.01
+        histories[stock_id] = [
+            {
+                **row,
+                "close": round(float(row["close"]) * scale * (1.0 + ((offset % 5) - 2) * 0.001), 6),
+            }
+            for offset, row in enumerate(base_history)
+        ]
+    return histories
+
+
+def _mock_stock_theme(stock_id: str) -> str:
+    return theme_for_stock(stock_id)
 
 
 def _diagnosis_summary(regime_analysis: dict, decomposition: dict, regime_contribution: dict) -> list[dict]:

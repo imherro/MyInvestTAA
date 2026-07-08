@@ -5,6 +5,8 @@ def selection_reasons(score: dict) -> list[str]:
     reasons: list[str] = []
     if float(score.get("theme_momentum_score", 0.0)) >= 70.0:
         reasons.append("Theme momentum high")
+    if float(score.get("stock_breadth_score", 0.0)) >= 60.0:
+        reasons.append("Stock breadth improving")
     if float(score.get("breadth_score", 0.0)) >= 60.0:
         reasons.append("Breadth improving")
     if float(score.get("relative_strength_score", 0.0)) >= 70.0:
@@ -35,6 +37,8 @@ def build_selection_analysis(backtest_result: dict, limit: int = 10) -> dict:
                 "relative_strength_score": item.get("relative_strength_score", 0.0),
                 "theme_momentum_score": item.get("theme_momentum_score", 0.0),
                 "breadth_score": item.get("breadth_score", 0.0),
+                "stock_breadth_score": item.get("stock_breadth_score", item.get("breadth_score", 0.0)),
+                "stock_breadth": item.get("stock_breadth", {}),
                 "trend_score": item.get("trend_score", 0.0),
                 "selection_reason": item.get("selection_reason") or selection_reasons(item),
             }

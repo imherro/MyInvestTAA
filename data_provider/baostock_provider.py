@@ -25,6 +25,14 @@ class BaoStockProvider:
     ) -> list[PriceBar]:
         return self._query_history(index_id, start=start, end=end)
 
+    def get_stock_price_history(
+        self,
+        stock_id: str,
+        start: str | None = None,
+        end: str | None = None,
+    ) -> list[PriceBar]:
+        return self._query_history(stock_id, start=start, end=end)
+
     def get_etf_list(self) -> list[AssetMetadata]:
         return []
 

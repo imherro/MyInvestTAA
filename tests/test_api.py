@@ -159,7 +159,7 @@ def test_strategy_diagnosis_api_compares_versions():
 
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload["versions"]["rows"]) >= 6
+    assert len(payload["versions"]["rows"]) >= 7
 
 
 def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
@@ -168,11 +168,19 @@ def test_strategy_diagnosis_report_current_check_rejects_stale_shape():
     assert _strategy_diagnosis_report_is_current(report) is False
 
 
-def test_strategy_diagnosis_report_current_check_accepts_task017_shape():
+def test_strategy_diagnosis_report_current_check_accepts_task018_shape():
     report = {
-        "versions": {"rows": [{"version": "V6_THEME_BREADTH_SELECTION"}]},
+        "versions": {"rows": [{"version": "V7_STOCK_BREADTH_SELECTION"}]},
         "benchmark": {"validation": {}},
-        "diagnosis": {"attribution_v3": {}, "selection_attribution": {}, "selection_analysis": {}, "regime_v3": {}},
+        "diagnosis": {
+            "attribution_v3": {},
+            "selection_attribution": {},
+            "selection_analysis": {},
+            "stock_breadth": {},
+            "walk_forward": {},
+            "promotion": {},
+            "regime_v3": {},
+        },
         "strategy_registry": {},
     }
 
@@ -218,6 +226,22 @@ def test_selection_analysis_api_rows_include_reasons():
     assert response.status_code == 200
     payload = response.json()
     assert "selection_reason" in payload["rows"][0]
+
+
+def test_walk_forward_api_returns_versions():
+    response = client.get("/api/research/walk-forward")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"windows", "versions", "rows"} <= set(payload)
+
+
+def test_promotion_api_returns_rows():
+    response = client.get("/api/research/promotion")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"benchmark", "rows", "best_candidate"} <= set(payload)
 
 
 def test_research_report_page_returns_sections():
@@ -306,6 +330,14 @@ def test_selection_research_page_lists_selection_reasons():
     assert "Selection" in response.text
 
 
+def test_strategy_promotion_page_returns_sections():
+    response = client.get("/strategy-promotion")
+
+    assert response.status_code == 200
+    assert "Strategy Promotion" in response.text
+    assert "Walk Forward" in response.text
+
+
 def test_dashboard_links_validation_report():
     response = client.get("/")
 
@@ -339,6 +371,13 @@ def test_dashboard_links_selection_research():
 
     assert response.status_code == 200
     assert "/selection-research" in response.text
+
+
+def test_dashboard_links_strategy_promotion():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "/strategy-promotion" in response.text
 
 
 def test_dashboard_links_benchmark_validation():

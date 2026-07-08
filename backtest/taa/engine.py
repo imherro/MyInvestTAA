@@ -14,6 +14,7 @@ from engine.regime import detect_market_regime
 from engine.risk import build_risk_budget
 from engine.breadth import theme_breadth_by_theme
 from engine.selection import calculate_relative_strength, selection_reasons
+from engine.stock_breadth import stock_breadth_by_theme
 from engine.theme import theme_for_asset, theme_momentum_by_theme
 
 
@@ -30,6 +31,7 @@ def run_taa_backtest(
     max_weight_step: float | None = None,
     volatility_adjustment: bool = False,
     equity_floor_by_regime: dict[str, float] | None = None,
+    stock_price_history: dict[str, list[dict]] | None = None,
 ) -> dict:
     if rebalance_frequency != "monthly":
         raise ValueError("only monthly rebalance is supported")
@@ -43,8 +45,8 @@ def run_taa_backtest(
         raise ValueError("expense_ratio cannot be negative")
     if cash_return <= -1:
         raise ValueError("cash_return must be greater than -1")
-    if score_version not in {"v1", "v4", "v5", "v6"}:
-        raise ValueError("score_version must be v1, v4, v5, or v6")
+    if score_version not in {"v1", "v4", "v5", "v6", "v7"}:
+        raise ValueError("score_version must be v1, v4, v5, v6, or v7")
     if max_weight_step is not None and max_weight_step <= 0:
         raise ValueError("max_weight_step must be positive")
     if equity_floor_by_regime:
@@ -68,6 +70,7 @@ def run_taa_backtest(
             max_weight_step,
             volatility_adjustment,
             equity_floor_by_regime,
+            stock_price_history,
         )
 
     weights = {"CASH": 100.0}
@@ -100,11 +103,21 @@ def run_taa_backtest(
             value = value * (1.0 - expense_ratio / 12.0)
 
         histories_as_of = _histories_as_of(price_history, current_date)
+        stock_histories_as_of = (
+            _histories_as_of(stock_price_history, current_date)
+            if stock_price_history and score_version == "v7"
+            else {}
+        )
         benchmark_history = histories_as_of.get("510300", [])
         regime = detect_market_regime(benchmark_history)
         risk_budget = build_risk_budget(regime)
         assets_as_of = _assets_available_as_of(assets, current_date)
-        scores = _score_assets_as_of(assets_as_of, histories_as_of, score_version=score_version)
+        scores = _score_assets_as_of(
+            assets_as_of,
+            histories_as_of,
+            score_version=score_version,
+            stock_histories_as_of=stock_histories_as_of,
+        )
         scoring_weights = _apply_volatility_adjustment(scores) if volatility_adjustment else scores
         target_weights = build_rebalance_weights(scoring_weights, risk_budget)
         next_weights = (
@@ -153,6 +166,7 @@ def run_taa_backtest(
                     "max_weight_step": max_weight_step,
                     "volatility_adjustment": volatility_adjustment,
                     "equity_floor_by_regime": equity_floor_by_regime or {},
+                    "stock_breadth_assets": len(stock_histories_as_of),
                     "target_weights": target_weights,
                 },
                 regime=regime.as_dict(),
@@ -175,6 +189,7 @@ def run_taa_backtest(
             "max_weight_step": max_weight_step,
             "volatility_adjustment": volatility_adjustment,
             "equity_floor_by_regime": equity_floor_by_regime or {},
+            "stock_breadth_assets": len(stock_price_history or {}),
         },
         "metrics": metrics,
         "equity_curve": [
@@ -193,11 +208,17 @@ def _score_assets_as_of(
     assets: list[dict],
     histories_as_of: dict[str, list[dict]],
     score_version: str = "v1",
+    stock_histories_as_of: dict[str, list[dict]] | None = None,
 ) -> list[dict]:
     scores: list[dict] = []
     benchmark_history = histories_as_of.get("510300", [])
-    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version == "v6" else {}
+    theme_momentum = theme_momentum_by_theme(histories_as_of) if score_version in {"v6", "v7"} else {}
     theme_breadth = theme_breadth_by_theme(histories_as_of) if score_version == "v6" else {}
+    stock_breadth = (
+        stock_breadth_by_theme(stock_histories_as_of or {})
+        if score_version == "v7"
+        else {}
+    )
     for asset in assets:
         history = histories_as_of.get(asset["id"], [])
         if len(history) < 2:
@@ -215,7 +236,12 @@ def _score_assets_as_of(
         relative_strength = calculate_relative_strength(asset["id"], history, benchmark_history)
         theme = theme_for_asset(asset["id"])
         theme_momentum_score = float(theme_momentum.get(theme, {}).get("momentum_score", 50.0))
-        breadth_score = float(theme_breadth.get(theme, {}).get("breadth_score", 50.0))
+        stock_breadth_score = float(stock_breadth.get(theme, {}).get("breadth_score", 50.0))
+        breadth_score = (
+            stock_breadth_score
+            if score_version == "v7"
+            else float(theme_breadth.get(theme, {}).get("breadth_score", 50.0))
+        )
         quality_score = anchor_score
         if score_version == "v4":
             opportunity_score = round(
@@ -243,6 +269,15 @@ def _score_assets_as_of(
                 + 0.15 * quality_score,
                 2,
             )
+        elif score_version == "v7":
+            opportunity_score = round(
+                0.20 * relative_strength.strength_score
+                + 0.25 * theme_momentum_score
+                + 0.25 * stock_breadth_score
+                + 0.15 * trend_score
+                + 0.15 * quality_score,
+                2,
+            )
         else:
             opportunity_score = round(
                 0.4 * drawdown_pressure + 0.3 * recovery_score + 0.3 * anchor_score,
@@ -265,6 +300,8 @@ def _score_assets_as_of(
                 "theme_momentum": theme_momentum.get(theme, {}),
                 "breadth_score": breadth_score,
                 "breadth": theme_breadth.get(theme, {}),
+                "stock_breadth_score": stock_breadth_score,
+                "stock_breadth": stock_breadth.get(theme, {}),
                 "quality_score": quality_score,
                 "volatility": volatility,
             }
@@ -273,6 +310,7 @@ def _score_assets_as_of(
                     {
                         "theme_momentum_score": theme_momentum_score,
                         "breadth_score": breadth_score,
+                        "stock_breadth_score": stock_breadth_score,
                         "relative_strength_score": relative_strength.strength_score,
                         "trend_score": trend_score,
                         "quality_score": quality_score,
@@ -458,6 +496,7 @@ def _empty_result(
     max_weight_step: float | None = None,
     volatility_adjustment: bool = False,
     equity_floor_by_regime: dict[str, float] | None = None,
+    stock_price_history: dict[str, list[dict]] | None = None,
 ) -> dict:
     return {
         "strategy": "MyInvestTAA",
@@ -472,6 +511,7 @@ def _empty_result(
             "max_weight_step": max_weight_step,
             "volatility_adjustment": volatility_adjustment,
             "equity_floor_by_regime": equity_floor_by_regime or {},
+            "stock_breadth_assets": len(stock_price_history or {}),
         },
         "metrics": {
             "annual_return": 0.0,

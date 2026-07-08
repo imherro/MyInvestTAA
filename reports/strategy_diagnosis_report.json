@@ -862,6 +862,16 @@
       "interaction": 0.0,
       "check_sum": -0.1286
     },
+    "attribution_v7": {
+      "strategy": "MyInvestTAA",
+      "benchmark": "SAA_60_40",
+      "excess_return": -0.3207,
+      "allocation": 0.4489,
+      "selection": -1.1312,
+      "timing": 0.3616,
+      "interaction": 0.0,
+      "check_sum": -0.3207
+    },
     "selection_attribution": {
       "baseline": "V3_TREND_RISK_ADJUSTED",
       "candidate": "V5_RELATIVE_STRENGTH_SELECTION",
@@ -882,34 +892,49 @@
         "improved": true
       }
     },
+    "selection_attribution_v3": {
+      "baseline": "V6_THEME_BREADTH_SELECTION",
+      "candidate": "V7_STOCK_BREADTH_SELECTION",
+      "selection": {
+        "old": -0.9798,
+        "new": -1.1312,
+        "improvement": -0.1514,
+        "improved": false
+      }
+    },
     "selection_analysis": {
-      "version": "v6",
+      "version": "v7",
       "date": "2026-07-08",
       "rows": [
-        {
-          "asset": "511010",
-          "name": "国债ETF",
-          "theme": "government_bond",
-          "opportunity_score": 74.36,
-          "relative_strength_score": 50.33,
-          "theme_momentum_score": 73.33,
-          "breadth_score": 100.0,
-          "trend_score": 76.32,
-          "selection_reason": [
-            "Theme momentum high",
-            "Breadth improving",
-            "Trend supportive",
-            "Quality anchor acceptable"
-          ]
-        },
         {
           "asset": "512760",
           "name": "半导体ETF",
           "theme": "semiconductor",
-          "opportunity_score": 77.21,
+          "opportunity_score": 79.47,
           "relative_strength_score": 94.85,
           "theme_momentum_score": 100.0,
-          "breadth_score": 30.0,
+          "breadth_score": 52.0,
+          "stock_breadth_score": 52.0,
+          "stock_breadth": {
+            "theme": "semiconductor",
+            "breadth_score": 52.0,
+            "advancers": 3,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 0.6,
+            "above_ma_ratio": 0.8,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "688981.SH",
+              "603501.SH",
+              "300782.SZ",
+              "002371.SZ",
+              "688012.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
           "trend_score": 100.0,
           "selection_reason": [
             "Theme momentum high",
@@ -918,13 +943,64 @@
           ]
         },
         {
+          "asset": "511010",
+          "name": "国债ETF",
+          "theme": "government_bond",
+          "opportunity_score": 64.35,
+          "relative_strength_score": 50.33,
+          "theme_momentum_score": 73.33,
+          "breadth_score": 50.0,
+          "stock_breadth_score": 50.0,
+          "stock_breadth": {
+            "theme": "government_bond",
+            "breadth_score": 50.0,
+            "advancers": 0,
+            "total": 0,
+            "expected": 0,
+            "advancer_ratio": 0.0,
+            "above_ma_ratio": 0.0,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 0.0,
+            "members": [],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
+          "trend_score": 76.32,
+          "selection_reason": [
+            "Theme momentum high",
+            "Trend supportive",
+            "Quality anchor acceptable"
+          ]
+        },
+        {
           "asset": "510500",
           "name": "中证500ETF",
           "theme": "mid_cap",
-          "opportunity_score": 56.14,
+          "opportunity_score": 54.77,
           "relative_strength_score": 52.4,
           "theme_momentum_score": 80.0,
-          "breadth_score": 30.0,
+          "breadth_score": 29.0,
+          "stock_breadth_score": 29.0,
+          "stock_breadth": {
+            "theme": "mid_cap",
+            "breadth_score": 29.0,
+            "advancers": 1,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 0.2,
+            "above_ma_ratio": 0.6,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "600276.SH",
+              "600309.SH",
+              "000725.SZ",
+              "002475.SZ",
+              "300059.SZ"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
           "trend_score": 53.59,
           "selection_reason": [
             "Theme momentum high",
@@ -932,42 +1008,34 @@
           ]
         },
         {
-          "asset": "159915",
-          "name": "创业板ETF",
-          "theme": "growth",
-          "opportunity_score": 58.83,
-          "relative_strength_score": 59.15,
-          "theme_momentum_score": 86.67,
-          "breadth_score": 30.0,
-          "trend_score": 62.06,
-          "selection_reason": [
-            "Theme momentum high",
-            "Trend supportive"
-          ]
-        },
-        {
-          "asset": "588000",
-          "name": "科创50ETF",
-          "theme": "innovation",
-          "opportunity_score": 70.4,
-          "relative_strength_score": 80.03,
-          "theme_momentum_score": 93.33,
-          "breadth_score": 30.0,
-          "trend_score": 100.0,
-          "selection_reason": [
-            "Theme momentum high",
-            "Relative strength top tier",
-            "Trend supportive"
-          ]
-        },
-        {
           "asset": "510300",
           "name": "沪深300ETF",
           "theme": "large_cap",
-          "opportunity_score": 52.54,
+          "opportunity_score": 57.54,
           "relative_strength_score": 50.0,
           "theme_momentum_score": 66.67,
-          "breadth_score": 30.0,
+          "breadth_score": 54.0,
+          "stock_breadth_score": 54.0,
+          "stock_breadth": {
+            "theme": "large_cap",
+            "breadth_score": 54.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.4,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "600519.SH",
+              "601318.SH",
+              "600036.SH",
+              "601166.SH",
+              "600900.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
           "trend_score": 48.65,
           "selection_reason": [
             "Quality anchor acceptable"
@@ -977,25 +1045,107 @@
           "asset": "512890",
           "name": "红利低波ETF",
           "theme": "dividend",
-          "opportunity_score": 43.78,
+          "opportunity_score": 50.52,
           "relative_strength_score": 45.25,
           "theme_momentum_score": 40.0,
-          "breadth_score": 40.0,
+          "breadth_score": 68.0,
+          "stock_breadth_score": 68.0,
+          "stock_breadth": {
+            "theme": "dividend",
+            "breadth_score": 68.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.8,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "601398.SH",
+              "601288.SH",
+              "601988.SH",
+              "600900.SH",
+              "601088.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
           "trend_score": 10.69,
           "selection_reason": [
+            "Stock breadth improving",
+            "Breadth improving",
             "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "588000",
+          "name": "科创50ETF",
+          "theme": "innovation",
+          "opportunity_score": 71.65,
+          "relative_strength_score": 80.03,
+          "theme_momentum_score": 93.33,
+          "breadth_score": 45.0,
+          "stock_breadth_score": 45.0,
+          "stock_breadth": {
+            "theme": "innovation",
+            "breadth_score": 45.0,
+            "advancers": 3,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 0.6,
+            "above_ma_ratio": 0.6,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "688981.SH",
+              "688012.SH",
+              "688008.SH",
+              "688111.SH",
+              "688599.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
+          "trend_score": 100.0,
+          "selection_reason": [
+            "Theme momentum high",
+            "Relative strength top tier",
+            "Trend supportive"
           ]
         },
         {
           "asset": "515100",
           "name": "红利ETF",
           "theme": "dividend",
-          "opportunity_score": 40.28,
+          "opportunity_score": 47.11,
           "relative_strength_score": 43.33,
           "theme_momentum_score": 40.0,
-          "breadth_score": 40.0,
+          "breadth_score": 68.0,
+          "stock_breadth_score": 68.0,
+          "stock_breadth": {
+            "theme": "dividend",
+            "breadth_score": 68.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.8,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "601398.SH",
+              "601288.SH",
+              "601988.SH",
+              "600900.SH",
+              "601088.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
           "trend_score": 8.31,
           "selection_reason": [
+            "Stock breadth improving",
+            "Breadth improving",
             "Quality anchor acceptable"
           ]
         },
@@ -1003,29 +1153,755 @@
           "asset": "515080",
           "name": "中证红利ETF",
           "theme": "dividend",
-          "opportunity_score": 39.69,
+          "opportunity_score": 46.52,
           "relative_strength_score": 43.48,
           "theme_momentum_score": 40.0,
-          "breadth_score": 40.0,
+          "breadth_score": 68.0,
+          "stock_breadth_score": 68.0,
+          "stock_breadth": {
+            "theme": "dividend",
+            "breadth_score": 68.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.8,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "601398.SH",
+              "601288.SH",
+              "601988.SH",
+              "600900.SH",
+              "601088.SH"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
           "trend_score": 4.15,
           "selection_reason": [
+            "Stock breadth improving",
+            "Breadth improving",
             "Quality anchor acceptable"
+          ]
+        },
+        {
+          "asset": "159915",
+          "name": "创业板ETF",
+          "theme": "growth",
+          "opportunity_score": 51.62,
+          "relative_strength_score": 59.15,
+          "theme_momentum_score": 86.67,
+          "breadth_score": 7.0,
+          "stock_breadth_score": 7.0,
+          "stock_breadth": {
+            "theme": "growth",
+            "breadth_score": 7.0,
+            "advancers": 0,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 0.0,
+            "above_ma_ratio": 0.2,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "300750.SZ",
+              "300760.SZ",
+              "300059.SZ",
+              "300015.SZ",
+              "300274.SZ"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
+          "trend_score": 62.06,
+          "selection_reason": [
+            "Theme momentum high",
+            "Trend supportive"
           ]
         },
         {
           "asset": "512800",
           "name": "银行ETF",
           "theme": "financial",
-          "opportunity_score": 43.41,
+          "opportunity_score": 46.51,
           "relative_strength_score": 48.02,
           "theme_momentum_score": 53.33,
-          "breadth_score": 40.0,
+          "breadth_score": 54.0,
+          "stock_breadth_score": 54.0,
+          "stock_breadth": {
+            "theme": "financial",
+            "breadth_score": 54.0,
+            "advancers": 5,
+            "total": 5,
+            "expected": 5,
+            "advancer_ratio": 1.0,
+            "above_ma_ratio": 0.4,
+            "new_high_ratio": 0.0,
+            "coverage_ratio": 1.0,
+            "members": [
+              "600036.SH",
+              "601398.SH",
+              "601288.SH",
+              "601166.SH",
+              "000001.SZ"
+            ],
+            "missing_members": [],
+            "source": "stock_daily"
+          },
           "trend_score": 17.14,
           "selection_reason": [
             "Mixed selection evidence"
           ]
         }
       ]
+    },
+    "stock_breadth": {
+      "source": "tushare_stock_daily",
+      "mode": "live",
+      "requested": 60,
+      "loaded": 60,
+      "failures": [],
+      "coverage": {
+        "observed": 75,
+        "expected": 75,
+        "coverage_ratio": 1.0
+      },
+      "rows": [
+        {
+          "theme": "dividend",
+          "breadth_score": 68.0,
+          "advancers": 5,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 1.0,
+          "above_ma_ratio": 0.8,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "601398.SH",
+            "601288.SH",
+            "601988.SH",
+            "600900.SH",
+            "601088.SH"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "large_cap",
+          "breadth_score": 54.0,
+          "advancers": 5,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 1.0,
+          "above_ma_ratio": 0.4,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "600519.SH",
+            "601318.SH",
+            "600036.SH",
+            "601166.SH",
+            "600900.SH"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "financial",
+          "breadth_score": 54.0,
+          "advancers": 5,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 1.0,
+          "above_ma_ratio": 0.4,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "600036.SH",
+            "601398.SH",
+            "601288.SH",
+            "601166.SH",
+            "000001.SZ"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "semiconductor",
+          "breadth_score": 52.0,
+          "advancers": 3,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.6,
+          "above_ma_ratio": 0.8,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "688981.SH",
+            "603501.SH",
+            "300782.SZ",
+            "002371.SZ",
+            "688012.SH"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "government_bond",
+          "breadth_score": 50.0,
+          "advancers": 0,
+          "total": 0,
+          "expected": 0,
+          "advancer_ratio": 0.0,
+          "above_ma_ratio": 0.0,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 0.0,
+          "members": [],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "consumer",
+          "breadth_score": 46.0,
+          "advancers": 4,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.8,
+          "above_ma_ratio": 0.4,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "600519.SH",
+            "000858.SZ",
+            "000568.SZ",
+            "600887.SH",
+            "000651.SZ"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "innovation",
+          "breadth_score": 45.0,
+          "advancers": 3,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.6,
+          "above_ma_ratio": 0.6,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "688981.SH",
+            "688012.SH",
+            "688008.SH",
+            "688111.SH",
+            "688599.SH"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "mid_cap",
+          "breadth_score": 29.0,
+          "advancers": 1,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.2,
+          "above_ma_ratio": 0.6,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "600276.SH",
+            "600309.SH",
+            "000725.SZ",
+            "002475.SZ",
+            "300059.SZ"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "gold",
+          "breadth_score": 23.0,
+          "advancers": 2,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.4,
+          "above_ma_ratio": 0.2,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "600547.SH",
+            "000975.SZ",
+            "600489.SH",
+            "601899.SH",
+            "000506.SZ"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "new_energy",
+          "breadth_score": 22.0,
+          "advancers": 1,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.2,
+          "above_ma_ratio": 0.4,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "300750.SZ",
+            "002594.SZ",
+            "601012.SH",
+            "300274.SZ",
+            "002129.SZ"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "healthcare",
+          "breadth_score": 14.0,
+          "advancers": 0,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.0,
+          "above_ma_ratio": 0.4,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "600276.SH",
+            "300760.SZ",
+            "000661.SZ",
+            "600196.SH",
+            "300015.SZ"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "brokerage",
+          "breadth_score": 14.0,
+          "advancers": 0,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.0,
+          "above_ma_ratio": 0.4,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "600030.SH",
+            "600837.SH",
+            "601688.SH",
+            "000776.SZ",
+            "601211.SH"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "small_cap",
+          "breadth_score": 8.0,
+          "advancers": 1,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.2,
+          "above_ma_ratio": 0.0,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "300122.SZ",
+            "300014.SZ",
+            "300124.SZ",
+            "002230.SZ",
+            "002241.SZ"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "growth",
+          "breadth_score": 7.0,
+          "advancers": 0,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.0,
+          "above_ma_ratio": 0.2,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "300750.SZ",
+            "300760.SZ",
+            "300059.SZ",
+            "300015.SZ",
+            "300274.SZ"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "defense",
+          "breadth_score": 7.0,
+          "advancers": 0,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.0,
+          "above_ma_ratio": 0.2,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "600760.SH",
+            "600893.SH",
+            "000768.SZ",
+            "002179.SZ",
+            "600316.SH"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        },
+        {
+          "theme": "cyclical",
+          "breadth_score": 0.0,
+          "advancers": 0,
+          "total": 5,
+          "expected": 5,
+          "advancer_ratio": 0.0,
+          "above_ma_ratio": 0.0,
+          "new_high_ratio": 0.0,
+          "coverage_ratio": 1.0,
+          "members": [
+            "601899.SH",
+            "603993.SH",
+            "600111.SH",
+            "000807.SZ",
+            "601600.SH"
+          ],
+          "missing_members": [],
+          "source": "tushare_stock_daily"
+        }
+      ]
+    },
+    "walk_forward": {
+      "benchmark": "V3_TREND_RISK_ADJUSTED",
+      "train_years": 3,
+      "test_years": 1,
+      "windows": 8,
+      "rows": [
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2016-01-01",
+          "test_start": "2019-01-01",
+          "test_end": "2019-12-31",
+          "annual_return": 15.5954,
+          "benchmark_return": 16.5604,
+          "alpha": -0.965,
+          "max_drawdown": -4.6333,
+          "benchmark_drawdown": -3.8944,
+          "drawdown_pass": false,
+          "sharpe": 1.784,
+          "calmar": 3.3659
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2016-01-01",
+          "test_start": "2019-01-01",
+          "test_end": "2019-12-31",
+          "annual_return": 16.7565,
+          "benchmark_return": 16.5604,
+          "alpha": 0.1961,
+          "max_drawdown": -4.3438,
+          "benchmark_drawdown": -3.8944,
+          "drawdown_pass": false,
+          "sharpe": 1.8971,
+          "calmar": 3.8576
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2017-01-01",
+          "test_start": "2020-01-01",
+          "test_end": "2020-12-31",
+          "annual_return": 27.0966,
+          "benchmark_return": 20.8945,
+          "alpha": 6.2021,
+          "max_drawdown": -4.7868,
+          "benchmark_drawdown": -3.7854,
+          "drawdown_pass": false,
+          "sharpe": 1.6745,
+          "calmar": 5.6607
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2017-01-01",
+          "test_start": "2020-01-01",
+          "test_end": "2020-12-31",
+          "annual_return": 26.1295,
+          "benchmark_return": 20.8945,
+          "alpha": 5.235,
+          "max_drawdown": -4.5965,
+          "benchmark_drawdown": -3.7854,
+          "drawdown_pass": false,
+          "sharpe": 1.6685,
+          "calmar": 5.6847
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2018-01-01",
+          "test_start": "2021-01-01",
+          "test_end": "2021-12-31",
+          "annual_return": 6.0716,
+          "benchmark_return": 6.9477,
+          "alpha": -0.8761,
+          "max_drawdown": -3.7726,
+          "benchmark_drawdown": -2.7846,
+          "drawdown_pass": false,
+          "sharpe": 0.9052,
+          "calmar": 1.6094
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2018-01-01",
+          "test_start": "2021-01-01",
+          "test_end": "2021-12-31",
+          "annual_return": 7.1914,
+          "benchmark_return": 6.9477,
+          "alpha": 0.2437,
+          "max_drawdown": -3.5656,
+          "benchmark_drawdown": -2.7846,
+          "drawdown_pass": false,
+          "sharpe": 1.0673,
+          "calmar": 2.0169
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2019-01-01",
+          "test_start": "2022-01-01",
+          "test_end": "2022-12-31",
+          "annual_return": -5.6504,
+          "benchmark_return": -4.9104,
+          "alpha": -0.74,
+          "max_drawdown": -7.5581,
+          "benchmark_drawdown": -8.3463,
+          "drawdown_pass": true,
+          "sharpe": -1.0011,
+          "calmar": -0.7476
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2019-01-01",
+          "test_start": "2022-01-01",
+          "test_end": "2022-12-31",
+          "annual_return": -5.6357,
+          "benchmark_return": -4.9104,
+          "alpha": -0.7253,
+          "max_drawdown": -7.6693,
+          "benchmark_drawdown": -8.3463,
+          "drawdown_pass": true,
+          "sharpe": -0.9185,
+          "calmar": -0.7348
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2020-01-01",
+          "test_start": "2023-01-01",
+          "test_end": "2023-12-31",
+          "annual_return": -2.4839,
+          "benchmark_return": -3.6998,
+          "alpha": 1.2159,
+          "max_drawdown": -2.4799,
+          "benchmark_drawdown": -3.3968,
+          "drawdown_pass": true,
+          "sharpe": -1.1073,
+          "calmar": -1.0016
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2020-01-01",
+          "test_start": "2023-01-01",
+          "test_end": "2023-12-31",
+          "annual_return": -2.9079,
+          "benchmark_return": -3.6998,
+          "alpha": 0.7919,
+          "max_drawdown": -2.7009,
+          "benchmark_drawdown": -3.3968,
+          "drawdown_pass": true,
+          "sharpe": -1.2298,
+          "calmar": -1.0766
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2021-01-01",
+          "test_start": "2024-01-01",
+          "test_end": "2024-12-31",
+          "annual_return": 6.9782,
+          "benchmark_return": 9.5018,
+          "alpha": -2.5236,
+          "max_drawdown": -1.704,
+          "benchmark_drawdown": -2.265,
+          "drawdown_pass": true,
+          "sharpe": 1.2344,
+          "calmar": 4.0952
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2021-01-01",
+          "test_start": "2024-01-01",
+          "test_end": "2024-12-31",
+          "annual_return": 8.017,
+          "benchmark_return": 9.5018,
+          "alpha": -1.4848,
+          "max_drawdown": -1.9317,
+          "benchmark_drawdown": -2.265,
+          "drawdown_pass": true,
+          "sharpe": 1.2101,
+          "calmar": 4.1502
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2022-01-01",
+          "test_start": "2025-01-01",
+          "test_end": "2025-12-31",
+          "annual_return": 16.9934,
+          "benchmark_return": 13.5535,
+          "alpha": 3.4399,
+          "max_drawdown": -1.0835,
+          "benchmark_drawdown": -0.9506,
+          "drawdown_pass": false,
+          "sharpe": 2.9747,
+          "calmar": 15.6838
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2022-01-01",
+          "test_start": "2025-01-01",
+          "test_end": "2025-12-31",
+          "annual_return": 16.8079,
+          "benchmark_return": 13.5535,
+          "alpha": 3.2544,
+          "max_drawdown": -1.2476,
+          "benchmark_drawdown": -0.9506,
+          "drawdown_pass": false,
+          "sharpe": 3.0738,
+          "calmar": 13.4722
+        },
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2023-01-01",
+          "test_start": "2026-01-01",
+          "test_end": "2026-07-08",
+          "annual_return": -7.1277,
+          "benchmark_return": -6.8604,
+          "alpha": -0.2673,
+          "max_drawdown": -5.6173,
+          "benchmark_drawdown": -4.7305,
+          "drawdown_pass": false,
+          "sharpe": -0.6552,
+          "calmar": -1.2689
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "benchmark": "V3_TREND_RISK_ADJUSTED",
+          "train_start": "2023-01-01",
+          "test_start": "2026-01-01",
+          "test_end": "2026-07-08",
+          "annual_return": -11.1318,
+          "benchmark_return": -6.8604,
+          "alpha": -4.2714,
+          "max_drawdown": -6.6915,
+          "benchmark_drawdown": -4.7305,
+          "drawdown_pass": false,
+          "sharpe": -1.1095,
+          "calmar": -1.6636
+        }
+      ],
+      "versions": {
+        "V6_THEME_BREADTH_SELECTION": {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "windows": 8,
+          "wins": 3,
+          "win_rate": 0.375,
+          "avg_alpha": 0.6857,
+          "min_alpha": -2.5236,
+          "drawdown_pass_rate": 0.375,
+          "stable": false
+        },
+        "V7_STOCK_BREADTH_SELECTION": {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "windows": 8,
+          "wins": 5,
+          "win_rate": 0.625,
+          "avg_alpha": 0.405,
+          "min_alpha": -4.2714,
+          "drawdown_pass_rate": 0.375,
+          "stable": false
+        }
+      },
+      "best_version": "V7_STOCK_BREADTH_SELECTION"
+    },
+    "promotion": {
+      "benchmark": "V3_TREND_RISK_ADJUSTED",
+      "rows": [
+        {
+          "version": "V6_THEME_BREADTH_SELECTION",
+          "promotion": false,
+          "approval_status": "pending",
+          "promotion_score": 66.67,
+          "validation_windows": 8,
+          "win_rate": 0.375,
+          "avg_alpha": 0.6857,
+          "reasons": [
+            "Walk-forward win rate below threshold",
+            "Walk-forward drawdown pass rate below threshold"
+          ],
+          "checks": {
+            "sharpe_beats_benchmark": true,
+            "drawdown_not_worse": true,
+            "return_not_worse": true,
+            "walk_forward_present": true,
+            "walk_forward_win_rate": false,
+            "walk_forward_drawdown": false
+          }
+        },
+        {
+          "version": "V7_STOCK_BREADTH_SELECTION",
+          "promotion": false,
+          "approval_status": "pending",
+          "promotion_score": 83.33,
+          "validation_windows": 8,
+          "win_rate": 0.625,
+          "avg_alpha": 0.405,
+          "reasons": [
+            "Walk-forward drawdown pass rate below threshold"
+          ],
+          "checks": {
+            "sharpe_beats_benchmark": true,
+            "drawdown_not_worse": true,
+            "return_not_worse": true,
+            "walk_forward_present": true,
+            "walk_forward_win_rate": true,
+            "walk_forward_drawdown": false
+          }
+        }
+      ],
+      "best_candidate": "V7_STOCK_BREADTH_SELECTION",
+      "approved_versions": []
     },
     "regime_v3": {
       "state": "bull_caution",
@@ -1057,7 +1933,8 @@
           "score_version": "v1",
           "max_weight_step": null,
           "volatility_adjustment": false,
-          "equity_floor_by_regime": {}
+          "equity_floor_by_regime": {},
+          "stock_breadth_assets": 0
         }
       },
       {
@@ -1075,7 +1952,8 @@
           "score_version": "v1",
           "max_weight_step": 10.0,
           "volatility_adjustment": false,
-          "equity_floor_by_regime": {}
+          "equity_floor_by_regime": {},
+          "stock_breadth_assets": 0
         }
       },
       {
@@ -1093,7 +1971,8 @@
           "score_version": "v4",
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
-          "equity_floor_by_regime": {}
+          "equity_floor_by_regime": {},
+          "stock_breadth_assets": 0
         }
       },
       {
@@ -1115,7 +1994,8 @@
             "bull": 70.0,
             "neutral": 40.0,
             "bear_recovery": 50.0
-          }
+          },
+          "stock_breadth_assets": 0
         }
       },
       {
@@ -1133,7 +2013,8 @@
           "score_version": "v5",
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
-          "equity_floor_by_regime": {}
+          "equity_floor_by_regime": {},
+          "stock_breadth_assets": 0
         }
       },
       {
@@ -1151,7 +2032,27 @@
           "score_version": "v6",
           "max_weight_step": 10.0,
           "volatility_adjustment": true,
-          "equity_floor_by_regime": {}
+          "equity_floor_by_regime": {},
+          "stock_breadth_assets": 0
+        }
+      },
+      {
+        "version": "V7_STOCK_BREADTH_SELECTION",
+        "annual_return": 4.4067,
+        "max_drawdown": -12.8415,
+        "sharpe": 0.5669,
+        "calmar": 0.3432,
+        "ending_value": 1.5727,
+        "assumptions": {
+          "transaction_cost": 0.001,
+          "cash_return": 0.015,
+          "slippage": 0.0005,
+          "expense_ratio": 0.006,
+          "score_version": "v7",
+          "max_weight_step": 10.0,
+          "volatility_adjustment": true,
+          "equity_floor_by_regime": {},
+          "stock_breadth_assets": 60
         }
       }
     ],
@@ -1182,7 +2083,7 @@
       },
       {
         "version": "V3_TREND_RISK_ADJUSTED",
-        "status": "production_candidate",
+        "status": "candidate",
         "metrics": {
           "annual_return": 3.716,
           "max_drawdown": -14.2028,
@@ -1222,7 +2123,28 @@
         "evidence": {
           "periods": 3,
           "improvement": true
-        }
+        },
+        "promotion_score": 66.67,
+        "validation_windows": 8,
+        "approval_status": "pending"
+      },
+      {
+        "version": "V7_STOCK_BREADTH_SELECTION",
+        "status": "testing",
+        "metrics": {
+          "annual_return": 4.4067,
+          "max_drawdown": -12.8415,
+          "sharpe": 0.5669,
+          "calmar": 0.3432
+        },
+        "evidence": {
+          "periods": 8,
+          "improvement": false,
+          "stock_breadth_coverage": 1.0
+        },
+        "promotion_score": 83.33,
+        "validation_windows": 8,
+        "approval_status": "pending"
       }
     ]
   },
@@ -1402,6 +2324,7 @@
     "Use volatility adjustment to avoid oversized high-volatility positions.",
     "Prioritize total-return data before declaring investment performance conclusions.",
     "Use relative strength as a selection layer before promoting V5 from testing.",
-    "Validate theme momentum and breadth stability before promoting V6."
+    "Validate theme momentum and breadth stability before promoting V6.",
+    "Use stock breadth and walk-forward promotion rules before promoting V7."
   ]
 }

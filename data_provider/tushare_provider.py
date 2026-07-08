@@ -48,6 +48,20 @@ class TushareProvider:
         )
         return _price_bars_from_frame(index_id, frame, self.return_type)
 
+    def get_stock_price_history(
+        self,
+        stock_id: str,
+        start: str | None = None,
+        end: str | None = None,
+    ) -> list[PriceBar]:
+        pro = self._client()
+        frame = pro.daily(
+            ts_code=_to_ts_code(stock_id),
+            start_date=_to_tushare_date(start),
+            end_date=_to_tushare_date(end),
+        )
+        return _price_bars_from_frame(stock_id, frame, "price")
+
     def get_etf_list(self) -> list[AssetMetadata]:
         pro = self._client()
         frame = pro.fund_basic(market="E")

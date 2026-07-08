@@ -139,6 +139,16 @@ def get_selection_analysis() -> dict:
     return _build_strategy_diagnosis_report()["diagnosis"]["selection_analysis"]
 
 
+@app.get("/api/research/walk-forward")
+def get_walk_forward() -> dict:
+    return _build_strategy_diagnosis_report()["diagnosis"]["walk_forward"]
+
+
+@app.get("/api/research/promotion")
+def get_promotion() -> dict:
+    return _build_strategy_diagnosis_report()["diagnosis"]["promotion"]
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -345,7 +355,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -969,7 +979,7 @@ def strategy_diagnosis_page() -> str:
     <body>
       <header>
         <h1>Strategy Diagnosis</h1>
-        <p>诊断当前 TAA 策略弱点并比较 V1/V2/V3/V4/V5/V6。<a href="/experiment">Experiment Report</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a></p>
+        <p>诊断当前 TAA 策略弱点并比较 V1/V2/V3/V4/V5/V6/V7。<a href="/experiment">Experiment Report</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a></p>
       </header>
       <main>
         <section>
@@ -1121,6 +1131,9 @@ def strategy_governance_page() -> str:
                 <th>最大回撤</th>
                 <th>Sharpe</th>
                 <th>Calmar</th>
+                <th>Promotion</th>
+                <th>验证窗口</th>
+                <th>审批</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>
@@ -1149,7 +1162,7 @@ def selection_research_page() -> str:
     <body>
       <header>
         <h1>Selection Research</h1>
-        <p>展示 V6 主题动量、宽度和相对强度选择证据。<a href="/diagnosis">Strategy Diagnosis</a></p>
+        <p>展示 V7 主题动量、股票级宽度和相对强度选择证据。<a href="/diagnosis">Strategy Diagnosis</a></p>
       </header>
       <main>
         <section>
@@ -1163,11 +1176,76 @@ def selection_research_page() -> str:
                 <th>相对强度</th>
                 <th>主题动量</th>
                 <th>宽度</th>
+                <th>股票宽度</th>
                 <th>趋势</th>
                 <th>理由</th>
               </tr>
             </thead>
             <tbody>{rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/strategy-promotion", response_class=HTMLResponse)
+def strategy_promotion_page() -> str:
+    report = _build_strategy_diagnosis_report()["diagnosis"]
+    promotion = report["promotion"]
+    walk_forward = report["walk_forward"]
+    promotion_rows = "\n".join(_promotion_rows(promotion["rows"]))
+    walk_rows = "\n".join(_walk_forward_rows(walk_forward.get("versions", {}).values()))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Strategy Promotion</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Strategy Promotion</h1>
+        <p>展示 Walk Forward 稳定性和自动晋升规则。<a href="/strategy-governance">Strategy Governance</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Promotion</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>版本</th>
+                <th>晋升</th>
+                <th>Promotion Score</th>
+                <th>验证窗口</th>
+                <th>胜率</th>
+                <th>平均 Alpha</th>
+                <th>状态</th>
+                <th>原因</th>
+              </tr>
+            </thead>
+            <tbody>{promotion_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Walk Forward</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>版本</th>
+                <th>窗口</th>
+                <th>胜率</th>
+                <th>平均 Alpha</th>
+                <th>最差 Alpha</th>
+                <th>回撤通过率</th>
+                <th>稳定</th>
+              </tr>
+            </thead>
+            <tbody>{walk_rows}</tbody>
           </table>
         </section>
       </main>
@@ -1637,6 +1715,9 @@ def _strategy_registry_rows(rows: list[dict]) -> list[str]:
               <td>{float(metrics.get("max_drawdown", 0.0)):.2f}%</td>
               <td>{float(metrics.get("sharpe", 0.0)):.2f}</td>
               <td>{float(metrics.get("calmar", 0.0)):.2f}</td>
+              <td>{float(item.get("promotion_score", 0.0)):.2f}</td>
+              <td>{int(item.get("validation_windows", 0) or 0)}</td>
+              <td>{escape(str(item.get("approval_status", "-")))}</td>
             </tr>
             """
         )
@@ -1656,8 +1737,49 @@ def _selection_analysis_rows(rows: list[dict]) -> list[str]:
               <td>{float(item.get("relative_strength_score", 0.0)):.2f}</td>
               <td>{float(item.get("theme_momentum_score", 0.0)):.2f}</td>
               <td>{float(item.get("breadth_score", 0.0)):.2f}</td>
+              <td>{float(item.get("stock_breadth_score", 0.0)):.2f}</td>
               <td>{float(item.get("trend_score", 0.0)):.2f}</td>
               <td>{escape(reasons)}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _promotion_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        reasons = ", ".join(item.get("reasons", []))
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item["version"]))}</td>
+              <td>{escape(str(item["promotion"]))}</td>
+              <td>{float(item.get("promotion_score", 0.0)):.2f}</td>
+              <td>{int(item.get("validation_windows", 0) or 0)}</td>
+              <td>{float(item.get("win_rate", 0.0)) * 100:.1f}%</td>
+              <td>{float(item.get("avg_alpha", 0.0)):.2f}%</td>
+              <td>{escape(str(item.get("approval_status", "-")))}</td>
+              <td>{escape(reasons)}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _walk_forward_rows(rows) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item["version"]))}</td>
+              <td>{int(item.get("windows", 0))}</td>
+              <td>{float(item.get("win_rate", 0.0)) * 100:.1f}%</td>
+              <td>{float(item.get("avg_alpha", 0.0)):.2f}%</td>
+              <td>{float(item.get("min_alpha", 0.0)):.2f}%</td>
+              <td>{float(item.get("drawdown_pass_rate", 0.0)) * 100:.1f}%</td>
+              <td>{escape(str(item.get("stable", False)))}</td>
             </tr>
             """
         )
@@ -1708,11 +1830,14 @@ def _strategy_diagnosis_report_is_current(report: dict) -> bool:
         for row in report.get("versions", {}).get("rows", [])
     }
     return (
-        "V6_THEME_BREADTH_SELECTION" in versions
+        "V7_STOCK_BREADTH_SELECTION" in versions
         and "validation" in report.get("benchmark", {})
         and "attribution_v3" in report.get("diagnosis", {})
         and "selection_attribution" in report.get("diagnosis", {})
         and "selection_analysis" in report.get("diagnosis", {})
+        and "stock_breadth" in report.get("diagnosis", {})
+        and "walk_forward" in report.get("diagnosis", {})
+        and "promotion" in report.get("diagnosis", {})
         and "regime_v3" in report.get("diagnosis", {})
         and "strategy_registry" in report
     )
