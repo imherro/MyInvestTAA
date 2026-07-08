@@ -1,0 +1,71 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class StoredAsset:
+    asset_id: str
+    name: str
+    asset_class: str
+    source: str
+
+    def as_dict(self) -> dict:
+        return {
+            "asset_id": self.asset_id,
+            "name": self.name,
+            "asset_class": self.asset_class,
+            "source": self.source,
+        }
+
+
+@dataclass(frozen=True)
+class StoredPrice:
+    asset_id: str
+    date: str
+    close: float
+    source: str
+
+    def as_dict(self) -> dict:
+        return {
+            "asset_id": self.asset_id,
+            "date": self.date,
+            "close": self.close,
+            "source": self.source,
+        }
+
+
+@dataclass(frozen=True)
+class StoredSignal:
+    date: str
+    asset_id: str
+    drawdown_score: float
+    recovery_score: float
+    anchor_score: float
+    opportunity_score: float
+    regime: str
+
+    def as_dict(self) -> dict:
+        return {
+            "date": self.date,
+            "asset_id": self.asset_id,
+            "drawdown_score": self.drawdown_score,
+            "recovery_score": self.recovery_score,
+            "anchor_score": self.anchor_score,
+            "opportunity_score": self.opportunity_score,
+            "regime": self.regime,
+        }
+
+
+@dataclass(frozen=True)
+class StoredBacktestResult:
+    strategy: str
+    period: str
+    metrics: dict
+
+    def as_dict(self) -> dict:
+        return {
+            "strategy": self.strategy,
+            "period": self.period,
+            "metrics": self.metrics,
+        }

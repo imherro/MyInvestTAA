@@ -96,12 +96,28 @@ def test_research_attribution_api_returns_contribution():
     assert "contribution" in payload
 
 
+def test_live_backtest_api_returns_database_report():
+    response = client.get("/api/research/live-backtest")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert {"data_source", "quality", "backtest", "benchmark", "attribution"} <= set(payload)
+
+
 def test_research_report_page_returns_sections():
     response = client.get("/research")
 
     assert response.status_code == 200
     assert "Research Report" in response.text
     assert "Rolling胜率" in response.text
+
+
+def test_data_pipeline_page_returns_sections():
+    response = client.get("/pipeline")
+
+    assert response.status_code == 200
+    assert "Data Pipeline" in response.text
+    assert "真实回测报告" in response.text
 
 
 def test_data_quality_page_returns_sections():

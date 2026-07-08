@@ -16,6 +16,7 @@ from backtest.benchmark import compare_strategies
 from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
+from data_pipeline import run_live_backtest_report
 from engine.allocation import build_allocation_recommendation
 from engine.asset_repository import load_assets, load_price_history
 from engine.anchor import load_anchor_profiles
@@ -27,6 +28,7 @@ from engine.recovery import analyze_recovery_events
 from engine.regime import detect_market_regime
 from engine.risk import build_risk_budget
 from engine.taa_score import build_taa_ranking
+from storage import MarketDataRepository, connect_database
 
 
 app = FastAPI(
@@ -88,6 +90,11 @@ def get_research_quality() -> dict:
 @app.get("/api/research/attribution")
 def get_research_attribution() -> dict:
     return analyze_attribution()
+
+
+@app.get("/api/research/live-backtest")
+def get_live_backtest() -> dict:
+    return _build_live_backtest_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -296,7 +303,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -514,7 +521,7 @@ def research_report() -> str:
     <body>
       <header>
         <h1>Research Report</h1>
-        <p>真实数据接口已预留，当前报告仍基于 MockProvider 样例数据。<a href="/">Dashboard</a> · <a href="/quality">Data Quality</a> · <a href="/attribution">Attribution</a></p>
+        <p>真实数据接口已预留，当前报告仍基于 MockProvider 样例数据。<a href="/">Dashboard</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/quality">Data Quality</a> · <a href="/attribution">Attribution</a></p>
       </header>
       <main>
         <section class="summary" aria-label="strategy performance">
@@ -569,6 +576,58 @@ def research_report() -> str:
               </tr>
             </thead>
             <tbody>{risk_rows}</tbody>
+          </table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
+@app.get("/pipeline", response_class=HTMLResponse)
+def data_pipeline_page() -> str:
+    report = _build_live_backtest_report()
+    quality = report["quality"]
+    metrics = report["backtest"]["metrics"]
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Data Pipeline</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Data Pipeline</h1>
+        <p>Provider → Normalizer → Quality → Database → Backtest。<a href="/research">Research Report</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>导入状态</h2>
+          <table>
+            <tbody>
+              <tr><td>数据源</td><td>{report["data_source"]}</td></tr>
+              <tr><td>更新时间</td><td>{report["updated_at"]}</td></tr>
+              <tr><td>资产数量</td><td>{report["asset_count"]}</td></tr>
+              <tr><td>价格行数</td><td>{report["price_rows"]}</td></tr>
+              <tr><td>质量评分</td><td>{quality["average_score"]:.2f}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>真实回测报告</h2>
+          <table>
+            <tbody>
+              <tr><td>策略</td><td>{report["backtest"]["strategy"]}</td></tr>
+              <tr><td>回测周期</td><td>{report["backtest"]["period"]["start"]} - {report["backtest"]["period"]["end"]}</td></tr>
+              <tr><td>年化收益</td><td>{metrics["annual_return"]:.2f}%</td></tr>
+              <tr><td>最大回撤</td><td>{metrics["max_drawdown"]:.2f}%</td></tr>
+              <tr><td>Sharpe</td><td>{metrics["sharpe"]:.2f}</td></tr>
+              <tr><td>归因主导因子</td><td>{report["attribution"]["dominant_factor"]}</td></tr>
+            </tbody>
           </table>
         </section>
       </main>
@@ -920,6 +979,12 @@ def _attribution_rows(report: dict) -> list[str]:
             """
         )
     return rows
+
+
+def _build_live_backtest_report() -> dict:
+    connection = connect_database(":memory:")
+    repository = MarketDataRepository(connection)
+    return run_live_backtest_report(repository, provider_name="mock")
 
 
 def _report_page_css() -> str:

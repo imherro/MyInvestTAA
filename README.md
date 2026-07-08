@@ -359,3 +359,22 @@ data/sample/history/prices.json
 - `GET /attribution`：新增 Attribution 页面，展示第一版收益来源解释。
 
 当前 Attribution 是基于调仓评分和权重的解释型归因，不是严格绩效因子分解；数据质量检查默认按样例数据的稀疏日期提示问题。后续需要引入真实交易日历、停牌/成立日处理、复权校验和更严格的收益归因模型。
+
+## 二十三、Task-010 生产数据管道与真实市场验证入口
+
+当前工程增加了 SQLite 存储层和生产数据管道骨架：
+
+- `storage/`：新增 SQLite 建表、连接和仓储接口。
+- SQLite 表包括 `assets`、`prices`、`signals`、`backtest_results`。
+- `data_pipeline/`：新增 provider 构建、价格标准化、质量检查、数据库写入和 live backtest 报告流程。
+- `scripts/import_market_data.py`：支持命令行导入，例如：
+
+```powershell
+python scripts/import_market_data.py --provider mock --assets 510300,512890
+```
+
+- 数据流已形成：Provider -> PriceBar -> Quality Check -> SQLite -> Backtest。
+- `GET /api/research/live-backtest`：使用 MockProvider 导入内存 SQLite，再从数据库读取数据运行 TAA、Benchmark、Alpha 和 Attribution。
+- `GET /pipeline`：新增 Data Pipeline 页面，展示数据源、更新时间、质量评分、资产数量、价格行数和真实回测报告摘要。
+
+当前默认仍使用 MockProvider，TushareProvider 已支持接口但未默认联网导入；SQLite 默认可写入 `data/local/`，该目录不进入 Git。后续需要补齐真实交易日历、增量更新、失败重试、数据库迁移和真实 Tushare 全市场验证。
