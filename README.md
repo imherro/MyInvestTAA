@@ -318,3 +318,14 @@ data/sample/history/prices.json
 - Web 首页增加 `TAA Backtest` 区块，展示年化收益、最大回撤、Sharpe、Calmar、换手和期末净值。
 
 当前回测仍基于样例月度数据，不能代表真实策略表现。后续需要接入真实历史行情并增加基准组合对照。
+
+## 二十、Task-007 基准比较与策略评估
+
+当前工程增加了 Benchmark Framework 和策略比较输出：
+
+- `GET /api/backtest/comparison`：返回 MyInvestTAA 与三类基准的绩效对比。
+- 基准包括沪深300 Buy & Hold、60/40 股债现金替代组合、等权 ETF 组合。
+- 输出指标包括年化收益、最大回撤、Sharpe、期末净值、超额收益、回撤改善和 Sharpe 差异。
+- Web 首页增加 `Strategy Comparison` 区块，用表格展示策略、年化收益、最大回撤、Sharpe、超额收益、回撤改善和期末净值。
+
+当前比较仍基于样例月度数据，且 TAA 与基准都未纳入交易成本、滑点、ETF 费率、税费和申赎限制。该模块用于验证框架和相对评估流程，不代表真实策略有效性结论。

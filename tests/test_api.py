@@ -6,6 +6,14 @@ from backend.main import app
 client = TestClient(app)
 
 
+def test_dashboard_returns_strategy_comparison_sections():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "Strategy Comparison" in response.text
+    assert "收益曲线对比" in response.text
+
+
 def test_assets_api_returns_sample_universe():
     response = client.get("/api/assets")
 
@@ -51,6 +59,15 @@ def test_taa_backtest_api_returns_strategy_metrics():
     payload = response.json()
     assert payload["strategy"] == "MyInvestTAA"
     assert {"annual_return", "max_drawdown", "sharpe", "calmar"} <= set(payload["metrics"])
+
+
+def test_backtest_comparison_api_returns_alpha_metrics():
+    response = client.get("/api/backtest/comparison")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert "MyInvestTAA" in payload["strategies"]
+    assert {"annual_return", "max_drawdown", "sharpe", "excess_return"} <= set(payload["rows"][0])
 
 
 def test_recovery_api_returns_summary():

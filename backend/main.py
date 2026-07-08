@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from html import escape
 import sys
 from pathlib import Path
 
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from backtest.benchmark import compare_strategies
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from engine.allocation import build_allocation_recommendation
@@ -63,6 +65,11 @@ def get_sample_backtest() -> dict:
 @app.get("/api/backtest/taa")
 def get_taa_backtest() -> dict:
     return run_taa_backtest()
+
+
+@app.get("/api/backtest/comparison")
+def get_backtest_comparison() -> dict:
+    return compare_strategies()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -121,6 +128,9 @@ def dashboard() -> str:
     event_rows = "\n".join(_drawdown_history_rows(ranking))
     opportunity_rows = "\n".join(_opportunity_rows())
     allocation_rows = "\n".join(_allocation_rows())
+    comparison = compare_strategies()
+    comparison_rows = "\n".join(_comparison_rows(comparison))
+    comparison_curve = _comparison_curve_svg(comparison)
     taa_backtest = run_taa_backtest()
     taa_metrics = taa_backtest["metrics"]
 
@@ -239,6 +249,19 @@ def dashboard() -> str:
           font-size: 12px;
           margin: 0;
         }}
+        .curve-chart {{
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          padding: 12px;
+          overflow-x: auto;
+        }}
+        .curve-chart svg {{
+          display: block;
+          width: 100%;
+          min-width: 760px;
+          height: auto;
+        }}
         .overweight {{ background: var(--good); }}
         .watch_overweight {{ background: var(--accent); }}
         .neutral {{ background: var(--watch); }}
@@ -356,6 +379,27 @@ def dashboard() -> str:
             </tbody>
           </table>
         </section>
+        <section class="history">
+          <h2>Strategy Comparison</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>策略</th>
+                <th>年化收益</th>
+                <th>最大回撤</th>
+                <th>Sharpe</th>
+                <th>超额收益</th>
+                <th>回撤改善</th>
+                <th>期末净值</th>
+              </tr>
+            </thead>
+            <tbody>{comparison_rows}</tbody>
+          </table>
+        </section>
+        <section class="history">
+          <h2>收益曲线对比</h2>
+          {comparison_curve}
+        </section>
       </main>
     </body>
     </html>
@@ -430,6 +474,112 @@ def _allocation_rows() -> list[str]:
             """
         )
     return rows
+
+
+def _comparison_rows(comparison: dict) -> list[str]:
+    rows: list[str] = []
+    for item in comparison["rows"]:
+        rows.append(
+            f"""
+            <tr>
+              <td><strong>{item["name"]}</strong><span>{item["strategy_id"]}</span></td>
+              <td>{item["annual_return"]:.2f}%</td>
+              <td>{item["max_drawdown"]:.2f}%</td>
+              <td>{item["sharpe"]:.2f}</td>
+              <td>{item["excess_return"]:.2f}%</td>
+              <td>{item["drawdown_improvement"]:.2f}%</td>
+              <td>{item["ending_value"]:.4f}</td>
+            </tr>
+            """
+        )
+    return rows
+
+
+def _comparison_curve_svg(comparison: dict) -> str:
+    curves = comparison["equity_curves"]
+    all_values = [
+        float(point["value"])
+        for curve in curves.values()
+        for point in curve
+    ]
+    if not all_values:
+        return '<div class="curve-chart"><p>暂无曲线数据</p></div>'
+
+    width = 900
+    height = 260
+    left = 48
+    right = 20
+    top = 18
+    bottom = 42
+    plot_width = width - left - right
+    plot_height = height - top - bottom
+    min_value = min(all_values)
+    max_value = max(all_values)
+    if min_value == max_value:
+        min_value -= 0.01
+        max_value += 0.01
+
+    colors = {
+        "MyInvestTAA": "#2563eb",
+        "HS300_BUY_HOLD": "#b45309",
+        "SAA_60_40": "#0f766e",
+        "EQUAL_WEIGHT": "#b91c1c",
+    }
+    names = {
+        item["strategy_id"]: item["name"]
+        for item in comparison["rows"]
+    }
+
+    def point_xy(index: int, count: int, value: float) -> tuple[float, float]:
+        x = left + (plot_width * index / max(count - 1, 1))
+        y = top + plot_height * (max_value - value) / (max_value - min_value)
+        return round(x, 2), round(y, 2)
+
+    polylines: list[str] = []
+    legends: list[str] = []
+    for legend_index, (strategy_id, curve) in enumerate(curves.items()):
+        points = " ".join(
+            f"{x},{y}"
+            for x, y in (
+                point_xy(index, len(curve), float(point["value"]))
+                for index, point in enumerate(curve)
+            )
+        )
+        color = colors.get(strategy_id, "#344054")
+        polylines.append(
+            f'<polyline points="{points}" fill="none" stroke="{color}" '
+            f'stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" />'
+        )
+        legend_x = left + legend_index * 196
+        legends.append(
+            f'<g><line x1="{legend_x}" y1="238" x2="{legend_x + 22}" y2="238" '
+            f'stroke="{color}" stroke-width="2.6" />'
+            f'<text x="{legend_x + 28}" y="242" font-size="12" fill="#344054">'
+            f'{escape(names.get(strategy_id, strategy_id))}</text></g>'
+        )
+
+    grid_values = [min_value, (min_value + max_value) / 2.0, max_value]
+    grid_lines = []
+    for value in grid_values:
+        _, y = point_xy(0, 2, value)
+        grid_lines.append(
+            f'<line x1="{left}" y1="{y}" x2="{width - right}" y2="{y}" '
+            f'stroke="#d8dee8" stroke-width="1" />'
+            f'<text x="8" y="{y + 4}" font-size="11" fill="#5f6b7a">{value:.2f}</text>'
+        )
+
+    return f"""
+    <div class="curve-chart">
+      <svg viewBox="0 0 {width} {height}" role="img" aria-label="收益曲线对比">
+        <rect x="0" y="0" width="{width}" height="{height}" fill="#ffffff" />
+        {"".join(grid_lines)}
+        <line x1="{left}" y1="{height - bottom}" x2="{width - right}" y2="{height - bottom}" stroke="#98a2b3" stroke-width="1" />
+        <line x1="{left}" y1="{top}" x2="{left}" y2="{height - bottom}" stroke="#98a2b3" stroke-width="1" />
+        {"".join(polylines)}
+        {"".join(legends)}
+      </svg>
+    </div>
+    """
 
 
 if __name__ == "__main__":
