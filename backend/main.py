@@ -7,7 +7,7 @@ from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -38,11 +38,60 @@ from engine.taa_score import build_taa_ranking
 from storage import MarketDataRepository, connect_database
 
 
+UNIFIED_HEADER_SCRIPT_URL = "https://invest.okbbc.com/header.js"
+UNIFIED_FOOTER_SCRIPT_URL = "https://invest.okbbc.com/footer.js"
+
+
 app = FastAPI(
     title="MyInvestTAA",
     description="Tactical Asset Allocation MVP with drawdown and anchor scoring.",
     version="0.1.0",
 )
+
+
+def _unified_shell_scripts() -> str:
+    return (
+        f'\n    <script src="{UNIFIED_HEADER_SCRIPT_URL}" defer></script>\n'
+        f'    <script src="{UNIFIED_FOOTER_SCRIPT_URL}" defer></script>\n'
+    )
+
+
+def _inject_unified_shell(html: str) -> str:
+    if UNIFIED_HEADER_SCRIPT_URL in html and UNIFIED_FOOTER_SCRIPT_URL in html:
+        return html
+
+    scripts = _unified_shell_scripts()
+    if "</head>" in html:
+        return html.replace("</head>", f"{scripts}</head>", 1)
+    if "</body>" in html:
+        return html.replace("</body>", f"{scripts}</body>", 1)
+    return f"{html}{scripts}"
+
+
+@app.middleware("http")
+async def add_unified_shell_to_html(request, call_next):
+    response = await call_next(request)
+    content_type = response.headers.get("content-type", "")
+    if "text/html" not in content_type.lower():
+        return response
+
+    body = b""
+    async for chunk in response.body_iterator:
+        if isinstance(chunk, str):
+            chunk = chunk.encode("utf-8")
+        body += chunk
+
+    charset = getattr(response, "charset", None) or "utf-8"
+    html = body.decode(charset)
+    headers = dict(response.headers)
+    headers.pop("content-length", None)
+    return Response(
+        content=_inject_unified_shell(html),
+        status_code=response.status_code,
+        headers=headers,
+        media_type=response.media_type,
+        background=response.background,
+    )
 
 
 @app.get("/api/assets")

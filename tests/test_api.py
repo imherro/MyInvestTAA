@@ -14,6 +14,20 @@ def test_dashboard_returns_strategy_comparison_sections():
     assert "收益曲线对比" in response.text
 
 
+def test_html_pages_include_unified_shell_scripts():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert 'src="https://invest.okbbc.com/header.js"' in response.text
+    assert 'src="https://invest.okbbc.com/footer.js"' in response.text
+
+    readiness = client.get("/production-readiness")
+
+    assert readiness.status_code == 200
+    assert 'src="https://invest.okbbc.com/header.js"' in readiness.text
+    assert 'src="https://invest.okbbc.com/footer.js"' in readiness.text
+
+
 def test_assets_api_returns_sample_universe():
     response = client.get("/api/assets")
 
@@ -21,6 +35,8 @@ def test_assets_api_returns_sample_universe():
     assets = response.json()
     assert len(assets) >= 5
     assert {"id", "name", "anchor_score", "max_drawdown", "prices"} <= set(assets[0])
+    assert "invest.okbbc.com/header.js" not in response.text
+    assert "invest.okbbc.com/footer.js" not in response.text
 
 
 def test_taa_ranking_api_returns_ranked_scores():
