@@ -25,6 +25,12 @@ from data_pipeline import (
     run_live_backtest_report,
 )
 from engine.allocation import build_allocation_recommendation
+from engine.asset_registry import (
+    build_research_universe_audit,
+    load_asset_mappings,
+    load_execution_universe,
+    load_research_universe,
+)
 from engine.asset_repository import load_assets, load_price_history
 from engine.anchor import load_anchor_profiles
 from engine.attribution import analyze_attribution
@@ -233,6 +239,20 @@ def get_production_readiness() -> dict:
     return _build_strategy_diagnosis_report()["diagnosis"]["production_readiness"]
 
 
+@app.get("/api/research/universe")
+def get_research_universe() -> dict:
+    return {
+        "research_assets": [asset.as_dict() for asset in load_research_universe()],
+        "execution_assets": [asset.as_dict() for asset in load_execution_universe()],
+        "mappings": [mapping.as_dict() for mapping in load_asset_mappings()],
+    }
+
+
+@app.get("/api/research/universe-audit")
+def get_research_universe_audit() -> dict:
+    return {"audit": build_research_universe_audit()}
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -439,7 +459,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -1667,6 +1687,132 @@ def production_readiness_page() -> str:
     """
 
 
+@app.get("/research-universe", response_class=HTMLResponse)
+def research_universe_page() -> str:
+    research_assets = load_research_universe()
+    execution_assets = load_execution_universe()
+    mappings = load_asset_mappings()
+    audit = build_research_universe_audit()
+    research_rows = "\n".join(_research_universe_rows([asset.as_dict() for asset in research_assets]))
+    execution_rows = "\n".join(_execution_universe_rows([asset.as_dict() for asset in execution_assets]))
+    mapping_rows = "\n".join(_asset_mapping_rows([mapping.as_dict() for mapping in mappings]))
+    return_basis_rows = "\n".join(_count_rows(audit["return_basis_counts"]))
+    data_api_rows = "\n".join(_count_rows(audit["data_api_counts"]))
+    mapping_quality_rows = "\n".join(_count_rows(audit["mapping_quality_counts"]))
+    warning_rows = "\n".join(_message_rows(audit["warnings"], empty="No universe warnings"))
+    error_rows = "\n".join(_message_rows(audit["errors"], empty="No universe errors"))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Research Universe</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Research Universe</h1>
+        <p>研究资产层与 ETF 执行代理层的静态注册表审计。<a href="/">Dashboard</a> · <a href="/real-research">Real Market Research</a> · <a href="/production-readiness">Production Readiness</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Universe Audit</h2>
+          <table>
+            <tbody>
+              <tr><td>Research Assets</td><td>{int(audit["research_asset_count"])}</td></tr>
+              <tr><td>Execution Assets</td><td>{int(audit["execution_asset_count"])}</td></tr>
+              <tr><td>Mappings</td><td>{int(audit["mapping_count"])}</td></tr>
+              <tr><td>Eligible For Allocation</td><td>{int(audit["eligible_for_allocation_count"])}</td></tr>
+              <tr><td>Industry Monitor</td><td>{int(audit["industry_monitor_count"])}</td></tr>
+              <tr><td>Warnings</td><td>{len(audit["warnings"])}</td></tr>
+              <tr><td>Errors</td><td>{len(audit["errors"])}</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Return Basis Counts</h2>
+          <table>
+            <thead><tr><th>Return Basis</th><th>Count</th></tr></thead>
+            <tbody>{return_basis_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Data API Counts</h2>
+          <table>
+            <thead><tr><th>Data API</th><th>Count</th></tr></thead>
+            <tbody>{data_api_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Mapping Quality</h2>
+          <table>
+            <thead><tr><th>Quality</th><th>Count</th></tr></thead>
+            <tbody>{mapping_quality_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Research Assets</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Role</th>
+                <th>Category</th>
+                <th>Sleeve</th>
+                <th>Data API</th>
+                <th>Return Basis</th>
+                <th>Allocation</th>
+              </tr>
+            </thead>
+            <tbody>{research_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Execution Assets</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Data API</th>
+                <th>Return Basis</th>
+                <th>Investable Start</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>{execution_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Asset Mapping</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Research Asset</th>
+                <th>Primary Proxy</th>
+                <th>Execution Proxies</th>
+                <th>Quality</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>{mapping_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Warnings</h2>
+          <table><tbody>{warning_rows}</tbody></table>
+        </section>
+        <section>
+          <h2>Errors</h2>
+          <table><tbody>{error_rows}</tbody></table>
+        </section>
+      </main>
+    </body>
+    </html>
+    """
+
+
 @app.get("/attribution", response_class=HTMLResponse)
 def attribution_page() -> str:
     report = analyze_attribution()
@@ -2386,6 +2532,90 @@ def _parameter_sensitivity_rows(rows: list[dict]) -> list[str]:
             """
         )
     return html_rows
+
+
+def _research_universe_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        allocation = "yes" if item.get("eligible_for_allocation") else "no"
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item.get("name", "")))}<span>{escape(str(item.get("asset_id", "")))}</span></td>
+              <td>{escape(str(item.get("role", "")))}</td>
+              <td>{escape(str(item.get("category", "")))}</td>
+              <td>{escape(str(item.get("sleeve", "")))}</td>
+              <td>{escape(str(item.get("data_api", "")))}</td>
+              <td>{escape(str(item.get("return_basis", "")))}</td>
+              <td>{allocation}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _execution_universe_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        start = item.get("investable_start_date") or "pending audit"
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item.get("name", "")))}<span>{escape(str(item.get("asset_id", "")))}</span></td>
+              <td>{escape(str(item.get("data_api", "")))}</td>
+              <td>{escape(str(item.get("return_basis", "")))}</td>
+              <td>{escape(str(start))}</td>
+              <td>{escape(str(item.get("notes", "")))}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _asset_mapping_rows(rows: list[dict]) -> list[str]:
+    html_rows: list[str] = []
+    for item in rows:
+        proxies = ", ".join(item.get("execution_proxies") or [])
+        primary = item.get("primary_execution_proxy") or "-"
+        html_rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(item.get("research_asset_name", "")))}<span>{escape(str(item.get("research_asset_id", "")))}</span></td>
+              <td>{escape(str(primary))}</td>
+              <td>{escape(proxies or "-")}</td>
+              <td>{escape(str(item.get("mapping_quality", "")))}</td>
+              <td>{escape(str(item.get("notes", "")))}</td>
+            </tr>
+            """
+        )
+    return html_rows
+
+
+def _count_rows(counts: dict[str, int]) -> list[str]:
+    if not counts:
+        return ["<tr><td colspan=\"2\">No counts recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(label))}</td>
+          <td>{int(count)}</td>
+        </tr>
+        """
+        for label, count in counts.items()
+    ]
+
+
+def _message_rows(messages: list[str], *, empty: str) -> list[str]:
+    if not messages:
+        return [f"<tr><td>{escape(empty)}</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(message)}</td>
+        </tr>
+        """
+        for message in messages
+    ]
 
 
 def _format_optional_percent(value: object) -> str:

@@ -1,0 +1,258 @@
+[
+  {
+    "research_asset_id": "H00300.CSI",
+    "research_asset_name": "沪深300收益",
+    "primary_execution_proxy": "510300.SH",
+    "execution_proxies": ["510300.SH"],
+    "mapping_quality": "high",
+    "notes": "宽基 ETF 代理"
+  },
+  {
+    "research_asset_id": "H00905.CSI",
+    "research_asset_name": "中证500收益",
+    "primary_execution_proxy": "510500.SH",
+    "execution_proxies": ["510500.SH"],
+    "mapping_quality": "high",
+    "notes": "宽基 ETF 代理"
+  },
+  {
+    "research_asset_id": "H00852.CSI",
+    "research_asset_name": "中证1000全收益",
+    "primary_execution_proxy": "512100.SH",
+    "execution_proxies": ["512100.SH"],
+    "mapping_quality": "high",
+    "notes": "宽基 ETF 代理"
+  },
+  {
+    "research_asset_id": "399606.SZ",
+    "research_asset_name": "创业板R",
+    "primary_execution_proxy": "159915.SZ",
+    "execution_proxies": ["159915.SZ"],
+    "mapping_quality": "high",
+    "notes": "创业板 ETF 代理；研究指数口径待后续数据审计确认"
+  },
+  {
+    "research_asset_id": "000688CNY01.CSI",
+    "research_asset_name": "科创50全收益",
+    "primary_execution_proxy": "588000.SH",
+    "execution_proxies": ["588000.SH"],
+    "mapping_quality": "high",
+    "notes": "科创50 ETF 代理；指数代码可取性待后续数据审计确认"
+  },
+  {
+    "research_asset_id": "H00015.CSI",
+    "research_asset_name": "红利收益",
+    "primary_execution_proxy": "515100.SH",
+    "execution_proxies": ["515100.SH", "512890.SH"],
+    "mapping_quality": "medium",
+    "notes": "红利 ETF 代理，红利低波仅作为备选，执行差异需后续验证"
+  },
+  {
+    "research_asset_id": "H00922.CSI",
+    "research_asset_name": "中红收益",
+    "primary_execution_proxy": "515080.SH",
+    "execution_proxies": ["515080.SH"],
+    "mapping_quality": "medium",
+    "notes": "中证红利 ETF 代理，需后续验证跟踪误差"
+  },
+  {
+    "research_asset_id": "H20007.CSI",
+    "research_asset_name": "芯片产业全收益",
+    "primary_execution_proxy": "512760.SH",
+    "execution_proxies": ["512760.SH"],
+    "mapping_quality": "medium",
+    "notes": "半导体 ETF 作为近似代理，需后续验证主题覆盖差异"
+  },
+  {
+    "research_asset_id": "931743CNY010.CSI",
+    "research_asset_name": "半导体材料设备全收益",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "未确认明确 ETF 代理，不硬凑映射"
+  },
+  {
+    "research_asset_id": "H21152.CSI",
+    "research_asset_name": "CS创新药全收益",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "未确认明确 ETF 代理，不硬凑映射"
+  },
+  {
+    "research_asset_id": "H20590.CSI",
+    "research_asset_name": "机器人全收益",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "未确认明确 ETF 代理，不硬凑映射"
+  },
+  {
+    "research_asset_id": "H20771.CSI",
+    "research_asset_name": "CS新能源全收益",
+    "primary_execution_proxy": "516160.SH",
+    "execution_proxies": ["516160.SH"],
+    "mapping_quality": "medium",
+    "notes": "新能源 ETF 作为近似代理，需后续验证主题覆盖差异"
+  },
+  {
+    "research_asset_id": "931688CNY010.CSI",
+    "research_asset_name": "中证算力全收益",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "未确认明确 ETF 代理，不硬凑映射"
+  },
+  {
+    "research_asset_id": "H00805.CSI",
+    "research_asset_name": "A股资源全收益",
+    "primary_execution_proxy": "512400.SH",
+    "execution_proxies": ["512400.SH"],
+    "mapping_quality": "low",
+    "notes": "有色金属 ETF 只能近似资源周期，不能作为生产自动执行工具"
+  },
+  {
+    "research_asset_id": "801120.SI",
+    "research_asset_name": "食品饮料",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801150.SI",
+    "research_asset_name": "医药生物",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801080.SI",
+    "research_asset_name": "电子",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801730.SI",
+    "research_asset_name": "电力设备",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801750.SI",
+    "research_asset_name": "计算机",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801770.SI",
+    "research_asset_name": "通信",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801760.SI",
+    "research_asset_name": "传媒",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801160.SI",
+    "research_asset_name": "公用事业",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801050.SI",
+    "research_asset_name": "有色金属",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801950.SI",
+    "research_asset_name": "煤炭",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801780.SI",
+    "research_asset_name": "银行",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801790.SI",
+    "research_asset_name": "非银金融",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801180.SI",
+    "research_asset_name": "房地产",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801880.SI",
+    "research_asset_name": "汽车",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801740.SI",
+    "research_asset_name": "国防军工",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801890.SI",
+    "research_asset_name": "机械设备",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801710.SI",
+    "research_asset_name": "建筑材料",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  },
+  {
+    "research_asset_id": "801720.SI",
+    "research_asset_name": "建筑装饰",
+    "primary_execution_proxy": null,
+    "execution_proxies": [],
+    "mapping_quality": "none",
+    "notes": "申万行业监控资产，第一阶段不进入配置"
+  }
+]
