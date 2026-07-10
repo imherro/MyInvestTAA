@@ -17,6 +17,7 @@ from engine.asset_registry import (
     build_research_universe_mock_provider,
     write_research_data_availability_audit,
 )
+from engine.asset_registry.data_audit import RESEARCH_DATA_AUDIT_REPORT, RESEARCH_TUSHARE_DATA_AUDIT_REPORT
 
 
 def main() -> int:
@@ -25,7 +26,7 @@ def main() -> int:
     parser.add_argument("--start", default=None)
     parser.add_argument("--end", default=None)
     parser.add_argument("--max-assets", type=int, default=None)
-    parser.add_argument("--output", default=str(ROOT / "reports" / "research_universe_data_audit.json"))
+    parser.add_argument("--output", default=None)
     args = parser.parse_args()
 
     _load_dotenv(ROOT / ".env")
@@ -36,7 +37,7 @@ def main() -> int:
         end=args.end,
         max_assets=args.max_assets,
     )
-    output = write_research_data_availability_audit(report, Path(args.output))
+    output = write_research_data_availability_audit(report, _output_path(args.provider, args.output))
     summary = {
         "provider": report["provider"],
         "checked_assets": report["checked_assets"],
@@ -57,6 +58,14 @@ def _build_provider(provider_name: str):
     if not provider.provider_status()["available"]:
         raise SystemExit("TUSHARE_TOKEN is required for --provider tushare. Use --provider mock for local audit.")
     return provider
+
+
+def _output_path(provider_name: str, output: str | None) -> Path:
+    if output:
+        return Path(output)
+    if provider_name == "tushare":
+        return RESEARCH_TUSHARE_DATA_AUDIT_REPORT
+    return RESEARCH_DATA_AUDIT_REPORT
 
 
 def _load_dotenv(path: Path) -> None:

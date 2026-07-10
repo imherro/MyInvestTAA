@@ -15,6 +15,16 @@ from engine.asset_registry.loader import (
     mappings_by_research_asset,
     research_assets_by_id,
 )
+from engine.asset_registry.metadata_backfill import (
+    build_metadata_suggestions,
+    load_metadata_suggestions_report,
+    write_metadata_suggestions,
+)
+from engine.asset_registry.return_basis_review import (
+    build_return_basis_review,
+    load_return_basis_review_report,
+    write_return_basis_review,
+)
 from engine.asset_registry.models import AssetMapping, ExecutionAsset, ResearchAsset
 from engine.asset_registry.routing import get_asset_history
 from engine.asset_registry.validator import (
@@ -30,6 +40,8 @@ __all__ = [
     "ExecutionAsset",
     "ResearchAsset",
     "build_research_data_availability_audit",
+    "build_metadata_suggestions",
+    "build_return_basis_review",
     "build_research_universe_audit",
     "build_research_universe_mock_provider",
     "clear_asset_registry_cache",
@@ -39,6 +51,8 @@ __all__ = [
     "load_execution_universe",
     "load_research_data_availability_report",
     "load_research_universe",
+    "load_metadata_suggestions_report",
+    "load_return_basis_review_report",
     "mappings_by_research_asset",
     "research_assets_by_id",
     "get_asset_history",
@@ -46,5 +60,7 @@ __all__ = [
     "validate_mappings",
     "validate_registry",
     "validate_research_assets",
+    "write_metadata_suggestions",
     "write_research_data_availability_audit",
+    "write_return_basis_review",
 ]

@@ -29,8 +29,10 @@ from engine.asset_registry import (
     build_research_universe_audit,
     load_asset_mappings,
     load_execution_universe,
+    load_metadata_suggestions_report,
     load_research_data_availability_report,
     load_research_universe,
+    load_return_basis_review_report,
 )
 from engine.asset_repository import load_assets, load_price_history
 from engine.anchor import load_anchor_profiles
@@ -255,8 +257,18 @@ def get_research_universe_audit() -> dict:
 
 
 @app.get("/api/research/universe-data-audit")
-def get_research_universe_data_audit() -> dict:
-    return load_research_data_availability_report()
+def get_research_universe_data_audit(tushare: bool = False) -> dict:
+    return load_research_data_availability_report(tushare=tushare)
+
+
+@app.get("/api/research/universe-metadata-suggestions")
+def get_research_universe_metadata_suggestions() -> dict:
+    return load_metadata_suggestions_report()
+
+
+@app.get("/api/research/return-basis-review")
+def get_research_return_basis_review() -> dict:
+    return load_return_basis_review_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -1712,6 +1724,17 @@ def research_universe_page() -> str:
     data_audit_api_rows = "\n".join(_data_availability_api_rows(data_audit))
     unavailable_asset_rows = "\n".join(_unavailable_data_asset_rows(data_audit))
     data_audit_warning_rows = "\n".join(_data_audit_warning_rows(data_audit))
+    tushare_audit = load_research_data_availability_report(tushare=True)
+    tushare_audit_summary_rows = "\n".join(_data_availability_summary_rows(tushare_audit))
+    tushare_unavailable_rows = "\n".join(_unavailable_data_asset_rows(tushare_audit))
+    metadata_suggestions = load_metadata_suggestions_report()
+    metadata_suggestion_rows = "\n".join(_metadata_suggestion_rows(metadata_suggestions))
+    blocked_metadata_rows = "\n".join(_blocked_metadata_rows(metadata_suggestions))
+    return_basis_review = load_return_basis_review_report()
+    return_basis_summary_rows = "\n".join(_return_basis_summary_rows(return_basis_review))
+    return_basis_manual_rows = "\n".join(_review_asset_rows(return_basis_review, "needs_manual_review"))
+    unavailable_total_return_rows = "\n".join(_review_asset_rows(return_basis_review, "unavailable_total_return"))
+    price_index_monitor_rows = "\n".join(_review_asset_rows(return_basis_review, "price_index_monitor_assets"))
 
     return f"""
     <!doctype html>
@@ -1786,6 +1809,58 @@ def research_universe_page() -> str:
         <section>
           <h2>Data Audit Warnings</h2>
           <table><tbody>{data_audit_warning_rows}</tbody></table>
+        </section>
+        <section>
+          <h2>Real Tushare Audit</h2>
+          <table>
+            <tbody>{tushare_audit_summary_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Unavailable Tushare Assets</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Data API</th><th>Error</th></tr></thead>
+            <tbody>{tushare_unavailable_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Metadata Suggestions</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Data Start</th><th>Investable Start</th><th>Confidence</th></tr></thead>
+            <tbody>{metadata_suggestion_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Blocked Metadata Assets</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Reason</th></tr></thead>
+            <tbody>{blocked_metadata_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Return Basis Review</h2>
+          <table><tbody>{return_basis_summary_rows}</tbody></table>
+        </section>
+        <section>
+          <h2>Manual Return Basis Review</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Return Basis</th><th>Status</th><th>Reason</th></tr></thead>
+            <tbody>{return_basis_manual_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Unavailable Total Return Assets</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Return Basis</th><th>Status</th><th>Reason</th></tr></thead>
+            <tbody>{unavailable_total_return_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Price Index Monitor Assets</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Return Basis</th><th>Status</th><th>Reason</th></tr></thead>
+            <tbody>{price_index_monitor_rows}</tbody>
+          </table>
         </section>
         <section>
           <h2>Research Assets</h2>
@@ -2725,6 +2800,82 @@ def _data_audit_warning_rows(report: dict) -> list[str]:
         </tr>
         """
         for warning in warnings[:50]
+    ]
+
+
+def _metadata_suggestion_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return [
+            f"<tr><td colspan=\"4\">{escape(str(report.get('message', 'Metadata suggestions not generated yet.')))}</td></tr>"
+        ]
+    rows = report.get("suggestions", [])
+    if not rows:
+        return ["<tr><td colspan=\"4\">No metadata suggestions recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(row.get("name", "")))}<span>{escape(str(row.get("asset_id", "")))}</span></td>
+          <td>{escape(str(row.get("data_start_date", "")))}</td>
+          <td>{escape(str(row.get("investable_start_date", "")))}</td>
+          <td>{escape(str(row.get("confidence", "")))}</td>
+        </tr>
+        """
+        for row in rows[:50]
+    ]
+
+
+def _blocked_metadata_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return [
+            f"<tr><td colspan=\"2\">{escape(str(report.get('message', 'Metadata suggestions not generated yet.')))}</td></tr>"
+        ]
+    rows = report.get("blocked_assets", [])
+    if not rows:
+        return ["<tr><td colspan=\"2\">No blocked metadata assets recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(row.get("name", "")))}<span>{escape(str(row.get("asset_id", "")))}</span></td>
+          <td>{escape(str(row.get("reason", "")))}</td>
+        </tr>
+        """
+        for row in rows
+    ]
+
+
+def _return_basis_summary_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return [
+            f"<tr><td>Status</td><td>{escape(str(report.get('message', 'Return basis review not generated yet.')))}</td></tr>"
+        ]
+    return [
+        f"<tr><td>Report</td><td>{escape(str(report.get('report_path', '')))}</td></tr>",
+        f"<tr><td>Confirmed Total Return</td><td>{len(report.get('confirmed_total_return', []))}</td></tr>",
+        f"<tr><td>Needs Manual Review</td><td>{len(report.get('needs_manual_review', []))}</td></tr>",
+        f"<tr><td>Unavailable Total Return</td><td>{len(report.get('unavailable_total_return', []))}</td></tr>",
+        f"<tr><td>Price Index Monitor Assets</td><td>{len(report.get('price_index_monitor_assets', []))}</td></tr>",
+        "<tr><td>399606.SZ</td><td>Manual return-basis confirmation required until the real source return basis is confirmed</td></tr>",
+    ]
+
+
+def _review_asset_rows(report: dict, key: str) -> list[str]:
+    if not report.get("available"):
+        return [
+            f"<tr><td colspan=\"4\">{escape(str(report.get('message', 'Return basis review not generated yet.')))}</td></tr>"
+        ]
+    rows = report.get(key, [])
+    if not rows:
+        return ["<tr><td colspan=\"4\">No assets recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(row.get("name", "")))}<span>{escape(str(row.get("asset_id", "")))}</span></td>
+          <td>{escape(str(row.get("return_basis", "")))}</td>
+          <td>{escape("available" if row.get("available") else "unavailable")}</td>
+          <td>{escape(str(row.get("reason", "")))}</td>
+        </tr>
+        """
+        for row in rows[:50]
     ]
 
 

@@ -11,6 +11,7 @@ from engine.asset_registry.routing import get_asset_history
 
 
 RESEARCH_DATA_AUDIT_REPORT = ROOT / "reports" / "research_universe_data_audit.json"
+RESEARCH_TUSHARE_DATA_AUDIT_REPORT = ROOT / "reports" / "research_universe_data_audit_tushare.json"
 
 
 def build_research_data_availability_audit(
@@ -58,12 +59,12 @@ def write_research_data_availability_audit(report: dict, path: Path | None = Non
     return target
 
 
-def load_research_data_availability_report(path: Path | None = None) -> dict:
-    target = path or RESEARCH_DATA_AUDIT_REPORT
+def load_research_data_availability_report(path: Path | None = None, *, tushare: bool = False) -> dict:
+    target = path or (RESEARCH_TUSHARE_DATA_AUDIT_REPORT if tushare else RESEARCH_DATA_AUDIT_REPORT)
     if not target.exists():
         return {
             "available": False,
-            "message": "research universe data audit report not found",
+            "message": f"research universe data audit report not found: {target.name}",
         }
     with target.open("r", encoding="utf-8") as f:
         payload = json.load(f)
@@ -86,6 +87,8 @@ def _audit_asset(provider, asset: ResearchAsset, start: str | None, end: str | N
         bars = get_asset_history(provider, asset, start=start, end=end)
         if not bars:
             return _audit_row(asset, available=False, error="no rows returned", warnings=[*warnings, "data_unavailable"])
+        provider_return_types = sorted({bar.return_type for bar in bars})
+        warnings = [*warnings, *_return_type_warnings(asset, provider_return_types)]
         dates = sorted(bar.date for bar in bars)
         return _audit_row(
             asset,
@@ -95,6 +98,7 @@ def _audit_asset(provider, asset: ResearchAsset, start: str | None, end: str | N
             last_date=dates[-1],
             error=None,
             warnings=warnings,
+            provider_return_types=provider_return_types,
         )
     except Exception as exc:  # noqa: BLE001 - audit must record per-asset failures.
         return _audit_row(
@@ -114,12 +118,14 @@ def _audit_row(
     last_date: str | None = None,
     error: str | None,
     warnings: list[str],
+    provider_return_types: list[str] | None = None,
 ) -> dict:
     return {
         "asset_id": asset.asset_id,
         "name": asset.name,
         "data_api": asset.data_api,
         "return_basis": asset.return_basis,
+        "provider_return_types": provider_return_types or [],
         "available": available,
         "row_count": row_count,
         "first_date": first_date,
@@ -134,6 +140,17 @@ def _asset_warnings(asset: ResearchAsset) -> list[str]:
     if asset.return_basis == "price_index":
         warnings.append("price_index excludes dividend reinvestment")
     return warnings
+
+
+def _return_type_warnings(asset: ResearchAsset, provider_return_types: list[str]) -> list[str]:
+    if asset.return_basis != "total_return":
+        return []
+    if provider_return_types == ["total_return"]:
+        return []
+    return [
+        "provider_return_type differs from registry return_basis: "
+        f"{','.join(provider_return_types) or 'unknown'} vs {asset.return_basis}"
+    ]
 
 
 def _mock_history_for_asset(asset: ResearchAsset, *, offset: int) -> list[dict]:

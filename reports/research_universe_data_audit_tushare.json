@@ -1,8 +1,8 @@
 {
-  "provider": "mock",
-  "generated_at": "2026-07-10T12:11:57+00:00",
-  "start": null,
-  "end": null,
+  "provider": "tushare",
+  "generated_at": "2026-07-10T12:12:03+00:00",
+  "start": "2016-01-01",
+  "end": "2026-07-08",
   "checked_assets": 32,
   "available_assets": 32,
   "unavailable_assets": 0,
@@ -13,14 +13,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H00905.CSI",
@@ -28,14 +30,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H00852.CSI",
@@ -43,14 +47,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "399606.SZ",
@@ -58,14 +64,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "000688CNY01.CSI",
@@ -73,14 +81,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 1578,
+      "first_date": "2019-12-31",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H00015.CSI",
@@ -88,14 +98,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H00922.CSI",
@@ -103,14 +115,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H20007.CSI",
@@ -118,14 +132,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "931743CNY010.CSI",
@@ -133,14 +149,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 1822,
+      "first_date": "2018-12-28",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H21152.CSI",
@@ -148,14 +166,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H20590.CSI",
@@ -163,14 +183,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H20771.CSI",
@@ -178,14 +200,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "931688CNY010.CSI",
@@ -193,14 +217,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 1578,
+      "first_date": "2019-12-31",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "H00805.CSI",
@@ -208,14 +234,16 @@
       "data_api": "index_daily",
       "return_basis": "total_return",
       "provider_return_types": [
-        "total_return"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
-      "warnings": []
+      "warnings": [
+        "provider_return_type differs from registry return_basis: price vs total_return"
+      ]
     },
     {
       "asset_id": "801120.SI",
@@ -223,12 +251,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -240,12 +268,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -257,12 +285,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -274,12 +302,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -291,12 +319,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -308,12 +336,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -325,12 +353,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -342,12 +370,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -359,12 +387,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -376,12 +404,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -393,12 +421,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -410,12 +438,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -427,12 +455,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -444,12 +472,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -461,12 +489,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -478,12 +506,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -495,12 +523,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -512,12 +540,12 @@
       "data_api": "sw_daily",
       "return_basis": "price_index",
       "provider_return_types": [
-        "price_index"
+        "price"
       ],
       "available": true,
-      "row_count": 3,
-      "first_date": "2024-01-02",
-      "last_date": "2024-12-31",
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
       "error": null,
       "warnings": [
         "price_index excludes dividend reinvestment"
@@ -539,6 +567,20 @@
     }
   },
   "warnings": [
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
+    "provider_return_type differs from registry return_basis: price vs total_return",
     "price_index excludes dividend reinvestment",
     "price_index excludes dividend reinvestment",
     "price_index excludes dividend reinvestment",

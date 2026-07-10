@@ -55,6 +55,7 @@ def test_mock_data_audit_marks_each_research_asset_available(asset_id):
     assert rows[asset_id]["row_count"] == 3
     assert rows[asset_id]["first_date"] == "2024-01-02"
     assert rows[asset_id]["last_date"] == "2024-12-31"
+    assert rows[asset_id]["provider_return_types"] == [rows[asset_id]["return_basis"]]
 
 
 @pytest.mark.parametrize("asset_id", PRICE_INDEX_IDS)
@@ -63,6 +64,31 @@ def test_data_audit_warns_for_each_price_index_asset(asset_id):
     rows = {row["asset_id"]: row for row in report["rows"]}
 
     assert "price_index excludes dividend reinvestment" in rows[asset_id]["warnings"]
+
+
+class PriceReturnProvider:
+    name = "price_return"
+
+    def get_index_history(self, asset_id, start=None, end=None):
+        return [PriceBar(asset_id, "2024-01-02", 1.0, return_type="price")]
+
+    def get_sw_index_history(self, asset_id, start=None, end=None):
+        return [PriceBar(asset_id, "2024-01-02", 1.0, return_type="price")]
+
+    def get_price_history(self, asset_id, start=None, end=None):
+        return [PriceBar(asset_id, "2024-01-02", 1.0, return_type="price")]
+
+    def get_stock_price_history(self, asset_id, start=None, end=None):
+        return [PriceBar(asset_id, "2024-01-02", 1.0, return_type="price")]
+
+
+def test_data_audit_flags_provider_return_type_mismatch_for_total_return_asset():
+    report = build_research_data_availability_audit(PriceReturnProvider(), max_assets=1)
+    row = report["rows"][0]
+
+    assert row["asset_id"] == "H00300.CSI"
+    assert row["provider_return_types"] == ["price"]
+    assert any("provider_return_type differs" in warning for warning in row["warnings"])
 
 
 def test_data_availability_audit_respects_max_assets():
@@ -131,10 +157,8 @@ def test_write_and_load_research_data_availability_report(tmp_path):
 def test_load_research_data_availability_report_missing_file(tmp_path):
     loaded = data_audit.load_research_data_availability_report(tmp_path / "missing.json")
 
-    assert loaded == {
-        "available": False,
-        "message": "research universe data audit report not found",
-    }
+    assert loaded["available"] is False
+    assert loaded["message"] == "research universe data audit report not found: missing.json"
 
 
 def test_universe_data_audit_api_returns_missing_report_message(monkeypatch, tmp_path):
@@ -158,6 +182,31 @@ def test_universe_data_audit_api_returns_existing_report(monkeypatch, tmp_path):
     payload = response.json()
     assert payload["available"] is True
     assert payload["checked_assets"] == 2
+
+
+def test_universe_data_audit_api_returns_missing_tushare_report_message(monkeypatch, tmp_path):
+    monkeypatch.setattr(data_audit, "RESEARCH_TUSHARE_DATA_AUDIT_REPORT", tmp_path / "missing_tushare.json")
+
+    response = client.get("/api/research/universe-data-audit?tushare=true")
+
+    assert response.status_code == 200
+    assert response.json()["available"] is False
+    assert "missing_tushare.json" in response.json()["message"]
+
+
+def test_universe_data_audit_api_returns_existing_tushare_report(monkeypatch, tmp_path):
+    path = tmp_path / "audit_tushare.json"
+    report = build_research_data_availability_audit(build_research_universe_mock_provider(), max_assets=2)
+    report["provider"] = "tushare"
+    write_research_data_availability_audit(report, path)
+    monkeypatch.setattr(data_audit, "RESEARCH_TUSHARE_DATA_AUDIT_REPORT", path)
+
+    response = client.get("/api/research/universe-data-audit?tushare=true")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["available"] is True
+    assert payload["provider"] == "tushare"
 
 
 def test_research_universe_page_handles_missing_data_report(monkeypatch, tmp_path):
@@ -184,5 +233,19 @@ def test_research_universe_page_shows_existing_data_report(monkeypatch, tmp_path
     assert "mock" in response.text
 
 
+def test_research_universe_page_handles_missing_tushare_report(monkeypatch, tmp_path):
+    monkeypatch.setattr(data_audit, "RESEARCH_TUSHARE_DATA_AUDIT_REPORT", tmp_path / "missing_tushare.json")
+
+    response = client.get("/research-universe")
+
+    assert response.status_code == 200
+    assert "Real Tushare Audit" in response.text
+    assert "missing_tushare.json" in response.text
+
+
 def test_checked_in_data_audit_report_exists():
     assert Path("reports/research_universe_data_audit.json").exists()
+
+
+def test_checked_in_tushare_data_audit_report_exists():
+    assert Path("reports/research_universe_data_audit_tushare.json").exists()
