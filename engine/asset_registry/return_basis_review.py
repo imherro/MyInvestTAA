@@ -13,7 +13,9 @@ MANUAL_REVIEW_ASSET_IDS = {"399606.SZ"}
 
 def build_return_basis_review(data_audit_report: dict) -> dict:
     asset_lookup = research_assets_by_id()
-    confirmed_total_return = []
+    registered_total_return_available = []
+    basis_confirmed_total_return = []
+    provider_metadata_mismatch = []
     needs_manual_review = []
     unavailable_total_return = []
     price_index_monitor_assets = []
@@ -24,26 +26,66 @@ def build_return_basis_review(data_audit_report: dict) -> dict:
         return_basis = str(row.get("return_basis") or (asset.return_basis if asset else ""))
         available = bool(row.get("available"))
 
+        if return_basis == "total_return" and available:
+            registered_row = _review_row(
+                row,
+                asset,
+                reason="registered_total_return_index_available",
+                basis_evidence="asset_registry_return_basis",
+                basis_confidence=_basis_confidence(row),
+            )
+            registered_total_return_available.append(registered_row)
+            if row.get("provider_return_types") == ["total_return"]:
+                basis_confirmed_total_return.append(
+                    _review_row(
+                        row,
+                        asset,
+                        reason="provider_marks_total_return",
+                        basis_evidence="provider_return_type",
+                        basis_confidence="high",
+                    )
+                )
+            else:
+                provider_metadata_mismatch.append(
+                    _review_row(
+                        row,
+                        asset,
+                        reason="registry_declared_total_return_but_provider_marks_price",
+                        basis_evidence="asset_registry_return_basis",
+                        basis_confidence="medium",
+                    )
+                )
+
         if asset_id in MANUAL_REVIEW_ASSET_IDS:
             needs_manual_review.append(
                 _review_row(
                     row,
                     asset,
                     reason="manual_return_basis_confirmation_required",
+                    basis_evidence="manual_review_policy",
+                    basis_confidence="low",
                 )
             )
             continue
 
-        if return_basis == "total_return" and available:
-            confirmed_total_return.append(_review_row(row, asset, reason="available_total_return_source"))
-        elif return_basis == "total_return":
-            unavailable_total_return.append(_review_row(row, asset, reason=row.get("error") or "data_unavailable"))
+        if return_basis == "total_return" and not available:
+            unavailable_total_return.append(
+                _review_row(
+                    row,
+                    asset,
+                    reason=row.get("error") or "data_unavailable",
+                    basis_evidence="asset_registry_return_basis",
+                    basis_confidence="low",
+                )
+            )
         elif return_basis == "price_index":
             price_index_monitor_assets.append(
                 _review_row(
                     row,
                     asset,
                     reason="price_index_monitor_only",
+                    basis_evidence="asset_registry_return_basis",
+                    basis_confidence="high",
                 )
             )
             if asset and asset.eligible_for_allocation:
@@ -52,17 +94,29 @@ def build_return_basis_review(data_audit_report: dict) -> dict:
                         row,
                         asset,
                         reason="price_index_marked_eligible_for_allocation",
+                        basis_evidence="allocation_gate",
+                        basis_confidence="high",
                     )
                 )
-        else:
-            needs_manual_review.append(_review_row(row, asset, reason="unknown_return_basis"))
+        elif return_basis != "total_return":
+            needs_manual_review.append(
+                _review_row(
+                    row,
+                    asset,
+                    reason="unknown_return_basis",
+                    basis_evidence="unknown",
+                    basis_confidence="low",
+                )
+            )
 
     return {
         "available": True,
         "source_report_provider": data_audit_report.get("provider"),
         "source_report_path": data_audit_report.get("report_path"),
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
-        "confirmed_total_return": confirmed_total_return,
+        "registered_total_return_available": registered_total_return_available,
+        "basis_confirmed_total_return": basis_confirmed_total_return,
+        "provider_metadata_mismatch": provider_metadata_mismatch,
         "needs_manual_review": needs_manual_review,
         "unavailable_total_return": unavailable_total_return,
         "price_index_monitor_assets": price_index_monitor_assets,
@@ -90,7 +144,14 @@ def load_return_basis_review_report(path: Path | None = None) -> dict:
     return payload
 
 
-def _review_row(row: dict, asset, *, reason: str) -> dict:
+def _review_row(
+    row: dict,
+    asset,
+    *,
+    reason: str,
+    basis_evidence: str,
+    basis_confidence: str,
+) -> dict:
     return {
         "asset_id": row.get("asset_id"),
         "name": row.get("name") or (asset.name if asset else ""),
@@ -103,4 +164,12 @@ def _review_row(row: dict, asset, *, reason: str) -> dict:
         "last_date": row.get("last_date"),
         "eligible_for_allocation": bool(asset.eligible_for_allocation) if asset else None,
         "reason": reason,
+        "basis_evidence": basis_evidence,
+        "basis_confidence": basis_confidence,
     }
+
+
+def _basis_confidence(row: dict) -> str:
+    if row.get("provider_return_types") == ["total_return"]:
+        return "high"
+    return "medium"

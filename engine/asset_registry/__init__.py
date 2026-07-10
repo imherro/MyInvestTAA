@@ -25,6 +25,7 @@ from engine.asset_registry.return_basis_review import (
     load_return_basis_review_report,
     write_return_basis_review,
 )
+from engine.asset_registry.readiness import build_research_universe_readiness
 from engine.asset_registry.models import AssetMapping, ExecutionAsset, ResearchAsset
 from engine.asset_registry.routing import get_asset_history
 from engine.asset_registry.validator import (
@@ -42,6 +43,7 @@ __all__ = [
     "build_research_data_availability_audit",
     "build_metadata_suggestions",
     "build_return_basis_review",
+    "build_research_universe_readiness",
     "build_research_universe_audit",
     "build_research_universe_mock_provider",
     "clear_asset_registry_cache",

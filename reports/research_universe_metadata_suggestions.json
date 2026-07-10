@@ -2,7 +2,7 @@
   "available": true,
   "source_report_provider": "tushare",
   "source_report_path": "reports\\research_universe_data_audit_tushare.json",
-  "generated_at": "2026-07-10T12:12:22+00:00",
+  "generated_at": "2026-07-10T12:38:53+00:00",
   "suggestion_count": 32,
   "blocked_asset_count": 0,
   "suggestions": [
@@ -14,8 +14,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "H00905.CSI",
@@ -25,8 +25,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "H00852.CSI",
@@ -36,8 +36,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "399606.SZ",
@@ -47,8 +47,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "000688CNY01.CSI",
@@ -58,8 +58,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2019-12-31",
+      "current_investable_start_date": "2019-12-31"
     },
     {
       "asset_id": "H00015.CSI",
@@ -69,8 +69,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "H00922.CSI",
@@ -80,8 +80,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "H20007.CSI",
@@ -91,8 +91,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "931743CNY010.CSI",
@@ -102,8 +102,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2018-12-28",
+      "current_investable_start_date": "2018-12-28"
     },
     {
       "asset_id": "H21152.CSI",
@@ -113,8 +113,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "H20590.CSI",
@@ -124,8 +124,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "H20771.CSI",
@@ -135,8 +135,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "931688CNY010.CSI",
@@ -146,8 +146,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2019-12-31",
+      "current_investable_start_date": "2019-12-31"
     },
     {
       "asset_id": "H00805.CSI",
@@ -157,8 +157,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801120.SI",
@@ -168,8 +168,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801150.SI",
@@ -179,8 +179,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801080.SI",
@@ -190,8 +190,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801730.SI",
@@ -201,8 +201,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801750.SI",
@@ -212,8 +212,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801770.SI",
@@ -223,8 +223,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801760.SI",
@@ -234,8 +234,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801160.SI",
@@ -245,8 +245,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801050.SI",
@@ -256,8 +256,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801950.SI",
@@ -267,8 +267,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801780.SI",
@@ -278,8 +278,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801790.SI",
@@ -289,8 +289,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801180.SI",
@@ -300,8 +300,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801880.SI",
@@ -311,8 +311,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801740.SI",
@@ -322,8 +322,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801890.SI",
@@ -333,8 +333,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801710.SI",
@@ -344,8 +344,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     },
     {
       "asset_id": "801720.SI",
@@ -355,8 +355,8 @@
       "last_date": "2026-07-08",
       "source": "tushare_audit",
       "confidence": "high",
-      "current_data_start_date": null,
-      "current_investable_start_date": null
+      "current_data_start_date": "2016-01-04",
+      "current_investable_start_date": "2016-01-04"
     }
   ],
   "blocked_assets": []

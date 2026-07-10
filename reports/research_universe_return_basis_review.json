@@ -2,8 +2,8 @@
   "available": true,
   "source_report_provider": "tushare",
   "source_report_path": "reports\\research_universe_data_audit_tushare.json",
-  "generated_at": "2026-07-10T12:12:22+00:00",
-  "confirmed_total_return": [
+  "generated_at": "2026-07-10T12:38:53+00:00",
+  "registered_total_return_available": [
     {
       "asset_id": "H00300.CSI",
       "name": "沪深300收益",
@@ -17,7 +17,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H00905.CSI",
@@ -32,7 +34,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H00852.CSI",
@@ -47,7 +51,26 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "399606.SZ",
+      "name": "创业板R",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": false,
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "000688CNY01.CSI",
@@ -62,7 +85,9 @@
       "first_date": "2019-12-31",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H00015.CSI",
@@ -77,7 +102,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H00922.CSI",
@@ -92,7 +119,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H20007.CSI",
@@ -107,7 +136,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "931743CNY010.CSI",
@@ -122,7 +153,9 @@
       "first_date": "2018-12-28",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H21152.CSI",
@@ -137,7 +170,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H20590.CSI",
@@ -152,7 +187,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H20771.CSI",
@@ -167,7 +204,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "931688CNY010.CSI",
@@ -182,7 +221,9 @@
       "first_date": "2019-12-31",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     },
     {
       "asset_id": "H00805.CSI",
@@ -197,7 +238,250 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": true,
-      "reason": "available_total_return_source"
+      "reason": "registered_total_return_index_available",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    }
+  ],
+  "basis_confirmed_total_return": [],
+  "provider_metadata_mismatch": [
+    {
+      "asset_id": "H00300.CSI",
+      "name": "沪深300收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H00905.CSI",
+      "name": "中证500收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H00852.CSI",
+      "name": "中证1000全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "399606.SZ",
+      "name": "创业板R",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": false,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "000688CNY01.CSI",
+      "name": "科创50全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 1578,
+      "first_date": "2019-12-31",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H00015.CSI",
+      "name": "红利收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H00922.CSI",
+      "name": "中红收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H20007.CSI",
+      "name": "芯片产业全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "931743CNY010.CSI",
+      "name": "半导体材料设备全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 1822,
+      "first_date": "2018-12-28",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H21152.CSI",
+      "name": "CS创新药全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H20590.CSI",
+      "name": "机器人全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H20771.CSI",
+      "name": "CS新能源全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "931688CNY010.CSI",
+      "name": "中证算力全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 1578,
+      "first_date": "2019-12-31",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
+    },
+    {
+      "asset_id": "H00805.CSI",
+      "name": "A股资源全收益",
+      "data_api": "index_daily",
+      "return_basis": "total_return",
+      "provider_return_types": [
+        "price"
+      ],
+      "available": true,
+      "row_count": 2552,
+      "first_date": "2016-01-04",
+      "last_date": "2026-07-08",
+      "eligible_for_allocation": true,
+      "reason": "registry_declared_total_return_but_provider_marks_price",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "medium"
     }
   ],
   "needs_manual_review": [
@@ -213,8 +497,10 @@
       "row_count": 2552,
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
-      "eligible_for_allocation": true,
-      "reason": "manual_return_basis_confirmation_required"
+      "eligible_for_allocation": false,
+      "reason": "manual_return_basis_confirmation_required",
+      "basis_evidence": "manual_review_policy",
+      "basis_confidence": "low"
     }
   ],
   "unavailable_total_return": [],
@@ -232,7 +518,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801150.SI",
@@ -247,7 +535,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801080.SI",
@@ -262,7 +552,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801730.SI",
@@ -277,7 +569,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801750.SI",
@@ -292,7 +586,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801770.SI",
@@ -307,7 +603,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801760.SI",
@@ -322,7 +620,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801160.SI",
@@ -337,7 +637,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801050.SI",
@@ -352,7 +654,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801950.SI",
@@ -367,7 +671,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801780.SI",
@@ -382,7 +688,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801790.SI",
@@ -397,7 +705,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801180.SI",
@@ -412,7 +722,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801880.SI",
@@ -427,7 +739,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801740.SI",
@@ -442,7 +756,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801890.SI",
@@ -457,7 +773,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801710.SI",
@@ -472,7 +790,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     },
     {
       "asset_id": "801720.SI",
@@ -487,7 +807,9 @@
       "first_date": "2016-01-04",
       "last_date": "2026-07-08",
       "eligible_for_allocation": false,
-      "reason": "price_index_monitor_only"
+      "reason": "price_index_monitor_only",
+      "basis_evidence": "asset_registry_return_basis",
+      "basis_confidence": "high"
     }
   ]
 }

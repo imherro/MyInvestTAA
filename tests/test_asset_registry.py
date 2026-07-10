@@ -335,11 +335,14 @@ def test_industry_assets_are_monitor_only():
     assert all(asset.eligible_for_allocation is False for asset in industry_assets)
 
 
-def test_total_return_assets_remain_allocation_eligible():
+def test_total_return_assets_exclude_manual_review_from_allocation():
     total_return_assets = [asset for asset in load_research_universe() if asset.return_basis == "total_return"]
+    eligible_assets = [asset for asset in total_return_assets if asset.eligible_for_allocation]
+    manual_review_assets = [asset for asset in total_return_assets if not asset.eligible_for_allocation]
 
     assert len(total_return_assets) == 14
-    assert all(asset.eligible_for_allocation for asset in total_return_assets)
+    assert len(eligible_assets) == 13
+    assert [asset.asset_id for asset in manual_review_assets] == ["399606.SZ"]
 
 
 def test_audit_counts_registry_sections():

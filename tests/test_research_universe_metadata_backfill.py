@@ -79,8 +79,8 @@ def test_metadata_suggestions_preserve_current_registry_dates():
     suggestions = build_metadata_suggestions(report)
     row = suggestions["suggestions"][0]
 
-    assert row["current_data_start_date"] is None
-    assert row["current_investable_start_date"] is None
+    assert row["current_data_start_date"] == "2016-01-04"
+    assert row["current_investable_start_date"] == "2016-01-04"
 
 
 def test_metadata_suggestions_skip_rows_without_dates():

@@ -26,6 +26,7 @@ from data_pipeline import (
 )
 from engine.allocation import build_allocation_recommendation
 from engine.asset_registry import (
+    build_research_universe_readiness,
     build_research_universe_audit,
     load_asset_mappings,
     load_execution_universe,
@@ -269,6 +270,11 @@ def get_research_universe_metadata_suggestions() -> dict:
 @app.get("/api/research/return-basis-review")
 def get_research_return_basis_review() -> dict:
     return load_return_basis_review_report()
+
+
+@app.get("/api/research/universe-readiness")
+def get_research_universe_readiness() -> dict:
+    return build_research_universe_readiness()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -1733,8 +1739,13 @@ def research_universe_page() -> str:
     return_basis_review = load_return_basis_review_report()
     return_basis_summary_rows = "\n".join(_return_basis_summary_rows(return_basis_review))
     return_basis_manual_rows = "\n".join(_review_asset_rows(return_basis_review, "needs_manual_review"))
+    provider_metadata_mismatch_rows = "\n".join(_review_asset_rows(return_basis_review, "provider_metadata_mismatch"))
     unavailable_total_return_rows = "\n".join(_review_asset_rows(return_basis_review, "unavailable_total_return"))
     price_index_monitor_rows = "\n".join(_review_asset_rows(return_basis_review, "price_index_monitor_assets"))
+    readiness = build_research_universe_readiness()
+    readiness_summary_rows = "\n".join(_readiness_summary_rows(readiness))
+    readiness_check_rows = "\n".join(_readiness_check_rows(readiness))
+    readiness_blocked_rows = "\n".join(_readiness_blocked_rows(readiness))
 
     return f"""
     <!doctype html>
@@ -1842,10 +1853,35 @@ def research_universe_page() -> str:
           <table><tbody>{return_basis_summary_rows}</tbody></table>
         </section>
         <section>
+          <h2>Research Universe Readiness</h2>
+          <table><tbody>{readiness_summary_rows}</tbody></table>
+        </section>
+        <section>
+          <h2>Readiness Checks</h2>
+          <table>
+            <thead><tr><th>Check</th><th>Status</th></tr></thead>
+            <tbody>{readiness_check_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Readiness Blocked Assets</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Reason</th></tr></thead>
+            <tbody>{readiness_blocked_rows}</tbody>
+          </table>
+        </section>
+        <section>
           <h2>Manual Return Basis Review</h2>
           <table>
             <thead><tr><th>Asset</th><th>Return Basis</th><th>Status</th><th>Reason</th></tr></thead>
             <tbody>{return_basis_manual_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Provider Metadata Mismatch</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Return Basis</th><th>Status</th><th>Reason</th></tr></thead>
+            <tbody>{provider_metadata_mismatch_rows}</tbody>
           </table>
         </section>
         <section>
@@ -2850,7 +2886,9 @@ def _return_basis_summary_rows(report: dict) -> list[str]:
         ]
     return [
         f"<tr><td>Report</td><td>{escape(str(report.get('report_path', '')))}</td></tr>",
-        f"<tr><td>Confirmed Total Return</td><td>{len(report.get('confirmed_total_return', []))}</td></tr>",
+        f"<tr><td>Registered Total Return Available</td><td>{len(report.get('registered_total_return_available', []))}</td></tr>",
+        f"<tr><td>Basis Confirmed Total Return</td><td>{len(report.get('basis_confirmed_total_return', []))}</td></tr>",
+        f"<tr><td>Provider Metadata Mismatch</td><td>{len(report.get('provider_metadata_mismatch', []))}</td></tr>",
         f"<tr><td>Needs Manual Review</td><td>{len(report.get('needs_manual_review', []))}</td></tr>",
         f"<tr><td>Unavailable Total Return</td><td>{len(report.get('unavailable_total_return', []))}</td></tr>",
         f"<tr><td>Price Index Monitor Assets</td><td>{len(report.get('price_index_monitor_assets', []))}</td></tr>",
@@ -2876,6 +2914,45 @@ def _review_asset_rows(report: dict, key: str) -> list[str]:
         </tr>
         """
         for row in rows[:50]
+    ]
+
+
+def _readiness_summary_rows(readiness: dict) -> list[str]:
+    return [
+        f"<tr><td>Ready For Research Backtest</td><td>{escape(str(readiness.get('ready_for_research_backtest', False)))}</td></tr>",
+        f"<tr><td>Eligible Assets</td><td>{int(readiness.get('eligible_assets', 0))}</td></tr>",
+        f"<tr><td>Blocked Assets</td><td>{len(readiness.get('blocked_assets', []))}</td></tr>",
+        f"<tr><td>Warnings</td><td>{len(readiness.get('warnings', []))}</td></tr>",
+    ]
+
+
+def _readiness_check_rows(readiness: dict) -> list[str]:
+    checks = readiness.get("checks", {})
+    if not checks:
+        return ["<tr><td colspan=\"2\">No readiness checks recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(name))}</td>
+          <td>{escape(str(value))}</td>
+        </tr>
+        """
+        for name, value in checks.items()
+    ]
+
+
+def _readiness_blocked_rows(readiness: dict) -> list[str]:
+    rows = readiness.get("blocked_assets", [])
+    if not rows:
+        return ["<tr><td colspan=\"2\">No blocked assets recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(row.get("name", "")))}<span>{escape(str(row.get("asset_id", "")))}</span></td>
+          <td>{escape(str(row.get("reason", "")))}</td>
+        </tr>
+        """
+        for row in rows
     ]
 
 
