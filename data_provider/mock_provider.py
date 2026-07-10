@@ -48,6 +48,14 @@ class MockProvider:
     ) -> list[PriceBar]:
         return self.get_price_history(index_id, start=start, end=end)
 
+    def get_sw_index_history(
+        self,
+        sw_index_id: str,
+        start: str | None = None,
+        end: str | None = None,
+    ) -> list[PriceBar]:
+        return self.get_price_history(sw_index_id, start=start, end=end)
+
     def get_stock_price_history(
         self,
         stock_id: str,

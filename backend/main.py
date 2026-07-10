@@ -29,6 +29,7 @@ from engine.asset_registry import (
     build_research_universe_audit,
     load_asset_mappings,
     load_execution_universe,
+    load_research_data_availability_report,
     load_research_universe,
 )
 from engine.asset_repository import load_assets, load_price_history
@@ -251,6 +252,11 @@ def get_research_universe() -> dict:
 @app.get("/api/research/universe-audit")
 def get_research_universe_audit() -> dict:
     return {"audit": build_research_universe_audit()}
+
+
+@app.get("/api/research/universe-data-audit")
+def get_research_universe_data_audit() -> dict:
+    return load_research_data_availability_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -1701,6 +1707,11 @@ def research_universe_page() -> str:
     mapping_quality_rows = "\n".join(_count_rows(audit["mapping_quality_counts"]))
     warning_rows = "\n".join(_message_rows(audit["warnings"], empty="No universe warnings"))
     error_rows = "\n".join(_message_rows(audit["errors"], empty="No universe errors"))
+    data_audit = load_research_data_availability_report()
+    data_audit_summary_rows = "\n".join(_data_availability_summary_rows(data_audit))
+    data_audit_api_rows = "\n".join(_data_availability_api_rows(data_audit))
+    unavailable_asset_rows = "\n".join(_unavailable_data_asset_rows(data_audit))
+    data_audit_warning_rows = "\n".join(_data_audit_warning_rows(data_audit))
 
     return f"""
     <!doctype html>
@@ -1751,6 +1762,30 @@ def research_universe_page() -> str:
             <thead><tr><th>Quality</th><th>Count</th></tr></thead>
             <tbody>{mapping_quality_rows}</tbody>
           </table>
+        </section>
+        <section>
+          <h2>Data Availability Audit</h2>
+          <table>
+            <tbody>{data_audit_summary_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Data API Availability</h2>
+          <table>
+            <thead><tr><th>Data API</th><th>Available</th><th>Unavailable</th></tr></thead>
+            <tbody>{data_audit_api_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Unavailable Assets</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Data API</th><th>Error</th></tr></thead>
+            <tbody>{unavailable_asset_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Data Audit Warnings</h2>
+          <table><tbody>{data_audit_warning_rows}</tbody></table>
         </section>
         <section>
           <h2>Research Assets</h2>
@@ -2615,6 +2650,81 @@ def _message_rows(messages: list[str], *, empty: str) -> list[str]:
         </tr>
         """
         for message in messages
+    ]
+
+
+def _data_availability_summary_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return [
+            f"""
+            <tr>
+              <td>Status</td>
+              <td>{escape(str(report.get("message", "Data audit not generated yet. Run scripts/audit_research_universe.py.")))}</td>
+            </tr>
+            """
+        ]
+    return [
+        f"<tr><td>Report</td><td>{escape(str(report.get('report_path', '')))}</td></tr>",
+        f"<tr><td>Provider</td><td>{escape(str(report.get('provider', '')))}</td></tr>",
+        f"<tr><td>Checked Assets</td><td>{int(report.get('checked_assets', 0))}</td></tr>",
+        f"<tr><td>Available Assets</td><td>{int(report.get('available_assets', 0))}</td></tr>",
+        f"<tr><td>Unavailable Assets</td><td>{int(report.get('unavailable_assets', 0))}</td></tr>",
+        f"<tr><td>Warnings</td><td>{len(report.get('warnings', []))}</td></tr>",
+        f"<tr><td>Errors</td><td>{len(report.get('errors', []))}</td></tr>",
+    ]
+
+
+def _data_availability_api_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td colspan=\"3\">Data audit not generated yet. Run scripts/audit_research_universe.py.</td></tr>"]
+    rows = []
+    for data_api, counts in report.get("available_by_data_api", {}).items():
+        rows.append(
+            f"""
+            <tr>
+              <td>{escape(str(data_api))}</td>
+              <td>{int(counts.get("available", 0))}</td>
+              <td>{int(counts.get("unavailable", 0))}</td>
+            </tr>
+            """
+        )
+    return rows or ["<tr><td colspan=\"3\">No data API availability recorded</td></tr>"]
+
+
+def _unavailable_data_asset_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td colspan=\"3\">Data audit not generated yet. Run scripts/audit_research_universe.py.</td></tr>"]
+    rows = [
+        row for row in report.get("rows", [])
+        if not row.get("available")
+    ]
+    if not rows:
+        return ["<tr><td colspan=\"3\">No unavailable assets recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(row.get("name", "")))}<span>{escape(str(row.get("asset_id", "")))}</span></td>
+          <td>{escape(str(row.get("data_api", "")))}</td>
+          <td>{escape(str(row.get("error", "")))}</td>
+        </tr>
+        """
+        for row in rows
+    ]
+
+
+def _data_audit_warning_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td>Data audit not generated yet. Run scripts/audit_research_universe.py.</td></tr>"]
+    warnings = report.get("warnings", [])
+    if not warnings:
+        return ["<tr><td>No data audit warnings</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(warning))}</td>
+        </tr>
+        """
+        for warning in warnings[:50]
     ]
 
 

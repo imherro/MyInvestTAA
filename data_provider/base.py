@@ -24,6 +24,14 @@ class MarketDataProvider(Protocol):
     ) -> list[PriceBar]:
         ...
 
+    def get_sw_index_history(
+        self,
+        sw_index_id: str,
+        start: str | None = None,
+        end: str | None = None,
+    ) -> list[PriceBar]:
+        ...
+
     def get_stock_price_history(
         self,
         stock_id: str,

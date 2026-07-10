@@ -48,6 +48,20 @@ class TushareProvider:
         )
         return _price_bars_from_frame(index_id, frame, self.return_type)
 
+    def get_sw_index_history(
+        self,
+        sw_index_id: str,
+        start: str | None = None,
+        end: str | None = None,
+    ) -> list[PriceBar]:
+        pro = self._client()
+        frame = pro.sw_daily(
+            ts_code=sw_index_id,
+            start_date=_to_tushare_date(start),
+            end_date=_to_tushare_date(end),
+        )
+        return _price_bars_from_frame(sw_index_id, frame, "price")
+
     def get_stock_price_history(
         self,
         stock_id: str,
