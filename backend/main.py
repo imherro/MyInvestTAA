@@ -17,6 +17,7 @@ from backtest.benchmark import compare_strategies
 from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
+from backtest.research import load_research_backtest_report
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
@@ -277,6 +278,11 @@ def get_research_universe_readiness() -> dict:
     return build_research_universe_readiness()
 
 
+@app.get("/api/research/research-backtest")
+def get_research_backtest_report() -> dict:
+    return load_research_backtest_report()
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -483,7 +489,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -1759,7 +1765,7 @@ def research_universe_page() -> str:
     <body>
       <header>
         <h1>Research Universe</h1>
-        <p>研究资产层与 ETF 执行代理层的静态注册表审计。<a href="/">Dashboard</a> · <a href="/real-research">Real Market Research</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>研究资产层与 ETF 执行代理层的静态注册表审计。<a href="/">Dashboard</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section>
@@ -2680,6 +2686,82 @@ def _parameter_sensitivity_rows(rows: list[dict]) -> list[str]:
     return html_rows
 
 
+@app.get("/research-backtest", response_class=HTMLResponse)
+def research_backtest_page() -> str:
+    report = load_research_backtest_report()
+    summary_rows = "\n".join(_research_backtest_summary_rows(report))
+    metric_rows = "\n".join(_research_backtest_metric_rows(report))
+    excluded_rows = "\n".join(_research_backtest_asset_rows(report.get("excluded_assets", []), empty="No excluded assets recorded"))
+    unavailable_rows = "\n".join(_research_backtest_asset_rows(report.get("unavailable_assets", []), empty="No unavailable assets recorded"))
+    equity_rows = "\n".join(_research_backtest_equity_rows(report))
+    allocation_rows = "\n".join(_research_backtest_allocation_rows(report))
+    warning_rows = "\n".join(_message_rows(report.get("warnings", []), empty="No research backtest warnings"))
+
+    return f"""
+    <!doctype html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>MyInvestTAA Research Backtest</title>
+      <style>{_report_page_css()}</style>
+    </head>
+    <body>
+      <header>
+        <h1>Research Backtest</h1>
+        <p>研究资产层指数回测，不代表 ETF 可执行收益，也不替代 V11 production candidate。<a href="/">Dashboard</a> · <a href="/research-universe">Research Universe</a> · <a href="/production-readiness">Production Readiness</a></p>
+      </header>
+      <main>
+        <section>
+          <h2>Status</h2>
+          <table><tbody>{summary_rows}</tbody></table>
+        </section>
+        <section>
+          <h2>Metrics</h2>
+          <table>
+            <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+            <tbody>{metric_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Excluded Assets</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Reason</th></tr></thead>
+            <tbody>{excluded_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Unavailable Assets</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Reason</th></tr></thead>
+            <tbody>{unavailable_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Equity Curve</h2>
+          <table>
+            <thead><tr><th>Date</th><th>Value</th></tr></thead>
+            <tbody>{equity_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Monthly Allocations</h2>
+          <table>
+            <thead><tr><th>Date</th><th>Weights</th></tr></thead>
+            <tbody>{allocation_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Warnings</h2>
+          <table><tbody>{warning_rows}</tbody></table>
+        </section>
+      </main>
+      {_unified_shell_scripts()}
+    </body>
+    </html>
+    """
+
+
 def _research_universe_rows(rows: list[dict]) -> list[str]:
     html_rows: list[str] = []
     for item in rows:
@@ -2954,6 +3036,95 @@ def _readiness_blocked_rows(readiness: dict) -> list[str]:
         """
         for row in rows
     ]
+
+
+def _research_backtest_summary_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return [
+            f"<tr><td>Status</td><td>{escape(str(report.get('message', 'research backtest report not generated yet')))}</td></tr>"
+        ]
+    period = report.get("period", {})
+    return [
+        f"<tr><td>Report</td><td>{escape(str(report.get('report_path', '')))}</td></tr>",
+        f"<tr><td>Strategy</td><td>{escape(str(report.get('strategy', '')))}</td></tr>",
+        f"<tr><td>Universe Count</td><td>{int(report.get('universe_count', 0))}</td></tr>",
+        f"<tr><td>Period</td><td>{escape(str(period.get('start')))} to {escape(str(period.get('end')))}</td></tr>",
+        "<tr><td>Production Relation</td><td>This research backtest does not replace the current V11 production candidate.</td></tr>",
+    ]
+
+
+def _research_backtest_metric_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td colspan=\"2\">Research backtest report not generated yet</td></tr>"]
+    metrics = report.get("metrics", {})
+    if not metrics:
+        return ["<tr><td colspan=\"2\">No metrics recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(name))}</td>
+          <td>{escape(str(value))}</td>
+        </tr>
+        """
+        for name, value in metrics.items()
+    ]
+
+
+def _research_backtest_asset_rows(rows: list[dict], *, empty: str) -> list[str]:
+    if not rows:
+        return [f"<tr><td colspan=\"2\">{escape(empty)}</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(row.get("name", "")))}<span>{escape(str(row.get("asset_id", "")))}</span></td>
+          <td>{escape(str(row.get("reason", "")))}</td>
+        </tr>
+        """
+        for row in rows[:100]
+    ]
+
+
+def _research_backtest_equity_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td colspan=\"2\">Research backtest report not generated yet</td></tr>"]
+    rows = report.get("equity_curve", [])[-20:]
+    if not rows:
+        return ["<tr><td colspan=\"2\">No equity curve recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(row.get("date", "")))}</td>
+          <td>{float(row.get("value", 0.0)):.4f}</td>
+        </tr>
+        """
+        for row in rows
+    ]
+
+
+def _research_backtest_allocation_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td colspan=\"2\">Research backtest report not generated yet</td></tr>"]
+    rows = report.get("monthly_allocations", [])[-12:]
+    if not rows:
+        return ["<tr><td colspan=\"2\">No monthly allocations recorded</td></tr>"]
+    return [
+        f"""
+        <tr>
+          <td>{escape(str(row.get("date", "")))}</td>
+          <td>{escape(_format_weight_map(row.get("weights", {})))}</td>
+        </tr>
+        """
+        for row in rows
+    ]
+
+
+def _format_weight_map(weights: dict) -> str:
+    if not weights:
+        return "-"
+    return ", ".join(
+        f"{asset_id}: {float(weight) * 100:.1f}%"
+        for asset_id, weight in sorted(weights.items())
+    )
 
 
 def _format_optional_percent(value: object) -> str:
