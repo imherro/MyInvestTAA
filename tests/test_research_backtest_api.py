@@ -21,6 +21,10 @@ def _sample_report():
         "monthly_allocations": [{"date": "2026-07-01", "weights": {"H00300.CSI": 0.25, "CASH": 0.75}}],
         "excluded_assets": [{"asset_id": "399606.SZ", "name": "创业板R", "reason": "readiness_blocked"}],
         "unavailable_assets": [],
+        "benchmark": {"available": True, "rows": [{"strategy": "RESEARCH_TAA_MVP", "annual_return": 0.1}], "alpha": {"vs_hs300": 0.01}},
+        "diagnostics": {"sample_period": {"reason": "common-date alignment + 252-day lookback"}, "factor_summary": {"score_observations": 5}, "selection_frequency": [{"asset_id": "H00300.CSI", "name": "沪深300收益", "selected_months": 5}]},
+        "constraint_diagnostics": {"violations": [], "cash_drag": {"average_cash": 0.1}, "cap_hits": {"single_asset_cap": 1}},
+        "decision": {"ready_for_execution_backtest": True, "reasons": []},
         "warnings": ["This research backtest does not replace the current V11 production candidate."],
     }
 
@@ -62,6 +66,26 @@ def test_research_backtest_api_existing_report(monkeypatch, tmp_path):
     assert response.json()["universe_count"] == 13
 
 
+def test_research_backtest_diagnostics_api_reads_existing_report(monkeypatch, tmp_path):
+    path = tmp_path / "report.json"
+    write_research_backtest_report(_sample_report(), path)
+    monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", path)
+
+    response = client.get("/api/research/research-backtest-diagnostics")
+
+    assert response.status_code == 200
+    assert response.json()["decision"]["ready_for_execution_backtest"] is True
+
+
+def test_research_backtest_diagnostics_api_missing_report(monkeypatch, tmp_path):
+    monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", tmp_path / "missing.json")
+
+    response = client.get("/api/research/research-backtest-diagnostics")
+
+    assert response.status_code == 200
+    assert response.json()["available"] is False
+
+
 def test_research_backtest_page_missing_report(monkeypatch, tmp_path):
     monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", tmp_path / "missing.json")
 
@@ -82,6 +106,9 @@ def test_research_backtest_page_existing_report(monkeypatch, tmp_path):
     assert "Research Backtest" in response.text
     assert "RESEARCH_TAA_MVP" in response.text
     assert "does not replace" in response.text
+    assert "Benchmark Comparison" in response.text
+    assert "Constraint Diagnostics" in response.text
+    assert "Ready for Execution Backtest?" in response.text
 
 
 def test_homepage_links_to_research_backtest():

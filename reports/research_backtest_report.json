@@ -8575,6 +8575,148 @@
   "warnings": [
     "Research backtest uses index-level registry return_basis, not ETF execution prices",
     "This research backtest does not replace the current V11 production candidate.",
-    "Research backtest does not represent ETF execution returns."
-  ]
+    "Research backtest does not represent ETF execution returns.",
+    "Research Backtest period starts after common-date alignment and 12M lookback.",
+    "Cash allocation can result from theme and single-asset constraints."
+  ],
+  "benchmark": {
+    "available": true,
+    "rows": [
+      {
+        "strategy": "RESEARCH_TAA_MVP",
+        "annual_return": 0.114224,
+        "max_drawdown": -0.268869,
+        "sharpe": 0.711837,
+        "calmar": 0.424833
+      },
+      {
+        "strategy": "HS300_RESEARCH_BUY_HOLD",
+        "annual_return": -0.001144,
+        "max_drawdown": -0.41561,
+        "sharpe": 0.083747,
+        "calmar": -0.002753
+      },
+      {
+        "strategy": "EQUAL_WEIGHT_RESEARCH",
+        "annual_return": 0.107496,
+        "max_drawdown": -0.376717,
+        "sharpe": 0.582084,
+        "calmar": 0.285351
+      }
+    ],
+    "alpha": {
+      "vs_hs300": 0.115368,
+      "vs_equal_weight": 0.006728
+    },
+    "warnings": []
+  },
+  "diagnostics": {
+    "sample_period": {
+      "raw_start": "2016-01-04",
+      "aligned_start": "2019-12-31",
+      "backtest_start": "2021-01-14",
+      "reason": "common-date alignment + 252-day lookback"
+    },
+    "constraint_impact": {
+      "average_cash_weight": 0.200758,
+      "max_cash_weight": 0.55,
+      "theme_cap_hit_months": 40,
+      "single_asset_cap_hit_months": 75
+    },
+    "factor_summary": {
+      "average_momentum_6m": 0.187227,
+      "average_momentum_12m": 0.325228,
+      "average_drawdown_resilience": 0.795114,
+      "score_observations": 330
+    },
+    "selection_frequency": [
+      {
+        "asset_id": "H00805.CSI",
+        "name": "A股资源全收益",
+        "selected_months": 44
+      },
+      {
+        "asset_id": "931688CNY010.CSI",
+        "name": "中证算力全收益",
+        "selected_months": 43
+      },
+      {
+        "asset_id": "H00922.CSI",
+        "name": "中红收益",
+        "selected_months": 35
+      },
+      {
+        "asset_id": "H00015.CSI",
+        "name": "红利收益",
+        "selected_months": 33
+      },
+      {
+        "asset_id": "H20771.CSI",
+        "name": "CS新能源全收益",
+        "selected_months": 26
+      },
+      {
+        "asset_id": "H20007.CSI",
+        "name": "芯片产业全收益",
+        "selected_months": 25
+      },
+      {
+        "asset_id": "H00300.CSI",
+        "name": "沪深300收益",
+        "selected_months": 24
+      },
+      {
+        "asset_id": "931743CNY010.CSI",
+        "name": "半导体材料设备全收益",
+        "selected_months": 22
+      },
+      {
+        "asset_id": "H20590.CSI",
+        "name": "机器人全收益",
+        "selected_months": 22
+      },
+      {
+        "asset_id": "H00905.CSI",
+        "name": "中证500收益",
+        "selected_months": 18
+      },
+      {
+        "asset_id": "000688CNY01.CSI",
+        "name": "科创50全收益",
+        "selected_months": 17
+      },
+      {
+        "asset_id": "H00852.CSI",
+        "name": "中证1000全收益",
+        "selected_months": 11
+      },
+      {
+        "asset_id": "H21152.CSI",
+        "name": "CS创新药全收益",
+        "selected_months": 10
+      }
+    ],
+    "warnings": [
+      "Research Backtest period starts after common-date alignment and 12M lookback.",
+      "Cash allocation can result from theme and single-asset constraints."
+    ]
+  },
+  "constraint_diagnostics": {
+    "violations": [],
+    "cash_drag": {
+      "average_cash": 0.200758,
+      "max_cash": 0.55,
+      "months_cash_above_30": 13
+    },
+    "cap_hits": {
+      "single_asset_cap": 75,
+      "theme_sleeve_cap": 40,
+      "single_theme_cap": 103
+    }
+  },
+  "decision": {
+    "ready_for_execution_backtest": true,
+    "reasons": [],
+    "warning": "This is a research gate for execution validation, not production approval or executable ETF performance."
+  }
 }

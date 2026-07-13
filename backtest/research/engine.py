@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from collections import defaultdict
 
+from backtest.research.benchmark import build_research_benchmarks
+from backtest.research.constraints import build_constraint_diagnostics
+from backtest.research.diagnostics import build_research_backtest_diagnostics
 from backtest.research.metrics import build_metrics
 from backtest.research.models import ResearchBacktestConfig, ResearchPrice
 from backtest.research.universe import validate_research_backtest_inputs
@@ -45,7 +48,7 @@ def run_research_backtest(
 
     equity_curve, allocations = _run_monthly_strategy(valid_assets, aligned, cfg)
     metrics = build_metrics(equity_curve)
-    return {
+    report = {
         "available": True,
         "strategy": cfg.strategy,
         "universe_count": len(valid_assets),
@@ -63,6 +66,42 @@ def run_research_backtest(
             "This research backtest does not replace the current V11 production candidate.",
             "Research backtest does not represent ETF execution returns.",
         ],
+    }
+    constraint_diagnostics = build_constraint_diagnostics(allocations, valid_assets, cfg)
+    diagnostics = build_research_backtest_diagnostics(report, aligned, valid_assets, cfg)
+    benchmark = build_research_benchmarks(
+        aligned,
+        start_index=cfg.lookback_12m,
+        strategy_metrics=metrics,
+    )
+    report["benchmark"] = benchmark
+    report["diagnostics"] = diagnostics
+    report["constraint_diagnostics"] = constraint_diagnostics
+    report["decision"] = _build_execution_validation_decision(report)
+    report["warnings"].extend(benchmark.get("warnings", []))
+    report["warnings"].extend(diagnostics.get("warnings", []))
+    return report
+
+
+def _build_execution_validation_decision(report: dict) -> dict:
+    metrics = report.get("metrics", {})
+    violations = report.get("constraint_diagnostics", {}).get("violations", [])
+    benchmark_ready = bool(report.get("benchmark", {}).get("available"))
+    reasons = []
+    if not report.get("available"):
+        reasons.append("research backtest report is unavailable")
+    if violations:
+        reasons.append("constraint violations detected")
+    if float(metrics.get("max_drawdown", 0.0)) <= -0.35:
+        reasons.append("max drawdown is not above -35%")
+    if float(metrics.get("sharpe", 0.0)) <= 0.4:
+        reasons.append("Sharpe is not above 0.4")
+    if not benchmark_ready:
+        reasons.append("benchmark comparison is unavailable")
+    return {
+        "ready_for_execution_backtest": not reasons,
+        "reasons": reasons,
+        "warning": "This is a research gate for execution validation, not production approval or executable ETF performance.",
     }
 
 

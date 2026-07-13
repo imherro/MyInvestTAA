@@ -283,6 +283,19 @@ def get_research_backtest_report() -> dict:
     return load_research_backtest_report()
 
 
+@app.get("/api/research/research-backtest-diagnostics")
+def get_research_backtest_diagnostics() -> dict:
+    report = load_research_backtest_report()
+    if not report.get("available"):
+        return report
+    return {
+        "available": True,
+        "diagnostics": report.get("diagnostics", {}),
+        "constraint_diagnostics": report.get("constraint_diagnostics", {}),
+        "decision": report.get("decision", {}),
+    }
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -2696,6 +2709,12 @@ def research_backtest_page() -> str:
     equity_rows = "\n".join(_research_backtest_equity_rows(report))
     allocation_rows = "\n".join(_research_backtest_allocation_rows(report))
     warning_rows = "\n".join(_message_rows(report.get("warnings", []), empty="No research backtest warnings"))
+    benchmark_rows = "\n".join(_research_backtest_benchmark_rows(report))
+    sample_rows = "\n".join(_mapping_rows(report.get("diagnostics", {}).get("sample_period", {}), empty="No sample period diagnostics recorded"))
+    constraint_rows = "\n".join(_research_backtest_constraint_rows(report))
+    factor_rows = "\n".join(_mapping_rows(report.get("diagnostics", {}).get("factor_summary", {}), empty="No factor diagnostics recorded"))
+    selection_rows = "\n".join(_research_backtest_selection_rows(report))
+    decision_rows = "\n".join(_mapping_rows(report.get("decision", {}), empty="No execution validation decision recorded"))
 
     return f"""
     <!doctype html>
@@ -2722,6 +2741,37 @@ def research_backtest_page() -> str:
             <thead><tr><th>Metric</th><th>Value</th></tr></thead>
             <tbody>{metric_rows}</tbody>
           </table>
+        </section>
+        <section>
+          <h2>Benchmark Comparison</h2>
+          <table>
+            <thead><tr><th>Strategy</th><th>Annual Return</th><th>Max Drawdown</th><th>Sharpe</th><th>Calmar</th></tr></thead>
+            <tbody>{benchmark_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Sample Period Explanation</h2>
+          <table><tbody>{sample_rows}</tbody></table>
+        </section>
+        <section>
+          <h2>Constraint Diagnostics</h2>
+          <table><tbody>{constraint_rows}</tbody></table>
+        </section>
+        <section>
+          <h2>Factor Summary</h2>
+          <table><tbody>{factor_rows}</tbody></table>
+        </section>
+        <section>
+          <h2>Selection Frequency</h2>
+          <table>
+            <thead><tr><th>Asset</th><th>Selected Months</th></tr></thead>
+            <tbody>{selection_rows}</tbody>
+          </table>
+        </section>
+        <section>
+          <h2>Ready for Execution Backtest?</h2>
+          <table><tbody>{decision_rows}</tbody></table>
+          <p>This is not executable ETF performance.</p>
         </section>
         <section>
           <h2>Excluded Assets</h2>
@@ -3067,6 +3117,51 @@ def _research_backtest_metric_rows(report: dict) -> list[str]:
         </tr>
         """
         for name, value in metrics.items()
+    ]
+
+
+def _research_backtest_benchmark_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td colspan=\"5\">Research backtest report not generated yet</td></tr>"]
+    rows = report.get("benchmark", {}).get("rows", [])
+    if not rows:
+        return ["<tr><td colspan=\"5\">No benchmark comparison recorded</td></tr>"]
+    return [
+        f"<tr><td>{escape(str(row.get('strategy', '')))}</td><td>{escape(str(row.get('annual_return', '')))}</td><td>{escape(str(row.get('max_drawdown', '')))}</td><td>{escape(str(row.get('sharpe', '')))}</td><td>{escape(str(row.get('calmar', '')))}</td></tr>"
+        for row in rows
+    ]
+
+
+def _research_backtest_constraint_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td colspan=\"2\">Research backtest report not generated yet</td></tr>"]
+    diagnostics = report.get("constraint_diagnostics", {})
+    values = {
+        "Violations": len(diagnostics.get("violations", [])),
+        **{f"Cash Drag: {key}": value for key, value in diagnostics.get("cash_drag", {}).items()},
+        **{f"Cap Hits: {key}": value for key, value in diagnostics.get("cap_hits", {}).items()},
+    }
+    return _mapping_rows(values, empty="No constraint diagnostics recorded")
+
+
+def _research_backtest_selection_rows(report: dict) -> list[str]:
+    if not report.get("available"):
+        return ["<tr><td colspan=\"2\">Research backtest report not generated yet</td></tr>"]
+    rows = report.get("diagnostics", {}).get("selection_frequency", [])
+    if not rows:
+        return ["<tr><td colspan=\"2\">No selection frequency recorded</td></tr>"]
+    return [
+        f"<tr><td>{escape(str(row.get('name', '')))}<span>{escape(str(row.get('asset_id', '')))}</span></td><td>{int(row.get('selected_months', 0))}</td></tr>"
+        for row in rows[:30]
+    ]
+
+
+def _mapping_rows(values: dict, *, empty: str) -> list[str]:
+    if not values:
+        return [f"<tr><td colspan=\"2\">{escape(empty)}</td></tr>"]
+    return [
+        f"<tr><td>{escape(str(key))}</td><td>{escape(str(value))}</td></tr>"
+        for key, value in values.items()
     ]
 
 
