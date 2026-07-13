@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from functools import reduce
 from math import sqrt
 from statistics import mean, pstdev
 
@@ -33,11 +34,11 @@ def score_proxy_candidate(research_rows, candidate_rows) -> dict:
     if correlation < MIN_CORRELATION: hard_gate_reasons.append("correlation_below_0.65")
     if tracking_error > MAX_TRACKING_ERROR: hard_gate_reasons.append("tracking_error_above_0.30")
     quality = "none" if overlap_days == 0 else ("medium" if not hard_gate_reasons else "low")
-    return {"overlap_start": dates[1] if len(dates)>1 else None, "overlap_end": dates[-1] if dates else None, "overlap_days": overlap_days, "correlation": round(correlation,6), "tracking_error_annualized": round(tracking_error,6), "annual_return_gap": round(return_gap,6), "max_drawdown_gap": round(drawdown_gap,6), "volatility_gap": round(volatility_gap,6), "beta": round(beta,6), "score": round(score,6), "recommended_mapping_quality": quality, "hard_gate_reasons": hard_gate_reasons}
+    return {"overlap_start": dates[1] if len(dates)>1 else None, "overlap_end": dates[-1] if dates else None, "overlap_days": overlap_days, "correlation": round(correlation,6), "tracking_error_annualized": round(tracking_error,6), "annual_return_gap": round(return_gap,6), "max_drawdown_gap": round(drawdown_gap,6), "volatility_gap": round(volatility_gap,6), "beta": round(beta,6), "score": round(score,6), "recommended_mapping_quality": quality, "eligible_for_recommendation": not hard_gate_reasons, "hard_gate_reasons": hard_gate_reasons}
 
 
 def _empty_score(dates):
-    return {"overlap_start": None, "overlap_end": dates[-1] if dates else None, "overlap_days": 0, "correlation": 0.0, "tracking_error_annualized": 0.0, "annual_return_gap": 0.0, "max_drawdown_gap": 0.0, "volatility_gap": 0.0, "beta": 0.0, "score": 0.0, "recommended_mapping_quality": "none", "hard_gate_reasons": ["insufficient_overlap"]}
+    return {"overlap_start": None, "overlap_end": dates[-1] if dates else None, "overlap_days": 0, "correlation": 0.0, "tracking_error_annualized": 0.0, "annual_return_gap": 0.0, "max_drawdown_gap": 0.0, "volatility_gap": 0.0, "beta": 0.0, "score": 0.0, "recommended_mapping_quality": "none", "eligible_for_recommendation": False, "hard_gate_reasons": ["insufficient_overlap"]}
 
 
 def _returns(prices, dates): return [prices[right] / prices[left] - 1 for left, right in zip(dates, dates[1:]) if prices[left] > 0]
@@ -49,7 +50,10 @@ def _beta(benchmark, asset):
     variance=pstdev(benchmark)**2
     benchmark_mean,asset_mean=mean(benchmark),mean(asset)
     return 0.0 if variance==0 else sum((a-benchmark_mean)*(b-asset_mean) for a,b in zip(benchmark,asset))/len(benchmark)/variance
-def _annual_return(values): return __import__('functools').reduce(lambda a,b:a*(1+b),values,1.0)**(252/len(values))-1 if values else 0.0
+def _annual_return(values):
+    if not values: return 0.0
+    gross=reduce(lambda acc,value:acc*(1.0+value),values,1.0)
+    return -1.0 if gross<=0 else gross**(252.0/len(values))-1.0
 def _max_drawdown(values):
     level=peak=1.0; worst=0.0
     for value in values: level*=1+value; peak=max(peak,level); worst=min(worst,level/peak-1)

@@ -21,6 +21,7 @@
           "beta": 0.770585,
           "score": 0.611036,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -39,6 +40,7 @@
           "beta": 0.511623,
           "score": 0.598908,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -57,6 +59,7 @@
           "beta": 0.613423,
           "score": 0.593882,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -75,6 +78,7 @@
           "beta": 0.442055,
           "score": 0.55674,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -93,6 +97,7 @@
           "beta": 0.6741,
           "score": 0.550337,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -111,6 +116,7 @@
           "beta": 0.331449,
           "score": 0.482055,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -131,6 +137,7 @@
           "beta": 0.416312,
           "score": 0.473453,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -152,6 +159,7 @@
           "beta": 0.417201,
           "score": 0.314388,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -173,6 +181,7 @@
           "beta": 0.165332,
           "score": 0.278734,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -194,6 +203,7 @@
           "beta": 0.131485,
           "score": 0.270932,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -215,6 +225,7 @@
           "beta": 0.1246,
           "score": 0.242445,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -236,6 +247,7 @@
           "beta": 0.0256,
           "score": 0.219287,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -257,6 +269,7 @@
           "beta": -0.011008,
           "score": 0.112078,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -293,6 +306,7 @@
           "beta": 0.899116,
           "score": 0.826642,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -311,6 +325,7 @@
           "beta": 0.716153,
           "score": 0.709214,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -329,6 +344,7 @@
           "beta": 0.555414,
           "score": 0.54719,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -347,6 +363,7 @@
           "beta": 0.460588,
           "score": 0.486589,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -365,6 +382,7 @@
           "beta": 0.490222,
           "score": 0.450041,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -386,6 +404,7 @@
           "beta": 0.396261,
           "score": 0.436225,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -404,6 +423,7 @@
           "beta": 0.387079,
           "score": 0.408959,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -425,6 +445,7 @@
           "beta": 0.286963,
           "score": 0.384729,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -446,6 +467,7 @@
           "beta": 0.090249,
           "score": 0.245974,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -467,6 +489,7 @@
           "beta": 0.12369,
           "score": 0.245288,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -488,6 +511,7 @@
           "beta": 0.088569,
           "score": 0.184557,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -509,6 +533,7 @@
           "beta": 0.011131,
           "score": 0.12754,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -530,6 +555,7 @@
           "beta": -0.010107,
           "score": 0.1,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -566,6 +592,7 @@
           "beta": 0.746672,
           "score": 0.815326,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -584,6 +611,7 @@
           "beta": 0.667834,
           "score": 0.776015,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -602,6 +630,7 @@
           "beta": 0.863365,
           "score": 0.75143,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -620,6 +649,7 @@
           "beta": 0.473961,
           "score": 0.681029,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -638,6 +668,7 @@
           "beta": 0.785001,
           "score": 0.663123,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -656,6 +687,7 @@
           "beta": 0.662019,
           "score": 0.578982,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -676,6 +708,7 @@
           "beta": 0.716258,
           "score": 0.547313,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -694,6 +727,7 @@
           "beta": 0.863799,
           "score": 0.518862,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -712,6 +746,7 @@
           "beta": 0.241942,
           "score": 0.391452,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -732,6 +767,7 @@
           "beta": 0.181711,
           "score": 0.348431,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -752,6 +788,7 @@
           "beta": 0.194906,
           "score": 0.343582,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -772,6 +809,7 @@
           "beta": 0.015313,
           "score": 0.231765,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -793,6 +831,7 @@
           "beta": -0.009833,
           "score": 0.204444,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -828,6 +867,7 @@
           "beta": 0.767001,
           "score": 0.668967,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -846,6 +886,7 @@
           "beta": 0.534357,
           "score": 0.592509,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -866,6 +907,7 @@
           "beta": 0.459847,
           "score": 0.590458,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -884,6 +926,7 @@
           "beta": 0.543442,
           "score": 0.580199,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -902,6 +945,7 @@
           "beta": 0.60996,
           "score": 0.524731,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -922,6 +966,7 @@
           "beta": 0.561484,
           "score": 0.504299,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -943,6 +988,7 @@
           "beta": 0.462659,
           "score": 0.456659,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -964,6 +1010,7 @@
           "beta": 0.564781,
           "score": 0.430672,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -985,6 +1032,7 @@
           "beta": 0.210196,
           "score": 0.325662,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1005,6 +1053,7 @@
           "beta": 0.175602,
           "score": 0.304478,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1025,6 +1074,7 @@
           "beta": 0.183951,
           "score": 0.300855,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1045,6 +1095,7 @@
           "beta": -0.007712,
           "score": 0.213203,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1065,6 +1116,7 @@
           "beta": 0.021038,
           "score": 0.181449,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -1101,6 +1153,7 @@
           "beta": 1.14672,
           "score": 0.810725,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -1119,6 +1172,7 @@
           "beta": 0.653908,
           "score": 0.733188,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -1137,6 +1191,7 @@
           "beta": 0.487779,
           "score": 0.690586,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -1155,6 +1210,7 @@
           "beta": 0.65258,
           "score": 0.65725,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -1173,6 +1229,7 @@
           "beta": 0.458143,
           "score": 0.64758,
           "recommended_mapping_quality": "medium",
+          "eligible_for_recommendation": true,
           "hard_gate_reasons": [],
           "warnings": [
             "candidate research only; no automatic mapping update"
@@ -1191,6 +1248,7 @@
           "beta": 0.403189,
           "score": 0.580687,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1211,6 +1269,7 @@
           "beta": 0.352979,
           "score": 0.55215,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1231,6 +1290,7 @@
           "beta": 0.661426,
           "score": 0.545256,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1251,6 +1311,7 @@
           "beta": 0.694874,
           "score": 0.392982,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1271,6 +1332,7 @@
           "beta": 0.124352,
           "score": 0.371792,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
@@ -1291,6 +1353,7 @@
           "beta": 0.466542,
           "score": 0.354798,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -1312,6 +1375,7 @@
           "beta": 0.555206,
           "score": 0.314279,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65",
             "tracking_error_above_0.30"
@@ -1333,6 +1397,7 @@
           "beta": -0.010067,
           "score": 0.207983,
           "recommended_mapping_quality": "low",
+          "eligible_for_recommendation": false,
           "hard_gate_reasons": [
             "correlation_below_0.65"
           ],
