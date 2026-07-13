@@ -5,5 +5,6 @@ from backtest.execution.proxy_report import load_proxy_research_report
 from backtest.execution.proposal_report import load_counterfactual_report, load_mapping_proposal_report
 from backtest.execution.dataset_provenance import load_price_dataset_manifest
 from backtest.execution.review_report import load_mapping_attribution_report, load_mapping_review_report
+from backtest.execution.approval_package import load_mapping_approval_package, load_mapping_decision_ledger
 
-__all__ = ["load_execution_backtest_report", "load_mapping_improvement_report", "load_proxy_research_report", "load_mapping_proposal_report", "load_counterfactual_report", "load_price_dataset_manifest", "load_mapping_attribution_report", "load_mapping_review_report", "run_execution_backtest", "write_execution_backtest_report"]
+__all__ = ["load_execution_backtest_report", "load_mapping_improvement_report", "load_proxy_research_report", "load_mapping_proposal_report", "load_counterfactual_report", "load_price_dataset_manifest", "load_mapping_attribution_report", "load_mapping_review_report", "load_mapping_approval_package", "load_mapping_decision_ledger", "run_execution_backtest", "write_execution_backtest_report"]

@@ -1,0 +1,62 @@
+{
+  "available": true,
+  "source_report": "execution_mapping_review_report.json",
+  "policy": "Research-only and rejected proposals stay frozen until a new ETF candidate or new semantic evidence is recorded.",
+  "decisions": [
+    {
+      "research_asset_id": "931743CNY010.CSI",
+      "proposed_proxy": "512760.SH",
+      "status": "pending_explicit_human_approval",
+      "semantic_quality": "acceptable",
+      "statistical_quality": "eligible_for_recommendation",
+      "decision_reason": "The candidate passed the statistical gate and conservative semantic screening, but the formal mapping requires explicit human approval.",
+      "decision_source_report": "execution_mapping_review_report.json",
+      "decided_at": "2026-07-13",
+      "requires_manual_approval": true
+    },
+    {
+      "research_asset_id": "931688CNY010.CSI",
+      "proposed_proxy": "512760.SH",
+      "status": "research_only",
+      "semantic_quality": "weak",
+      "statistical_quality": "eligible_for_recommendation",
+      "decision_reason": "A broad semiconductor ETF does not represent the full computing-power supply chain.",
+      "decision_source_report": "execution_mapping_review_report.json",
+      "decided_at": "2026-07-13",
+      "requires_manual_approval": true
+    },
+    {
+      "research_asset_id": "H00805.CSI",
+      "proposed_proxy": "512400.SH",
+      "status": "research_only",
+      "semantic_quality": "weak",
+      "statistical_quality": "failed_max_drawdown_gate",
+      "decision_reason": "The proxy omits important resource sectors and worsened maximum drawdown by more than five percentage points.",
+      "decision_source_report": "execution_mapping_review_report.json",
+      "decided_at": "2026-07-13",
+      "requires_manual_approval": true
+    },
+    {
+      "research_asset_id": "H20590.CSI",
+      "proposed_proxy": "512100.SH",
+      "status": "rejected_proxy",
+      "semantic_quality": "invalid",
+      "statistical_quality": "eligible_for_recommendation",
+      "decision_reason": "A broad CSI 1000 ETF is not a robot-industry execution proxy.",
+      "decision_source_report": "execution_mapping_review_report.json",
+      "decided_at": "2026-07-13",
+      "requires_manual_approval": true
+    },
+    {
+      "research_asset_id": "H21152.CSI",
+      "proposed_proxy": "159915.SZ",
+      "status": "rejected_proxy",
+      "semantic_quality": "invalid",
+      "statistical_quality": "eligible_for_recommendation",
+      "decision_reason": "A broad ChiNext ETF is not an innovative-drug execution proxy.",
+      "decision_source_report": "execution_mapping_review_report.json",
+      "decided_at": "2026-07-13",
+      "requires_manual_approval": true
+    }
+  ]
+}
