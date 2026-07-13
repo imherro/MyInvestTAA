@@ -18,7 +18,7 @@ from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from backtest.research import load_research_backtest_report
-from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report, load_proxy_research_report, load_mapping_proposal_report, load_counterfactual_report, load_price_dataset_manifest, load_mapping_attribution_report, load_mapping_review_report, load_mapping_approval_package, load_mapping_decision_ledger, load_mapping_approval_record, load_execution_aware_shadow_portfolio
+from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report, load_proxy_research_report, load_mapping_proposal_report, load_counterfactual_report, load_price_dataset_manifest, load_mapping_attribution_report, load_mapping_review_report, load_mapping_approval_package, load_mapping_decision_ledger, load_mapping_approval_record, load_execution_aware_shadow_portfolio, load_approval_integrity_seal, load_transaction_status
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
@@ -352,6 +352,14 @@ def get_execution_mapping_approval_record() -> dict:
 @app.get("/api/research/execution-aware-shadow-portfolio")
 def get_execution_aware_shadow_portfolio() -> dict:
     return load_execution_aware_shadow_portfolio()
+
+@app.get("/api/research/execution-mapping-approval-integrity")
+def get_execution_mapping_approval_integrity() -> dict:
+    return load_approval_integrity_seal()
+
+@app.get("/api/research/execution-mapping-transaction-status")
+def get_execution_mapping_transaction_status() -> dict:
+    return load_transaction_status()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -2916,6 +2924,8 @@ def execution_backtest_page() -> str:
 @app.get("/shadow-portfolio", response_class=HTMLResponse)
 def shadow_portfolio_page() -> str:
     report = load_execution_aware_shadow_portfolio()
+    approval_integrity = load_approval_integrity_seal()
+    transaction_status = load_transaction_status()
     status_rows = "\n".join(_mapping_rows({key:report.get(key) for key in ("available","status","production_approved","source_strategy","source_allocation_date","data_as_of")}, empty="Shadow portfolio report not generated yet"))
     research_rows = "\n".join(_mapping_rows(report.get("research_weights", {}), empty="No research weights recorded"))
     execution_rows = "\n".join(_mapping_rows(report.get("execution_weights", {}), empty="No execution weights recorded"))
@@ -2924,8 +2934,12 @@ def shadow_portfolio_page() -> str:
     frozen_rows = "\n".join(_mapping_rows({"research_only":report.get("frozen_research_only_assets", []),"rejected_proxy":report.get("rejected_proxy_assets", [])}, empty="No frozen assets recorded"))
     constraint_rows = "\n".join(_mapping_rows(report.get("constraint_checks", {}), empty="No constraint checks recorded"))
     provenance_rows = "\n".join(_mapping_rows(report.get("data_provenance", {}), empty="No provenance recorded"))
+    approval_integrity_rows = "\n".join(_mapping_rows({"available":approval_integrity.get("available"),"verification_status":approval_integrity.get("verification_status"),"seal_hash":approval_integrity.get("seal_hash"),"validation":approval_integrity.get("validation")}, empty="No approval integrity seal recorded"))
+    snapshot_rows = "\n".join(_mapping_rows(report.get("snapshot_integrity", {}), empty="No snapshot hashes recorded"))
+    price_as_of_rows = "\n".join(_mapping_rows(report.get("price_as_of_by_proxy", {}), empty="No price as-of records"))
+    transaction_rows = "\n".join(_mapping_rows({"status":transaction_status.get("status"),"pending":transaction_status.get("pending"),"commit_marker":transaction_status.get("commit_marker"),"errors":transaction_status.get("errors")}, empty="No transaction status recorded"))
     warning_rows = "\n".join(_message_rows(report.get("warnings", []), empty="No warnings recorded"))
-    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Execution-Aware Shadow Portfolio</title><style>{_report_page_css()}</style></head><body><header><h1>Execution-Aware Shadow Portfolio</h1><p>This is an experimental execution-aware shadow allocation. It is not a production portfolio or trading instruction. <a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a></p></header><main><section><h2>Shadow Status</h2><table><tbody>{status_rows}</tbody></table></section><section><h2>Source Research Allocation</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Research Weights</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Executable ETF Weights</h2><table><tbody>{execution_rows}</tbody></table></section><section><h2>Cash Breakdown</h2><table><tbody>{cash_rows}</tbody></table></section><section><h2>Mapping Explanations</h2><table><thead><tr><th>Research Asset</th><th>Weight</th><th>Destination</th><th>Quality</th><th>Decision</th><th>Reason</th></tr></thead><tbody>{mapping_rows}</tbody></table></section><section><h2>Frozen Research-Only Assets</h2><table><tbody>{frozen_rows}</tbody></table></section><section><h2>Constraint Checks</h2><table><tbody>{constraint_rows}</tbody></table></section><section><h2>Data Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>V11 Boundary</h2><p>V11 remains the existing production candidate. This shadow allocation does not replace or modify V11.</p></section><section><h2>Warnings</h2><table><tbody>{warning_rows}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Execution-Aware Shadow Portfolio</title><style>{_report_page_css()}</style></head><body><header><h1>Execution-Aware Shadow Portfolio</h1><p>This is an experimental execution-aware shadow allocation. It is not a production portfolio or trading instruction. <a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a></p></header><main><section><h2>Shadow Status</h2><table><tbody>{status_rows}</tbody></table></section><section><h2>Approval Integrity</h2><table><tbody>{approval_integrity_rows}</tbody></table></section><section><h2>Snapshot Hashes</h2><table><tbody>{snapshot_rows}</tbody></table></section><section><h2>Price As-Of by Proxy</h2><table><tbody>{price_as_of_rows}</tbody></table></section><section><h2>Transaction Status</h2><table><tbody>{transaction_rows}</tbody></table></section><section><h2>Source Research Allocation</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Research Weights</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Executable ETF Weights</h2><table><tbody>{execution_rows}</tbody></table></section><section><h2>Cash Breakdown</h2><table><tbody>{cash_rows}</tbody></table></section><section><h2>Mapping Explanations</h2><table><thead><tr><th>Research Asset</th><th>Weight</th><th>Destination</th><th>Quality</th><th>Decision</th><th>Reason</th></tr></thead><tbody>{mapping_rows}</tbody></table></section><section><h2>Frozen Research-Only Assets</h2><table><tbody>{frozen_rows}</tbody></table></section><section><h2>Constraint Checks</h2><table><tbody>{constraint_rows}</tbody></table></section><section><h2>Data Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>V11 Boundary</h2><p>V11 remains the existing production candidate. This shadow allocation does not replace or modify V11.</p></section><section><h2>Warnings</h2><table><tbody>{warning_rows}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
 
 
 def _shadow_mapping_rows(rows: list[dict]) -> list[str]:

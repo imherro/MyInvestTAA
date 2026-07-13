@@ -8,5 +8,7 @@ from backtest.execution.review_report import load_mapping_attribution_report, lo
 from backtest.execution.approval_package import load_mapping_approval_package, load_mapping_decision_ledger
 from backtest.execution.mapping_application import load_mapping_approval_record
 from backtest.execution.shadow_report import load_execution_aware_shadow_portfolio
+from backtest.execution.approval_integrity import load_approval_integrity_seal
+from backtest.execution.approval_transaction import load_transaction_status
 
-__all__ = ["load_execution_backtest_report", "load_mapping_improvement_report", "load_proxy_research_report", "load_mapping_proposal_report", "load_counterfactual_report", "load_price_dataset_manifest", "load_mapping_attribution_report", "load_mapping_review_report", "load_mapping_approval_package", "load_mapping_decision_ledger", "load_mapping_approval_record", "load_execution_aware_shadow_portfolio", "run_execution_backtest", "write_execution_backtest_report"]
+__all__ = ["load_execution_backtest_report", "load_mapping_improvement_report", "load_proxy_research_report", "load_mapping_proposal_report", "load_counterfactual_report", "load_price_dataset_manifest", "load_mapping_attribution_report", "load_mapping_review_report", "load_mapping_approval_package", "load_mapping_decision_ledger", "load_mapping_approval_record", "load_execution_aware_shadow_portfolio", "load_approval_integrity_seal", "load_transaction_status", "run_execution_backtest", "write_execution_backtest_report"]

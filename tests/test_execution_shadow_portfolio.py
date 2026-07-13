@@ -282,6 +282,7 @@ def test_application_requires_explicit_approval(tmp_path):
     with pytest.raises(ValueError, match="explicit human approval"):
         apply_human_approved_mapping(
             explicit_approval="rejected",
+            expected_package_hash=hashlib.sha256(files[1].read_bytes()).hexdigest(),
             expected_mapping_hash=files[4],
             decision_date="2026-07-13",
             mapping_path=files[0], package_path=files[1], ledger_path=files[2], record_path=files[3],
@@ -294,9 +295,26 @@ def test_application_rejects_full_mapping_hash_mismatch(tmp_path):
     with pytest.raises(ValueError, match="baseline hash mismatch"):
         apply_human_approved_mapping(
             explicit_approval="approved",
+            expected_package_hash=hashlib.sha256(files[1].read_bytes()).hexdigest(),
             expected_mapping_hash="0" * 64,
             decision_date="2026-07-13",
             mapping_path=files[0], package_path=files[1], ledger_path=files[2], record_path=files[3],
+        )
+    assert not files[3].exists()
+
+
+def test_application_rejects_expected_package_hash_mismatch(tmp_path):
+    files = _application_files(tmp_path)
+    with pytest.raises(ValueError, match="approval package hash mismatch"):
+        apply_human_approved_mapping(
+            explicit_approval="approved",
+            expected_package_hash="0" * 64,
+            expected_mapping_hash=files[4],
+            decision_date="2026-07-13",
+            mapping_path=files[0],
+            package_path=files[1],
+            ledger_path=files[2],
+            record_path=files[3],
         )
     assert not files[3].exists()
 
@@ -322,6 +340,7 @@ def test_application_rejects_invalid_approval_package(tmp_path, path, value, mes
     with pytest.raises(ValueError, match=message):
         apply_human_approved_mapping(
             explicit_approval="approved",
+            expected_package_hash=hashlib.sha256(files[1].read_bytes()).hexdigest(),
             expected_mapping_hash=files[4],
             decision_date="2026-07-13",
             mapping_path=files[0], package_path=files[1], ledger_path=files[2], record_path=files[3],
@@ -333,6 +352,7 @@ def test_application_atomically_changes_only_target(tmp_path):
     before = json.loads(files[0].read_text(encoding="utf-8"))
     record = apply_human_approved_mapping(
         explicit_approval="approved",
+        expected_package_hash=hashlib.sha256(files[1].read_bytes()).hexdigest(),
         expected_mapping_hash=files[4],
         decision_date="2026-07-13",
         mapping_path=files[0], package_path=files[1], ledger_path=files[2], record_path=files[3],
@@ -341,26 +361,29 @@ def test_application_atomically_changes_only_target(tmp_path):
     assert [row["research_asset_id"] for old, row in zip(before, after) if old != row] == [TARGET_ASSET_ID]
     assert after[1] == before[1]
     assert record["changed_asset_ids"] == [TARGET_ASSET_ID]
+    assert record["expected_package_hash_input"] == record["actual_package_hash"]
+    assert record["expected_mapping_hash_input"] == record["actual_mapping_before_hash"]
     assert not (tmp_path / ".asset_mapping.json.tmp").exists()
 
 
 def test_application_rolls_back_mapping_and_ledger_when_record_write_fails(tmp_path, monkeypatch):
-    import backtest.execution.mapping_application as application
+    import backtest.execution.approval_transaction as transaction
 
     files = _application_files(tmp_path)
     mapping_before = files[0].read_bytes()
     ledger_before = files[2].read_bytes()
-    original_write = application._atomic_write_text
+    original_replace = transaction._replace_staged
 
-    def fail_record(path, value):
-        if path == files[3]:
+    def fail_record(entry):
+        if Path(entry["path"]) == files[3].resolve():
             raise OSError("simulated record failure")
-        return original_write(path, value)
+        return original_replace(entry)
 
-    monkeypatch.setattr(application, "_atomic_write_text", fail_record)
+    monkeypatch.setattr(transaction, "_replace_staged", fail_record)
     with pytest.raises(OSError, match="simulated record failure"):
         apply_human_approved_mapping(
             explicit_approval="approved",
+            expected_package_hash=hashlib.sha256(files[1].read_bytes()).hexdigest(),
             expected_mapping_hash=files[4],
             decision_date="2026-07-13",
             mapping_path=files[0], package_path=files[1], ledger_path=files[2], record_path=files[3],
@@ -421,6 +444,15 @@ def _shadow_fixture(weights, mappings, ledger=None, missing=None):
         provenance,
         {"decisions": ledger or []},
         {"research_asset_id": TARGET_ASSET_ID, "approved_proxy": "512760.SH", "approved_mapping_quality": "medium"},
+        {
+            "approval_record_verified": True,
+            "package_verified": True,
+            "mapping_verified": True,
+            "ledger_verified": True,
+            "seal_verified": True,
+            "errors": [],
+        },
+        {"verified": True, "errors": []},
     )
 
 
@@ -477,6 +509,8 @@ def test_shadow_report_loader_missing(tmp_path):
     [
         "/api/research/execution-aware-shadow-portfolio",
         "/api/research/execution-mapping-approval-record",
+        "/api/research/execution-mapping-approval-integrity",
+        "/api/research/execution-mapping-transaction-status",
     ],
 )
 def test_task_032_read_only_apis(endpoint):
@@ -508,6 +542,10 @@ def test_shadow_api_missing_report_does_not_500(monkeypatch):
         "Data Provenance",
         "Shadow Status",
         "V11 Boundary",
+        "Approval Integrity",
+        "Snapshot Hashes",
+        "Price As-Of by Proxy",
+        "Transaction Status",
     ],
 )
 def test_shadow_page_sections(section):

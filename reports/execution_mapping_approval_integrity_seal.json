@@ -1,0 +1,15 @@
+{
+  "available": true,
+  "verification_status": "verified",
+  "approval_package_hash": "ea976b824f41450436e04b43e373a4b8ad83287cacc54277c3b1c85aea339b94",
+  "approval_record_hash": "a859269a8f944f011b90660c8b52c7b5f9e86959bed0dd8334ff10d876ad0f7e",
+  "current_mapping_hash": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+  "current_ledger_hash": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+  "target_mapping_row_hash": "3ddaa7b810e970bfa31d9642a873de4377582fd5ad9795daf95af45a59371210",
+  "approved_asset": "931743CNY010.CSI",
+  "approved_proxy": "512760.SH",
+  "approved_mapping_quality": "medium",
+  "decision_date": "2026-07-13",
+  "production_approved": false,
+  "errors": []
+}

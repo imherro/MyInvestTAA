@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import date
+
 from backtest.execution.mapping_application import APPROVED_MAPPING_QUALITY
 
 
@@ -20,12 +22,35 @@ def build_execution_aware_shadow_portfolio(
     provenance,
     decision_ledger,
     approval_record,
+    approval_integrity=None,
+    snapshot_integrity=None,
 ):
     allocations = research_report.get("monthly_allocations", [])
     if not research_report.get("available") or not allocations:
         return {"available": False, "message": "research allocation is unavailable"}
     if not provenance.get("provenance_verified"):
         return {"available": False, "message": "execution price provenance is not verified"}
+    approval_integrity = approval_integrity or {}
+    required_integrity = (
+        "approval_record_verified",
+        "package_verified",
+        "mapping_verified",
+        "ledger_verified",
+        "seal_verified",
+    )
+    if not all(approval_integrity.get(field) is True for field in required_integrity):
+        return {
+            "available": False,
+            "message": "execution mapping approval integrity is not verified",
+            "errors": approval_integrity.get("errors", ["approval integrity missing"]),
+        }
+    snapshot_integrity = snapshot_integrity or {}
+    if not snapshot_integrity.get("verified"):
+        return {
+            "available": False,
+            "message": "shadow snapshot integrity is not verified",
+            "errors": snapshot_integrity.get("errors", ["snapshot hashes missing"]),
+        }
 
     period_end = research_report.get("period", {}).get("end")
     completed = [row for row in allocations if not period_end or row["date"] <= period_end]
@@ -44,9 +69,7 @@ def build_execution_aware_shadow_portfolio(
         row["research_asset_id"]: row
         for row in decision_ledger.get("decisions", [])
     }
-    price_dates = {
-        asset_id: {row.date for row in rows} for asset_id, rows in execution_prices.items()
-    }
+    price_as_of_by_proxy = {}
     execution_weights = {}
     cash_breakdown = {key: 0.0 for key in CASH_BREAKDOWN_KEYS}
     explanations = []
@@ -71,8 +94,13 @@ def build_execution_aware_shadow_portfolio(
         proxy = mapping.primary_execution_proxy if mapping else None
         quality = mapping.mapping_quality if mapping else "none"
         cash_reason = _cash_reason(decision_status, quality, proxy)
-        if not cash_reason and data_as_of not in price_dates.get(proxy, set()):
-            cash_reason = "missing_price_cash"
+        if not cash_reason:
+            price_status = _latest_price_as_of(
+                execution_prices.get(proxy, []), data_as_of
+            )
+            price_as_of_by_proxy[proxy] = price_status
+            if not price_status["usable"]:
+                cash_reason = "missing_price_cash"
 
         if cash_reason:
             cash_breakdown[cash_reason] += weight
@@ -137,6 +165,9 @@ def build_execution_aware_shadow_portfolio(
             "dataset_generated_at": provenance.get("dataset_generated_at"),
             "asset_count": provenance.get("asset_count"),
         },
+        "approval_integrity": approval_integrity,
+        "snapshot_integrity": snapshot_integrity,
+        "price_as_of_by_proxy": dict(sorted(price_as_of_by_proxy.items())),
         "approved_mapping_records": [
             {
                 "research_asset_id": approval_record.get("research_asset_id"),
@@ -178,3 +209,19 @@ def _cash_reason(decision_status, quality, proxy):
     if quality not in {"high", APPROVED_MAPPING_QUALITY}:
         return "unmapped_cash"
     return None
+
+
+def _latest_price_as_of(rows, requested_as_of):
+    eligible = sorted(row.date for row in rows if row.date <= requested_as_of)
+    actual = eligible[-1] if eligible else None
+    staleness = (
+        (date.fromisoformat(requested_as_of) - date.fromisoformat(actual)).days
+        if actual
+        else None
+    )
+    return {
+        "requested_as_of": requested_as_of,
+        "actual_price_date": actual,
+        "staleness_calendar_days": staleness,
+        "usable": actual is not None and staleness <= 5,
+    }

@@ -9495,6 +9495,10 @@
   ],
   "approval_record_verification": {
     "approval_record_verified": true,
+    "package_verified": true,
+    "mapping_verified": true,
+    "ledger_verified": true,
+    "seal_verified": true,
     "errors": []
   },
   "asset_registry_validation": {

@@ -82,6 +82,44 @@
     "dataset_generated_at": "2026-07-13T03:47:41+00:00",
     "asset_count": 13
   },
+  "approval_integrity": {
+    "approval_record_verified": true,
+    "package_verified": true,
+    "mapping_verified": true,
+    "ledger_verified": true,
+    "seal_verified": true,
+    "errors": []
+  },
+  "snapshot_integrity": {
+    "research_report_hash": "bcdaaab5b20597308157d008b5346506929ee22cb6a2c8f6b24c1ff4263a6788",
+    "mapping_registry_hash": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+    "decision_ledger_hash": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+    "approval_record_hash": "a859269a8f944f011b90660c8b52c7b5f9e86959bed0dd8334ff10d876ad0f7e",
+    "approval_seal_hash": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9",
+    "price_manifest_hash": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd",
+    "verified": true,
+    "errors": []
+  },
+  "price_as_of_by_proxy": {
+    "510500.SH": {
+      "requested_as_of": "2026-07-08",
+      "actual_price_date": "2026-07-08",
+      "staleness_calendar_days": 0,
+      "usable": true
+    },
+    "512760.SH": {
+      "requested_as_of": "2026-07-08",
+      "actual_price_date": "2026-07-08",
+      "staleness_calendar_days": 0,
+      "usable": true
+    },
+    "588000.SH": {
+      "requested_as_of": "2026-07-08",
+      "actual_price_date": "2026-07-08",
+      "staleness_calendar_days": 0,
+      "usable": true
+    }
+  },
   "approved_mapping_records": [
     {
       "research_asset_id": "931743CNY010.CSI",
@@ -103,5 +141,12 @@
     "This is an experimental execution-aware shadow allocation. It is not a production portfolio or trading instruction.",
     "V11 remains the existing production candidate and is not replaced by this shadow allocation.",
     "Weights are research ratios only; no orders, quantities, or target prices are produced."
-  ]
+  ],
+  "transaction_status": {
+    "available": true,
+    "status": "idle",
+    "pending": false,
+    "commit_marker": false,
+    "errors": []
+  }
 }

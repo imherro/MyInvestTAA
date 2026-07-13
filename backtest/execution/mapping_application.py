@@ -12,6 +12,11 @@ from backtest.execution.approval_package import (
     TARGET_ASSET_ID,
     TARGET_PROXY_ID,
 )
+from backtest.execution.approval_transaction import (
+    TRANSACTION_JOURNAL,
+    apply_file_transaction,
+    transaction_is_pending,
+)
 from engine.asset_registry.loader import ASSET_MAPPING_FILE, ROOT, clear_asset_registry_cache
 
 APPROVAL_RECORD = ROOT / "reports" / "execution_mapping_approval_record.json"
@@ -25,12 +30,14 @@ APPROVED_NOTES = (
 def apply_human_approved_mapping(
     *,
     explicit_approval: str,
+    expected_package_hash: str,
     expected_mapping_hash: str,
     decision_date: str,
     mapping_path: Path = ASSET_MAPPING_FILE,
     package_path: Path = APPROVAL_PACKAGE,
     ledger_path: Path = DECISION_LEDGER,
     record_path: Path = APPROVAL_RECORD,
+    transaction_journal_path: Path | None = None,
 ) -> dict:
     mapping_before_bytes = mapping_path.read_bytes()
     mapping_before_text = mapping_before_bytes.decode("utf-8")
@@ -45,6 +52,8 @@ def apply_human_approved_mapping(
 
     _validate_application(
         explicit_approval=explicit_approval,
+        expected_package_hash=expected_package_hash,
+        actual_package_hash=package_hash,
         expected_mapping_hash=expected_mapping_hash,
         mapping_before_hash=mapping_before_hash,
         package=package,
@@ -83,6 +92,10 @@ def apply_human_approved_mapping(
         "decision_date": decision_date,
         "source_package": package_path.name,
         "package_hash": package_hash,
+        "expected_package_hash_input": expected_package_hash,
+        "actual_package_hash": package_hash,
+        "expected_mapping_hash_input": expected_mapping_hash,
+        "actual_mapping_before_hash": mapping_before_hash,
         "mapping_before_hash": mapping_before_hash,
         "mapping_after_hash": mapping_after_hash,
         "changed_asset_ids": changed_assets,
@@ -93,35 +106,45 @@ def apply_human_approved_mapping(
         ],
         "production_approved": False,
     }
-    if record["package_hash"] != package_hash:
-        raise ValueError("approval record package hash mismatch")
-
     updated_ledger = _approved_ledger(ledger, record_path.name, decision_date)
     ledger_after_text = _with_source_newlines(
         json.dumps(updated_ledger, ensure_ascii=False, indent=2) + "\n",
         ledger_before_bytes,
     )
     record_text = json.dumps(record, ensure_ascii=False, indent=2) + "\n"
-    record_before = record_path.read_bytes() if record_path.exists() else None
-
-    try:
-        _atomic_write_bytes(mapping_path, mapping_after_bytes)
-        _atomic_write_text(ledger_path, ledger_after_text)
-        _atomic_write_text(record_path, record_text)
-    except Exception:
-        _atomic_write_bytes(mapping_path, mapping_before_bytes)
-        _atomic_write_bytes(ledger_path, ledger_before_bytes)
-        if record_before is None:
-            record_path.unlink(missing_ok=True)
-        else:
-            _atomic_write_bytes(record_path, record_before)
-        raise
+    journal_path = transaction_journal_path or _journal_for(mapping_path)
+    apply_file_transaction(
+        {
+            mapping_path: mapping_after_bytes,
+            ledger_path: ledger_after_text.encode("utf-8"),
+            record_path: record_text.encode("utf-8"),
+        },
+        journal_path=journal_path,
+        precondition=lambda: _verify_locked_inputs(
+            mapping_path,
+            package_path,
+            mapping_before_hash,
+            expected_package_hash,
+        ),
+    )
+    if _sha256_path(mapping_path) != mapping_after_hash:
+        raise RuntimeError("mapping transaction committed with unexpected hash")
+    if _sha256_path(package_path) != expected_package_hash.lower():
+        raise RuntimeError("approval package changed during transaction")
 
     clear_asset_registry_cache()
     return record
 
 
-def validate_approval_record(record: dict, package_path: Path = APPROVAL_PACKAGE) -> dict:
+def validate_approval_record(
+    record: dict,
+    package_path: Path = APPROVAL_PACKAGE,
+    *,
+    record_path: Path = APPROVAL_RECORD,
+    mapping_path: Path = ASSET_MAPPING_FILE,
+    ledger_path: Path = DECISION_LEDGER,
+    seal_path: Path | None = None,
+) -> dict:
     errors = []
     if record.get("decision_type") != "explicit_human_approval":
         errors.append("decision type is not explicit human approval")
@@ -137,11 +160,30 @@ def validate_approval_record(record: dict, package_path: Path = APPROVAL_PACKAGE
         errors.append("approval record mapping quality mismatch")
     if record.get("production_approved") is not False:
         errors.append("approval record cannot grant production approval")
-    return {"approval_record_verified": not errors, "errors": errors}
+    from backtest.execution.approval_integrity import (
+        APPROVAL_INTEGRITY_SEAL,
+        validate_approval_integrity,
+    )
+
+    integrity = validate_approval_integrity(
+        package_path=package_path,
+        record_path=record_path,
+        mapping_path=mapping_path,
+        ledger_path=ledger_path,
+        seal_path=seal_path or APPROVAL_INTEGRITY_SEAL,
+    )
+    errors.extend(integrity["errors"])
+    return {
+        **integrity,
+        "approval_record_verified": not errors,
+        "errors": list(dict.fromkeys(errors)),
+    }
 
 
 def load_mapping_approval_record(path: Path | None = None) -> dict:
     target = path or APPROVAL_RECORD
+    if transaction_is_pending():
+        return {"available": False, "message": "approval transaction is pending"}
     if not target.exists():
         return {"available": False, "message": "mapping approval record not found"}
     record = json.loads(target.read_text(encoding="utf-8"))
@@ -152,6 +194,8 @@ def load_mapping_approval_record(path: Path | None = None) -> dict:
 def _validate_application(
     *,
     explicit_approval: str,
+    expected_package_hash: str,
+    actual_package_hash: str,
     expected_mapping_hash: str,
     mapping_before_hash: str,
     package: dict,
@@ -160,6 +204,10 @@ def _validate_application(
     errors = []
     if explicit_approval != "approved":
         errors.append("explicit human approval was not supplied")
+    if not expected_package_hash:
+        errors.append("expected approval package hash is required")
+    elif expected_package_hash.lower() != actual_package_hash.lower():
+        errors.append("approval package hash mismatch")
     if expected_mapping_hash.lower() != mapping_before_hash.lower():
         errors.append("full asset mapping baseline hash mismatch")
     if not package.get("available"):
@@ -277,3 +325,21 @@ def _sha256_path(path: Path) -> str:
 
 def _sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def _journal_for(mapping_path: Path) -> Path:
+    if mapping_path.resolve() == ASSET_MAPPING_FILE.resolve():
+        return TRANSACTION_JOURNAL
+    return mapping_path.parent / ".execution_mapping_approval_transaction.json"
+
+
+def _verify_locked_inputs(
+    mapping_path: Path,
+    package_path: Path,
+    expected_mapping_hash: str,
+    expected_package_hash: str,
+) -> None:
+    if _sha256_path(mapping_path) != expected_mapping_hash.lower():
+        raise ValueError("full asset mapping changed before transaction lock")
+    if _sha256_path(package_path) != expected_package_hash.lower():
+        raise ValueError("approval package changed before transaction lock")
