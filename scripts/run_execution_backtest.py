@@ -15,5 +15,7 @@ def main():
   provider=TushareProvider(return_type='qfq')
   if not provider.provider_status()['available']: raise SystemExit('TUSHARE_TOKEN is required for --provider tushare.')
   data=fetch_execution_price_dataset(provider,assets,a.start,a.end);write_execution_price_dataset(data)
- report=run_execution_backtest(load_research_backtest_report(),data,load_asset_mappings(),assets);report['data_provider']=a.provider;write_execution_backtest_report(report);print({'available':report.get('available'),'period':report.get('period'),'metrics':report.get('metrics')})
+ report=run_execution_backtest(load_research_backtest_report(),data,load_asset_mappings(),assets);report['data_provider']=a.provider
+ if a.provider=='mock': report.setdefault('warnings',[]).append('Mock execution report validates mechanics only; it is not real ETF execution evidence.')
+ write_execution_backtest_report(report);print({'available':report.get('available'),'period':report.get('period'),'metrics':report.get('metrics')})
 if __name__=='__main__': main()

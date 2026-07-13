@@ -5129,6 +5129,13 @@
         "516160.SH": 0.1,
         "510300.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5137,6 +5144,13 @@
         "516160.SH": 0.1,
         "510300.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5145,6 +5159,13 @@
         "516160.SH": 0.1,
         "510300.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5153,6 +5174,13 @@
         "516160.SH": 0.1,
         "510300.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5161,6 +5189,13 @@
         "516160.SH": 0.1,
         "510300.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5168,6 +5203,13 @@
       "weights": {
         "516160.SH": 0.1,
         "CASH": 0.9
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5175,6 +5217,13 @@
       "weights": {
         "516160.SH": 0.1,
         "CASH": 0.9
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5183,6 +5232,13 @@
         "516160.SH": 0.1,
         "515080.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5191,6 +5247,13 @@
         "516160.SH": 0.1,
         "515080.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5198,6 +5261,13 @@
       "weights": {
         "516160.SH": 0.1,
         "CASH": 0.9
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5206,6 +5276,13 @@
         "516160.SH": 0.1,
         "512100.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5215,6 +5292,13 @@
         "512100.SH": 0.25,
         "510500.SH": 0.25,
         "CASH": 0.4
+      },
+      "cash_breakdown": {
+        "research_cash": 0.05,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5225,6 +5309,13 @@
         "515100.SH": 0.225,
         "512100.SH": 0.225,
         "CASH": 0.225
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.0,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5235,6 +5326,13 @@
         "512100.SH": 0.225,
         "515100.SH": 0.225,
         "CASH": 0.225
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.0,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5244,6 +5342,13 @@
         "515100.SH": 0.25,
         "516160.SH": 0.1,
         "CASH": 0.4
+      },
+      "cash_breakdown": {
+        "research_cash": 0.05,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5253,6 +5358,13 @@
         "515080.SH": 0.225,
         "510500.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5263,6 +5375,13 @@
         "516160.SH": 0.1,
         "510500.SH": 0.225,
         "CASH": 0.225
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.0,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5273,6 +5392,13 @@
         "516160.SH": 0.1,
         "512100.SH": 0.225,
         "CASH": 0.225
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.0,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5283,6 +5409,13 @@
         "515080.SH": 0.225,
         "512100.SH": 0.225,
         "CASH": 0.225
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.0,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5293,6 +5426,13 @@
         "510300.SH": 0.2,
         "510500.SH": 0.2,
         "CASH": 0.2
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.0,
+        "low_quality_proxy_cash": 0.2,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5303,6 +5443,13 @@
         "510300.SH": 0.225,
         "510500.SH": 0.225,
         "CASH": 0.1
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5313,6 +5460,13 @@
         "512100.SH": 0.225,
         "510500.SH": 0.225,
         "CASH": 0.1
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5323,6 +5477,13 @@
         "510500.SH": 0.2,
         "512100.SH": 0.2,
         "CASH": 0.2
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.0,
+        "low_quality_proxy_cash": 0.2,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5332,6 +5493,13 @@
         "515080.SH": 0.225,
         "510500.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5342,6 +5510,13 @@
         "510500.SH": 0.2,
         "510300.SH": 0.2,
         "CASH": 0.2
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.0,
+        "low_quality_proxy_cash": 0.2,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5351,6 +5526,13 @@
         "515080.SH": 0.225,
         "510500.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5360,6 +5542,13 @@
         "515100.SH": 0.25,
         "510500.SH": 0.25,
         "CASH": 0.25
+      },
+      "cash_breakdown": {
+        "research_cash": 0.05,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5370,6 +5559,13 @@
         "588000.SH": 0.225,
         "510500.SH": 0.225,
         "CASH": 0.1
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5379,6 +5575,13 @@
         "515080.SH": 0.25,
         "510500.SH": 0.25,
         "CASH": 0.25
+      },
+      "cash_breakdown": {
+        "research_cash": 0.05,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5388,6 +5591,13 @@
         "515080.SH": 0.25,
         "510500.SH": 0.25,
         "CASH": 0.25
+      },
+      "cash_breakdown": {
+        "research_cash": 0.05,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5397,6 +5607,13 @@
         "515080.SH": 0.25,
         "510500.SH": 0.25,
         "CASH": 0.25
+      },
+      "cash_breakdown": {
+        "research_cash": 0.05,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5407,6 +5624,13 @@
         "510300.SH": 0.225,
         "510500.SH": 0.225,
         "CASH": 0.1
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5415,6 +5639,13 @@
         "515100.SH": 0.25,
         "515080.SH": 0.25,
         "CASH": 0.5
+      },
+      "cash_breakdown": {
+        "research_cash": 0.05,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5424,6 +5655,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5433,6 +5671,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5441,6 +5686,13 @@
         "515100.SH": 0.25,
         "515080.SH": 0.25,
         "CASH": 0.5
+      },
+      "cash_breakdown": {
+        "research_cash": 0.05,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5450,6 +5702,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5459,6 +5718,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5468,6 +5734,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5477,6 +5750,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5486,6 +5766,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5495,6 +5782,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5504,6 +5798,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5513,6 +5814,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5522,6 +5830,13 @@
         "515080.SH": 0.225,
         "510300.SH": 0.225,
         "CASH": 0.325
+      },
+      "cash_breakdown": {
+        "research_cash": 0.0,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.225,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5531,6 +5846,13 @@
         "588000.SH": 0.25,
         "510300.SH": 0.25,
         "CASH": 0.4
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5540,6 +5862,13 @@
         "588000.SH": 0.25,
         "510300.SH": 0.25,
         "CASH": 0.4
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5549,6 +5878,13 @@
         "588000.SH": 0.25,
         "510300.SH": 0.25,
         "CASH": 0.4
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5558,6 +5894,13 @@
         "588000.SH": 0.25,
         "510300.SH": 0.25,
         "CASH": 0.4
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5566,6 +5909,13 @@
         "512760.SH": 0.1,
         "588000.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5574,6 +5924,13 @@
         "512760.SH": 0.1,
         "588000.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5582,6 +5939,13 @@
         "512760.SH": 0.1,
         "588000.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5590,6 +5954,13 @@
         "512760.SH": 0.1,
         "588000.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5599,6 +5970,13 @@
         "588000.SH": 0.25,
         "512100.SH": 0.25,
         "CASH": 0.4
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5607,6 +5985,13 @@
         "512100.SH": 0.25,
         "588000.SH": 0.25,
         "CASH": 0.5
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5616,6 +6001,13 @@
         "588000.SH": 0.25,
         "512100.SH": 0.25,
         "CASH": 0.4
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5624,6 +6016,13 @@
         "512760.SH": 0.1,
         "588000.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5632,6 +6031,13 @@
         "516160.SH": 0.1,
         "588000.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
@@ -5640,48 +6046,104 @@
         "516160.SH": 0.1,
         "588000.SH": 0.25,
         "CASH": 0.65
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.1,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
       "date": "2025-12-31",
       "weights": {
         "CASH": 1.0
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
       "date": "2026-01-30",
       "weights": {
         "CASH": 1.0
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
       "date": "2026-02-27",
       "weights": {
         "CASH": 1.0
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
       "date": "2026-03-31",
       "weights": {
         "CASH": 1.0
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.25
       }
     },
     {
       "date": "2026-04-30",
       "weights": {
         "CASH": 1.0
+      },
+      "cash_breakdown": {
+        "research_cash": 0.55,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.0
       }
     },
     {
       "date": "2026-05-29",
       "weights": {
         "CASH": 1.0
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.25,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.25
       }
     },
     {
       "date": "2026-06-30",
       "weights": {
         "CASH": 1.0
+      },
+      "cash_breakdown": {
+        "research_cash": 0.3,
+        "unmapped_cash": 0.2,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+        "untradable_cash": 0.5
       }
     }
   ],
@@ -5708,8 +6170,10 @@
     "mapped_research_assets": 8,
     "unmapped_research_assets": 5,
     "low_quality_proxy_assets": 1,
-    "untradable_months": 40,
-    "mapped_weight_coverage": 0.666825
+    "untradable_months": 66,
+    "untradable_month_ratio": 1.0,
+    "mapping_weight_coverage": 0.666825,
+    "tradable_weight_coverage": 0.647867
   },
   "unmapped_assets": [
     {
@@ -5759,13 +6223,14 @@
   ],
   "warnings": [
     "Execution backtest uses ETF proxy qfq prices and only covers tradable ETF periods.",
-    "This execution backtest is an ETF proxy validation, not a production trading instruction."
+    "This execution backtest is an ETF proxy validation, not a production trading instruction.",
+    "Mock execution report validates mechanics only; it is not real ETF execution evidence."
   ],
   "decision": {
     "ready_for_execution_validation": false,
     "reasons": [
-      "mapped weight coverage is below 70%",
-      "untradable months exceed 20"
+      "tradable weight coverage is below 70%",
+      "untradable month ratio exceeds 20%"
     ],
     "warning": "This is not production approval or a trading instruction."
   },
