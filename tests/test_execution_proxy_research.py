@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 
 from backtest.execution.proxy_report import load_proxy_research_report, write_proxy_research_report
 from backtest.execution.proxy_scoring import MIN_CORRELATION, MIN_OVERLAP_DAYS, MAX_TRACKING_ERROR, score_proxy_candidate
+from backtest.execution import proxy_scoring
 from backend.main import app
 from backtest.research.data_loader import load_research_price_dataset
 from backtest.execution.data_loader import load_execution_price_dataset
@@ -48,6 +49,10 @@ def test_proxy_score_hard_gates_are_public_constants():
 
 def test_proxy_score_reports_insufficient_overlap():
     assert score_proxy_candidate([], [])["recommended_mapping_quality"] == "none"
+
+
+def test_annual_return_does_not_add_an_extra_principal():
+    assert proxy_scoring._annual_return([0.0] * 252) == pytest.approx(0.0)
 
 
 def test_proxy_report_round_trip(tmp_path):

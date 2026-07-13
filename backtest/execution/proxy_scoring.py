@@ -49,7 +49,7 @@ def _beta(benchmark, asset):
     variance=pstdev(benchmark)**2
     benchmark_mean,asset_mean=mean(benchmark),mean(asset)
     return 0.0 if variance==0 else sum((a-benchmark_mean)*(b-asset_mean) for a,b in zip(benchmark,asset))/len(benchmark)/variance
-def _annual_return(values): return (1+__import__('functools').reduce(lambda a,b:a*(1+b),values,1.0))**(252/len(values))-1 if values else 0.0
+def _annual_return(values): return __import__('functools').reduce(lambda a,b:a*(1+b),values,1.0)**(252/len(values))-1 if values else 0.0
 def _max_drawdown(values):
     level=peak=1.0; worst=0.0
     for value in values: level*=1+value; peak=max(peak,level); worst=min(worst,level/peak-1)

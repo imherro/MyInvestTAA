@@ -14,7 +14,8 @@ def build_proxy_research_report(research_prices, execution_prices, mappings, blo
             candidates.append({"candidate_id":candidate_id,**scored,"warnings":["candidate research only; no automatic mapping update"]})
         candidates.sort(key=lambda item:item["score"],reverse=True)
         top=candidates[0] if candidates else None
+        eligible=next((candidate for candidate in candidates if not candidate["hard_gate_reasons"]),None)
         action="keep_research_only"
-        if top and top["recommended_mapping_quality"] in {"medium","high"}: action="propose_mapping_update"
-        results.append({"research_asset_id":research_id,"current_mapping":{"primary_execution_proxy":mapping.primary_execution_proxy if mapping else None,"mapping_quality":mapping.mapping_quality if mapping else "none"},"candidate_rankings":candidates,"recommendation":{"action":action,"primary_execution_proxy":top["candidate_id"] if action=="propose_mapping_update" else None,"mapping_quality":top["recommended_mapping_quality"] if top else "none","requires_manual_approval":True}})
+        if eligible and eligible["recommended_mapping_quality"] in {"medium","high"}: action="propose_mapping_update"
+        results.append({"research_asset_id":research_id,"current_mapping":{"primary_execution_proxy":mapping.primary_execution_proxy if mapping else None,"mapping_quality":mapping.mapping_quality if mapping else "none"},"candidate_rankings":candidates,"recommendation":{"action":action,"primary_execution_proxy":eligible["candidate_id"] if action=="propose_mapping_update" else None,"mapping_quality":eligible["recommended_mapping_quality"] if eligible else "none","requires_manual_approval":True}})
     return {"available":True,"research_assets":results,"warning":"Candidate results are research only. They do not modify asset_mapping.json or execution backtests."}
