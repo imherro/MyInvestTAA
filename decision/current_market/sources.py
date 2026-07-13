@@ -26,6 +26,22 @@ from engine.asset_registry.loader import ASSET_MAPPING_FILE, ROOT
 
 
 STRATEGY_DIAGNOSIS_REPORT = ROOT / "reports" / "strategy_diagnosis_report.json"
+EXECUTION_GATE_POLICY = ROOT / "config" / "execution_validation_policy.json"
+V11_CURRENT_ALLOCATION_REPORT = ROOT / "reports" / "v11_current_allocation.json"
+
+
+SOURCE_DEFINITIONS = {
+    "market_and_v11": (STRATEGY_DIAGNOSIS_REPORT, True, "market_data"),
+    "research_allocation": (RESEARCH_BACKTEST_REPORT, True, "market_data"),
+    "execution_validation": (EXECUTION_BACKTEST_REPORT, True, "market_data"),
+    "execution_shadow": (SHADOW_PORTFOLIO_REPORT, True, "market_data"),
+    "execution_price_manifest": (PRICE_MANIFEST_REPORT, True, "market_data"),
+    "approval_integrity": (APPROVAL_INTEGRITY_SEAL, True, "governance"),
+    "decision_ledger": (DECISION_LEDGER, True, "governance"),
+    "asset_mapping": (ASSET_MAPPING_FILE, True, "governance"),
+    "execution_gate_policy": (EXECUTION_GATE_POLICY, True, "policy"),
+    "v11_current_allocation": (V11_CURRENT_ALLOCATION_REPORT, False, "market_data"),
+}
 
 
 def load_current_market_sources() -> dict:
@@ -39,21 +55,17 @@ def load_current_market_sources() -> dict:
     integrity = load_approval_integrity_seal()
     ledger = _load_json_report(DECISION_LEDGER, "mapping decision ledger not found")
     mappings = _load_json_report(ASSET_MAPPING_FILE, "asset mapping registry not found")
+    gate_policy = _load_json_report(
+        EXECUTION_GATE_POLICY, "execution validation policy not found"
+    )
+    v11_allocation = _load_json_report(
+        V11_CURRENT_ALLOCATION_REPORT, "current V11 allocation snapshot not found"
+    )
     price_verification = (
         verify_price_dataset_manifest(price_manifest, load_execution_universe())
         if price_manifest.get("available")
         else {"provenance_verified": False, "errors": ["price manifest unavailable"]}
     )
-    paths = {
-        "market_and_v11": STRATEGY_DIAGNOSIS_REPORT,
-        "research_allocation": RESEARCH_BACKTEST_REPORT,
-        "execution_validation": EXECUTION_BACKTEST_REPORT,
-        "execution_shadow": SHADOW_PORTFOLIO_REPORT,
-        "execution_price_manifest": PRICE_MANIFEST_REPORT,
-        "approval_integrity": APPROVAL_INTEGRITY_SEAL,
-        "decision_ledger": DECISION_LEDGER,
-        "asset_mapping": ASSET_MAPPING_FILE,
-    }
     as_of = {
         "market_and_v11": diagnosis.get("dataset", {}).get("period", {}).get("end"),
         "research_allocation": research.get("period", {}).get("end"),
@@ -63,6 +75,8 @@ def load_current_market_sources() -> dict:
         "approval_integrity": integrity.get("decision_date"),
         "decision_ledger": _approved_at(ledger),
         "asset_mapping": integrity.get("decision_date"),
+        "execution_gate_policy": None,
+        "v11_current_allocation": v11_allocation.get("as_of"),
     }
     source_manifest = {
         name: SourceSnapshot(
@@ -71,8 +85,10 @@ def load_current_market_sources() -> dict:
             sha256=_sha256(path) if path.exists() else None,
             available=path.exists(),
             source_as_of=as_of.get(name),
+            required=required,
+            temporal_role=temporal_role,
         ).as_dict()
-        for name, path in paths.items()
+        for name, (path, required, temporal_role) in SOURCE_DEFINITIONS.items()
     }
     return {
         "diagnosis": diagnosis,
@@ -84,6 +100,8 @@ def load_current_market_sources() -> dict:
         "approval_integrity": integrity,
         "decision_ledger": ledger,
         "asset_mapping": mappings,
+        "gate_policy": gate_policy,
+        "v11_allocation": v11_allocation,
         "source_manifest": source_manifest,
     }
 

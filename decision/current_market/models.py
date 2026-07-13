@@ -10,6 +10,8 @@ class SourceSnapshot:
     sha256: str | None
     available: bool
     source_as_of: str | None
+    required: bool
+    temporal_role: str
 
     def as_dict(self) -> dict:
         return asdict(self)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import json
 from pathlib import Path
 
 import pytest
@@ -12,6 +13,7 @@ from backtest.execution.mapping_application import _verify_locked_inputs
 from backtest.execution.shadow_report import load_execution_aware_shadow_portfolio
 from decision.current_market import build_current_market_decision, load_current_market_sources
 from decision.current_market.freshness import evaluate_freshness
+from decision.current_market.explain import build_cash_explanation
 from decision.current_market.report import load_current_market_decision, write_current_market_decision
 
 
@@ -118,12 +120,15 @@ def test_shadow_contract(field):
     [
         "ready",
         "reasons",
+        "available",
+        "metrics_available",
+        "evidence_complete",
         "annual_return",
         "max_drawdown",
         "sharpe",
         "tradable_weight_coverage",
         "untradable_month_ratio",
-        "gate_thresholds_unchanged",
+        "gate_policy",
         "source",
         "source_as_of",
     ],
@@ -136,7 +141,10 @@ def test_execution_validation_contract(field):
     "field",
     [
         "status",
-        "as_of",
+        "market_data_as_of",
+        "decision_date",
+        "governance_state_as_of",
+        "snapshot_mode",
         "market_data",
         "etf_prices",
         "research_allocation",
@@ -211,8 +219,7 @@ def test_cash_explanation_names_both_components_and_computing_power():
     assert "30%" in explanation
     assert "10%" in explanation
     assert "931688CNY010.CSI" in explanation
-    assert "算力" in explanation
-    assert "no approved execution ETF" in explanation
+    assert "without an approved execution ETF" in explanation
 
 
 def test_execution_gate_failure_is_preserved():
@@ -220,7 +227,8 @@ def test_execution_gate_failure_is_preserved():
     assert validation["ready"] is False
     assert validation["tradable_weight_coverage"] == pytest.approx(0.691469)
     assert validation["untradable_month_ratio"] == pytest.approx(1.0)
-    assert validation["gate_thresholds_unchanged"] is True
+    assert validation["gate_policy"]["tradable_weight_coverage_min"] == pytest.approx(0.7)
+    assert len(validation["gate_policy"]["policy_hash"]) == 64
 
 
 def test_risk_summary_respects_shadow_constraints():
@@ -289,7 +297,9 @@ def test_shadow_weight_sum_failure_blocks_review():
 def test_monthly_research_allocation_is_not_daily_stale():
     freshness = REPORT["data_freshness"]["research_allocation"]
     assert freshness["expected_cadence"] == "monthly"
-    assert freshness["next_scheduled_rebalance"] == "2026-07-31"
+    assert freshness["next_rebalance_estimate"] == "2026-07-31"
+    assert freshness["estimate_basis"] == "calendar_month_end"
+    assert freshness["confirmed_trading_date"] is False
     assert freshness["stale"] is False
 
 
@@ -302,9 +312,14 @@ def test_etf_freshness_uses_actual_price_dates():
 
 def test_freshness_marks_future_source_date_stale():
     result = evaluate_freshness(
-        as_of="2026-07-08",
+        market_data_as_of="2026-07-08",
+        decision_date="2026-07-13",
+        governance_state_as_of="2026-07-13",
+        snapshot_mode="current_decision_with_lagged_market_data",
         market_as_of="2026-07-09",
         research_date="2026-06-30",
+        research_source_as_of="2026-07-08",
+        execution_source_as_of="2026-07-08",
         shadow=SOURCES["shadow"],
         approval_integrity=SOURCES["approval_integrity"],
         price_verification=SOURCES["price_verification"],
@@ -442,7 +457,7 @@ def test_current_decision_page_sections(section):
 
 def test_current_decision_page_has_exact_warning_and_unified_shell():
     text = CLIENT.get("/current-decision").text
-    assert "This page summarizes the latest verified local decision snapshot. It does not create orders or replace V11." in text
+    assert "Decision prepared on 2026-07-13 using market data through 2026-07-08. This page does not create orders or replace V11." in text
     assert "https://invest.okbbc.com/header.js" in text
     assert "https://invest.okbbc.com/footer.js" in text
 
@@ -457,3 +472,436 @@ def test_current_decision_page_has_no_order_form():
 @pytest.mark.parametrize("page", ["/", "/research-backtest", "/execution-backtest", "/shadow-portfolio"])
 def test_existing_pages_link_to_current_decision(page):
     assert 'href="/current-decision"' in CLIENT.get(page).text
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "decision_date",
+        "generated_at",
+        "market_data_as_of",
+        "governance_state_as_of",
+        "snapshot_mode",
+        "source_hash_verification",
+        "cash_explanation_components",
+        "cash_reconciliation",
+    ],
+)
+def test_fixed_report_has_temporal_and_integrity_contract(field):
+    assert field in REPORT
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "candidate_metadata_available",
+        "current_allocation_available",
+        "boundary_verified",
+        "unchanged",
+        "allocation_source",
+    ],
+)
+def test_fixed_v11_boundary_contract(field):
+    assert field in REPORT["production_candidate"]
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "policy_id",
+        "tradable_weight_coverage_min",
+        "untradable_month_ratio_max",
+        "max_drawdown_min",
+        "sharpe_min",
+        "annual_return_gap_min",
+        "source",
+        "policy_hash",
+        "manifest_source",
+        "available",
+    ],
+)
+def test_execution_gate_policy_contract(field):
+    assert field in REPORT["execution_validation"]["gate_policy"]
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["source", "path", "sha256", "available", "source_as_of", "required", "temporal_role"],
+)
+def test_fixed_source_manifest_fields(field):
+    assert all(field in row for row in REPORT["source_manifest"].values())
+
+
+def test_loader_preserves_generated_unavailable_state(tmp_path):
+    value = copy.deepcopy(REPORT)
+    value["available"] = False
+    value["status"] = "unavailable"
+    path = tmp_path / "unavailable.json"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    loaded = load_current_market_decision(path)
+    assert loaded["available"] is False
+    assert loaded["status"] == "unavailable"
+
+
+def test_loader_rejects_malformed_json(tmp_path):
+    path = tmp_path / "malformed.json"
+    path.write_text("{not-json", encoding="utf-8")
+    loaded = load_current_market_decision(path)
+    assert loaded["available"] is False
+    assert loaded["status"] == "unavailable"
+    assert "invalid" in loaded["message"]
+
+
+def test_loader_rejects_incomplete_schema(tmp_path):
+    path = tmp_path / "incomplete.json"
+    path.write_text('{"available": true}', encoding="utf-8")
+    loaded = load_current_market_decision(path)
+    assert loaded["available"] is False
+    assert "schema is incomplete" in loaded["message"]
+    assert any("decision_date" in error for error in loaded["errors"])
+
+
+def test_loader_detects_required_source_hash_drift(tmp_path, monkeypatch):
+    import decision.current_market.report as report_module
+
+    source = tmp_path / "source.json"
+    source.write_text('{"value": 1}', encoding="utf-8")
+    value = copy.deepcopy(REPORT)
+    value["source_manifest"] = {
+        "required": {
+            "source": "required",
+            "path": "source.json",
+            "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            "available": True,
+            "source_as_of": "2026-07-08",
+            "required": True,
+            "temporal_role": "market_data",
+        }
+    }
+    path = tmp_path / "report.json"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    source.write_text('{"value": 2}', encoding="utf-8")
+    monkeypatch.setattr(report_module, "ROOT", tmp_path)
+    loaded = load_current_market_decision(path, verify_sources=True)
+    assert loaded["available"] is False
+    assert loaded["ready_for_user_review"] is False
+    assert loaded["message"] == "current market decision snapshot source drifted; rebuild required"
+    assert "required source hash mismatch: required" in loaded["source_hash_verification"]["errors"]
+
+
+def test_loader_detects_missing_required_source(tmp_path, monkeypatch):
+    import decision.current_market.report as report_module
+
+    value = copy.deepcopy(REPORT)
+    value["source_manifest"] = {
+        "required": {
+            "source": "required",
+            "path": "missing.json",
+            "sha256": "0" * 64,
+            "available": True,
+            "source_as_of": None,
+            "required": True,
+            "temporal_role": "policy",
+        }
+    }
+    path = tmp_path / "report.json"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    monkeypatch.setattr(report_module, "ROOT", tmp_path)
+    loaded = load_current_market_decision(path, verify_sources=True)
+    assert loaded["available"] is False
+    assert "required source missing: required" in loaded["source_hash_verification"]["errors"]
+
+
+def test_loader_custom_path_skips_live_hash_verification_by_default(tmp_path):
+    value = copy.deepcopy(REPORT)
+    value["source_manifest"]["market_and_v11"]["sha256"] = "0" * 64
+    path = tmp_path / "historical.json"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    assert load_current_market_decision(path)["available"] is True
+
+
+def test_execution_report_missing_blocks_user_review():
+    sources = copy.deepcopy(SOURCES)
+    sources["execution"] = {"available": False}
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["execution_validation"]["available"] is False
+    assert report["ready_for_user_review"] is False
+    assert report["status"] == "unavailable"
+    assert "execution validation report unavailable" in report["decision_summary"]["blocking_conditions"]
+
+
+@pytest.mark.parametrize("field", ["annual_return", "max_drawdown", "sharpe"])
+def test_execution_metric_missing_blocks_user_review(field):
+    sources = copy.deepcopy(SOURCES)
+    sources["execution"]["metrics"].pop(field)
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["execution_validation"]["metrics_available"] is False
+    assert report["ready_for_user_review"] is False
+
+
+@pytest.mark.parametrize("field", ["tradable_weight_coverage", "untradable_month_ratio"])
+def test_execution_mapping_metric_missing_blocks_user_review(field):
+    sources = copy.deepcopy(SOURCES)
+    sources["execution"]["mapping_summary"].pop(field)
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["execution_validation"]["metrics_available"] is False
+    assert report["ready_for_user_review"] is False
+
+
+def test_execution_not_ready_still_permits_user_review_when_evidence_exists():
+    assert REPORT["execution_validation"]["ready"] is False
+    assert REPORT["execution_validation"]["available"] is True
+    assert REPORT["execution_validation"]["evidence_complete"] is True
+    assert REPORT["ready_for_user_review"] is True
+
+
+def test_current_snapshot_has_distinct_market_and_governance_dates():
+    assert REPORT["decision_date"] == "2026-07-13"
+    assert REPORT["market_data_as_of"] == "2026-07-08"
+    assert REPORT["governance_state_as_of"] == "2026-07-13"
+    assert REPORT["snapshot_mode"] == "current_decision_with_lagged_market_data"
+
+
+def test_current_mode_permits_later_governance_state():
+    assert REPORT["governance_state_as_of"] > REPORT["market_data_as_of"]
+    assert REPORT["data_freshness"]["temporal_status"] == "pass"
+    assert REPORT["ready_for_user_review"] is True
+
+
+def test_historical_mode_rejects_future_governance_state():
+    report = build_current_market_decision(
+        sources=copy.deepcopy(SOURCES),
+        market_data_as_of="2026-07-08",
+        decision_date="2026-07-13",
+        snapshot_mode="historical_snapshot",
+    )
+    assert report["ready_for_user_review"] is False
+    assert report["data_freshness"]["temporal_status"] == "invalid"
+    assert "historical snapshot governance state is dated after as-of" in report["data_freshness"]["temporal_errors"]
+
+
+def test_governance_after_decision_date_is_invalid():
+    report = build_current_market_decision(
+        sources=copy.deepcopy(SOURCES),
+        market_data_as_of="2026-07-08",
+        decision_date="2026-07-12",
+    )
+    assert report["ready_for_user_review"] is False
+    assert "governance state is dated after decision date" in report["data_freshness"]["temporal_errors"]
+
+
+def test_market_source_after_cutoff_fails():
+    sources = copy.deepcopy(SOURCES)
+    sources["diagnosis"]["dataset"]["period"]["end"] = "2026-07-09"
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["ready_for_user_review"] is False
+    assert report["data_freshness"]["market_data"]["stale"] is True
+
+
+def test_etf_source_after_cutoff_fails():
+    sources = copy.deepcopy(SOURCES)
+    for row in sources["shadow"]["price_as_of_by_proxy"].values():
+        row["actual_price_date"] = "2026-07-09"
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["ready_for_user_review"] is False
+    assert report["data_freshness"]["etf_prices"]["stale"] is True
+
+
+def test_execution_source_after_cutoff_fails():
+    sources = copy.deepcopy(SOURCES)
+    sources["execution"]["period"]["end"] = "2026-07-09"
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["ready_for_user_review"] is False
+    assert "execution validation report is dated after market data cutoff" in report["data_freshness"]["temporal_errors"]
+
+
+def test_v11_metadata_available_but_allocation_optional():
+    candidate = REPORT["production_candidate"]
+    assert candidate["candidate_metadata_available"] is True
+    assert candidate["current_allocation_available"] is False
+    assert candidate["boundary_verified"] is True
+    assert candidate["allocation"] == {}
+
+
+def test_missing_v11_metadata_blocks_boundary_review():
+    sources = copy.deepcopy(SOURCES)
+    sources["diagnosis"]["diagnosis"]["production_readiness"] = {}
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["production_candidate"]["candidate_metadata_available"] is False
+    assert report["production_candidate"]["boundary_verified"] is False
+    assert report["ready_for_user_review"] is False
+
+
+def test_shadow_source_cannot_populate_v11():
+    sources = copy.deepcopy(SOURCES)
+    sources["v11_allocation"] = {
+        "available": True,
+        "strategy": "V11_PRODUCTION_FUSION",
+        "allocation": {"SHADOW": 1.0},
+        "shadow_source": True,
+    }
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["production_candidate"]["boundary_verified"] is False
+    assert report["ready_for_user_review"] is False
+
+
+def test_v11_unchanged_is_derived_from_source_identity():
+    source = Path("decision/current_market/engine.py").read_text(encoding="utf-8")
+    assert '"unchanged": True' not in source
+    assert REPORT["production_candidate"]["unchanged"] is True
+
+
+def test_gate_policy_is_loaded_from_required_source():
+    gate = REPORT["execution_validation"]["gate_policy"]
+    source = REPORT["source_manifest"]["execution_gate_policy"]
+    assert gate["manifest_source"] == source["path"]
+    assert gate["policy_hash"] == source["sha256"]
+    assert source["required"] is True
+
+
+def test_gate_policy_has_no_self_asserted_unchanged_flag():
+    gate = REPORT["execution_validation"]["gate_policy"]
+    assert "gate_thresholds_unchanged" not in REPORT["execution_validation"]
+    assert not any("unchanged" in key for key in gate)
+
+
+def _cash_rows(*rows):
+    return [
+        {
+            "research_asset_id": asset,
+            "research_weight": weight,
+            "destination": "CASH",
+            "reason": reason,
+        }
+        for asset, weight, reason in rows
+    ]
+
+
+def test_cash_explanation_supports_multiple_research_only_assets():
+    breakdown = {
+        "research_cash": 0.2,
+        "unmapped_cash": 0.0,
+        "research_only_cash": 0.2,
+        "rejected_proxy_cash": 0.0,
+        "low_quality_proxy_cash": 0.0,
+        "missing_price_cash": 0.0,
+    }
+    result = build_cash_explanation(
+        breakdown,
+        _cash_rows(("A", 0.1, "research_only_cash"), ("B", 0.1, "research_only_cash")),
+        0.4,
+    )
+    component = next(row for row in result["components"] if row["category"] == "research_only_cash")
+    assert [row["research_asset_id"] for row in component["assets"]] == ["A", "B"]
+    assert "A, B" in result["text"]
+    assert result["reconciled"] is True
+
+
+@pytest.mark.parametrize(
+    ("category", "asset"),
+    [
+        ("unmapped_cash", "UNMAPPED"),
+        ("rejected_proxy_cash", "REJECTED"),
+        ("low_quality_proxy_cash", "LOW"),
+        ("missing_price_cash", "MISSING"),
+    ],
+)
+def test_cash_explanation_is_data_driven_for_each_reason(category, asset):
+    breakdown = {key: 0.0 for key in (
+        "research_cash", "unmapped_cash", "research_only_cash", "rejected_proxy_cash", "low_quality_proxy_cash", "missing_price_cash"
+    )}
+    breakdown[category] = 0.1
+    result = build_cash_explanation(breakdown, _cash_rows((asset, 0.1, category)), 0.1)
+    component = next(row for row in result["components"] if row["category"] == category)
+    assert component["assets"][0]["research_asset_id"] == asset
+    assert asset in result["text"]
+
+
+def test_cash_component_mismatch_blocks_review():
+    sources = copy.deepcopy(SOURCES)
+    sources["shadow"]["cash_breakdown"]["research_cash"] = 0.29
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["cash_reconciliation"]["reconciled"] is False
+    assert report["ready_for_user_review"] is False
+    assert "cash explanation components do not reconcile to Shadow cash" in report["decision_summary"]["blocking_conditions"]
+
+
+def test_current_cash_components_reconcile_exactly():
+    assert REPORT["cash_reconciliation"] == {
+        "total_cash_weight": 0.4,
+        "component_weight_sum": 0.4,
+        "reconciled": True,
+    }
+    assert sum(row["weight"] for row in REPORT["cash_explanation_components"]) == pytest.approx(0.4)
+
+
+def test_rebalance_estimate_is_explicitly_unconfirmed():
+    schedule = REPORT["data_freshness"]["research_allocation"]
+    assert schedule["schedule_policy"] == "last_completed_monthly_rebalance"
+    assert schedule["next_rebalance_estimate"] == "2026-07-31"
+    assert schedule["estimate_basis"] == "calendar_month_end"
+    assert schedule["confirmed_trading_date"] is False
+
+
+def test_required_source_missing_blocks_review():
+    sources = copy.deepcopy(SOURCES)
+    sources["source_manifest"]["execution_gate_policy"]["available"] = False
+    sources["source_manifest"]["execution_gate_policy"]["sha256"] = None
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["source_hash_verification"]["valid"] is False
+    assert report["ready_for_user_review"] is False
+
+
+def test_optional_v11_allocation_source_may_be_missing():
+    source = REPORT["source_manifest"]["v11_current_allocation"]
+    assert source["required"] is False
+    assert source["available"] is False
+    assert REPORT["ready_for_user_review"] is True
+
+
+def test_required_source_manifest_count_and_hashes():
+    verification = REPORT["source_hash_verification"]
+    assert verification["required_count"] == 9
+    assert verification["available_required_count"] == 9
+    assert verification["valid"] is True
+    assert all(
+        len(row["sha256"]) == 64
+        for row in REPORT["source_manifest"].values()
+        if row["required"]
+    )
+
+
+def test_generated_timestamp_is_explicit_utc():
+    assert REPORT["generated_at"].endswith("+00:00")
+    assert "T" in REPORT["generated_at"]
+
+
+def test_api_exposes_temporal_and_gate_contract():
+    value = CLIENT.get("/api/decision/current-market").json()
+    assert value["decision_date"] == "2026-07-13"
+    assert value["market_data_as_of"] == "2026-07-08"
+    assert value["governance_state_as_of"] == "2026-07-13"
+    assert value["execution_validation"]["gate_policy"]["policy_hash"]
+
+
+@pytest.mark.parametrize(
+    "section",
+    [
+        "Decision Date",
+        "Market Data Through",
+        "Governance State Date",
+        "Snapshot Mode",
+        "Required Source Status",
+        "Execution Gate Policy",
+        "V11 Metadata Available",
+        "V11 Current Allocation Available",
+    ],
+)
+def test_fixed_page_temporal_sections(section):
+    assert section in CLIENT.get("/current-decision").text
+
+
+def test_fixed_page_explains_lagged_market_data():
+    text = CLIENT.get("/current-decision").text
+    assert "Decision prepared on 2026-07-13 using market data through 2026-07-08." in text
+    assert "This page does not create orders or replace V11." in text

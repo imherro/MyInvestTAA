@@ -4,6 +4,11 @@
   "ready_for_user_review": true,
   "production_actionable": false,
   "as_of": "2026-07-08",
+  "decision_date": "2026-07-13",
+  "generated_at": "2026-07-13T06:47:17+00:00",
+  "market_data_as_of": "2026-07-08",
+  "governance_state_as_of": "2026-07-13",
+  "snapshot_mode": "current_decision_with_lagged_market_data",
   "market_state": {
     "available": true,
     "regime": "bull_caution",
@@ -25,8 +30,11 @@
   },
   "production_candidate": {
     "strategy": "V11_PRODUCTION_FUSION",
-    "available": false,
+    "available": true,
+    "candidate_metadata_available": true,
     "allocation_available": false,
+    "current_allocation_available": false,
+    "boundary_verified": true,
     "unchanged": true,
     "allocation": {},
     "risk_controls": {
@@ -80,6 +88,7 @@
     },
     "source": "reports/strategy_diagnosis_report.json:diagnosis.production_readiness",
     "source_as_of": "2026-07-08",
+    "allocation_source": null,
     "message": "current V11 allocation source unavailable"
   },
   "research_allocation": {
@@ -207,19 +216,34 @@
     "source_as_of": "2026-07-08"
   },
   "execution_validation": {
+    "available": true,
     "ready": false,
     "reasons": [
       "tradable weight coverage is below 70%",
       "untradable month ratio exceeds 20%"
     ],
+    "metrics_available": true,
+    "evidence_complete": true,
     "annual_return": 0.057103,
     "max_drawdown": -0.169053,
     "sharpe": 0.544214,
     "tradable_weight_coverage": 0.691469,
     "untradable_month_ratio": 1.0,
-    "gate_thresholds_unchanged": true,
+    "gate_policy": {
+      "policy_id": "EXECUTION_VALIDATION_POLICY_V1",
+      "tradable_weight_coverage_min": 0.7,
+      "untradable_month_ratio_max": 0.2,
+      "max_drawdown_min": -0.4,
+      "sharpe_min": 0.25,
+      "annual_return_gap_min": -0.08,
+      "source": "backtest/execution/engine.py:_decision",
+      "policy_hash": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
+      "manifest_source": "config/execution_validation_policy.json",
+      "available": true
+    },
     "source": "reports/execution_backtest_report.json",
-    "source_as_of": "2026-07-08"
+    "source_as_of": "2026-07-08",
+    "message": null
   },
   "comparison": {
     "mode": "side_by_side_only",
@@ -244,11 +268,62 @@
       "Market risk state: high_mixed_trend",
       "tradable weight coverage is below 70%",
       "untradable month ratio exceeds 20%",
-      "A research-only asset has no approved execution ETF and is held as cash.",
+      "At least one research-only asset has no approved execution ETF.",
       "At least one execution proxy is medium quality and broader than its research index."
     ]
   },
-  "cash_explanation": "The 40% Shadow cash weight is not a single timing call: 30% comes from the research strategy and 10% comes from the research-only computing-power index (931688CNY010.CSI, 算力), which has no approved execution ETF. Any remaining cash would come from unmapped, rejected, low-quality, or missing-price assets.",
+  "cash_explanation": "The 40% Shadow cash weight is not a single timing call: 30% from research strategy cash; 10% from research-only assets without an approved execution ETF (931688CNY010.CSI).",
+  "cash_explanation_components": [
+    {
+      "category": "research_cash",
+      "weight": 0.3,
+      "assets": [
+        "CASH"
+      ],
+      "explanation": "research strategy cash"
+    },
+    {
+      "category": "unmapped_cash",
+      "weight": 0.0,
+      "assets": [],
+      "explanation": "unmapped research assets"
+    },
+    {
+      "category": "research_only_cash",
+      "weight": 0.1,
+      "assets": [
+        {
+          "research_asset_id": "931688CNY010.CSI",
+          "weight": 0.1,
+          "reason": "research_only_cash"
+        }
+      ],
+      "explanation": "research-only assets without an approved execution ETF"
+    },
+    {
+      "category": "rejected_proxy_cash",
+      "weight": 0.0,
+      "assets": [],
+      "explanation": "assets with a rejected execution proxy"
+    },
+    {
+      "category": "low_quality_proxy_cash",
+      "weight": 0.0,
+      "assets": [],
+      "explanation": "assets with only a low-quality proxy"
+    },
+    {
+      "category": "missing_price_cash",
+      "weight": 0.0,
+      "assets": [],
+      "explanation": "assets without a usable price snapshot"
+    }
+  ],
+  "cash_reconciliation": {
+    "total_cash_weight": 0.4,
+    "component_weight_sum": 0.4,
+    "reconciled": true
+  },
   "decision_summary": {
     "headline": "Verified local allocation snapshot ready for user review",
     "current_stance": "Side-by-side review only; no production action is created.",
@@ -262,7 +337,7 @@
     ],
     "user_interpretation": [
       "Market regime is bull_caution.",
-      "The 40% Shadow cash weight is not a single timing call: 30% comes from the research strategy and 10% comes from the research-only computing-power index (931688CNY010.CSI, 算力), which has no approved execution ETF. Any remaining cash would come from unmapped, rejected, low-quality, or missing-price assets.",
+      "The 40% Shadow cash weight is not a single timing call: 30% from research strategy cash; 10% from research-only assets without an approved execution ETF (931688CNY010.CSI).",
       "V11 remains unchanged; Research and Shadow do not replace it."
     ],
     "blocking_conditions": [
@@ -272,7 +347,10 @@
   },
   "data_freshness": {
     "status": "pass",
-    "as_of": "2026-07-08",
+    "market_data_as_of": "2026-07-08",
+    "decision_date": "2026-07-13",
+    "governance_state_as_of": "2026-07-13",
+    "snapshot_mode": "current_decision_with_lagged_market_data",
     "market_data": {
       "source_as_of": "2026-07-08",
       "age_calendar_days": 0,
@@ -311,13 +389,18 @@
     "research_allocation": {
       "allocation_date": "2026-06-30",
       "expected_cadence": "monthly",
-      "next_scheduled_rebalance": "2026-07-31",
+      "schedule_policy": "last_completed_monthly_rebalance",
+      "next_rebalance_estimate": "2026-07-31",
+      "estimate_basis": "calendar_month_end",
+      "confirmed_trading_date": false,
       "stale": false,
       "message": "Monthly allocation date is reported separately and is not treated as daily data."
     },
     "approval_integrity_verified": true,
     "shadow_snapshot_verified": true,
-    "errors": []
+    "errors": [],
+    "temporal_status": "pass",
+    "temporal_errors": []
   },
   "source_manifest": {
     "market_and_v11": {
@@ -325,57 +408,97 @@
       "path": "reports/strategy_diagnosis_report.json",
       "sha256": "f1e8ee09e59f1213dabb6d81808df415f16593ee17bd010a9f4320589ca5cff3",
       "available": true,
-      "source_as_of": "2026-07-08"
+      "source_as_of": "2026-07-08",
+      "required": true,
+      "temporal_role": "market_data"
     },
     "research_allocation": {
       "source": "research_allocation",
       "path": "reports/research_backtest_report.json",
       "sha256": "bcdaaab5b20597308157d008b5346506929ee22cb6a2c8f6b24c1ff4263a6788",
       "available": true,
-      "source_as_of": "2026-07-08"
+      "source_as_of": "2026-07-08",
+      "required": true,
+      "temporal_role": "market_data"
     },
     "execution_validation": {
       "source": "execution_validation",
       "path": "reports/execution_backtest_report.json",
       "sha256": "dc883b6246294c5d72d8b3795e2ab4dacfaf7774f3998d07d249e9e3fa08c4c0",
       "available": true,
-      "source_as_of": "2026-07-08"
+      "source_as_of": "2026-07-08",
+      "required": true,
+      "temporal_role": "market_data"
     },
     "execution_shadow": {
       "source": "execution_shadow",
       "path": "reports/execution_aware_shadow_portfolio.json",
       "sha256": "a06ed062c63379169446ef99119a536f9cb976e44982084aa48170fcce73043e",
       "available": true,
-      "source_as_of": "2026-07-08"
+      "source_as_of": "2026-07-08",
+      "required": true,
+      "temporal_role": "market_data"
     },
     "execution_price_manifest": {
       "source": "execution_price_manifest",
       "path": "reports/execution_price_dataset_manifest.json",
       "sha256": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd",
       "available": true,
-      "source_as_of": "2026-07-08"
+      "source_as_of": "2026-07-08",
+      "required": true,
+      "temporal_role": "market_data"
     },
     "approval_integrity": {
       "source": "approval_integrity",
       "path": "reports/execution_mapping_approval_integrity_seal.json",
       "sha256": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9",
       "available": true,
-      "source_as_of": "2026-07-13"
+      "source_as_of": "2026-07-13",
+      "required": true,
+      "temporal_role": "governance"
     },
     "decision_ledger": {
       "source": "decision_ledger",
       "path": "data/universe/execution_mapping_decision_ledger.json",
       "sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
       "available": true,
-      "source_as_of": "2026-07-13"
+      "source_as_of": "2026-07-13",
+      "required": true,
+      "temporal_role": "governance"
     },
     "asset_mapping": {
       "source": "asset_mapping",
       "path": "data/universe/asset_mapping.json",
       "sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
       "available": true,
-      "source_as_of": "2026-07-13"
+      "source_as_of": "2026-07-13",
+      "required": true,
+      "temporal_role": "governance"
+    },
+    "execution_gate_policy": {
+      "source": "execution_gate_policy",
+      "path": "config/execution_validation_policy.json",
+      "sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
+      "available": true,
+      "source_as_of": null,
+      "required": true,
+      "temporal_role": "policy"
+    },
+    "v11_current_allocation": {
+      "source": "v11_current_allocation",
+      "path": "reports/v11_current_allocation.json",
+      "sha256": null,
+      "available": false,
+      "source_as_of": null,
+      "required": false,
+      "temporal_role": "market_data"
     }
+  },
+  "source_hash_verification": {
+    "valid": true,
+    "required_count": 9,
+    "available_required_count": 9,
+    "errors": []
   },
   "warnings": [
     "This report is for user review only and is not a production trading instruction.",

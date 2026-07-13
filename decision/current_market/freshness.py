@@ -6,8 +6,21 @@ from datetime import date
 from decision.current_market.models import FreshnessCheck
 
 
-def evaluate_freshness(*, as_of: str, market_as_of: str | None, research_date: str | None, shadow: dict, approval_integrity: dict, price_verification: dict) -> dict:
-    target = date.fromisoformat(as_of)
+def evaluate_freshness(
+    *,
+    market_data_as_of: str,
+    decision_date: str,
+    governance_state_as_of: str | None,
+    snapshot_mode: str,
+    market_as_of: str | None,
+    research_date: str | None,
+    research_source_as_of: str | None,
+    execution_source_as_of: str | None,
+    shadow: dict,
+    approval_integrity: dict,
+    price_verification: dict,
+) -> dict:
+    target = date.fromisoformat(market_data_as_of)
     market = _dated_check(target, market_as_of, 7, "market data")
     proxy_checks = {}
     for proxy, row in shadow.get("price_as_of_by_proxy", {}).items():
@@ -30,7 +43,10 @@ def evaluate_freshness(*, as_of: str, market_as_of: str | None, research_date: s
     research = {
         "allocation_date": research_date,
         "expected_cadence": "monthly",
-        "next_scheduled_rebalance": _next_month_end(research_date),
+        "schedule_policy": "last_completed_monthly_rebalance",
+        "next_rebalance_estimate": _next_month_end(research_date),
+        "estimate_basis": "calendar_month_end",
+        "confirmed_trading_date": False,
         "stale": False,
         "message": "Monthly allocation date is reported separately and is not treated as daily data.",
     }
@@ -45,9 +61,20 @@ def evaluate_freshness(*, as_of: str, market_as_of: str | None, research_date: s
         errors.append("shadow snapshot integrity is not verified")
     if not price_files_verified:
         errors.extend(price_verification.get("errors", ["ETF price files are not verified"]))
+    temporal_errors = _temporal_errors(
+        market_data_as_of=market_data_as_of,
+        decision_date=decision_date,
+        governance_state_as_of=governance_state_as_of,
+        snapshot_mode=snapshot_mode,
+        research_source_as_of=research_source_as_of,
+        execution_source_as_of=execution_source_as_of,
+    )
     return {
         "status": "pass" if not errors else "stale",
-        "as_of": as_of,
+        "market_data_as_of": market_data_as_of,
+        "decision_date": decision_date,
+        "governance_state_as_of": governance_state_as_of,
+        "snapshot_mode": snapshot_mode,
         "market_data": market,
         "etf_prices": {
             "stale": etf_stale,
@@ -59,6 +86,8 @@ def evaluate_freshness(*, as_of: str, market_as_of: str | None, research_date: s
         "approval_integrity_verified": approval_verified,
         "shadow_snapshot_verified": shadow_verified,
         "errors": list(dict.fromkeys(errors)),
+        "temporal_status": "pass" if not temporal_errors else "invalid",
+        "temporal_errors": temporal_errors,
     }
 
 
@@ -84,3 +113,30 @@ def _next_month_end(value: str | None) -> str | None:
     year = current.year + (1 if current.month == 12 else 0)
     month = 1 if current.month == 12 else current.month + 1
     return date(year, month, calendar.monthrange(year, month)[1]).isoformat()
+
+
+def _temporal_errors(
+    *,
+    market_data_as_of: str,
+    decision_date: str,
+    governance_state_as_of: str | None,
+    snapshot_mode: str,
+    research_source_as_of: str | None,
+    execution_source_as_of: str | None,
+) -> list[str]:
+    cutoff = date.fromisoformat(market_data_as_of)
+    decision = date.fromisoformat(decision_date)
+    errors = []
+    for label, value in (
+        ("research report", research_source_as_of),
+        ("execution validation report", execution_source_as_of),
+    ):
+        if value and date.fromisoformat(value) > cutoff:
+            errors.append(f"{label} is dated after market data cutoff")
+    if governance_state_as_of:
+        governance = date.fromisoformat(governance_state_as_of)
+        if governance > decision:
+            errors.append("governance state is dated after decision date")
+        if snapshot_mode == "historical_snapshot" and governance > cutoff:
+            errors.append("historical snapshot governance state is dated after as-of")
+    return errors

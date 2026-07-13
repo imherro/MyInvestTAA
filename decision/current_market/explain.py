@@ -1,17 +1,64 @@
 from __future__ import annotations
 
 
-def cash_explanation(cash_breakdown: dict) -> str:
-    total = round(sum(float(value) for value in cash_breakdown.values()), 10)
-    research = float(cash_breakdown.get("research_cash", 0))
-    research_only = float(cash_breakdown.get("research_only_cash", 0))
-    return (
-        f"The {total:.0%} Shadow cash weight is not a single timing call: "
-        f"{research:.0%} comes from the research strategy and "
-        f"{research_only:.0%} comes from the research-only computing-power index "
-        "(931688CNY010.CSI, 算力), which has no approved execution ETF. "
-        "Any remaining cash would come from unmapped, rejected, low-quality, or missing-price assets."
-    )
+_CASH_LABELS = {
+    "research_cash": "research strategy cash",
+    "unmapped_cash": "unmapped research assets",
+    "research_only_cash": "research-only assets without an approved execution ETF",
+    "rejected_proxy_cash": "assets with a rejected execution proxy",
+    "low_quality_proxy_cash": "assets with only a low-quality proxy",
+    "missing_price_cash": "assets without a usable price snapshot",
+}
+
+
+def build_cash_explanation(cash_breakdown: dict, mapping_explanations: list[dict], cash_weight: float) -> dict:
+    components = []
+    for category, label in _CASH_LABELS.items():
+        weight = float(cash_breakdown.get(category, 0))
+        rows = [
+            {
+                "research_asset_id": row.get("research_asset_id"),
+                "weight": float(row.get("research_weight", 0)),
+                "reason": row.get("reason"),
+            }
+            for row in mapping_explanations
+            if row.get("reason") == category and row.get("research_asset_id") != "CASH"
+        ]
+        assets: list | list[dict] = ["CASH"] if category == "research_cash" and weight else rows
+        components.append(
+            {
+                "category": category,
+                "weight": weight,
+                "assets": assets,
+                "explanation": label,
+            }
+        )
+    total = round(sum(row["weight"] for row in components), 10)
+    reconciled = abs(total - float(cash_weight)) <= 0.000001
+    parts = []
+    for component in components:
+        if not component["weight"]:
+            continue
+        asset_ids = [
+            row.get("research_asset_id")
+            for row in component["assets"]
+            if isinstance(row, dict) and row.get("research_asset_id")
+        ]
+        suffix = f" ({', '.join(asset_ids)})" if asset_ids else ""
+        parts.append(
+            f"{component['weight']:.0%} from {component['explanation']}{suffix}"
+        )
+    return {
+        "total_cash_weight": float(cash_weight),
+        "component_weight_sum": total,
+        "reconciled": reconciled,
+        "components": components,
+        "text": (
+            f"The {cash_weight:.0%} Shadow cash weight is not a single timing call: "
+            + "; ".join(parts)
+            + "."
+        ),
+    }
 
 
 def build_decision_summary(*, market_state: dict, shadow: dict, execution: dict, freshness: dict, cash_text: str) -> dict:
@@ -31,7 +78,13 @@ def build_decision_summary(*, market_state: dict, shadow: dict, execution: dict,
         for row in shadow.get("mapping_explanations", [])
         if row.get("destination") == "CASH" and row.get("research_asset_id") != "CASH"
     ]
-    blocking = list(execution.get("reasons", [])) + list(freshness.get("errors", []))
+    blocking = list(freshness.get("errors", []))
+    if not execution.get("available"):
+        blocking.append("execution validation report unavailable")
+    elif not execution.get("metrics_available"):
+        blocking.append("execution validation metrics are incomplete")
+    else:
+        blocking.extend(execution.get("reasons", []))
     return {
         "headline": headline,
         "current_stance": (

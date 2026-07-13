@@ -1,0 +1,9 @@
+{
+  "policy_id": "EXECUTION_VALIDATION_POLICY_V1",
+  "tradable_weight_coverage_min": 0.7,
+  "untradable_month_ratio_max": 0.2,
+  "max_drawdown_min": -0.4,
+  "sharpe_min": 0.25,
+  "annual_return_gap_min": -0.08,
+  "source": "backtest/execution/engine.py:_decision"
+}
