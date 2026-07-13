@@ -1,0 +1,75 @@
+{
+  "available": true,
+  "source_report": "execution_proxy_research_report.json",
+  "status": "pending_manual_approval",
+  "proposals": [
+    {
+      "research_asset_id": "931688CNY010.CSI",
+      "current_primary_execution_proxy": null,
+      "proposed_primary_execution_proxy": "512760.SH",
+      "current_mapping_quality": "none",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.611036,
+      "correlation": 0.746753,
+      "tracking_error_annualized": 0.261462,
+      "overlap_days": 1576,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true
+    },
+    {
+      "research_asset_id": "931743CNY010.CSI",
+      "current_primary_execution_proxy": null,
+      "proposed_primary_execution_proxy": "512760.SH",
+      "current_mapping_quality": "none",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.826642,
+      "correlation": 0.931157,
+      "tracking_error_annualized": 0.140691,
+      "overlap_days": 1714,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true
+    },
+    {
+      "research_asset_id": "H20590.CSI",
+      "current_primary_execution_proxy": null,
+      "proposed_primary_execution_proxy": "512100.SH",
+      "current_mapping_quality": "none",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.815326,
+      "correlation": 0.870605,
+      "tracking_error_annualized": 0.138584,
+      "overlap_days": 2347,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true
+    },
+    {
+      "research_asset_id": "H21152.CSI",
+      "current_primary_execution_proxy": null,
+      "proposed_primary_execution_proxy": "159915.SZ",
+      "current_mapping_quality": "none",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.668967,
+      "correlation": 0.713405,
+      "tracking_error_annualized": 0.217833,
+      "overlap_days": 2550,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true
+    },
+    {
+      "research_asset_id": "H00805.CSI",
+      "current_primary_execution_proxy": "512400.SH",
+      "proposed_primary_execution_proxy": "512400.SH",
+      "current_mapping_quality": "low",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.810725,
+      "correlation": 0.923429,
+      "tracking_error_annualized": 0.129548,
+      "overlap_days": 2144,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true
+    }
+  ],
+  "warnings": [
+    "Proposal only. asset_mapping.json has not been modified."
+  ]
+}
