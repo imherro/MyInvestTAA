@@ -7,31 +7,8 @@
   "trading_instruction": false,
   "as_of": "2026-07-08",
   "source_state_date": "2026-07-08",
-  "generated_at": "2026-07-13T07:45:50+00:00",
+  "generated_at": "2026-07-13T08:15:34+00:00",
   "report_path": "reports/v11_current_allocation.json",
-  "allocation": {
-    "512170": 0.017583,
-    "588000": 0.028903,
-    "510300": 0.056186,
-    "512010": 0.023362,
-    "515100": 0.063996,
-    "515080": 0.056401,
-    "512800": 0.050339,
-    "510500": 0.050381,
-    "511010": 0.179755,
-    "512100": 0.028858,
-    "512890": 0.060385,
-    "512880": 0.020349,
-    "515790": 0.008848,
-    "512760": 0.035141,
-    "159915": 0.03117,
-    "518880": 0.042364,
-    "512660": 0.014053,
-    "512690": 0.013259,
-    "CASH": 0.199998,
-    "512400": 0.009356,
-    "516160": 0.009313
-  },
   "allocation_percent": {
     "512170": 1.7583,
     "588000": 2.8903,
@@ -54,6 +31,29 @@
     "CASH": 19.9998,
     "512400": 0.9356,
     "516160": 0.9313
+  },
+  "allocation": {
+    "512170": 0.017583,
+    "588000": 0.028903,
+    "510300": 0.056186,
+    "512010": 0.023362,
+    "515100": 0.063996,
+    "515080": 0.056401,
+    "512800": 0.050339,
+    "510500": 0.050381,
+    "511010": 0.179755,
+    "512100": 0.028858,
+    "512890": 0.060385,
+    "512880": 0.020349,
+    "515790": 0.008848,
+    "512760": 0.035141,
+    "159915": 0.03117,
+    "518880": 0.042364,
+    "512660": 0.014053,
+    "512690": 0.013259,
+    "CASH": 0.199998,
+    "512400": 0.009356,
+    "516160": 0.009313
   },
   "equity_weight": 0.800002,
   "cash_weight": 0.199998,
@@ -162,6 +162,13 @@
       "monthly_max_change": 10.0
     }
   },
+  "constraint_checks": {
+    "weight_sum_percent": 100.0,
+    "weight_sum_fraction": 1.0,
+    "negative_weights": [],
+    "selected_asset_mismatches": [],
+    "violations": []
+  },
   "source_integrity": {
     "diagnosis_report_path": "reports/strategy_diagnosis_report.json",
     "diagnosis_report_hash": "1f96ff6b6c27da8516168729a12607971225cad4478f6e010f921c64b91bebbd",
@@ -170,15 +177,10 @@
     "taa_engine_hash": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
     "strategy_diagnosis_code_path": "data_pipeline/strategy_diagnosis.py",
     "strategy_diagnosis_code_hash": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
+    "snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464",
     "verified": true,
+    "semantic_verified": true,
     "errors": []
-  },
-  "constraint_checks": {
-    "weight_sum_percent": 100.0,
-    "weight_sum_fraction": 1.0,
-    "negative_weights": [],
-    "selected_asset_mismatches": [],
-    "violations": []
   },
   "errors": [],
   "warnings": [

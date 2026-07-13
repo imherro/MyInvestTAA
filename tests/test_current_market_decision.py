@@ -852,8 +852,8 @@ def test_optional_v11_allocation_source_may_be_missing():
 
 def test_required_source_manifest_count_and_hashes():
     verification = REPORT["source_hash_verification"]
-    assert verification["required_count"] == 9
-    assert verification["available_required_count"] == 9
+    assert verification["required_count"] == 10
+    assert verification["available_required_count"] == 10
     assert verification["valid"] is True
     assert all(
         len(row["sha256"]) == 64
@@ -1073,13 +1073,13 @@ def test_build_and_loader_use_the_same_source_verifier():
     assert REPORT["source_hash_verification"] == expected
     assert expected == {
         "valid": True,
-        "required_count": 9,
-        "available_required_count": 9,
-        "verified_count": 9,
+        "required_count": 10,
+        "available_required_count": 10,
+        "verified_count": 10,
         "errors": [],
     }
-    assert len(REQUIRED_SOURCE_DEFINITIONS) == 9
-    assert len(ALL_SOURCE_DEFINITIONS) == 10
+    assert len(REQUIRED_SOURCE_DEFINITIONS) == 10
+    assert len(ALL_SOURCE_DEFINITIONS) == 11
 
 
 @pytest.mark.parametrize(

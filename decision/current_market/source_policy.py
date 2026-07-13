@@ -43,6 +43,10 @@ REQUIRED_SOURCE_DEFINITIONS = {
         "path": "config/execution_validation_policy.json",
         "temporal_role": "policy",
     },
+    "execution_instrument_aliases": {
+        "path": "data/universe/execution_instrument_aliases.json",
+        "temporal_role": "registry",
+    },
 }
 
 OPTIONAL_SOURCE_DEFINITIONS = {

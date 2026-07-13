@@ -20,6 +20,10 @@ from backtest.execution.shadow_report import (
 )
 from backtest.research.report import RESEARCH_BACKTEST_REPORT, load_research_backtest_report
 from decision.current_market.models import SourceSnapshot
+from decision.current_market.instrument_ids import (
+    EXECUTION_INSTRUMENT_ALIASES,
+    load_execution_instrument_aliases,
+)
 from decision.current_market.source_policy import ALL_SOURCE_DEFINITIONS, sha256_file
 from decision.v11_current import load_v11_current_allocation
 from engine.asset_registry import load_execution_universe
@@ -46,6 +50,9 @@ def load_current_market_sources() -> dict:
         EXECUTION_GATE_POLICY, "execution validation policy not found"
     )
     v11_allocation = load_v11_current_allocation()
+    instrument_aliases = load_execution_instrument_aliases(
+        EXECUTION_INSTRUMENT_ALIASES
+    )
     price_verification = (
         verify_price_dataset_manifest(price_manifest, load_execution_universe())
         if price_manifest.get("available")
@@ -62,6 +69,7 @@ def load_current_market_sources() -> dict:
         "asset_mapping": integrity.get("decision_date"),
         "execution_gate_policy": None,
         "v11_current_allocation": v11_allocation.get("as_of"),
+        "execution_instrument_aliases": None,
     }
     source_manifest = {
         name: SourceSnapshot(
@@ -89,6 +97,7 @@ def load_current_market_sources() -> dict:
         "asset_mapping": mappings,
         "gate_policy": gate_policy,
         "v11_allocation": v11_allocation,
+        "instrument_aliases": instrument_aliases,
         "source_manifest": source_manifest,
     }
 

@@ -14,9 +14,17 @@ from decision.current_market import (
     load_current_market_sources,
 )
 from decision.current_market.freshness import evaluate_freshness
+from decision.current_market.instrument_ids import (
+    load_execution_instrument_aliases,
+    normalize_weight_map,
+    resolve_canonical_instrument_id,
+)
 from decision.v11_current import (
     build_v11_current_allocation_snapshot,
+    derive_v11_snapshot_fields,
     load_v11_current_allocation,
+    snapshot_payload_hash,
+    validate_v11_current_allocation_snapshot,
     write_v11_current_allocation,
 )
 from decision.v11_current.report import verify_v11_current_allocation_sources
@@ -405,7 +413,7 @@ def test_snapshot_loader_detects_source_drift(tmp_path, field, expected):
     path.write_text(json.dumps(value), encoding="utf-8")
     result = load_v11_current_allocation(path, verify_sources=True)
     assert result["available"] is False
-    assert result["message"] == "V11 current allocation source drifted; rebuild required"
+    assert result["message"] == "V11 current allocation snapshot semantic integrity failed"
     assert expected in result["source_integrity"]["errors"]
 
 
@@ -517,6 +525,8 @@ def test_current_decision_tracks_v11_allocation_freshness():
         "Actual Weights vs Target Weights",
         "Canonical Assumptions",
         "Source Integrity",
+        "Snapshot Semantic Integrity",
+        "Snapshot Payload Hash",
         "Constraint Checks",
         "Non-Trading Warning",
     ],
@@ -553,11 +563,21 @@ def test_homepage_and_current_decision_link_to_v11_page():
 
 
 def test_v11_snapshot_module_has_no_backtest_or_fallback_logic():
-    source = Path("decision/v11_current/engine.py").read_text(encoding="utf-8")
+    source = "\n".join(
+        Path(path).read_text(encoding="utf-8")
+        for path in (
+            "decision/v11_current/engine.py",
+            "decision/v11_current/derive.py",
+        )
+    )
     assert "run_taa_backtest" not in source
     assert "research_allocation" not in source
     assert "execution_shadow" not in source
-    assert "target_weights_percent\"]" not in source.split("allocation =", 1)[1].split("source_integrity", 1)[0]
+    derive_source = Path("decision/v11_current/derive.py").read_text(encoding="utf-8")
+    allocation_block = derive_source.split("allocation =", 1)[1].split(
+        "cash_weight =", 1
+    )[0]
+    assert "target_weights_percent" not in allocation_block
 
 
 @pytest.mark.parametrize(
@@ -602,3 +622,281 @@ def test_execution_invalid_iso_period_fails_closed(field):
         f"execution period {field} must be a valid ISO date" in error
         for error in report["execution_validation"]["semantic_errors"]
     )
+
+
+def _write_snapshot(tmp_path: Path, value: dict, name: str = "snapshot.json") -> Path:
+    path = tmp_path / name
+    path.write_text(json.dumps(value, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+@pytest.mark.parametrize(
+    ("field", "replacement"),
+    [
+        ("allocation", {"CASH": 0.9}),
+        ("allocation_percent", {"CASH": 100.0}),
+        ("equity_weight", 0.01),
+        ("cash_weight", 0.99),
+        ("selected_assets", ["510500"]),
+        ("regime", {"state": "bear"}),
+        ("risk_budget", {"equity_limit": 0.0}),
+        ("exposure_decision", {"equity_target": 0.0}),
+        ("target_weights_percent", {"CASH": 100.0}),
+        ("assumptions", {"score_version": "v10"}),
+        ("constraint_checks", {"violations": []}),
+        ("production_candidate", False),
+        ("production_actionable", True),
+        ("trading_instruction", True),
+        ("status", "ready"),
+        ("report_path", "reports/other.json"),
+    ],
+)
+def test_snapshot_loader_rejects_each_tampered_semantic_field(
+    tmp_path, field, replacement
+):
+    value = copy.deepcopy(SNAPSHOT)
+    value[field] = replacement
+    result = load_v11_current_allocation(
+        _write_snapshot(tmp_path, value, field + ".json"), verify_sources=True
+    )
+    assert result["available"] is False
+    assert result["production_actionable"] is False
+    assert result["trading_instruction"] is False
+    assert result["message"] == "V11 current allocation snapshot semantic integrity failed"
+
+
+@pytest.mark.parametrize(
+    ("field", "replacement"),
+    [
+        ("allocation", {"CASH": 1.0}),
+        ("allocation_percent", {"CASH": 100.0}),
+        ("equity_weight", 0.0),
+        ("cash_weight", 1.0),
+        ("selected_assets", []),
+        ("regime", {}),
+        ("risk_budget", {}),
+        ("exposure_decision", {}),
+        ("target_weights_percent", {}),
+        ("assumptions", {}),
+        ("constraint_checks", {"violations": []}),
+    ],
+)
+def test_recomputed_payload_hash_cannot_hide_semantic_tampering(
+    tmp_path, field, replacement
+):
+    value = copy.deepcopy(SNAPSHOT)
+    value[field] = replacement
+    value["source_integrity"]["snapshot_payload_hash"] = snapshot_payload_hash(value)
+    result = load_v11_current_allocation(
+        _write_snapshot(tmp_path, value, "rehashed-" + field + ".json"),
+        verify_sources=True,
+    )
+    assert result["available"] is False
+    assert any(
+        f"semantic field mismatch: {field}" in error
+        for error in result["errors"]
+    )
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "allocation_percent",
+        "allocation",
+        "equity_weight",
+        "cash_weight",
+        "selected_assets",
+        "regime",
+        "risk_budget",
+        "exposure_decision",
+        "target_weights_percent",
+        "assumptions",
+        "constraint_checks",
+    ],
+)
+def test_deterministic_derive_matches_formal_snapshot(field):
+    assert derive_v11_snapshot_fields(SOURCE)[field] == SNAPSHOT[field]
+
+
+def test_snapshot_payload_hash_is_independently_recomputed():
+    assert SNAPSHOT["source_integrity"]["snapshot_payload_hash"] == snapshot_payload_hash(
+        SNAPSHOT
+    )
+
+
+def test_snapshot_payload_hash_tampering_fails_closed(tmp_path):
+    value = copy.deepcopy(SNAPSHOT)
+    value["source_integrity"]["snapshot_payload_hash"] = "0" * 64
+    result = load_v11_current_allocation(
+        _write_snapshot(tmp_path, value), verify_sources=True
+    )
+    assert result["available"] is False
+    assert "V11 snapshot payload hash mismatch" in result["errors"]
+
+
+def test_formal_snapshot_full_semantic_validation_passes():
+    result = validate_v11_current_allocation_snapshot(
+        SNAPSHOT, DIAGNOSIS, verify_source_files=True
+    )
+    assert result["valid"] is True
+    assert result["source_integrity"]["semantic_verified"] is True
+    assert result["errors"] == []
+
+
+@pytest.mark.parametrize(
+    ("legacy", "canonical"),
+    [
+        (row["legacy_asset_id"], row["canonical_instrument_id"])
+        for row in load_execution_instrument_aliases()["aliases"]
+    ],
+)
+def test_every_formal_legacy_instrument_id_resolves(legacy, canonical):
+    registry = load_execution_instrument_aliases()
+    assert resolve_canonical_instrument_id(legacy, registry) == canonical
+    assert resolve_canonical_instrument_id(canonical, registry) == canonical
+
+
+@pytest.mark.parametrize(
+    ("weights", "expected_verified", "expected_unresolved"),
+    [
+        ({"510500": 0.5, "CASH": 0.5}, True, []),
+        ({"159915": 0.5, "CASH": 0.5}, True, []),
+        ({"510500.SH": 0.5, "CASH": 0.5}, True, []),
+        ({"UNKNOWN": 0.5, "CASH": 0.5}, False, ["UNKNOWN"]),
+        ({"UNKNOWN": 0.0, "CASH": 1.0}, True, []),
+        ({"510500": float("nan"), "CASH": 1.0}, False, []),
+    ],
+)
+def test_weight_map_normalization_contract(
+    weights, expected_verified, expected_unresolved
+):
+    result = normalize_weight_map(weights, load_execution_instrument_aliases())
+    assert result["verified"] is expected_verified
+    assert result["unresolved_ids"] == expected_unresolved
+    if expected_verified:
+        assert result["canonical_weight_sum"] == pytest.approx(
+            result["original_weight_sum"]
+        )
+
+
+def test_alias_duplicate_fails_closed():
+    registry = load_execution_instrument_aliases()
+    registry["aliases"].append(copy.deepcopy(registry["aliases"][0]))
+    result = normalize_weight_map({"CASH": 1.0}, registry)
+    assert result["verified"] is False
+    assert any("duplicated" in error for error in result["errors"])
+
+
+def test_alias_canonical_collision_fails_closed():
+    registry = load_execution_instrument_aliases()
+    registry["aliases"][1]["canonical_instrument_id"] = registry["aliases"][0][
+        "canonical_instrument_id"
+    ]
+    result = normalize_weight_map({"CASH": 1.0}, registry)
+    assert result["verified"] is False
+    assert any("collision" in error for error in result["errors"])
+
+
+def test_raw_and_canonical_same_instrument_collision_fails_closed():
+    result = normalize_weight_map(
+        {"510500": 0.25, "510500.SH": 0.25, "CASH": 0.5},
+        load_execution_instrument_aliases(),
+    )
+    assert result["verified"] is False
+    assert any("collision" in error for error in result["errors"])
+
+
+@pytest.mark.parametrize(
+    ("global_name", "label"),
+    [
+        ("TAA_ENGINE", "TAA engine is missing"),
+        ("STRATEGY_DIAGNOSIS_CODE", "strategy diagnosis code is missing"),
+    ],
+)
+def test_build_fails_when_required_code_file_is_missing(
+    monkeypatch, tmp_path, global_name, label
+):
+    monkeypatch.setattr(
+        f"decision.v11_current.engine.{global_name}", tmp_path / "missing.py"
+    )
+    snapshot = _build_from_source(tmp_path)
+    assert snapshot["available"] is False
+    assert snapshot["source_integrity"]["verified"] is False
+    assert any(label in error for error in snapshot["errors"])
+
+
+def test_atomic_writer_uses_unique_temporary_paths(monkeypatch, tmp_path):
+    replaced: list[Path] = []
+    original_replace = __import__("os").replace
+
+    def capture(source, target):
+        replaced.append(Path(source))
+        original_replace(source, target)
+
+    monkeypatch.setattr("decision.v11_current.report.os.replace", capture)
+    write_v11_current_allocation(SNAPSHOT, tmp_path / "one.json")
+    write_v11_current_allocation(SNAPSHOT, tmp_path / "two.json")
+    assert len(replaced) == 2
+    assert replaced[0] != replaced[1]
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+def test_current_comparison_uses_canonical_instrument_ids():
+    comparison = CLIENT.get("/api/decision/current-market").json()["comparison"]
+    assert comparison["identifier_namespace"] == "tushare_ts_code"
+    assert comparison["identifier_normalization_verified"] is True
+    assert comparison["unresolved_v11_ids"] == []
+    assert comparison["unresolved_shadow_ids"] == []
+    assert comparison["weight_differences"]["510500.SH"] == pytest.approx(-0.199619)
+    assert comparison["weight_differences"]["512760.SH"] == pytest.approx(-0.064859)
+    assert comparison["weight_differences"]["588000.SH"] == pytest.approx(-0.221097)
+    assert comparison["weight_differences"]["CASH"] == pytest.approx(-0.200002)
+    assert "510500" not in comparison["weight_differences"]
+    assert "512760" not in comparison["weight_differences"]
+    assert "588000" not in comparison["weight_differences"]
+
+
+def test_unresolved_positive_v11_id_blocks_current_review():
+    sources = load_current_market_sources()
+    sources["instrument_aliases"]["aliases"] = [
+        row
+        for row in sources["instrument_aliases"]["aliases"]
+        if row["legacy_asset_id"] != "510500"
+    ]
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["comparison"]["identifier_normalization_verified"] is False
+    assert "510500" in report["comparison"]["unresolved_v11_ids"]
+    assert report["ready_for_user_review"] is False
+
+
+def test_alias_registry_is_a_required_hashed_current_source():
+    report = CLIENT.get("/api/decision/current-market").json()
+    source = report["source_manifest"]["execution_instrument_aliases"]
+    assert source["path"] == "data/universe/execution_instrument_aliases.json"
+    assert source["required"] is True
+    assert source["temporal_role"] == "registry"
+    assert len(source["sha256"]) == 64
+
+
+def test_alias_registry_hash_drift_blocks_current_review():
+    sources = load_current_market_sources()
+    sources["source_manifest"]["execution_instrument_aliases"]["sha256"] = "0" * 64
+    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    assert report["source_hash_verification"]["valid"] is False
+    assert report["ready_for_user_review"] is False
+    assert "required source hash mismatch: execution_instrument_aliases" in report[
+        "source_hash_verification"
+    ]["errors"]
+
+
+@pytest.mark.parametrize(
+    "section",
+    [
+        "Instrument Identifier Namespace",
+        "Identifier Normalization Status",
+        "Canonical V11 Weights",
+        "Unresolved Instrument IDs",
+    ],
+)
+def test_current_page_instrument_identity_sections(section):
+    assert section in CLIENT.get("/current-decision").text

@@ -5,6 +5,7 @@ import math
 
 from decision.current_market.explain import build_cash_explanation, build_decision_summary
 from decision.current_market.freshness import evaluate_freshness
+from decision.current_market.instrument_ids import normalize_weight_map
 from decision.current_market.source_policy import (
     sha256_file,
     verify_current_decision_source_entry,
@@ -50,6 +51,15 @@ def build_current_market_decision(
     )
     research_allocation = _research_allocation(research, market_data_as_of)
     execution_shadow = _execution_shadow(shadow)
+    weights = execution_shadow.get("etf_weights", {})
+    comparison = _strategy_comparison(
+        production_candidate.get("allocation", {}),
+        weights,
+        sources.get("instrument_aliases", {}),
+        v11_allocation_available=production_candidate.get(
+            "current_allocation_available", False
+        ),
+    )
     source_hash_verification = verify_current_decision_sources(source_manifest)
     execution_validation = _execution_validation(
         execution_report,
@@ -73,7 +83,6 @@ def build_current_market_decision(
         price_verification=sources.get("price_verification", {}),
     )
 
-    weights = execution_shadow.get("etf_weights", {})
     cash_weight = float(weights.get("CASH", 0))
     cash = build_cash_explanation(
         execution_shadow.get("cash_breakdown", {}),
@@ -92,6 +101,7 @@ def build_current_market_decision(
             execution_validation.get("available"),
             execution_validation.get("evidence_complete"),
             source_hash_verification.get("valid"),
+            comparison.get("identifier_normalization_verified"),
         )
     )
     ready_for_user_review = bool(
@@ -110,6 +120,7 @@ def build_current_market_decision(
         weight_sum_ok=weight_sum_ok,
         violations=violations,
         cash=cash,
+        comparison=comparison,
     )
     status = (
         "stale"
@@ -144,26 +155,7 @@ def build_current_market_decision(
         "research_allocation": research_allocation,
         "execution_shadow": execution_shadow,
         "execution_validation": execution_validation,
-        "comparison": {
-            "mode": "side_by_side_only",
-            "v11_vs_research_shadow": {
-                "v11_allocation_available": production_candidate.get(
-                    "current_allocation_available", False
-                ),
-                "shadow_weights": weights,
-                "automatic_selection": False,
-            },
-            "v11_allocation_available": production_candidate.get(
-                "current_allocation_available", False
-            ),
-            "v11_weights": production_candidate.get("allocation", {}),
-            "shadow_weights": weights,
-            "weight_differences": _weight_differences(
-                production_candidate.get("allocation", {}), weights
-            ),
-            "automatic_selection": False,
-            "merged_portfolio_created": False,
-        },
+        "comparison": comparison,
         "risk_summary": {
             "equity_weight": round(1.0 - cash_weight, 10),
             "cash_weight": cash_weight,
@@ -537,6 +529,7 @@ def _review_blockers(
     weight_sum_ok: bool,
     violations: list,
     cash: dict,
+    comparison: dict,
 ) -> list[str]:
     blockers = []
     if not production_candidate.get("boundary_verified"):
@@ -556,6 +549,9 @@ def _review_blockers(
         blockers.append("execution shadow has constraint violations")
     if not cash.get("reconciled"):
         blockers.append("cash explanation components do not reconcile to Shadow cash")
+    if not comparison.get("identifier_normalization_verified"):
+        blockers.append("instrument identifier normalization failed")
+        blockers.extend(comparison.get("identifier_errors", []))
     return blockers
 
 
@@ -577,9 +573,58 @@ def _key_risks(market: dict, execution: dict, shadow: dict) -> list[str]:
 
 
 def _weight_differences(v11: dict, shadow: dict) -> dict:
-    if not v11:
-        return {}
     return {
         asset_id: round(float(v11.get(asset_id, 0)) - float(shadow.get(asset_id, 0)), 12)
         for asset_id in sorted(set(v11) | set(shadow))
+    }
+
+
+def _strategy_comparison(
+    v11_weights: dict,
+    shadow_weights: dict,
+    alias_registry: dict,
+    *,
+    v11_allocation_available: bool,
+) -> dict:
+    v11_normalized = normalize_weight_map(v11_weights, alias_registry)
+    shadow_normalized = normalize_weight_map(shadow_weights, alias_registry)
+    errors = list(
+        dict.fromkeys(
+            v11_normalized.get("errors", [])
+            + shadow_normalized.get("errors", [])
+        )
+    )
+    verified = bool(
+        v11_normalized.get("verified") and shadow_normalized.get("verified")
+    )
+    v11_canonical = v11_normalized.get("weights", {}) if verified else {}
+    shadow_canonical = shadow_normalized.get("weights", {}) if verified else {}
+    normalization_map = {
+        "v11": v11_normalized.get("normalization_map", {}),
+        "shadow": shadow_normalized.get("normalization_map", {}),
+    }
+    return {
+        "mode": "side_by_side_only",
+        "identifier_namespace": alias_registry.get("namespace"),
+        "identifier_normalization_verified": verified,
+        "v11_allocation_available": v11_allocation_available,
+        "v11_original_weights": v11_weights,
+        "v11_canonical_weights": v11_canonical,
+        "shadow_canonical_weights": shadow_canonical,
+        "weight_differences": _weight_differences(
+            v11_canonical, shadow_canonical
+        )
+        if verified
+        else {},
+        "normalization_map": normalization_map,
+        "unresolved_v11_ids": v11_normalized.get("unresolved_ids", []),
+        "unresolved_shadow_ids": shadow_normalized.get("unresolved_ids", []),
+        "identifier_errors": errors,
+        "v11_vs_research_shadow": {
+            "v11_allocation_available": v11_allocation_available,
+            "shadow_weights": shadow_canonical,
+            "automatic_selection": False,
+        },
+        "automatic_selection": False,
+        "merged_portfolio_created": False,
     }

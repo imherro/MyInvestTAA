@@ -5,7 +5,7 @@
   "production_actionable": false,
   "as_of": "2026-07-08",
   "decision_date": "2026-07-13",
-  "generated_at": "2026-07-13T07:45:50+00:00",
+  "generated_at": "2026-07-13T08:15:34+00:00",
   "market_data_as_of": "2026-07-08",
   "governance_state_as_of": "2026-07-13",
   "snapshot_mode": "current_decision_with_lagged_market_data",
@@ -171,8 +171,11 @@
       "taa_engine_hash": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
       "strategy_diagnosis_code_path": "data_pipeline/strategy_diagnosis.py",
       "strategy_diagnosis_code_hash": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
+      "snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464",
       "verified": true,
-      "errors": []
+      "semantic_verified": true,
+      "errors": [],
+      "actual_snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464"
     },
     "message": null
   },
@@ -337,18 +340,10 @@
   },
   "comparison": {
     "mode": "side_by_side_only",
-    "v11_vs_research_shadow": {
-      "v11_allocation_available": true,
-      "shadow_weights": {
-        "510500.SH": 0.25,
-        "512760.SH": 0.1,
-        "588000.SH": 0.25,
-        "CASH": 0.4
-      },
-      "automatic_selection": false
-    },
+    "identifier_namespace": "tushare_ts_code",
+    "identifier_normalization_verified": true,
     "v11_allocation_available": true,
-    "v11_weights": {
+    "v11_original_weights": {
       "512170": 0.017583,
       "588000": 0.028903,
       "510300": 0.056186,
@@ -371,37 +366,101 @@
       "512400": 0.009356,
       "516160": 0.009313
     },
-    "shadow_weights": {
+    "v11_canonical_weights": {
+      "512170.SH": 0.017583,
+      "588000.SH": 0.028903,
+      "510300.SH": 0.056186,
+      "512010.SH": 0.023362,
+      "515100.SH": 0.063996,
+      "515080.SH": 0.056401,
+      "512800.SH": 0.050339,
+      "510500.SH": 0.050381,
+      "511010.SH": 0.179755,
+      "512100.SH": 0.028858,
+      "512890.SH": 0.060385,
+      "512880.SH": 0.020349,
+      "515790.SH": 0.008848,
+      "512760.SH": 0.035141,
+      "159915.SZ": 0.03117,
+      "518880.SH": 0.042364,
+      "512660.SH": 0.014053,
+      "512690.SH": 0.013259,
+      "CASH": 0.199998,
+      "512400.SH": 0.009356,
+      "516160.SH": 0.009313
+    },
+    "shadow_canonical_weights": {
       "510500.SH": 0.25,
       "512760.SH": 0.1,
       "588000.SH": 0.25,
       "CASH": 0.4
     },
     "weight_differences": {
-      "159915": 0.03117,
-      "510300": 0.056186,
-      "510500": 0.050381,
-      "510500.SH": -0.25,
-      "511010": 0.179755,
-      "512010": 0.023362,
-      "512100": 0.028858,
-      "512170": 0.017583,
-      "512400": 0.009356,
-      "512660": 0.014053,
-      "512690": 0.013259,
-      "512760": 0.035141,
-      "512760.SH": -0.1,
-      "512800": 0.050339,
-      "512880": 0.020349,
-      "512890": 0.060385,
-      "515080": 0.056401,
-      "515100": 0.063996,
-      "515790": 0.008848,
-      "516160": 0.009313,
-      "518880": 0.042364,
-      "588000": 0.028903,
-      "588000.SH": -0.25,
+      "159915.SZ": 0.03117,
+      "510300.SH": 0.056186,
+      "510500.SH": -0.199619,
+      "511010.SH": 0.179755,
+      "512010.SH": 0.023362,
+      "512100.SH": 0.028858,
+      "512170.SH": 0.017583,
+      "512400.SH": 0.009356,
+      "512660.SH": 0.014053,
+      "512690.SH": 0.013259,
+      "512760.SH": -0.064859,
+      "512800.SH": 0.050339,
+      "512880.SH": 0.020349,
+      "512890.SH": 0.060385,
+      "515080.SH": 0.056401,
+      "515100.SH": 0.063996,
+      "515790.SH": 0.008848,
+      "516160.SH": 0.009313,
+      "518880.SH": 0.042364,
+      "588000.SH": -0.221097,
       "CASH": -0.200002
+    },
+    "normalization_map": {
+      "v11": {
+        "512170": "512170.SH",
+        "588000": "588000.SH",
+        "510300": "510300.SH",
+        "512010": "512010.SH",
+        "515100": "515100.SH",
+        "515080": "515080.SH",
+        "512800": "512800.SH",
+        "510500": "510500.SH",
+        "511010": "511010.SH",
+        "512100": "512100.SH",
+        "512890": "512890.SH",
+        "512880": "512880.SH",
+        "515790": "515790.SH",
+        "512760": "512760.SH",
+        "159915": "159915.SZ",
+        "518880": "518880.SH",
+        "512660": "512660.SH",
+        "512690": "512690.SH",
+        "CASH": "CASH",
+        "512400": "512400.SH",
+        "516160": "516160.SH"
+      },
+      "shadow": {
+        "510500.SH": "510500.SH",
+        "512760.SH": "512760.SH",
+        "588000.SH": "588000.SH",
+        "CASH": "CASH"
+      }
+    },
+    "unresolved_v11_ids": [],
+    "unresolved_shadow_ids": [],
+    "identifier_errors": [],
+    "v11_vs_research_shadow": {
+      "v11_allocation_available": true,
+      "shadow_weights": {
+        "510500.SH": 0.25,
+        "512760.SH": 0.1,
+        "588000.SH": 0.25,
+        "CASH": 0.4
+      },
+      "automatic_selection": false
     },
     "automatic_selection": false,
     "merged_portfolio_created": false
@@ -628,10 +687,19 @@
       "required": true,
       "temporal_role": "policy"
     },
+    "execution_instrument_aliases": {
+      "source": "execution_instrument_aliases",
+      "path": "data/universe/execution_instrument_aliases.json",
+      "sha256": "48ddcd85742c6ce476b4e3a525be071a3e0f1e23dac850d42fcedfbb30d56938",
+      "available": true,
+      "source_as_of": null,
+      "required": true,
+      "temporal_role": "registry"
+    },
     "v11_current_allocation": {
       "source": "v11_current_allocation",
       "path": "reports/v11_current_allocation.json",
-      "sha256": "8b645634c0688ca2f0b5db3939cef4935c843a769e288abff5c82e1328b6bc9a",
+      "sha256": "37692c2c7a03899f89d1a290032167f36d4366357a8ff88731b0472b473332e8",
       "available": true,
       "source_as_of": "2026-07-08",
       "required": false,
@@ -640,9 +708,9 @@
   },
   "source_hash_verification": {
     "valid": true,
-    "required_count": 9,
-    "available_required_count": 9,
-    "verified_count": 9,
+    "required_count": 10,
+    "available_required_count": 10,
+    "verified_count": 10,
     "errors": []
   },
   "warnings": [
