@@ -18,6 +18,7 @@ from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from backtest.research import load_research_backtest_report
+from backtest.execution import load_execution_backtest_report
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
@@ -296,6 +297,11 @@ def get_research_backtest_diagnostics() -> dict:
     }
 
 
+@app.get("/api/research/execution-backtest")
+def get_execution_backtest_report() -> dict:
+    return load_execution_backtest_report()
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -502,7 +508,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -1778,7 +1784,7 @@ def research_universe_page() -> str:
     <body>
       <header>
         <h1>Research Universe</h1>
-        <p>研究资产层与 ETF 执行代理层的静态注册表审计。<a href="/">Dashboard</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>研究资产层与 ETF 执行代理层的静态注册表审计。<a href="/">Dashboard</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section>
@@ -2728,7 +2734,7 @@ def research_backtest_page() -> str:
     <body>
       <header>
         <h1>Research Backtest</h1>
-        <p>研究资产层指数回测，不代表 ETF 可执行收益，也不替代 V11 production candidate。<a href="/">Dashboard</a> · <a href="/research-universe">Research Universe</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>研究资产层指数回测，不代表 ETF 可执行收益，也不替代 V11 production candidate。<a href="/">Dashboard</a> · <a href="/research-universe">Research Universe</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section>
@@ -2810,6 +2816,20 @@ def research_backtest_page() -> str:
     </body>
     </html>
     """
+
+
+@app.get("/execution-backtest", response_class=HTMLResponse)
+def execution_backtest_page() -> str:
+    report = load_execution_backtest_report()
+    metrics = "\n".join(_mapping_rows(report.get("metrics", {}), empty="Execution backtest report not generated yet"))
+    overlap = "\n".join(_mapping_rows(report.get("research_overlap_metrics", {}), empty="No research overlap metrics recorded"))
+    gap = "\n".join(_mapping_rows(report.get("execution_gap", {}), empty="No execution gap recorded"))
+    mapping = "\n".join(_mapping_rows(report.get("mapping_summary", {}), empty="No mapping summary recorded"))
+    decision = "\n".join(_mapping_rows(report.get("decision", {}), empty="No execution validation decision recorded"))
+    warnings = "\n".join(_message_rows(report.get("warnings", []), empty="No execution backtest warnings"))
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><title>Execution Backtest</title><style>{_report_page_css()}</style></head><body><header><h1>Execution Backtest</h1><p>This execution backtest is an ETF proxy validation, not a production trading instruction. <a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/research-universe">Research Universe</a></p></header><main>
+    <section><h2>Status</h2><table><tbody>{"<tr><td>Available</td><td>" + escape(str(report.get("available", False))) + "</td></tr><tr><td>Period</td><td>" + escape(str(report.get("period", {}))) + "</td></tr>"}</tbody></table></section>
+    <section><h2>Execution Metrics</h2><table><tbody>{metrics}</tbody></table></section><section><h2>Research Overlap Metrics</h2><table><tbody>{overlap}</tbody></table></section><section><h2>Execution Gap</h2><table><tbody>{gap}</tbody></table></section><section><h2>Mapping Summary</h2><table><tbody>{mapping}</tbody></table></section><section><h2>Ready for Execution Validation?</h2><table><tbody>{decision}</tbody></table></section><section><h2>Warnings</h2><table><tbody>{warnings}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
 
 
 def _research_universe_rows(rows: list[dict]) -> list[str]:
