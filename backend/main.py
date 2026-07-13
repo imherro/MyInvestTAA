@@ -18,7 +18,7 @@ from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from backtest.research import load_research_backtest_report
-from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report
+from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report, load_proxy_research_report
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
@@ -311,6 +311,11 @@ def get_execution_universe_data_audit() -> dict:
 @app.get("/api/research/execution-mapping-improvement")
 def get_execution_mapping_improvement() -> dict:
     return load_mapping_improvement_report()
+
+
+@app.get("/api/research/execution-proxy-research")
+def get_execution_proxy_research() -> dict:
+    return load_proxy_research_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -2834,6 +2839,7 @@ def execution_backtest_page() -> str:
     report = load_execution_backtest_report()
     audit = load_execution_data_availability_report()
     improvement = load_mapping_improvement_report()
+    proxy_research = load_proxy_research_report()
     metrics = "\n".join(_mapping_rows(report.get("metrics", {}), empty="Execution backtest report not generated yet"))
     overlap = "\n".join(_mapping_rows(report.get("research_overlap_metrics", {}), empty="No research overlap metrics recorded"))
     gap = "\n".join(_mapping_rows(report.get("execution_gap", {}), empty="No execution gap recorded"))
@@ -2844,10 +2850,11 @@ def execution_backtest_page() -> str:
     unmapped = "\n".join(_message_rows([str(row.get("research_asset_id")) for row in report.get("unmapped_assets", [])], empty="No unmapped assets"))
     low_quality = "\n".join(_message_rows([str(row.get("research_asset_id")) for row in report.get("low_quality_proxy_assets", [])], empty="No low quality proxies"))
     improvement_rows = "\n".join(_mapping_rows(improvement, empty="No mapping improvement report recorded"))
+    proxy_rows = "\n".join(_proxy_research_rows(proxy_research.get("research_assets", [])))
     warnings = "\n".join(_message_rows(report.get("warnings", []), empty="No execution backtest warnings"))
     return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><title>Execution Backtest</title><style>{_report_page_css()}</style></head><body><header><h1>Execution Backtest</h1><p>This execution backtest is an ETF proxy validation, not a production trading instruction. <a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/research-universe">Research Universe</a></p></header><main>
     <section><h2>Status</h2><table><tbody>{"<tr><td>Available</td><td>" + escape(str(report.get("available", False))) + "</td></tr><tr><td>Data Provider</td><td>" + escape(str(report.get("data_provider", "unknown"))) + "</td></tr><tr><td>Period</td><td>" + escape(str(report.get("period", {}))) + "</td></tr>"}</tbody></table></section>
-    <section><h2>Real ETF Data Audit</h2><table><tbody>{audit_summary}</tbody></table></section><section><h2>Execution Metrics</h2><table><tbody>{metrics}</tbody></table></section><section><h2>Research Overlap Metrics</h2><table><tbody>{overlap}</tbody></table></section><section><h2>Execution Gap</h2><table><tbody>{gap}</tbody></table></section><section><h2>Mapping Summary</h2><table><tbody>{mapping}</tbody></table></section><section><h2>Aggregate Cash Breakdown</h2><table><tbody>{cash}</tbody></table></section><section><h2>Unmapped Assets</h2><table><tbody>{unmapped}</tbody></table></section><section><h2>Low Quality Proxies</h2><table><tbody>{low_quality}</tbody></table></section><section><h2>Mapping Improvement</h2><table><tbody>{improvement_rows}</tbody></table></section><section><h2>Ready for Execution Validation?</h2><table><tbody>{decision}</tbody></table></section><section><h2>Warnings</h2><table><tbody>{warnings}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
+    <section><h2>Real ETF Data Audit</h2><table><tbody>{audit_summary}</tbody></table></section><section><h2>Execution Metrics</h2><table><tbody>{metrics}</tbody></table></section><section><h2>Research Overlap Metrics</h2><table><tbody>{overlap}</tbody></table></section><section><h2>Execution Gap</h2><table><tbody>{gap}</tbody></table></section><section><h2>Mapping Summary</h2><table><tbody>{mapping}</tbody></table></section><section><h2>Aggregate Cash Breakdown</h2><table><tbody>{cash}</tbody></table></section><section><h2>Unmapped Assets</h2><table><tbody>{unmapped}</tbody></table></section><section><h2>Low Quality Proxies</h2><table><tbody>{low_quality}</tbody></table></section><section><h2>Mapping Improvement</h2><table><tbody>{improvement_rows}</tbody></table></section><section><h2>Proxy Candidate Research</h2><table><tbody>{proxy_rows}</tbody></table></section><section><h2>Ready for Execution Validation?</h2><table><tbody>{decision}</tbody></table></section><section><h2>Warnings</h2><table><tbody>{warnings}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
 
 
 def _research_universe_rows(rows: list[dict]) -> list[str]:
@@ -2904,6 +2911,17 @@ def _asset_mapping_rows(rows: list[dict]) -> list[str]:
             </tr>
             """
         )
+    return html_rows
+
+
+def _proxy_research_rows(rows: list[dict]) -> list[str]:
+    if not rows:
+        return ["<tr><td colspan=\"2\">No proxy candidate research recorded</td></tr>"]
+    html_rows = []
+    for row in rows:
+        top = (row.get("candidate_rankings") or [{}])[0]
+        recommendation = row.get("recommendation", {})
+        html_rows.append(f"<tr><td>{escape(str(row.get('research_asset_id')))}</td><td>{escape(str(top.get('candidate_id')))} score={escape(str(top.get('score')))} correlation={escape(str(top.get('correlation')))} tracking_error={escape(str(top.get('tracking_error_annualized')))} action={escape(str(recommendation.get('action')))} manual_approval={escape(str(recommendation.get('requires_manual_approval')))}</td></tr>")
     return html_rows
 
 

@@ -1,0 +1,1364 @@
+{
+  "available": true,
+  "research_assets": [
+    {
+      "research_asset_id": "931688CNY010.CSI",
+      "current_mapping": {
+        "primary_execution_proxy": null,
+        "mapping_quality": "none"
+      },
+      "candidate_rankings": [
+        {
+          "candidate_id": "512760.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1576,
+          "correlation": 0.746753,
+          "tracking_error_annualized": 0.261462,
+          "annual_return_gap": -0.047021,
+          "max_drawdown_gap": -0.102277,
+          "volatility_gap": 0.011531,
+          "beta": 0.770585,
+          "score": 0.614003,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512100.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1576,
+          "correlation": 0.742803,
+          "tracking_error_annualized": 0.242216,
+          "annual_return_gap": -0.159004,
+          "max_drawdown_gap": 0.056831,
+          "volatility_gap": -0.112231,
+          "beta": 0.511623,
+          "score": 0.613858,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "159915.SZ",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1576,
+          "correlation": 0.712133,
+          "tracking_error_annualized": 0.258921,
+          "annual_return_gap": -0.125782,
+          "max_drawdown_gap": -0.045826,
+          "volatility_gap": -0.050004,
+          "beta": 0.613423,
+          "score": 0.604246,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510500.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1577,
+          "correlation": 0.732713,
+          "tracking_error_annualized": 0.249735,
+          "annual_return_gap": -0.154125,
+          "max_drawdown_gap": 0.125299,
+          "volatility_gap": -0.143009,
+          "beta": 0.442055,
+          "score": 0.570949,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "588000.SH",
+          "overlap_start": "2020-11-17",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1367,
+          "correlation": 0.776926,
+          "tracking_error_annualized": 0.22682,
+          "annual_return_gap": -0.194518,
+          "max_drawdown_gap": -0.173553,
+          "volatility_gap": -0.047193,
+          "beta": 0.6741,
+          "score": 0.570138,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510300.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1577,
+          "correlation": 0.626256,
+          "tracking_error_annualized": 0.283225,
+          "annual_return_gap": -0.188756,
+          "max_drawdown_gap": 0.098467,
+          "volatility_gap": -0.169707,
+          "beta": 0.331449,
+          "score": 0.50233,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512400.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1577,
+          "correlation": 0.441381,
+          "tracking_error_annualized": 0.370641,
+          "annual_return_gap": -0.112538,
+          "max_drawdown_gap": -0.013507,
+          "volatility_gap": -0.020475,
+          "beta": 0.416312,
+          "score": 0.482286,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "516160.SH",
+          "overlap_start": "2021-02-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1310,
+          "correlation": 0.473601,
+          "tracking_error_annualized": 0.349411,
+          "annual_return_gap": -0.307086,
+          "max_drawdown_gap": -0.250106,
+          "volatility_gap": -0.042882,
+          "beta": 0.417201,
+          "score": 0.314388,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515080.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1577,
+          "correlation": 0.354485,
+          "tracking_error_annualized": 0.339502,
+          "annual_return_gap": -0.148882,
+          "max_drawdown_gap": 0.33666,
+          "volatility_gap": -0.192367,
+          "beta": 0.165332,
+          "score": 0.292167,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515100.SH",
+          "overlap_start": "2020-07-06",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1457,
+          "correlation": 0.307663,
+          "tracking_error_annualized": 0.340389,
+          "annual_return_gap": -0.120267,
+          "max_drawdown_gap": 0.378866,
+          "volatility_gap": -0.203252,
+          "beta": 0.131485,
+          "score": 0.282976,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512890.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1576,
+          "correlation": 0.261857,
+          "tracking_error_annualized": 0.356493,
+          "annual_return_gap": -0.1473,
+          "max_drawdown_gap": 0.36204,
+          "volatility_gap": -0.189029,
+          "beta": 0.1246,
+          "score": 0.255643,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "518880.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1577,
+          "correlation": 0.052942,
+          "tracking_error_annualized": 0.392045,
+          "annual_return_gap": -0.108308,
+          "max_drawdown_gap": 0.214829,
+          "volatility_gap": -0.186187,
+          "beta": 0.0256,
+          "score": 0.22766,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "511010.SH",
+          "overlap_start": "2020-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1577,
+          "correlation": -0.195752,
+          "tracking_error_annualized": 0.365018,
+          "annual_return_gap": -0.197431,
+          "max_drawdown_gap": 0.470802,
+          "volatility_gap": -0.340234,
+          "beta": -0.011008,
+          "score": 0.13419,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        }
+      ],
+      "recommendation": {
+        "action": "propose_mapping_update",
+        "primary_execution_proxy": "512760.SH",
+        "mapping_quality": "medium",
+        "requires_manual_approval": true
+      }
+    },
+    {
+      "research_asset_id": "931743CNY010.CSI",
+      "current_mapping": {
+        "primary_execution_proxy": null,
+        "mapping_quality": "none"
+      },
+      "candidate_rankings": [
+        {
+          "candidate_id": "512760.SH",
+          "overlap_start": "2019-06-13",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1714,
+          "correlation": 0.931157,
+          "tracking_error_annualized": 0.140691,
+          "annual_return_gap": -0.065814,
+          "max_drawdown_gap": -0.00791,
+          "volatility_gap": -0.013218,
+          "beta": 0.899116,
+          "score": 0.829327,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "588000.SH",
+          "overlap_start": "2020-11-17",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1367,
+          "correlation": 0.852011,
+          "tracking_error_annualized": 0.192745,
+          "annual_return_gap": -0.137812,
+          "max_drawdown_gap": 0.01798,
+          "volatility_gap": -0.058692,
+          "beta": 0.716153,
+          "score": 0.725256,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "159915.SZ",
+          "overlap_start": "2019-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1820,
+          "correlation": 0.703561,
+          "tracking_error_annualized": 0.276871,
+          "annual_return_gap": -0.208519,
+          "max_drawdown_gap": 0.048541,
+          "volatility_gap": -0.081447,
+          "beta": 0.555414,
+          "score": 0.556922,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512100.SH",
+          "overlap_start": "2019-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1820,
+          "correlation": 0.714398,
+          "tracking_error_annualized": 0.271881,
+          "annual_return_gap": -0.249274,
+          "max_drawdown_gap": 0.151198,
+          "volatility_gap": -0.137363,
+          "beta": 0.460588,
+          "score": 0.500502,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "516160.SH",
+          "overlap_start": "2021-02-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1310,
+          "correlation": 0.573318,
+          "tracking_error_annualized": 0.321415,
+          "annual_return_gap": -0.21049,
+          "max_drawdown_gap": -0.058573,
+          "volatility_gap": -0.053768,
+          "beta": 0.490222,
+          "score": 0.479877,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510500.SH",
+          "overlap_start": "2019-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1821,
+          "correlation": 0.696103,
+          "tracking_error_annualized": 0.281794,
+          "annual_return_gap": -0.250456,
+          "max_drawdown_gap": 0.219666,
+          "volatility_gap": -0.166489,
+          "beta": 0.396261,
+          "score": 0.450295,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512400.SH",
+          "overlap_start": "2019-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1821,
+          "correlation": 0.450071,
+          "tracking_error_annualized": 0.379792,
+          "annual_return_gap": -0.211828,
+          "max_drawdown_gap": 0.08086,
+          "volatility_gap": -0.054097,
+          "beta": 0.387079,
+          "score": 0.418989,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510300.SH",
+          "overlap_start": "2019-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1821,
+          "correlation": 0.577865,
+          "tracking_error_annualized": 0.317008,
+          "annual_return_gap": -0.275432,
+          "max_drawdown_gap": 0.192834,
+          "volatility_gap": -0.194575,
+          "beta": 0.286963,
+          "score": 0.392918,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515080.SH",
+          "overlap_start": "2019-12-30",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1579,
+          "correlation": 0.284517,
+          "tracking_error_annualized": 0.375228,
+          "annual_return_gap": -0.163567,
+          "max_drawdown_gap": 0.431027,
+          "volatility_gap": -0.218579,
+          "beta": 0.12369,
+          "score": 0.259285,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515100.SH",
+          "overlap_start": "2020-07-06",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1457,
+          "correlation": 0.222099,
+          "tracking_error_annualized": 0.370423,
+          "annual_return_gap": -0.097473,
+          "max_drawdown_gap": 0.473233,
+          "volatility_gap": -0.221615,
+          "beta": 0.090249,
+          "score": 0.256349,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512890.SH",
+          "overlap_start": "2019-01-21",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1807,
+          "correlation": 0.202431,
+          "tracking_error_annualized": 0.390243,
+          "annual_return_gap": -0.247036,
+          "max_drawdown_gap": 0.453673,
+          "volatility_gap": -0.217948,
+          "beta": 0.088569,
+          "score": 0.198627,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "518880.SH",
+          "overlap_start": "2019-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1821,
+          "correlation": 0.025394,
+          "tracking_error_annualized": 0.418056,
+          "annual_return_gap": -0.216489,
+          "max_drawdown_gap": 0.309196,
+          "volatility_gap": -0.217097,
+          "beta": 0.011131,
+          "score": 0.137994,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "511010.SH",
+          "overlap_start": "2019-01-02",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1821,
+          "correlation": -0.197236,
+          "tracking_error_annualized": 0.390905,
+          "annual_return_gap": -0.311682,
+          "max_drawdown_gap": 0.565169,
+          "volatility_gap": -0.366709,
+          "beta": -0.010107,
+          "score": 0.1,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        }
+      ],
+      "recommendation": {
+        "action": "propose_mapping_update",
+        "primary_execution_proxy": "512760.SH",
+        "mapping_quality": "medium",
+        "requires_manual_approval": true
+      }
+    },
+    {
+      "research_asset_id": "H20590.CSI",
+      "current_mapping": {
+        "primary_execution_proxy": null,
+        "mapping_quality": "none"
+      },
+      "candidate_rankings": [
+        {
+          "candidate_id": "512100.SH",
+          "overlap_start": "2016-11-07",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2347,
+          "correlation": 0.870605,
+          "tracking_error_annualized": 0.138584,
+          "annual_return_gap": -0.010618,
+          "max_drawdown_gap": -0.023172,
+          "volatility_gap": -0.040085,
+          "beta": 0.746672,
+          "score": 0.81763,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510500.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.858863,
+          "tracking_error_annualized": 0.150247,
+          "annual_return_gap": 0.006539,
+          "max_drawdown_gap": 0.077452,
+          "volatility_gap": -0.064437,
+          "beta": 0.667834,
+          "score": 0.777434,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "159915.SZ",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2550,
+          "correlation": 0.843546,
+          "tracking_error_annualized": 0.164348,
+          "annual_return_gap": 0.017604,
+          "max_drawdown_gap": -0.079291,
+          "volatility_gap": 0.006817,
+          "beta": 0.863365,
+          "score": 0.754948,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510300.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.723923,
+          "tracking_error_annualized": 0.200867,
+          "annual_return_gap": 0.01616,
+          "max_drawdown_gap": 0.065002,
+          "volatility_gap": -0.100033,
+          "beta": 0.473961,
+          "score": 0.684292,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "588000.SH",
+          "overlap_start": "2020-11-17",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1367,
+          "correlation": 0.758122,
+          "tracking_error_annualized": 0.211736,
+          "annual_return_gap": 0.01679,
+          "max_drawdown_gap": -0.109852,
+          "volatility_gap": 0.010594,
+          "beta": 0.785001,
+          "score": 0.66628,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512400.SH",
+          "overlap_start": "2017-09-04",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2144,
+          "correlation": 0.596166,
+          "tracking_error_annualized": 0.27701,
+          "annual_return_gap": 0.010124,
+          "max_drawdown_gap": -0.046972,
+          "volatility_gap": 0.032092,
+          "beta": 0.662019,
+          "score": 0.580764,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "516160.SH",
+          "overlap_start": "2021-02-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1310,
+          "correlation": 0.67893,
+          "tracking_error_annualized": 0.248024,
+          "annual_return_gap": -0.042078,
+          "max_drawdown_gap": -0.186405,
+          "volatility_gap": 0.016531,
+          "beta": 0.716258,
+          "score": 0.557657,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512760.SH",
+          "overlap_start": "2019-06-13",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1714,
+          "correlation": 0.688382,
+          "tracking_error_annualized": 0.272049,
+          "annual_return_gap": 0.148521,
+          "max_drawdown_gap": -0.135743,
+          "volatility_gap": 0.075327,
+          "beta": 0.863799,
+          "score": 0.531267,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515080.SH",
+          "overlap_start": "2019-12-30",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1579,
+          "correlation": 0.433116,
+          "tracking_error_annualized": 0.273864,
+          "annual_return_gap": 0.007448,
+          "max_drawdown_gap": 0.303195,
+          "volatility_gap": -0.132831,
+          "beta": 0.241942,
+          "score": 0.392544,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515100.SH",
+          "overlap_start": "2020-07-06",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1457,
+          "correlation": 0.357991,
+          "tracking_error_annualized": 0.2826,
+          "annual_return_gap": 0.018977,
+          "max_drawdown_gap": 0.345401,
+          "volatility_gap": -0.147157,
+          "beta": 0.181711,
+          "score": 0.351371,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512890.SH",
+          "overlap_start": "2019-01-21",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1807,
+          "correlation": 0.341207,
+          "tracking_error_annualized": 0.287213,
+          "annual_return_gap": 0.007736,
+          "max_drawdown_gap": 0.325841,
+          "volatility_gap": -0.127258,
+          "beta": 0.194906,
+          "score": 0.34456,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "518880.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.028772,
+          "tracking_error_annualized": 0.324242,
+          "annual_return_gap": 0.083419,
+          "max_drawdown_gap": 0.181364,
+          "volatility_gap": -0.135523,
+          "beta": 0.015313,
+          "score": 0.24302,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "511010.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": -0.134818,
+          "tracking_error_annualized": 0.293304,
+          "annual_return_gap": 0.002035,
+          "max_drawdown_gap": 0.437336,
+          "volatility_gap": -0.268578,
+          "beta": -0.009833,
+          "score": 0.204901,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        }
+      ],
+      "recommendation": {
+        "action": "propose_mapping_update",
+        "primary_execution_proxy": "512100.SH",
+        "mapping_quality": "medium",
+        "requires_manual_approval": true
+      }
+    },
+    {
+      "research_asset_id": "H21152.CSI",
+      "current_mapping": {
+        "primary_execution_proxy": null,
+        "mapping_quality": "none"
+      },
+      "candidate_rankings": [
+        {
+          "candidate_id": "159915.SZ",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2550,
+          "correlation": 0.713405,
+          "tracking_error_annualized": 0.217833,
+          "annual_return_gap": 0.007606,
+          "max_drawdown_gap": 0.061853,
+          "volatility_gap": 0.020752,
+          "beta": 0.767001,
+          "score": 0.670373,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512100.SH",
+          "overlap_start": "2016-11-07",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2347,
+          "correlation": 0.619107,
+          "tracking_error_annualized": 0.230096,
+          "annual_return_gap": -0.007938,
+          "max_drawdown_gap": 0.117972,
+          "volatility_gap": -0.038303,
+          "beta": 0.534357,
+          "score": 0.594264,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510300.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.669292,
+          "tracking_error_annualized": 0.205175,
+          "annual_return_gap": 0.006167,
+          "max_drawdown_gap": 0.206146,
+          "volatility_gap": -0.086391,
+          "beta": 0.459847,
+          "score": 0.591609,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510500.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.665979,
+          "tracking_error_annualized": 0.21006,
+          "annual_return_gap": -0.003455,
+          "max_drawdown_gap": 0.218596,
+          "volatility_gap": -0.050795,
+          "beta": 0.543442,
+          "score": 0.580892,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "588000.SH",
+          "overlap_start": "2020-11-17",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1367,
+          "correlation": 0.559665,
+          "tracking_error_annualized": 0.279282,
+          "annual_return_gap": 0.086496,
+          "max_drawdown_gap": 0.030008,
+          "volatility_gap": 0.025511,
+          "beta": 0.60996,
+          "score": 0.547295,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "516160.SH",
+          "overlap_start": "2021-02-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1310,
+          "correlation": 0.503126,
+          "tracking_error_annualized": 0.301135,
+          "annual_return_gap": 0.034509,
+          "max_drawdown_gap": -0.046545,
+          "volatility_gap": 0.032969,
+          "beta": 0.561484,
+          "score": 0.516475,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512400.SH",
+          "overlap_start": "2017-09-04",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2144,
+          "correlation": 0.416748,
+          "tracking_error_annualized": 0.332255,
+          "annual_return_gap": 0.024604,
+          "max_drawdown_gap": 0.094171,
+          "volatility_gap": 0.032015,
+          "beta": 0.462659,
+          "score": 0.461412,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512760.SH",
+          "overlap_start": "2019-06-13",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1714,
+          "correlation": 0.43031,
+          "tracking_error_annualized": 0.356708,
+          "annual_return_gap": 0.201096,
+          "max_drawdown_gap": 0.005401,
+          "volatility_gap": 0.088316,
+          "beta": 0.564781,
+          "score": 0.452391,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515080.SH",
+          "overlap_start": "2019-12-30",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1579,
+          "correlation": 0.361204,
+          "tracking_error_annualized": 0.276818,
+          "annual_return_gap": 0.071852,
+          "max_drawdown_gap": 0.444339,
+          "volatility_gap": -0.120771,
+          "beta": 0.210196,
+          "score": 0.339849,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515100.SH",
+          "overlap_start": "2020-07-06",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1457,
+          "correlation": 0.350468,
+          "tracking_error_annualized": 0.275327,
+          "annual_return_gap": 0.105692,
+          "max_drawdown_gap": 0.486545,
+          "volatility_gap": -0.137314,
+          "beta": 0.183951,
+          "score": 0.325517,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512890.SH",
+          "overlap_start": "2019-01-21",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1807,
+          "correlation": 0.294786,
+          "tracking_error_annualized": 0.28512,
+          "annual_return_gap": 0.05269,
+          "max_drawdown_gap": 0.466985,
+          "volatility_gap": -0.115066,
+          "beta": 0.175602,
+          "score": 0.312751,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "511010.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": -0.100757,
+          "tracking_error_annualized": 0.278988,
+          "annual_return_gap": -0.007959,
+          "max_drawdown_gap": 0.57848,
+          "volatility_gap": -0.254936,
+          "beta": -0.007712,
+          "score": 0.214857,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "518880.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.037669,
+          "tracking_error_annualized": 0.311092,
+          "annual_return_gap": 0.073425,
+          "max_drawdown_gap": 0.322508,
+          "volatility_gap": -0.12188,
+          "beta": 0.021038,
+          "score": 0.190592,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        }
+      ],
+      "recommendation": {
+        "action": "propose_mapping_update",
+        "primary_execution_proxy": "159915.SZ",
+        "mapping_quality": "medium",
+        "requires_manual_approval": true
+      }
+    },
+    {
+      "research_asset_id": "H00805.CSI",
+      "current_mapping": {
+        "primary_execution_proxy": "512400.SH",
+        "mapping_quality": "low"
+      },
+      "candidate_rankings": [
+        {
+          "candidate_id": "512400.SH",
+          "overlap_start": "2017-09-04",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2144,
+          "correlation": 0.923429,
+          "tracking_error_annualized": 0.129548,
+          "annual_return_gap": 0.003169,
+          "max_drawdown_gap": -0.098197,
+          "volatility_gap": 0.062822,
+          "beta": 1.14672,
+          "score": 0.81126,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510500.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.765181,
+          "tracking_error_annualized": 0.171341,
+          "annual_return_gap": -0.034253,
+          "max_drawdown_gap": 0.026227,
+          "volatility_gap": -0.038334,
+          "beta": 0.653908,
+          "score": 0.738757,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "510300.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.6779,
+          "tracking_error_annualized": 0.194101,
+          "annual_return_gap": -0.024632,
+          "max_drawdown_gap": 0.013777,
+          "volatility_gap": -0.073929,
+          "beta": 0.487779,
+          "score": 0.69431,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512100.SH",
+          "overlap_start": "2016-11-07",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2347,
+          "correlation": 0.69325,
+          "tracking_error_annualized": 0.195546,
+          "annual_return_gap": -0.038662,
+          "max_drawdown_gap": -0.074397,
+          "volatility_gap": -0.015051,
+          "beta": 0.65258,
+          "score": 0.664259,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515080.SH",
+          "overlap_start": "2019-12-30",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1579,
+          "correlation": 0.731479,
+          "tracking_error_annualized": 0.185177,
+          "annual_return_gap": -0.023644,
+          "max_drawdown_gap": 0.159475,
+          "volatility_gap": -0.100296,
+          "beta": 0.458143,
+          "score": 0.650658,
+          "recommended_mapping_quality": "medium",
+          "hard_gate_reasons": [],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512890.SH",
+          "overlap_start": "2019-01-21",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1807,
+          "correlation": 0.626884,
+          "tracking_error_annualized": 0.205416,
+          "annual_return_gap": -0.017508,
+          "max_drawdown_gap": 0.182121,
+          "volatility_gap": -0.09406,
+          "beta": 0.403189,
+          "score": 0.582677,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "515100.SH",
+          "overlap_start": "2020-07-06",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1457,
+          "correlation": 0.623217,
+          "tracking_error_annualized": 0.210004,
+          "annual_return_gap": -0.04661,
+          "max_drawdown_gap": 0.201681,
+          "volatility_gap": -0.116133,
+          "beta": 0.352979,
+          "score": 0.557907,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "159915.SZ",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2550,
+          "correlation": 0.588207,
+          "tracking_error_annualized": 0.256275,
+          "annual_return_gap": -0.023205,
+          "max_drawdown_gap": -0.130516,
+          "volatility_gap": 0.032875,
+          "beta": 0.661426,
+          "score": 0.548727,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "516160.SH",
+          "overlap_start": "2021-02-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1310,
+          "correlation": 0.582892,
+          "tracking_error_annualized": 0.270226,
+          "annual_return_gap": -0.125037,
+          "max_drawdown_gap": -0.330125,
+          "volatility_gap": 0.051118,
+          "beta": 0.694874,
+          "score": 0.416289,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "518880.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": 0.212599,
+          "tracking_error_annualized": 0.275642,
+          "annual_return_gap": 0.042627,
+          "max_drawdown_gap": 0.130139,
+          "volatility_gap": -0.109419,
+          "beta": 0.124352,
+          "score": 0.376059,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "588000.SH",
+          "overlap_start": "2020-11-17",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1367,
+          "correlation": 0.402585,
+          "tracking_error_annualized": 0.317002,
+          "annual_return_gap": -0.061764,
+          "max_drawdown_gap": -0.253572,
+          "volatility_gap": 0.042413,
+          "beta": 0.466542,
+          "score": 0.36366,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "512760.SH",
+          "overlap_start": "2019-06-13",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 1714,
+          "correlation": 0.391327,
+          "tracking_error_annualized": 0.360613,
+          "annual_return_gap": 0.128125,
+          "max_drawdown_gap": -0.279462,
+          "volatility_gap": 0.109486,
+          "beta": 0.555206,
+          "score": 0.324091,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65",
+            "tracking_error_above_0.30"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        },
+        {
+          "candidate_id": "511010.SH",
+          "overlap_start": "2016-01-05",
+          "overlap_end": "2026-07-08",
+          "overlap_days": 2551,
+          "correlation": -0.125588,
+          "tracking_error_annualized": 0.267082,
+          "annual_return_gap": -0.038757,
+          "max_drawdown_gap": 0.386112,
+          "volatility_gap": -0.242475,
+          "beta": -0.010067,
+          "score": 0.214513,
+          "recommended_mapping_quality": "low",
+          "hard_gate_reasons": [
+            "correlation_below_0.65"
+          ],
+          "warnings": [
+            "candidate research only; no automatic mapping update"
+          ]
+        }
+      ],
+      "recommendation": {
+        "action": "propose_mapping_update",
+        "primary_execution_proxy": "512400.SH",
+        "mapping_quality": "medium",
+        "requires_manual_approval": true
+      }
+    }
+  ],
+  "warning": "Candidate results are research only. They do not modify asset_mapping.json or execution backtests.",
+  "data_provider": "local",
+  "candidate_count": 13,
+  "blocked_research_assets": [
+    "931688CNY010.CSI",
+    "931743CNY010.CSI",
+    "H20590.CSI",
+    "H21152.CSI",
+    "H00805.CSI"
+  ],
+  "start": "2021-02-04",
+  "end": "2026-07-08"
+}
