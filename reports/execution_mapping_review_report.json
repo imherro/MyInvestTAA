@@ -1,0 +1,518 @@
+{
+  "available": true,
+  "dataset_provenance": {
+    "provider": "tushare",
+    "return_basis": "qfq",
+    "audit_report": "execution_universe_data_audit_tushare.json",
+    "start": "2016-01-01",
+    "end": "2026-07-08",
+    "asset_count": 13,
+    "generated_at": "2026-07-13T04:19:48+00:00",
+    "dataset_generated_at": "2026-07-13T03:47:41+00:00",
+    "file_hashes": {
+      "510300.SH": "6fda0783aa9658b52d1275539afd8330ca19cb1c9aaf6d72e3930b8206885c0a",
+      "510500.SH": "821957ea6b6f88a6868e409e6a1e41632d6adf04b85d5181fc091f9b624dd07a",
+      "512100.SH": "d23886c53956b41483038a1fd1e2fed3c3bd2c0813a4f5764d26d000d073443e",
+      "159915.SZ": "5758e746c10d024973dc0c9d182a14f7186bf90376c0267e5f07f72038e0a1c4",
+      "588000.SH": "556d34859ed037e7268274e3365f744c50e5df30924385d8fc1f1596444c48b5",
+      "515100.SH": "580c32867203b27feda593b639f00fe331349fc7404d1c8c7f8ff92913f0cbf6",
+      "515080.SH": "0d73ef30d46656b64db347528025445c136a749db34499ff6b3b1295ffb15281",
+      "512760.SH": "87e797c2c16c3553912c109b3b196b61c5d53faea18683a9d5bf5bff283b2116",
+      "516160.SH": "d30d03c5c452c0a750304b8cfdb3fd18230b78ee1f3558ab938888c6eef88c61",
+      "512400.SH": "9bc32f85a1392e78ea904c42ac8e31c718c3f4f686fa0f2866b434156d8992d8",
+      "512890.SH": "2ebdbe431357e005b275da9b9c28090fc210375301a2b5e752f84cc785d5f805",
+      "518880.SH": "8c423a0dabcf43211f04d05fc85b58cc52788e063b58e3fd0b037e1100aca71a",
+      "511010.SH": "5b6b6991cec314b22892bf8a1fac6a2fb9fcab8a8f2a8bf2f2e83422e680bcf9"
+    },
+    "provenance_verified": true,
+    "errors": [],
+    "available": true
+  },
+  "proposal_reviews": [
+    {
+      "research_asset_id": "931688CNY010.CSI",
+      "current_primary_execution_proxy": null,
+      "proposed_primary_execution_proxy": "512760.SH",
+      "current_mapping_quality": "none",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.611036,
+      "correlation": 0.746753,
+      "tracking_error_annualized": 0.261462,
+      "overlap_days": 1576,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true,
+      "semantic_review": {
+        "research_asset_id": "931688CNY010.CSI",
+        "research_asset_name": "中证算力全收益",
+        "proposed_proxy": "512760.SH",
+        "proxy_name": "半导体ETF",
+        "semantic_relation": "partial_theme_proxy",
+        "semantic_quality": "weak",
+        "tracking_target_match": false,
+        "industry_exposure_match": false,
+        "review_reason": "半导体暴露不能完整代表算力产业链，缺少服务器、通信与数据中心环节。",
+        "requires_manual_approval": true
+      },
+      "marginal_attribution": {
+        "research_asset_id": "931688CNY010.CSI",
+        "proposed_proxy": "512760.SH",
+        "common_comparison_period": {
+          "start": "2021-02-04",
+          "end": "2026-07-08"
+        },
+        "marginal_impact": {
+          "tradable_weight_coverage_delta": 0.079621,
+          "untradable_month_ratio_delta": -0.212121,
+          "annual_return_delta": 0.032811,
+          "max_drawdown_delta": -0.021165,
+          "sharpe_delta": 0.190146,
+          "cash_drag_delta": -0.063636
+        },
+        "drawdown_attribution": {
+          "baseline": {
+            "max_drawdown": -0.15815,
+            "start_date": "2021-09-09",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-09-30",
+            "duration_days": 229
+          },
+          "proposal": {
+            "max_drawdown": -0.179315,
+            "start_date": "2021-09-09",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-09-30",
+            "duration_days": 229
+          },
+          "etf_return_contributions": {
+            "515080.SH": -0.049323,
+            "516160.SH": -0.046064,
+            "512100.SH": -0.040167,
+            "510500.SH": -0.027731,
+            "512760.SH": -0.024997,
+            "515100.SH": -0.004073
+          },
+          "proposal_marginal_loss_contribution": -0.021165
+        }
+      },
+      "decision": {
+        "result": "retain_research_only",
+        "reasons": [
+          "semantic quality is not approvable"
+        ],
+        "requires_manual_approval": true
+      }
+    },
+    {
+      "research_asset_id": "931743CNY010.CSI",
+      "current_primary_execution_proxy": null,
+      "proposed_primary_execution_proxy": "512760.SH",
+      "current_mapping_quality": "none",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.826642,
+      "correlation": 0.931157,
+      "tracking_error_annualized": 0.140691,
+      "overlap_days": 1714,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true,
+      "semantic_review": {
+        "research_asset_id": "931743CNY010.CSI",
+        "research_asset_name": "半导体材料设备全收益",
+        "proposed_proxy": "512760.SH",
+        "proxy_name": "半导体ETF",
+        "semantic_relation": "close_theme_proxy",
+        "semantic_quality": "acceptable",
+        "tracking_target_match": false,
+        "industry_exposure_match": true,
+        "review_reason": "半导体ETF覆盖材料设备相关成分，但同时包含设计制造等更广泛半导体暴露。",
+        "requires_manual_approval": true
+      },
+      "marginal_attribution": {
+        "research_asset_id": "931743CNY010.CSI",
+        "proposed_proxy": "512760.SH",
+        "common_comparison_period": {
+          "start": "2021-02-04",
+          "end": "2026-07-08"
+        },
+        "marginal_impact": {
+          "tradable_weight_coverage_delta": 0.02654,
+          "untradable_month_ratio_delta": 0.0,
+          "annual_return_delta": 0.009314,
+          "max_drawdown_delta": -0.010903,
+          "sharpe_delta": 0.062974,
+          "cash_drag_delta": -0.021212
+        },
+        "drawdown_attribution": {
+          "baseline": {
+            "max_drawdown": -0.15815,
+            "start_date": "2021-09-09",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-09-30",
+            "duration_days": 229
+          },
+          "proposal": {
+            "max_drawdown": -0.169053,
+            "start_date": "2021-09-10",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-09-30",
+            "duration_days": 228
+          },
+          "etf_return_contributions": {
+            "516160.SH": -0.047085,
+            "515080.SH": -0.045338,
+            "512100.SH": -0.040167,
+            "510500.SH": -0.027731,
+            "512760.SH": -0.015371,
+            "515100.SH": -0.004073
+          },
+          "proposal_marginal_loss_contribution": -0.010903
+        }
+      },
+      "decision": {
+        "result": "recommend_manual_approval",
+        "reasons": [],
+        "requires_manual_approval": true
+      }
+    },
+    {
+      "research_asset_id": "H20590.CSI",
+      "current_primary_execution_proxy": null,
+      "proposed_primary_execution_proxy": "512100.SH",
+      "current_mapping_quality": "none",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.815326,
+      "correlation": 0.870605,
+      "tracking_error_annualized": 0.138584,
+      "overlap_days": 2347,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true,
+      "semantic_review": {
+        "research_asset_id": "H20590.CSI",
+        "research_asset_name": "机器人全收益",
+        "proposed_proxy": "512100.SH",
+        "proxy_name": "中证1000ETF",
+        "semantic_relation": "broad_market_proxy",
+        "semantic_quality": "invalid",
+        "tracking_target_match": false,
+        "industry_exposure_match": false,
+        "review_reason": "中证1000是宽基指数，不是机器人直接或近似跟踪工具。",
+        "requires_manual_approval": true
+      },
+      "marginal_attribution": {
+        "research_asset_id": "H20590.CSI",
+        "proposed_proxy": "512100.SH",
+        "common_comparison_period": {
+          "start": "2021-02-04",
+          "end": "2026-07-08"
+        },
+        "marginal_impact": {
+          "tradable_weight_coverage_delta": 0.022749,
+          "untradable_month_ratio_delta": -0.015152,
+          "annual_return_delta": -0.005223,
+          "max_drawdown_delta": 0.0,
+          "sharpe_delta": -0.051424,
+          "cash_drag_delta": -0.018182
+        },
+        "drawdown_attribution": {
+          "baseline": {
+            "max_drawdown": -0.15815,
+            "start_date": "2021-09-09",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-09-30",
+            "duration_days": 229
+          },
+          "proposal": {
+            "max_drawdown": -0.15815,
+            "start_date": "2021-09-09",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-10-08",
+            "duration_days": 229
+          },
+          "etf_return_contributions": {
+            "515080.SH": -0.049323,
+            "516160.SH": -0.046064,
+            "512100.SH": -0.040167,
+            "510500.SH": -0.027731,
+            "515100.SH": -0.004073
+          },
+          "proposal_marginal_loss_contribution": 0.0
+        }
+      },
+      "decision": {
+        "result": "reject_proxy",
+        "reasons": [
+          "semantic quality is not approvable"
+        ],
+        "requires_manual_approval": true
+      }
+    },
+    {
+      "research_asset_id": "H21152.CSI",
+      "current_primary_execution_proxy": null,
+      "proposed_primary_execution_proxy": "159915.SZ",
+      "current_mapping_quality": "none",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.668967,
+      "correlation": 0.713405,
+      "tracking_error_annualized": 0.217833,
+      "overlap_days": 2550,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true,
+      "semantic_review": {
+        "research_asset_id": "H21152.CSI",
+        "research_asset_name": "CS创新药全收益",
+        "proposed_proxy": "159915.SZ",
+        "proxy_name": "创业板ETF",
+        "semantic_relation": "broad_market_proxy",
+        "semantic_quality": "invalid",
+        "tracking_target_match": false,
+        "industry_exposure_match": false,
+        "review_reason": "创业板ETF是宽基成长工具，不是创新药直接或近似跟踪工具。",
+        "requires_manual_approval": true
+      },
+      "marginal_attribution": {
+        "research_asset_id": "H21152.CSI",
+        "proposed_proxy": "159915.SZ",
+        "common_comparison_period": {
+          "start": "2021-02-04",
+          "end": "2026-07-08"
+        },
+        "marginal_impact": {
+          "tradable_weight_coverage_delta": 0.007583,
+          "untradable_month_ratio_delta": 0.0,
+          "annual_return_delta": 0.003321,
+          "max_drawdown_delta": 0.0,
+          "sharpe_delta": 0.023864,
+          "cash_drag_delta": -0.006061
+        },
+        "drawdown_attribution": {
+          "baseline": {
+            "max_drawdown": -0.15815,
+            "start_date": "2021-09-09",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-09-30",
+            "duration_days": 229
+          },
+          "proposal": {
+            "max_drawdown": -0.15815,
+            "start_date": "2021-09-09",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-09-30",
+            "duration_days": 229
+          },
+          "etf_return_contributions": {
+            "515080.SH": -0.049323,
+            "516160.SH": -0.046064,
+            "512100.SH": -0.040167,
+            "510500.SH": -0.027731,
+            "515100.SH": -0.004073
+          },
+          "proposal_marginal_loss_contribution": 0.0
+        }
+      },
+      "decision": {
+        "result": "reject_proxy",
+        "reasons": [
+          "semantic quality is not approvable"
+        ],
+        "requires_manual_approval": true
+      }
+    },
+    {
+      "research_asset_id": "H00805.CSI",
+      "current_primary_execution_proxy": "512400.SH",
+      "proposed_primary_execution_proxy": "512400.SH",
+      "current_mapping_quality": "low",
+      "proposed_mapping_quality": "medium",
+      "candidate_score": 0.810725,
+      "correlation": 0.923429,
+      "tracking_error_annualized": 0.129548,
+      "overlap_days": 2144,
+      "eligible_for_recommendation": true,
+      "requires_manual_approval": true,
+      "semantic_review": {
+        "research_asset_id": "H00805.CSI",
+        "research_asset_name": "A股资源全收益",
+        "proposed_proxy": "512400.SH",
+        "proxy_name": "有色金属ETF",
+        "semantic_relation": "partial_theme_proxy",
+        "semantic_quality": "weak",
+        "tracking_target_match": false,
+        "industry_exposure_match": false,
+        "review_reason": "有色金属仅覆盖部分资源暴露，缺少煤炭、能源、钢铁等板块。",
+        "requires_manual_approval": true
+      },
+      "marginal_attribution": {
+        "research_asset_id": "H00805.CSI",
+        "proposed_proxy": "512400.SH",
+        "common_comparison_period": {
+          "start": "2021-02-04",
+          "end": "2026-07-08"
+        },
+        "marginal_impact": {
+          "tradable_weight_coverage_delta": 0.196682,
+          "untradable_month_ratio_delta": -0.121212,
+          "annual_return_delta": 0.007559,
+          "max_drawdown_delta": -0.109921,
+          "sharpe_delta": -0.056962,
+          "cash_drag_delta": -0.157197
+        },
+        "drawdown_attribution": {
+          "baseline": {
+            "max_drawdown": -0.15815,
+            "start_date": "2021-09-09",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2024-09-30",
+            "duration_days": 229
+          },
+          "proposal": {
+            "max_drawdown": -0.268071,
+            "start_date": "2021-09-13",
+            "trough_date": "2022-04-26",
+            "recovery_date": "2025-08-22",
+            "duration_days": 225
+          },
+          "etf_return_contributions": {
+            "512400.SH": -0.133368,
+            "515080.SH": -0.049855,
+            "516160.SH": -0.045352,
+            "512100.SH": -0.040167,
+            "510500.SH": -0.027731,
+            "515100.SH": -0.004073
+          },
+          "proposal_marginal_loss_contribution": -0.109921
+        }
+      },
+      "decision": {
+        "result": "retain_research_only",
+        "reasons": [
+          "semantic quality is not approvable",
+          "max drawdown worsened more than 5%"
+        ],
+        "requires_manual_approval": true
+      }
+    }
+  ],
+  "full_overlay_result": {
+    "common_comparison_period": {
+      "start": "2021-02-04",
+      "end": "2026-07-08"
+    },
+    "impact": {
+      "tradable_weight_coverage_delta": 0.333175,
+      "untradable_month_ratio_delta": -0.984848,
+      "annual_return_delta": 0.046899,
+      "max_drawdown_delta": -0.137414,
+      "sharpe_delta": 0.108617,
+      "cash_drag_delta": -0.266288
+    },
+    "baseline_drawdown": {
+      "max_drawdown": -0.15815,
+      "start_date": "2021-09-09",
+      "trough_date": "2022-04-26",
+      "recovery_date": "2024-09-30",
+      "duration_days": 229
+    },
+    "full_overlay_drawdown": {
+      "max_drawdown": -0.295564,
+      "start_date": "2021-09-13",
+      "trough_date": "2022-04-26",
+      "recovery_date": "2025-08-18",
+      "duration_days": 225
+    },
+    "etf_return_contributions": {
+      "512400.SH": -0.133368,
+      "515080.SH": -0.049855,
+      "516160.SH": -0.045352,
+      "512100.SH": -0.040167,
+      "512760.SH": -0.036579,
+      "510500.SH": -0.027731,
+      "515100.SH": -0.004073
+    },
+    "concentration_or_market_exposure": "increased_mapped_market_exposure"
+  },
+  "proxy_collision_diagnostics": {
+    "proxy_collisions": [
+      {
+        "proxy_id": "512100.SH",
+        "research_asset_ids": [
+          "H00852.CSI",
+          "H20590.CSI"
+        ],
+        "max_aggregate_weight": 0.25,
+        "average_aggregate_weight": 0.057197,
+        "months_above_30_percent": 0,
+        "months_above_35_percent": 0,
+        "violation": null
+      },
+      {
+        "proxy_id": "512760.SH",
+        "research_asset_ids": [
+          "931688CNY010.CSI",
+          "931743CNY010.CSI",
+          "H20007.CSI"
+        ],
+        "max_aggregate_weight": 0.2,
+        "average_aggregate_weight": 0.101515,
+        "months_above_30_percent": 0,
+        "months_above_35_percent": 0,
+        "violation": null
+      }
+    ],
+    "has_weight_violation": false
+  },
+  "drawdown_attribution": {
+    "common_comparison_period": {
+      "start": "2021-02-04",
+      "end": "2026-07-08"
+    },
+    "impact": {
+      "tradable_weight_coverage_delta": 0.333175,
+      "untradable_month_ratio_delta": -0.984848,
+      "annual_return_delta": 0.046899,
+      "max_drawdown_delta": -0.137414,
+      "sharpe_delta": 0.108617,
+      "cash_drag_delta": -0.266288
+    },
+    "baseline_drawdown": {
+      "max_drawdown": -0.15815,
+      "start_date": "2021-09-09",
+      "trough_date": "2022-04-26",
+      "recovery_date": "2024-09-30",
+      "duration_days": 229
+    },
+    "full_overlay_drawdown": {
+      "max_drawdown": -0.295564,
+      "start_date": "2021-09-13",
+      "trough_date": "2022-04-26",
+      "recovery_date": "2025-08-18",
+      "duration_days": 225
+    },
+    "etf_return_contributions": {
+      "512400.SH": -0.133368,
+      "515080.SH": -0.049855,
+      "516160.SH": -0.045352,
+      "512100.SH": -0.040167,
+      "512760.SH": -0.036579,
+      "510500.SH": -0.027731,
+      "515100.SH": -0.004073
+    },
+    "concentration_or_market_exposure": "increased_mapped_market_exposure"
+  },
+  "decision": {
+    "approved_for_manual_review": [
+      "931743CNY010.CSI"
+    ],
+    "retain_research_only": [
+      "931688CNY010.CSI",
+      "H00805.CSI"
+    ],
+    "rejected": [
+      "H20590.CSI",
+      "H21152.CSI"
+    ],
+    "ready_for_mapping_update_task": false,
+    "reasons": [
+      "Formal asset_mapping.json remains unchanged; manual semantic approval is required."
+    ]
+  }
+}

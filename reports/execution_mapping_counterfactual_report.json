@@ -1,6 +1,10 @@
 {
   "available": true,
   "data_provider": "tushare",
+  "dataset_provenance": {
+    "provenance_verified": true,
+    "errors": []
+  },
   "baseline": {
     "available": true,
     "strategy": "EXECUTION_PROXY_MVP",
@@ -19008,12 +19012,28 @@
   "proxy_collision_diagnostics": {
     "proxy_collisions": [
       {
+        "proxy_id": "512100.SH",
+        "research_asset_ids": [
+          "H00852.CSI",
+          "H20590.CSI"
+        ],
+        "max_aggregate_weight": 0.25,
+        "average_aggregate_weight": 0.057197,
+        "months_above_30_percent": 0,
+        "months_above_35_percent": 0,
+        "violation": null
+      },
+      {
         "proxy_id": "512760.SH",
         "research_asset_ids": [
           "931688CNY010.CSI",
-          "931743CNY010.CSI"
+          "931743CNY010.CSI",
+          "H20007.CSI"
         ],
         "max_aggregate_weight": 0.2,
+        "average_aggregate_weight": 0.101515,
+        "months_above_30_percent": 0,
+        "months_above_35_percent": 0,
         "violation": null
       }
     ],
