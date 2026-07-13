@@ -1,21 +1,63 @@
-import argparse,sys
+from __future__ import annotations
+
+import argparse
+import json
+import sys
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
-from backtest.execution.data_loader import build_mock_execution_price_dataset,fetch_execution_price_dataset,load_execution_price_dataset,write_execution_price_dataset
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from backtest.execution.data_loader import (
+    EXECUTION_PRICE_DIR,
+    build_mock_execution_price_dataset,
+    fetch_execution_price_dataset_with_errors,
+    load_execution_price_dataset,
+    write_execution_price_dataset,
+)
 from backtest.execution.engine import run_execution_backtest
-from backtest.execution.report import load_execution_backtest_report,write_execution_backtest_report
+from backtest.execution.mapping_improvement import build_mapping_improvement_report, write_mapping_improvement_report
+from backtest.execution.report import write_execution_backtest_report
 from backtest.research.report import load_research_backtest_report
 from data_provider.tushare_provider import TushareProvider
-from engine.asset_registry import load_asset_mappings,load_execution_universe
-def main():
- p=argparse.ArgumentParser();p.add_argument('--provider',choices=['local','mock','tushare'],default='local');p.add_argument('--start');p.add_argument('--end');a=p.parse_args(); assets=load_execution_universe()
- if a.provider=='local': data=load_execution_price_dataset(assets)
- elif a.provider=='mock': data=build_mock_execution_price_dataset(assets);write_execution_price_dataset(data)
- else:
-  provider=TushareProvider(return_type='qfq')
-  if not provider.provider_status()['available']: raise SystemExit('TUSHARE_TOKEN is required for --provider tushare.')
-  data=fetch_execution_price_dataset(provider,assets,a.start,a.end);write_execution_price_dataset(data)
- report=run_execution_backtest(load_research_backtest_report(),data,load_asset_mappings(),assets);report['data_provider']=a.provider
- if a.provider=='mock': report.setdefault('warnings',[]).append('Mock execution report validates mechanics only; it is not real ETF execution evidence.')
- write_execution_backtest_report(report);print({'available':report.get('available'),'period':report.get('period'),'metrics':report.get('metrics')})
-if __name__=='__main__': main()
+from engine.asset_registry import load_asset_mappings, load_execution_universe
+
+
+def _local_provider() -> str:
+    manifest = EXECUTION_PRICE_DIR / "manifest.json"
+    if not manifest.exists():
+        return "local"
+    return str(json.loads(manifest.read_text(encoding="utf-8")).get("data_provider", "local"))
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run an offline ETF execution proxy backtest.")
+    parser.add_argument("--provider", choices=["local", "mock", "tushare"], default="local")
+    parser.add_argument("--start")
+    parser.add_argument("--end")
+    args = parser.parse_args()
+    assets = load_execution_universe()
+    provider_name = args.provider
+    if args.provider == "local":
+        data = load_execution_price_dataset(assets)
+        provider_name = _local_provider()
+    elif args.provider == "mock":
+        data = build_mock_execution_price_dataset(assets)
+    else:
+        provider = TushareProvider(return_type="qfq")
+        if not provider.provider_status()["available"]:
+            raise SystemExit("TUSHARE_TOKEN is required for --provider tushare.")
+        data, errors = fetch_execution_price_dataset_with_errors(provider, assets, args.start, args.end)
+        write_execution_price_dataset(data)
+        if errors:
+            print({"data_fetch_errors": sorted(errors)})
+    report = run_execution_backtest(
+        load_research_backtest_report(), data, load_asset_mappings(), assets, data_provider=provider_name
+    )
+    write_execution_backtest_report(report)
+    write_mapping_improvement_report(build_mapping_improvement_report(report))
+    print({"available": report.get("available"), "provider": provider_name, "period": report.get("period"), "metrics": report.get("metrics")})
+
+
+if __name__ == "__main__":
+    main()

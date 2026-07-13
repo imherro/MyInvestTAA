@@ -18,7 +18,7 @@ from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from backtest.research import load_research_backtest_report
-from backtest.execution import load_execution_backtest_report
+from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
@@ -31,6 +31,7 @@ from engine.asset_registry import (
     build_research_universe_readiness,
     build_research_universe_audit,
     load_asset_mappings,
+    load_execution_data_availability_report,
     load_execution_universe,
     load_metadata_suggestions_report,
     load_research_data_availability_report,
@@ -300,6 +301,16 @@ def get_research_backtest_diagnostics() -> dict:
 @app.get("/api/research/execution-backtest")
 def get_execution_backtest_report() -> dict:
     return load_execution_backtest_report()
+
+
+@app.get("/api/research/execution-universe-data-audit")
+def get_execution_universe_data_audit() -> dict:
+    return load_execution_data_availability_report()
+
+
+@app.get("/api/research/execution-mapping-improvement")
+def get_execution_mapping_improvement() -> dict:
+    return load_mapping_improvement_report()
 
 
 @app.get("/api/recovery/{asset_id}")
@@ -2821,16 +2832,22 @@ def research_backtest_page() -> str:
 @app.get("/execution-backtest", response_class=HTMLResponse)
 def execution_backtest_page() -> str:
     report = load_execution_backtest_report()
+    audit = load_execution_data_availability_report()
+    improvement = load_mapping_improvement_report()
     metrics = "\n".join(_mapping_rows(report.get("metrics", {}), empty="Execution backtest report not generated yet"))
     overlap = "\n".join(_mapping_rows(report.get("research_overlap_metrics", {}), empty="No research overlap metrics recorded"))
     gap = "\n".join(_mapping_rows(report.get("execution_gap", {}), empty="No execution gap recorded"))
     mapping = "\n".join(_mapping_rows(report.get("mapping_summary", {}), empty="No mapping summary recorded"))
     decision = "\n".join(_mapping_rows(report.get("decision", {}), empty="No execution validation decision recorded"))
-    cash = "\n".join(_mapping_rows((report.get("monthly_allocations") or [{}])[-1].get("cash_breakdown", {}), empty="No cash breakdown recorded"))
+    cash = "\n".join(_mapping_rows(report.get("aggregate_cash_breakdown", {}), empty="No aggregate cash breakdown recorded"))
+    audit_summary = "\n".join(_mapping_rows({key: audit.get(key) for key in ("provider", "checked_assets", "available_assets", "unavailable_assets", "start", "end")}, empty="No ETF data audit recorded"))
+    unmapped = "\n".join(_message_rows([str(row.get("research_asset_id")) for row in report.get("unmapped_assets", [])], empty="No unmapped assets"))
+    low_quality = "\n".join(_message_rows([str(row.get("research_asset_id")) for row in report.get("low_quality_proxy_assets", [])], empty="No low quality proxies"))
+    improvement_rows = "\n".join(_mapping_rows(improvement, empty="No mapping improvement report recorded"))
     warnings = "\n".join(_message_rows(report.get("warnings", []), empty="No execution backtest warnings"))
     return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><title>Execution Backtest</title><style>{_report_page_css()}</style></head><body><header><h1>Execution Backtest</h1><p>This execution backtest is an ETF proxy validation, not a production trading instruction. <a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/research-universe">Research Universe</a></p></header><main>
-    <section><h2>Status</h2><table><tbody>{"<tr><td>Available</td><td>" + escape(str(report.get("available", False))) + "</td></tr><tr><td>Period</td><td>" + escape(str(report.get("period", {}))) + "</td></tr>"}</tbody></table></section>
-    <section><h2>Execution Metrics</h2><table><tbody>{metrics}</tbody></table></section><section><h2>Research Overlap Metrics</h2><table><tbody>{overlap}</tbody></table></section><section><h2>Execution Gap</h2><table><tbody>{gap}</tbody></table></section><section><h2>Mapping Summary</h2><table><tbody>{mapping}</tbody></table></section><section><h2>Cash Breakdown</h2><table><tbody>{cash}</tbody></table></section><section><h2>Ready for Execution Validation?</h2><table><tbody>{decision}</tbody></table></section><section><h2>Warnings</h2><table><tbody>{warnings}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
+    <section><h2>Status</h2><table><tbody>{"<tr><td>Available</td><td>" + escape(str(report.get("available", False))) + "</td></tr><tr><td>Data Provider</td><td>" + escape(str(report.get("data_provider", "unknown"))) + "</td></tr><tr><td>Period</td><td>" + escape(str(report.get("period", {}))) + "</td></tr>"}</tbody></table></section>
+    <section><h2>Real ETF Data Audit</h2><table><tbody>{audit_summary}</tbody></table></section><section><h2>Execution Metrics</h2><table><tbody>{metrics}</tbody></table></section><section><h2>Research Overlap Metrics</h2><table><tbody>{overlap}</tbody></table></section><section><h2>Execution Gap</h2><table><tbody>{gap}</tbody></table></section><section><h2>Mapping Summary</h2><table><tbody>{mapping}</tbody></table></section><section><h2>Aggregate Cash Breakdown</h2><table><tbody>{cash}</tbody></table></section><section><h2>Unmapped Assets</h2><table><tbody>{unmapped}</tbody></table></section><section><h2>Low Quality Proxies</h2><table><tbody>{low_quality}</tbody></table></section><section><h2>Mapping Improvement</h2><table><tbody>{improvement_rows}</tbody></table></section><section><h2>Ready for Execution Validation?</h2><table><tbody>{decision}</tbody></table></section><section><h2>Warnings</h2><table><tbody>{warnings}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
 
 
 def _research_universe_rows(rows: list[dict]) -> list[str]:

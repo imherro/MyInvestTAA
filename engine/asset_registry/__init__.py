@@ -5,6 +5,11 @@ from engine.asset_registry.data_audit import (
     load_research_data_availability_report,
     write_research_data_availability_audit,
 )
+from engine.asset_registry.execution_data_audit import (
+    build_execution_data_availability_audit,
+    load_execution_data_availability_report,
+    write_execution_data_availability_audit,
+)
 from engine.asset_registry.loader import (
     clear_asset_registry_cache,
     execution_assets_by_id,
@@ -41,6 +46,7 @@ __all__ = [
     "ExecutionAsset",
     "ResearchAsset",
     "build_research_data_availability_audit",
+    "build_execution_data_availability_audit",
     "build_metadata_suggestions",
     "build_return_basis_review",
     "build_research_universe_readiness",
@@ -51,6 +57,7 @@ __all__ = [
     "load_asset_mappings",
     "load_asset_registry",
     "load_execution_universe",
+    "load_execution_data_availability_report",
     "load_research_data_availability_report",
     "load_research_universe",
     "load_metadata_suggestions_report",
@@ -64,5 +71,6 @@ __all__ = [
     "validate_research_assets",
     "write_metadata_suggestions",
     "write_research_data_availability_audit",
+    "write_execution_data_availability_audit",
     "write_return_basis_review",
 ]

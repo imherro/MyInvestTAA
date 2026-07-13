@@ -17,6 +17,12 @@ def write_execution_price_dataset(dataset, data_dir=None):
     for asset_id, rows in dataset.items(): price_file(asset_id,target).write_text(json.dumps([row.as_dict() for row in rows],ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 def fetch_execution_price_dataset(provider, assets, start=None, end=None):
     return {asset.asset_id:[ExecutionPrice(asset.asset_id,bar.date,bar.close,"qfq") for bar in get_asset_history(provider,asset,start,end) if bar.close is not None] for asset in assets}
+def fetch_execution_price_dataset_with_errors(provider, assets, start=None, end=None):
+    dataset={}; errors={}
+    for asset in assets:
+        try: dataset[asset.asset_id]=[ExecutionPrice(asset.asset_id,bar.date,bar.close,"qfq") for bar in get_asset_history(provider,asset,start,end) if bar.close is not None]
+        except Exception as exc: dataset[asset.asset_id]=[]; errors[asset.asset_id]=str(exc)
+    return dataset,errors
 def build_mock_execution_price_dataset(assets, *, periods=3900):
     dates=[]; current=date(2011,1,4)
     while len(dates)<periods:
