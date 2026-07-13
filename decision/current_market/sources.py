@@ -21,6 +21,7 @@ from backtest.execution.shadow_report import (
 from backtest.research.report import RESEARCH_BACKTEST_REPORT, load_research_backtest_report
 from decision.current_market.models import SourceSnapshot
 from decision.current_market.source_policy import ALL_SOURCE_DEFINITIONS, sha256_file
+from decision.v11_current import load_v11_current_allocation
 from engine.asset_registry import load_execution_universe
 from engine.asset_registry.loader import ASSET_MAPPING_FILE, ROOT
 
@@ -44,9 +45,7 @@ def load_current_market_sources() -> dict:
     gate_policy = _load_json_report(
         EXECUTION_GATE_POLICY, "execution validation policy not found"
     )
-    v11_allocation = _load_json_report(
-        V11_CURRENT_ALLOCATION_REPORT, "current V11 allocation snapshot not found"
-    )
+    v11_allocation = load_v11_current_allocation()
     price_verification = (
         verify_price_dataset_manifest(price_manifest, load_execution_universe())
         if price_manifest.get("available")

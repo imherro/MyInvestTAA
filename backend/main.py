@@ -50,6 +50,7 @@ from engine.risk import build_risk_budget
 from engine.taa_score import build_taa_ranking
 from decision.current_market.explain import decision_headline
 from decision.current_market.report import load_current_market_decision
+from decision.v11_current import load_v11_current_allocation
 from storage import MarketDataRepository, connect_database
 
 
@@ -369,6 +370,11 @@ def get_current_market_decision() -> dict:
     return load_current_market_decision()
 
 
+@app.get("/api/decision/v11-current-allocation")
+def get_v11_current_allocation() -> dict:
+    return load_v11_current_allocation()
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -575,7 +581,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/current-decision">Current Decision</a> · <a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/shadow-portfolio">Shadow Portfolio</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/current-decision">Current Decision</a> · <a href="/v11-current-allocation">V11 Current Allocation</a> · <a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/shadow-portfolio">Shadow Portfolio</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -2949,12 +2955,101 @@ def shadow_portfolio_page() -> str:
     return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Execution-Aware Shadow Portfolio</title><style>{_report_page_css()}</style></head><body><header><h1>Execution-Aware Shadow Portfolio</h1><p>This is an experimental execution-aware shadow allocation. It is not a production portfolio or trading instruction. <a href="/">Dashboard</a> · <a href="/current-decision">Current Decision</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a></p></header><main><section><h2>Shadow Status</h2><table><tbody>{status_rows}</tbody></table></section><section><h2>Approval Integrity</h2><table><tbody>{approval_integrity_rows}</tbody></table></section><section><h2>Snapshot Hashes</h2><table><tbody>{snapshot_rows}</tbody></table></section><section><h2>Price As-Of by Proxy</h2><table><tbody>{price_as_of_rows}</tbody></table></section><section><h2>Transaction Status</h2><table><tbody>{transaction_rows}</tbody></table></section><section><h2>Source Research Allocation</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Research Weights</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Executable ETF Weights</h2><table><tbody>{execution_rows}</tbody></table></section><section><h2>Cash Breakdown</h2><table><tbody>{cash_rows}</tbody></table></section><section><h2>Mapping Explanations</h2><table><thead><tr><th>Research Asset</th><th>Weight</th><th>Destination</th><th>Quality</th><th>Decision</th><th>Reason</th></tr></thead><tbody>{mapping_rows}</tbody></table></section><section><h2>Frozen Research-Only Assets</h2><table><tbody>{frozen_rows}</tbody></table></section><section><h2>Constraint Checks</h2><table><tbody>{constraint_rows}</tbody></table></section><section><h2>Data Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>V11 Boundary</h2><p>V11 remains the existing production candidate. This shadow allocation does not replace or modify V11.</p></section><section><h2>Warnings</h2><table><tbody>{warning_rows}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
 
 
+@app.get("/v11-current-allocation", response_class=HTMLResponse)
+def v11_current_allocation_page() -> str:
+    report = load_v11_current_allocation()
+    status_rows = "\n".join(
+        _mapping_rows(
+            {
+                key: report.get(key)
+                for key in (
+                    "available",
+                    "status",
+                    "strategy",
+                    "as_of",
+                    "source_state_date",
+                    "production_candidate",
+                    "production_actionable",
+                    "trading_instruction",
+                )
+            },
+            empty="V11 current allocation snapshot not generated yet",
+        )
+    )
+    allocation_rows = "\n".join(
+        _mapping_rows(report.get("allocation", {}), empty="No V11 allocation available")
+    )
+    equity_cash_rows = "\n".join(
+        _mapping_rows(
+            {
+                "equity_weight": report.get("equity_weight"),
+                "cash_weight": report.get("cash_weight"),
+            },
+            empty="No V11 equity or cash weight available",
+        )
+    )
+    regime_rows = "\n".join(
+        _mapping_rows(report.get("regime", {}), empty="No V11 regime recorded")
+    )
+    risk_rows = "\n".join(
+        _mapping_rows(
+            report.get("risk_budget", {}), empty="No V11 risk budget recorded"
+        )
+    )
+    exposure_rows = "\n".join(
+        _mapping_rows(
+            report.get("exposure_decision", {}),
+            empty="No V11 exposure decision recorded",
+        )
+    )
+    selected_rows = "\n".join(
+        _message_rows(
+            report.get("selected_assets", []), empty="No V11 assets selected"
+        )
+    )
+    actual_target_rows = "\n".join(
+        _mapping_rows(
+            {
+                "actual_weights_percent": report.get("allocation_percent", {}),
+                "target_weights_percent": report.get("target_weights_percent", {}),
+            },
+            empty="No actual or target V11 weights recorded",
+        )
+    )
+    assumption_rows = "\n".join(
+        _mapping_rows(
+            report.get("assumptions", {}), empty="No V11 assumptions recorded"
+        )
+    )
+    integrity_rows = "\n".join(
+        _mapping_rows(
+            report.get("source_integrity", {}),
+            empty="No V11 source integrity recorded",
+        )
+    )
+    constraint_rows = "\n".join(
+        _mapping_rows(
+            report.get("constraint_checks", {}),
+            empty="No V11 constraint checks recorded",
+        )
+    )
+    warning_rows = "\n".join(
+        _message_rows(report.get("warnings", []), empty="No warnings recorded")
+    )
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>V11 Current Allocation</title><style>{_report_page_css()}</style></head><body><header><h1>V11 Current Allocation</h1><p>This is an offline V11 model allocation snapshot. It is not an order or trading instruction.</p><p><a href="/">Dashboard</a> · <a href="/current-decision">Current Decision</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/production-readiness">Production Readiness</a></p></header><main><section><h2>Snapshot Status</h2><table><tbody>{status_rows}</tbody></table></section><section><h2>V11 Allocation</h2><table><tbody>{allocation_rows}</tbody></table></section><section><h2>Equity / Cash Weight</h2><table><tbody>{equity_cash_rows}</tbody></table></section><section><h2>Regime</h2><table><tbody>{regime_rows}</tbody></table></section><section><h2>Risk Budget</h2><table><tbody>{risk_rows}</tbody></table></section><section><h2>Exposure Decision</h2><table><tbody>{exposure_rows}</tbody></table></section><section><h2>Selected Assets</h2><table><tbody>{selected_rows}</tbody></table></section><section><h2>Actual Weights vs Target Weights</h2><table><tbody>{actual_target_rows}</tbody></table></section><section><h2>Canonical Assumptions</h2><table><tbody>{assumption_rows}</tbody></table></section><section><h2>Source Integrity</h2><table><tbody>{integrity_rows}</tbody></table></section><section><h2>Constraint Checks</h2><table><tbody>{constraint_rows}</tbody></table></section><section><h2>Non-Trading Warning</h2><table><tbody>{warning_rows}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
+
+
 @app.get("/current-decision", response_class=HTMLResponse)
 def current_decision_page() -> str:
     report = load_current_market_decision()
     market_rows = "\n".join(_mapping_rows(report.get("market_state", {}), empty="Current market state report not generated yet"))
     risk_rows = "\n".join(_mapping_rows(report.get("risk_summary", {}), empty="No risk summary recorded"))
     v11_rows = "\n".join(_mapping_rows(report.get("production_candidate", {}), empty="No V11 candidate snapshot recorded"))
+    v11_allocation_rows = "\n".join(_mapping_rows(report.get("production_candidate", {}).get("allocation", {}), empty="No V11 current allocation available"))
+    v11_equity_cash_rows = "\n".join(_mapping_rows({key: report.get("production_candidate", {}).get(key) for key in ("equity_weight", "cash_weight")}, empty="No V11 equity or cash weights available"))
+    v11_selected_rows = "\n".join(_message_rows(report.get("production_candidate", {}).get("selected_assets", []), empty="No V11 selected assets available"))
+    v11_difference_rows = "\n".join(_mapping_rows(report.get("comparison", {}).get("weight_differences", {}), empty="No V11 and Shadow weight differences available"))
+    v11_integrity_rows = "\n".join(_mapping_rows(report.get("production_candidate", {}).get("allocation_integrity", {}), empty="No V11 snapshot integrity available"))
     research_rows = "\n".join(_mapping_rows(report.get("research_allocation", {}), empty="No research allocation recorded"))
     shadow_rows = "\n".join(_mapping_rows(report.get("execution_shadow", {}), empty="No execution-aware shadow allocation recorded"))
     validation_rows = "\n".join(_mapping_rows(report.get("execution_validation", {}), empty="No execution validation status recorded"))
@@ -2982,7 +3077,7 @@ def current_decision_page() -> str:
     cash_text = escape(str(report.get("cash_explanation", "Cash explanation unavailable")))
     decision_date = escape(str(report.get("decision_date", "unavailable")))
     market_data_as_of = escape(str(report.get("market_data_as_of", "unavailable")))
-    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Current Market Decision</title><style>{_report_page_css()}</style></head><body><header><h1>Current Market Decision</h1><p>Decision prepared on {decision_date} using market data through {market_data_as_of}. This page does not create orders or replace V11.</p><p><a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/shadow-portfolio">Shadow Portfolio</a></p></header><main><section><h2>Decision Status</h2><table><tbody>{status_rows}</tbody></table></section><section><h2>Decision Summary</h2><p>{summary_headline}</p></section><section><h2>Decision Date</h2><table><tbody>{decision_date_rows}</tbody></table></section><section><h2>Market Data Through</h2><table><tbody>{market_date_rows}</tbody></table></section><section><h2>Governance State Date</h2><table><tbody>{governance_date_rows}</tbody></table></section><section><h2>Snapshot Mode</h2><table><tbody>{snapshot_mode_rows}</tbody></table></section><section><h2>Current Market State</h2><table><tbody>{market_rows}</tbody></table></section><section><h2>Risk Level</h2><table><tbody>{risk_rows}</tbody></table></section><section><h2>V11 Production Candidate</h2><table><tbody>{v11_rows}</tbody></table></section><section><h2>V11 Metadata Available</h2><table><tbody>{v11_availability_rows}</tbody></table></section><section><h2>V11 Current Allocation Available</h2><table><tbody>{v11_availability_rows}</tbody></table></section><section><h2>Research Allocation</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Execution-Aware Shadow Allocation</h2><table><tbody>{shadow_rows}</tbody></table></section><section><h2>Why 40% Cash?</h2><p>{cash_text}</p></section><section><h2>Execution Validation Status</h2><table><tbody>{validation_rows}</tbody></table></section><section><h2>Execution Gate Policy</h2><table><tbody>{gate_policy_rows}</tbody></table></section><section><h2>Current Constraints</h2><table><tbody>{constraint_rows}</tbody></table></section><section><h2>Data Freshness</h2><table><tbody>{freshness_rows}</tbody></table></section><section><h2>Required Source Status</h2><table><tbody>{source_status_rows}</tbody></table></section><section><h2>Source Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>What Is Executable</h2><p>These are eligible ETF proxy weights in a shadow snapshot only; they are not orders.</p><table><tbody>{executable_rows}</tbody></table></section><section><h2>What Is Research-Only</h2><table><tbody>{research_only_rows}</tbody></table></section><section><h2>Blocking Conditions</h2><table><tbody>{blocking_rows}</tbody></table></section><section><h2>V11 vs Shadow Boundary</h2><p>V11 remains unchanged. The Research allocation and Execution-Aware Shadow are shown side by side only; no merged portfolio is created and Shadow cannot substitute for an unavailable V11 allocation.</p></section></main>{_unified_shell_scripts()}</body></html>"""
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Current Market Decision</title><style>{_report_page_css()}</style></head><body><header><h1>Current Market Decision</h1><p>Decision prepared on {decision_date} using market data through {market_data_as_of}. This page does not create orders or replace V11.</p><p><a href="/">Dashboard</a> · <a href="/v11-current-allocation">V11 Current Allocation</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/shadow-portfolio">Shadow Portfolio</a></p></header><main><section><h2>Decision Status</h2><table><tbody>{status_rows}</tbody></table></section><section><h2>Decision Summary</h2><p>{summary_headline}</p></section><section><h2>Decision Date</h2><table><tbody>{decision_date_rows}</tbody></table></section><section><h2>Market Data Through</h2><table><tbody>{market_date_rows}</tbody></table></section><section><h2>Governance State Date</h2><table><tbody>{governance_date_rows}</tbody></table></section><section><h2>Snapshot Mode</h2><table><tbody>{snapshot_mode_rows}</tbody></table></section><section><h2>Current Market State</h2><table><tbody>{market_rows}</tbody></table></section><section><h2>Risk Level</h2><table><tbody>{risk_rows}</tbody></table></section><section><h2>V11 Production Candidate</h2><table><tbody>{v11_rows}</tbody></table></section><section><h2>V11 Metadata Available</h2><table><tbody>{v11_availability_rows}</tbody></table></section><section><h2>V11 Current Allocation Available</h2><table><tbody>{v11_availability_rows}</tbody></table></section><section><h2>V11 Current Allocation</h2><table><tbody>{v11_allocation_rows}</tbody></table></section><section><h2>V11 Equity and Cash</h2><table><tbody>{v11_equity_cash_rows}</tbody></table></section><section><h2>V11 Selected Assets</h2><table><tbody>{v11_selected_rows}</tbody></table></section><section><h2>V11 vs Shadow Weight Differences</h2><table><tbody>{v11_difference_rows}</tbody></table></section><section><h2>V11 Snapshot Integrity</h2><table><tbody>{v11_integrity_rows}</tbody></table></section><section><h2>Research Allocation</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Execution-Aware Shadow Allocation</h2><table><tbody>{shadow_rows}</tbody></table></section><section><h2>Why 40% Cash?</h2><p>{cash_text}</p></section><section><h2>Execution Validation Status</h2><table><tbody>{validation_rows}</tbody></table></section><section><h2>Execution Gate Policy</h2><table><tbody>{gate_policy_rows}</tbody></table></section><section><h2>Current Constraints</h2><table><tbody>{constraint_rows}</tbody></table></section><section><h2>Data Freshness</h2><table><tbody>{freshness_rows}</tbody></table></section><section><h2>Required Source Status</h2><table><tbody>{source_status_rows}</tbody></table></section><section><h2>Source Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>What Is Executable</h2><p>These are eligible ETF proxy weights in a shadow snapshot only; they are not orders.</p><table><tbody>{executable_rows}</tbody></table></section><section><h2>What Is Research-Only</h2><table><tbody>{research_only_rows}</tbody></table></section><section><h2>Blocking Conditions</h2><table><tbody>{blocking_rows}</tbody></table></section><section><h2>V11 vs Shadow Boundary</h2><p>V11 remains unchanged. The Research allocation and Execution-Aware Shadow are shown side by side only; no merged portfolio is created and Shadow cannot substitute for an unavailable V11 allocation.</p></section></main>{_unified_shell_scripts()}</body></html>"""
 
 
 def _shadow_mapping_rows(rows: list[dict]) -> list[str]:

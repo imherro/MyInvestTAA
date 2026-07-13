@@ -4863,6 +4863,145 @@
       "momentum": 0.0154,
       "breadth": 0.3,
       "volatility_state": "low"
+    },
+    "v11_current_state_source": {
+      "available": true,
+      "strategy": "V11_PRODUCTION_FUSION",
+      "state_date": "2026-07-08",
+      "period": {
+        "start": "2016-01-29",
+        "end": "2026-07-08"
+      },
+      "weights_percent": {
+        "512170": 1.7583,
+        "588000": 2.8903,
+        "510300": 5.6186,
+        "512010": 2.3362,
+        "515100": 6.3996,
+        "515080": 5.6401,
+        "512800": 5.0339,
+        "510500": 5.0381,
+        "511010": 17.9755,
+        "512100": 2.8858,
+        "512890": 6.0385,
+        "512880": 2.0349,
+        "515790": 0.8848,
+        "512760": 3.5141,
+        "159915": 3.117,
+        "518880": 4.2364,
+        "512660": 1.4053,
+        "512690": 1.3259,
+        "CASH": 19.9998,
+        "512400": 0.9356,
+        "516160": 0.9313
+      },
+      "selected_assets": [
+        "159915",
+        "510300",
+        "510500",
+        "511010",
+        "512010",
+        "512100",
+        "512170",
+        "512400",
+        "512660",
+        "512690",
+        "512760",
+        "512800",
+        "512880",
+        "512890",
+        "515080",
+        "515100",
+        "515790",
+        "516160",
+        "518880",
+        "588000"
+      ],
+      "regime": {
+        "state": "bull",
+        "confidence": 0.75,
+        "equity_limit": 90.0,
+        "description": "Price is above key moving averages with shallow drawdown."
+      },
+      "risk_budget": {
+        "regime_state": "bull",
+        "equity_limit": 80.0,
+        "min_cash": 20.0,
+        "max_single_asset": 45.0,
+        "description": "bull regime dynamic equity target 80%."
+      },
+      "exposure_decision": {
+        "equity_target": 80.0,
+        "raw_equity_target": 72.9,
+        "confidence": 0.75,
+        "reason": [
+          "bull base equity 90%",
+          "high volatility without strong trend gets a light trim",
+          "drawdown within normal range",
+          "breadth weak only penalized when trend is not supportive",
+          "monthly exposure smoothing"
+        ],
+        "regime": "bull",
+        "volatility": 15.3745,
+        "trend_score": 48.65,
+        "drawdown": -6.0696,
+        "breadth": 0.3,
+        "previous_equity_target": 90.0,
+        "monthly_max_change": 10.0,
+        "volatility_control": {
+          "volatility_state": "high_mixed_trend",
+          "action": "trim_exposure",
+          "multiplier": 0.9,
+          "current_volatility": 15.3745,
+          "target_volatility": 15.0,
+          "trend_score": 48.65,
+          "reason": "high volatility without strong trend gets a light trim"
+        },
+        "drawdown_control": {
+          "drawdown_state": "normal_drawdown",
+          "multiplier": 1.0,
+          "drawdown": -6.0696,
+          "previous_drawdown": -3.2418,
+          "recovering": false,
+          "reason": "drawdown within normal range"
+        }
+      },
+      "target_weights_percent": {
+        "511010": 17.9755,
+        "515100": 6.3996,
+        "512890": 6.0385,
+        "515080": 5.6401,
+        "510300": 5.6186,
+        "510500": 5.0381,
+        "512800": 5.0339,
+        "518880": 4.2364,
+        "512760": 3.5141,
+        "159915": 3.117,
+        "588000": 2.8903,
+        "512100": 2.8858,
+        "512010": 2.3362,
+        "512880": 2.0349,
+        "512170": 1.7583,
+        "512660": 1.4053,
+        "512690": 1.3259,
+        "512400": 0.9356,
+        "516160": 0.9313,
+        "515790": 0.8848,
+        "CASH": 19.9998
+      },
+      "assumptions": {
+        "score_version": "v11",
+        "max_weight_step": 10.0,
+        "volatility_adjustment": true,
+        "robust_exposure_config": {
+          "target_volatility": 15.0,
+          "moderate_drawdown": -8.0,
+          "deep_drawdown": -12.0,
+          "monthly_max_change": 10.0
+        }
+      },
+      "warnings": [],
+      "source_state_hash": "40870370e69cbb9fec9549b548eeb44eab5c14f0eff0244ce4ec49bab62d64c2"
     }
   },
   "versions": {

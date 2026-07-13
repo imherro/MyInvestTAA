@@ -16,16 +16,34 @@ def evaluate_freshness(
     research_date: str | None,
     research_source_as_of: str | None,
     execution_source_as_of: str | None,
+    v11_allocation_source_as_of: str | None = None,
     shadow: dict,
     approval_integrity: dict,
     price_verification: dict,
 ) -> dict:
-    target = date.fromisoformat(market_data_as_of)
-    market = _dated_check(target, market_as_of, 7, "market data")
+    date_errors: list[str] = []
+    target = _parse_iso_date(market_data_as_of, "market_data_as_of", date_errors)
+    market = (
+        _dated_check(target, market_as_of, 7, "market data")
+        if target
+        else FreshnessCheck(
+            market_as_of,
+            None,
+            7,
+            True,
+            "market_data_as_of is invalid",
+        ).as_dict()
+    )
     proxy_checks = {}
     for proxy, row in shadow.get("price_as_of_by_proxy", {}).items():
         actual = row.get("actual_price_date")
-        proxy_checks[proxy] = _dated_check(target, actual, 5, f"ETF price {proxy}")
+        proxy_checks[proxy] = (
+            _dated_check(target, actual, 5, f"ETF price {proxy}")
+            if target
+            else FreshnessCheck(
+                actual, None, 5, True, "market_data_as_of is invalid"
+            ).as_dict()
+        )
     etf_stale = not proxy_checks or any(row["stale"] for row in proxy_checks.values())
     approval_validation = approval_integrity.get("validation", {})
     approval_verified = all(
@@ -50,7 +68,7 @@ def evaluate_freshness(
         "stale": False,
         "message": "Monthly allocation date is reported separately and is not treated as daily data.",
     }
-    errors = []
+    errors = list(date_errors)
     if market["stale"]:
         errors.append(market["message"])
     if etf_stale:
@@ -68,6 +86,7 @@ def evaluate_freshness(
         snapshot_mode=snapshot_mode,
         research_source_as_of=research_source_as_of,
         execution_source_as_of=execution_source_as_of,
+        v11_allocation_source_as_of=v11_allocation_source_as_of,
     )
     return {
         "status": "pass" if not errors else "stale",
@@ -94,7 +113,16 @@ def evaluate_freshness(
 def _dated_check(target: date, source_as_of: str | None, limit: int, label: str) -> dict:
     if not source_as_of:
         return FreshnessCheck(None, None, limit, True, f"{label} as-of date is unavailable").as_dict()
-    source = date.fromisoformat(source_as_of)
+    try:
+        source = date.fromisoformat(source_as_of)
+    except (TypeError, ValueError):
+        return FreshnessCheck(
+            source_as_of,
+            None,
+            limit,
+            True,
+            f"{label} as-of date is invalid",
+        ).as_dict()
     age = (target - source).days
     stale = age < 0 or age > limit
     if age < 0:
@@ -109,7 +137,10 @@ def _dated_check(target: date, source_as_of: str | None, limit: int, label: str)
 def _next_month_end(value: str | None) -> str | None:
     if not value:
         return None
-    current = date.fromisoformat(value)
+    try:
+        current = date.fromisoformat(value)
+    except (TypeError, ValueError):
+        return None
     year = current.year + (1 if current.month == 12 else 0)
     month = 1 if current.month == 12 else current.month + 1
     return date(year, month, calendar.monthrange(year, month)[1]).isoformat()
@@ -123,20 +154,42 @@ def _temporal_errors(
     snapshot_mode: str,
     research_source_as_of: str | None,
     execution_source_as_of: str | None,
+    v11_allocation_source_as_of: str | None,
 ) -> list[str]:
-    cutoff = date.fromisoformat(market_data_as_of)
-    decision = date.fromisoformat(decision_date)
-    errors = []
+    errors: list[str] = []
+    cutoff = _parse_iso_date(market_data_as_of, "market_data_as_of", errors)
+    decision = _parse_iso_date(decision_date, "decision_date", errors)
     for label, value in (
         ("research report", research_source_as_of),
         ("execution validation report", execution_source_as_of),
+        ("V11 current allocation", v11_allocation_source_as_of),
     ):
-        if value and date.fromisoformat(value) > cutoff:
-            errors.append(f"{label} is dated after market data cutoff")
+        if value:
+            source_date = _parse_iso_date(value, f"{label} as-of", errors)
+            if source_date and cutoff and source_date > cutoff:
+                errors.append(f"{label} is dated after market data cutoff")
     if governance_state_as_of:
-        governance = date.fromisoformat(governance_state_as_of)
-        if governance > decision:
+        governance = _parse_iso_date(
+            governance_state_as_of, "governance_state_as_of", errors
+        )
+        if governance and decision and governance > decision:
             errors.append("governance state is dated after decision date")
-        if snapshot_mode == "historical_snapshot" and governance > cutoff:
+        if (
+            snapshot_mode == "historical_snapshot"
+            and governance
+            and cutoff
+            and governance > cutoff
+        ):
             errors.append("historical snapshot governance state is dated after as-of")
-    return errors
+    return list(dict.fromkeys(errors))
+
+
+def _parse_iso_date(value: object, label: str, errors: list[str]) -> date | None:
+    if not isinstance(value, str) or not value:
+        errors.append(f"{label} is required")
+        return None
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        errors.append(f"{label} must be a valid ISO date")
+        return None

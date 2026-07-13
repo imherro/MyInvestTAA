@@ -5,6 +5,7 @@ from pathlib import Path
 
 from decision.current_market.explain import decision_headline
 from decision.current_market.source_policy import verify_current_decision_sources
+from decision.v11_current import load_v11_current_allocation
 from engine.asset_registry.loader import ROOT
 
 
@@ -54,6 +55,20 @@ def load_current_market_decision(
         verification = verify_current_decision_sources(
             value["source_manifest"], root=ROOT
         )
+        optional_v11 = value["source_manifest"].get(
+            "v11_current_allocation", {}
+        )
+        if optional_v11.get("available") is True:
+            v11_snapshot = load_v11_current_allocation()
+            if v11_snapshot.get("available") is not True:
+                verification["errors"].append(
+                    "V11 current allocation snapshot is present but invalid"
+                )
+                verification["errors"].extend(v11_snapshot.get("errors", []))
+                verification["errors"] = list(
+                    dict.fromkeys(verification["errors"])
+                )
+                verification["valid"] = False
         value["source_hash_verification"] = verification
         if not verification["valid"]:
             value["available"] = False

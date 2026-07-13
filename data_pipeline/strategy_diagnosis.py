@@ -13,6 +13,7 @@ from data.universe import universe_asset_ids
 from data_pipeline.full_validation import _research_assets
 from data_pipeline.importer import build_provider, import_market_data
 from data_pipeline.normalizer import price_bars_to_history
+from decision.v11_current.validation import canonical_state_hash
 from engine.adaptive import adaptive_weight_snapshot
 from engine.asset_repository import load_assets
 from engine.benchmark_validation import validate_benchmark_report
@@ -311,6 +312,9 @@ def build_strategy_diagnosis_report(
     selection_analysis = build_selection_analysis(variants["V11_PRODUCTION_FUSION"])
     adaptive_selection = _adaptive_selection_report(variants["V10_ROBUST_EXPOSURE"])
     exposure_analysis = _exposure_analysis_report(variants["V11_PRODUCTION_FUSION"])
+    v11_current_state_source = _v11_current_state_source(
+        variants["V11_PRODUCTION_FUSION"]
+    )
     report = {
         "dataset": {
             "provider": provider_name,
@@ -342,6 +346,7 @@ def build_strategy_diagnosis_report(
             "selection_analysis": selection_analysis,
             "adaptive_selection": adaptive_selection,
             "exposure_analysis": exposure_analysis,
+            "v11_current_state_source": v11_current_state_source,
             "robustness": robustness,
             "stress": stress,
             "stock_breadth": {
@@ -544,6 +549,49 @@ def _exposure_analysis_report(backtest_result: dict) -> dict:
         "current": latest,
         "rows": rows,
     }
+
+
+def _v11_current_state_source(backtest_result: dict) -> dict:
+    states = backtest_result.get("states", [])
+    if not states:
+        return {
+            "available": False,
+            "strategy": "V11_PRODUCTION_FUSION",
+            "warnings": ["canonical V11 backtest has no completed state"],
+        }
+    latest = states[-1]
+    signals = latest.get("signals", {})
+    weights = latest.get("weights", {})
+    selected_assets = sorted(
+        asset_id
+        for asset_id, weight in weights.items()
+        if asset_id != "CASH" and float(weight) > 0
+    )
+    assumptions = backtest_result.get("assumptions", {})
+    source = {
+        "available": True,
+        "strategy": "V11_PRODUCTION_FUSION",
+        "state_date": latest.get("date"),
+        "period": backtest_result.get("period", {}),
+        "weights_percent": weights,
+        "selected_assets": selected_assets,
+        "regime": latest.get("regime", {}),
+        "risk_budget": signals.get("risk_budget", {}),
+        "exposure_decision": signals.get("exposure_decision", {}),
+        "target_weights_percent": signals.get("target_weights", {}),
+        "assumptions": {
+            key: assumptions.get(key)
+            for key in (
+                "score_version",
+                "max_weight_step",
+                "volatility_adjustment",
+                "robust_exposure_config",
+            )
+        },
+        "warnings": [],
+    }
+    source["source_state_hash"] = canonical_state_hash(source)
+    return source
 
 
 def _diagnosis_summary(regime_analysis: dict, decomposition: dict, regime_contribution: dict) -> list[dict]:

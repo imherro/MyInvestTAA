@@ -13,7 +13,10 @@ from backtest.execution.mapping_application import _verify_locked_inputs
 from backtest.execution.shadow_report import load_execution_aware_shadow_portfolio
 from decision.current_market import build_current_market_decision, load_current_market_sources
 from decision.current_market.freshness import evaluate_freshness
-from decision.current_market.engine import validate_execution_decision_evidence
+from decision.current_market.engine import (
+    _production_candidate,
+    validate_execution_decision_evidence,
+)
 from decision.current_market.explain import build_cash_explanation, decision_headline
 from decision.current_market.report import load_current_market_decision, write_current_market_decision
 from decision.current_market.source_policy import (
@@ -198,10 +201,12 @@ def test_market_state_reuses_formal_regime_source():
 def test_v11_is_never_filled_from_shadow():
     candidate = REPORT["production_candidate"]
     assert candidate["strategy"] == "V11_PRODUCTION_FUSION"
-    assert candidate["allocation_available"] is False
-    assert candidate["allocation"] == {}
+    assert candidate["allocation_available"] is True
+    assert candidate["allocation"]
+    assert "SHADOW" not in candidate["allocation"]
     assert candidate["unchanged"] is True
-    assert candidate["message"] == "current V11 allocation source unavailable"
+    assert candidate["allocation_source"] == "reports/v11_current_allocation.json"
+    assert candidate["message"] is None
 
 
 def test_v11_and_shadow_are_side_by_side_only():
@@ -695,12 +700,13 @@ def test_execution_source_after_cutoff_fails():
     assert "execution validation report is dated after market data cutoff" in report["data_freshness"]["temporal_errors"]
 
 
-def test_v11_metadata_available_but_allocation_optional():
+def test_v11_metadata_and_current_allocation_are_available():
     candidate = REPORT["production_candidate"]
     assert candidate["candidate_metadata_available"] is True
-    assert candidate["current_allocation_available"] is False
+    assert candidate["current_allocation_available"] is True
     assert candidate["boundary_verified"] is True
-    assert candidate["allocation"] == {}
+    assert candidate["allocation"]
+    assert candidate["production_actionable"] is False
 
 
 def test_missing_v11_metadata_blocks_boundary_review():
@@ -833,10 +839,15 @@ def test_required_source_missing_blocks_review():
 
 
 def test_optional_v11_allocation_source_may_be_missing():
-    source = REPORT["source_manifest"]["v11_current_allocation"]
-    assert source["required"] is False
-    assert source["available"] is False
-    assert REPORT["ready_for_user_review"] is True
+    candidate = _production_candidate(
+        SOURCES["diagnosis"],
+        {"available": False},
+        snapshot_present=False,
+    )
+    assert candidate["candidate_metadata_available"] is True
+    assert candidate["current_allocation_available"] is False
+    assert candidate["snapshot_valid_or_missing"] is True
+    assert candidate["boundary_verified"] is True
 
 
 def test_required_source_manifest_count_and_hashes():
@@ -1087,7 +1098,7 @@ def test_current_report_business_result_is_unchanged_after_semantic_hardening():
     assert REPORT["market_state"]["regime"] == "bull_caution"
     assert REPORT["ready_for_user_review"] is True
     assert REPORT["production_actionable"] is False
-    assert REPORT["production_candidate"]["current_allocation_available"] is False
+    assert REPORT["production_candidate"]["current_allocation_available"] is True
     assert REPORT["execution_shadow"]["etf_weights"] == {
         "510500.SH": 0.25,
         "512760.SH": 0.1,

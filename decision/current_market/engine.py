@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 import math
 
 from decision.current_market.explain import build_cash_explanation, build_decision_summary
@@ -41,7 +41,12 @@ def build_current_market_decision(
 
     market_state = _market_state(diagnosis)
     production_candidate = _production_candidate(
-        diagnosis, sources.get("v11_allocation", {})
+        diagnosis,
+        sources.get("v11_allocation", {}),
+        snapshot_present=source_manifest.get("v11_current_allocation", {}).get(
+            "available"
+        )
+        is True,
     )
     research_allocation = _research_allocation(research, market_data_as_of)
     execution_shadow = _execution_shadow(shadow)
@@ -60,6 +65,9 @@ def build_current_market_decision(
         research_date=research_allocation.get("allocation_date"),
         research_source_as_of=research_allocation.get("source_as_of"),
         execution_source_as_of=execution_validation.get("source_as_of"),
+        v11_allocation_source_as_of=production_candidate.get(
+            "allocation_source_as_of"
+        ),
         shadow=shadow,
         approval_integrity=sources.get("approval_integrity", {}),
         price_verification=sources.get("price_verification", {}),
@@ -78,6 +86,7 @@ def build_current_market_decision(
         (
             market_state.get("available"),
             production_candidate.get("boundary_verified"),
+            production_candidate.get("snapshot_valid_or_missing"),
             research_allocation.get("available"),
             execution_shadow.get("available"),
             execution_validation.get("available"),
@@ -144,6 +153,15 @@ def build_current_market_decision(
                 "shadow_weights": weights,
                 "automatic_selection": False,
             },
+            "v11_allocation_available": production_candidate.get(
+                "current_allocation_available", False
+            ),
+            "v11_weights": production_candidate.get("allocation", {}),
+            "shadow_weights": weights,
+            "weight_differences": _weight_differences(
+                production_candidate.get("allocation", {}), weights
+            ),
+            "automatic_selection": False,
             "merged_portfolio_created": False,
         },
         "risk_summary": {
@@ -212,7 +230,12 @@ def _market_state(diagnosis: dict) -> dict:
     }
 
 
-def _production_candidate(diagnosis: dict, allocation_snapshot: dict) -> dict:
+def _production_candidate(
+    diagnosis: dict,
+    allocation_snapshot: dict,
+    *,
+    snapshot_present: bool,
+) -> dict:
     readiness = diagnosis.get("diagnosis", {}).get("production_readiness", {})
     exposure = diagnosis.get("diagnosis", {}).get("exposure_analysis", {})
     source_as_of = diagnosis.get("dataset", {}).get("period", {}).get("end")
@@ -227,9 +250,19 @@ def _production_candidate(diagnosis: dict, allocation_snapshot: dict) -> dict:
         and allocation_snapshot.get("strategy") == strategy
         and isinstance(allocation_snapshot.get("allocation"), dict)
         and allocation_snapshot.get("allocation")
+        and allocation_snapshot.get("production_actionable") is False
+        and allocation_snapshot.get("trading_instruction") is False
+        and allocation_snapshot.get("source_integrity", {}).get("verified") is True
+        and not allocation_snapshot.get("constraint_checks", {}).get("violations")
     )
     allocation = allocation_snapshot.get("allocation", {}) if allocation_available else {}
-    boundary_verified = bool(metadata_available and strategy and not allocation_snapshot.get("shadow_source"))
+    snapshot_valid_or_missing = bool(not snapshot_present or allocation_available)
+    boundary_verified = bool(
+        metadata_available
+        and strategy
+        and not allocation_snapshot.get("shadow_source")
+        and snapshot_valid_or_missing
+    )
     unchanged = bool(boundary_verified and readiness.get("candidate") == strategy)
     return {
         "strategy": strategy or "V11_PRODUCTION_FUSION",
@@ -238,8 +271,24 @@ def _production_candidate(diagnosis: dict, allocation_snapshot: dict) -> dict:
         "allocation_available": allocation_available,
         "current_allocation_available": allocation_available,
         "boundary_verified": boundary_verified,
+        "snapshot_present": snapshot_present,
+        "snapshot_integrity_verified": allocation_available,
+        "snapshot_valid_or_missing": snapshot_valid_or_missing,
         "unchanged": unchanged,
         "allocation": allocation,
+        "allocation_percent": allocation_snapshot.get("allocation_percent", {})
+        if allocation_available
+        else {},
+        "equity_weight": allocation_snapshot.get("equity_weight")
+        if allocation_available
+        else None,
+        "cash_weight": allocation_snapshot.get("cash_weight")
+        if allocation_available
+        else None,
+        "selected_assets": allocation_snapshot.get("selected_assets", [])
+        if allocation_available
+        else [],
+        "production_actionable": False,
         "risk_controls": exposure.get("current", {})
         if exposure.get("version") == "v11"
         else {},
@@ -254,9 +303,19 @@ def _production_candidate(diagnosis: dict, allocation_snapshot: dict) -> dict:
         "allocation_source": allocation_snapshot.get("report_path")
         if allocation_available
         else None,
-        "message": None
+        "allocation_source_as_of": allocation_snapshot.get("as_of")
         if allocation_available
-        else "current V11 allocation source unavailable",
+        else None,
+        "allocation_integrity": allocation_snapshot.get("source_integrity", {})
+        if snapshot_present
+        else {},
+        "message": (
+            None
+            if allocation_available
+            else "current V11 allocation snapshot invalid"
+            if snapshot_present
+            else "current V11 allocation source unavailable"
+        ),
     }
 
 
@@ -393,11 +452,9 @@ def validate_execution_decision_evidence(
     period = report.get("period", {})
     start = period.get("start")
     end = period.get("end")
-    if not isinstance(start, str) or not start:
-        errors.append("execution period start is required")
-    if not isinstance(end, str) or not end:
-        errors.append("execution period end is required")
-    if isinstance(start, str) and start and isinstance(end, str) and end and start > end:
+    start_date = _execution_date(start, "execution period start", errors)
+    end_date = _execution_date(end, "execution period end", errors)
+    if start_date and end_date and start_date > end_date:
         errors.append("execution period start must not be after end")
 
     policy_errors: list[str] = []
@@ -447,6 +504,21 @@ def _is_finite_number(value: object) -> bool:
     )
 
 
+def _execution_date(
+    value: object,
+    label: str,
+    errors: list[str],
+) -> date | None:
+    if not isinstance(value, str) or not value:
+        errors.append(f"{label} is required")
+        return None
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        errors.append(f"{label} must be a valid ISO date")
+        return None
+
+
 def _governance_state_as_of(manifest: dict) -> str | None:
     values = [
         row.get("source_as_of")
@@ -469,6 +541,8 @@ def _review_blockers(
     blockers = []
     if not production_candidate.get("boundary_verified"):
         blockers.append("V11 and Shadow boundary is not verified")
+    if not production_candidate.get("snapshot_valid_or_missing"):
+        blockers.append("V11 current allocation snapshot is present but invalid")
     if not execution_validation.get("available"):
         blockers.append("execution validation report unavailable")
         blockers.extend(execution_validation.get("semantic_errors", []))
@@ -500,3 +574,12 @@ def _key_risks(market: dict, execution: dict, shadow: dict) -> list[str]:
             "At least one execution proxy is medium quality and broader than its research index."
         )
     return list(dict.fromkeys(risks))
+
+
+def _weight_differences(v11: dict, shadow: dict) -> dict:
+    if not v11:
+        return {}
+    return {
+        asset_id: round(float(v11.get(asset_id, 0)) - float(shadow.get(asset_id, 0)), 12)
+        for asset_id in sorted(set(v11) | set(shadow))
+    }
