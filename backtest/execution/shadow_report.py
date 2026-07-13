@@ -48,7 +48,12 @@ def _snapshot_errors(snapshot):
     )
     from backtest.execution.approval_package import DECISION_LEDGER
     from backtest.execution.dataset_provenance import PRICE_MANIFEST_REPORT
+    from backtest.execution.dataset_provenance import (
+        load_price_dataset_manifest,
+        verify_price_dataset_manifest,
+    )
     from backtest.research.report import RESEARCH_BACKTEST_REPORT
+    from engine.asset_registry import load_execution_universe
     from engine.asset_registry.loader import ASSET_MAPPING_FILE
 
     paths = {
@@ -69,4 +74,12 @@ def _snapshot_errors(snapshot):
             errors.append(f"snapshot hash mismatch: {field}")
     if snapshot.get("verified") is not True:
         errors.append("snapshot was not marked verified")
+    manifest = load_price_dataset_manifest()
+    if not manifest.get("available"):
+        errors.append("execution price manifest is unavailable")
+    else:
+        verification = verify_price_dataset_manifest(
+            manifest, load_execution_universe()
+        )
+        errors.extend(verification.get("errors", []))
     return errors

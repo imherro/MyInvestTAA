@@ -47,8 +47,11 @@ def apply_human_approved_mapping(
     package = json.loads(package_bytes.decode("utf-8"))
     mappings = json.loads(mapping_before_text)
     ledger_before_bytes = ledger_path.read_bytes()
+    ledger_before_hash = _sha256_bytes(ledger_before_bytes)
     ledger_before_text = ledger_before_bytes.decode("utf-8")
     ledger = json.loads(ledger_before_text)
+    record_existed_before = record_path.exists()
+    record_before_hash = _sha256_path(record_path) if record_existed_before else None
 
     _validate_application(
         explicit_approval=explicit_approval,
@@ -123,8 +126,13 @@ def apply_human_approved_mapping(
         precondition=lambda: _verify_locked_inputs(
             mapping_path,
             package_path,
+            ledger_path,
+            record_path,
             mapping_before_hash,
             expected_package_hash,
+            ledger_before_hash,
+            record_existed_before,
+            record_before_hash,
         ),
     )
     if _sha256_path(mapping_path) != mapping_after_hash:
@@ -336,10 +344,21 @@ def _journal_for(mapping_path: Path) -> Path:
 def _verify_locked_inputs(
     mapping_path: Path,
     package_path: Path,
+    ledger_path: Path,
+    record_path: Path,
     expected_mapping_hash: str,
     expected_package_hash: str,
+    expected_ledger_hash: str,
+    expected_record_exists: bool,
+    expected_record_hash: str | None,
 ) -> None:
     if _sha256_path(mapping_path) != expected_mapping_hash.lower():
         raise ValueError("full asset mapping changed before transaction lock")
     if _sha256_path(package_path) != expected_package_hash.lower():
         raise ValueError("approval package changed before transaction lock")
+    if _sha256_path(ledger_path) != expected_ledger_hash.lower():
+        raise ValueError("decision ledger changed before transaction lock")
+    if record_path.exists() != expected_record_exists:
+        raise ValueError("approval record existence changed before transaction lock")
+    if expected_record_exists and _sha256_path(record_path) != expected_record_hash:
+        raise ValueError("approval record changed before transaction lock")
