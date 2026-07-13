@@ -1,7 +1,6 @@
 {
   "unmapped_research_assets": [
     "931688CNY010.CSI",
-    "931743CNY010.CSI",
     "H20590.CSI",
     "H21152.CSI"
   ],
@@ -10,7 +9,6 @@
   ],
   "highest_weight_unmapped_assets": [
     "931688CNY010.CSI",
-    "931743CNY010.CSI",
     "H20590.CSI",
     "H21152.CSI"
   ],
@@ -18,28 +16,33 @@
     {
       "research_asset_id": "931688CNY010.CSI",
       "issue": "mapping_quality_none",
-      "suggestion": "identify primary ETF proxy or keep as research-only asset"
-    },
-    {
-      "research_asset_id": "931743CNY010.CSI",
-      "issue": "mapping_quality_none",
-      "suggestion": "identify primary ETF proxy or keep as research-only asset"
+      "decision_status": "research_only",
+      "suggestion": "frozen research-only; reopen only with a new ETF candidate or new semantic evidence"
     },
     {
       "research_asset_id": "H20590.CSI",
       "issue": "mapping_quality_none",
-      "suggestion": "identify primary ETF proxy or keep as research-only asset"
+      "decision_status": "rejected_proxy",
+      "suggestion": "rejected proxy is frozen; do not reuse it without new semantic evidence"
     },
     {
       "research_asset_id": "H21152.CSI",
       "issue": "mapping_quality_none",
-      "suggestion": "identify primary ETF proxy or keep as research-only asset"
+      "decision_status": "rejected_proxy",
+      "suggestion": "rejected proxy is frozen; do not reuse it without new semantic evidence"
     },
     {
       "research_asset_id": "H00805.CSI",
       "issue": "mapping_quality_low",
-      "suggestion": "identify primary ETF proxy or keep as research-only asset"
+      "decision_status": "research_only",
+      "suggestion": "frozen research-only; reopen only with a new ETF candidate or new semantic evidence"
     }
+  ],
+  "frozen_assets": [
+    "931688CNY010.CSI",
+    "H00805.CSI",
+    "H20590.CSI",
+    "H21152.CSI"
   ],
   "warning": "Suggestions only. asset_mapping.json is not modified automatically."
 }

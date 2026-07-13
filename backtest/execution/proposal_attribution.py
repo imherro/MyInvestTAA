@@ -120,7 +120,7 @@ def build_exact_drawdown_attribution(report, prices, window=None):
         "reconciled_total": reconciled,
         "reconciliation_error": error,
         "method": "geometric_linked_daily_contribution",
-        "approximate": error > 0.000001,
+        "approximate": error > 0.000001 or abs(residual) > 0.000001,
         "date_alignment": "execution_equity_curve",
         "start_date": curve[0]["date"],
         "end_date": curve[-1]["date"],

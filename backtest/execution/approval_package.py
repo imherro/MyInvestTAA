@@ -116,6 +116,8 @@ def _readiness_reasons(
         reasons.append("dataset provenance is not verified")
     if exact.get("reconciliation_error", 1) > 0.000001:
         reasons.append("drawdown attribution does not reconcile")
+    if abs(exact.get("residual", 1)) > 0.000001:
+        reasons.append("drawdown attribution residual exceeds tolerance")
     if not proposal.get("eligible_for_recommendation"):
         reasons.append("candidate is not statistically eligible")
     if semantic.get("semantic_quality") not in {"acceptable", "strong"}:

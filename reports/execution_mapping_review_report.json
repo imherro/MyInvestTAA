@@ -202,10 +202,12 @@
       },
       "decision": {
         "result": "retain_research_only",
+        "status": "research_only",
         "reasons": [
-          "semantic quality is not approvable"
+          "A broad semiconductor ETF does not represent the full computing-power supply chain."
         ],
-        "requires_manual_approval": true
+        "requires_manual_approval": true,
+        "production_approved": false
       }
     },
     {
@@ -300,9 +302,13 @@
         }
       },
       "decision": {
-        "result": "recommend_manual_approval",
-        "reasons": [],
-        "requires_manual_approval": true
+        "result": "approved_for_execution_validation",
+        "status": "approved_for_execution_validation",
+        "reasons": [
+          "Explicitly human-approved for execution validation and shadow use; not approved for production trading."
+        ],
+        "requires_manual_approval": true,
+        "production_approved": false
       }
     },
     {
@@ -396,10 +402,12 @@
       },
       "decision": {
         "result": "reject_proxy",
+        "status": "rejected_proxy",
         "reasons": [
-          "semantic quality is not approvable"
+          "A broad CSI 1000 ETF is not a robot-industry execution proxy."
         ],
-        "requires_manual_approval": true
+        "requires_manual_approval": true,
+        "production_approved": false
       }
     },
     {
@@ -493,10 +501,12 @@
       },
       "decision": {
         "result": "reject_proxy",
+        "status": "rejected_proxy",
         "reasons": [
-          "semantic quality is not approvable"
+          "A broad ChiNext ETF is not an innovative-drug execution proxy."
         ],
-        "requires_manual_approval": true
+        "requires_manual_approval": true,
+        "production_approved": false
       }
     },
     {
@@ -592,11 +602,12 @@
       },
       "decision": {
         "result": "retain_research_only",
+        "status": "research_only",
         "reasons": [
-          "semantic quality is not approvable",
-          "max drawdown worsened more than 5%"
+          "The proxy omits important resource sectors and worsened maximum drawdown by more than five percentage points."
         ],
-        "requires_manual_approval": true
+        "requires_manual_approval": true,
+        "production_approved": false
       }
     }
   ],
@@ -760,8 +771,50 @@
     },
     "concentration_or_market_exposure": "increased_mapped_market_exposure"
   },
+  "mapping_registry_version": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+  "approval_record": {
+    "available": true,
+    "research_asset_id": "931743CNY010.CSI",
+    "approved_proxy": "512760.SH",
+    "approved_mapping_quality": "medium",
+    "decision_type": "explicit_human_approval",
+    "explicit_approval_input": "approved",
+    "decision_date": "2026-07-13",
+    "source_package": "execution_mapping_931743_approval_package.json",
+    "package_hash": "ea976b824f41450436e04b43e373a4b8ad83287cacc54277c3b1c85aea339b94",
+    "mapping_before_hash": "6f171cbd7664062b5f8226df83f8b91eeda032470e5788175ab619b996a4fa50",
+    "mapping_after_hash": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+    "changed_asset_ids": [
+      "931743CNY010.CSI"
+    ],
+    "mapping_change": {
+      "before": {
+        "research_asset_id": "931743CNY010.CSI",
+        "research_asset_name": "半导体材料设备全收益",
+        "primary_execution_proxy": null,
+        "execution_proxies": [],
+        "mapping_quality": "none",
+        "notes": "未确认明确 ETF 代理，不硬凑映射"
+      },
+      "after": {
+        "research_asset_id": "931743CNY010.CSI",
+        "research_asset_name": "半导体材料设备全收益",
+        "primary_execution_proxy": "512760.SH",
+        "execution_proxies": [
+          "512760.SH"
+        ],
+        "mapping_quality": "medium",
+        "notes": "Human-approved for execution validation and shadow use. Broader semiconductor-chip proxy; not a direct materials-equipment index tracker."
+      }
+    },
+    "limitations": [
+      "The ETF tracks a broader semiconductor-chip index.",
+      "The mapping is approved for execution validation and shadow use only."
+    ],
+    "production_approved": false
+  },
   "decision": {
-    "approved_for_manual_review": [
+    "approved_for_execution_validation": [
       "931743CNY010.CSI"
     ],
     "retain_research_only": [
@@ -773,8 +826,10 @@
       "H21152.CSI"
     ],
     "ready_for_mapping_update_task": false,
+    "mapping_update_applied": true,
+    "production_approved": false,
     "reasons": [
-      "Formal asset_mapping.json remains unchanged; manual semantic approval is required."
+      "The single human-approved mapping is applied for execution validation and shadow use only."
     ]
   }
 }

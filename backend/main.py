@@ -18,7 +18,7 @@ from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from backtest.research import load_research_backtest_report
-from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report, load_proxy_research_report, load_mapping_proposal_report, load_counterfactual_report, load_price_dataset_manifest, load_mapping_attribution_report, load_mapping_review_report, load_mapping_approval_package, load_mapping_decision_ledger
+from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report, load_proxy_research_report, load_mapping_proposal_report, load_counterfactual_report, load_price_dataset_manifest, load_mapping_attribution_report, load_mapping_review_report, load_mapping_approval_package, load_mapping_decision_ledger, load_mapping_approval_record, load_execution_aware_shadow_portfolio
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
@@ -345,6 +345,14 @@ def get_execution_mapping_approval_package(asset_id: str) -> dict:
 def get_execution_mapping_decision_ledger() -> dict:
     return load_mapping_decision_ledger()
 
+@app.get("/api/research/execution-mapping-approval-record")
+def get_execution_mapping_approval_record() -> dict:
+    return load_mapping_approval_record()
+
+@app.get("/api/research/execution-aware-shadow-portfolio")
+def get_execution_aware_shadow_portfolio() -> dict:
+    return load_execution_aware_shadow_portfolio()
+
 
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
@@ -552,7 +560,7 @@ def dashboard() -> str:
     <body>
       <header>
         <h1>MyInvestTAA Dashboard</h1>
-        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>Drawdown + Asset Anchor MVP. 输出为资产配置研究权重信号，不是交易指令。<a href="/research">Research Report</a> · <a href="/pipeline">Data Pipeline</a> · <a href="/real-research">Real Market Research</a> · <a href="/research-universe">Research Universe</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/shadow-portfolio">Shadow Portfolio</a> · <a href="/validation">Validation Report</a> · <a href="/experiment">Experiment Report</a> · <a href="/diagnosis">Strategy Diagnosis</a> · <a href="/benchmark-validation">Benchmark Validation</a> · <a href="/strategy-governance">Strategy Governance</a> · <a href="/selection-research">Selection Research</a> · <a href="/strategy-promotion">Strategy Promotion</a> · <a href="/adaptive-strategy">Adaptive Strategy</a> · <a href="/risk-exposure">Risk Exposure</a> · <a href="/final-strategy">Final Strategy</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section class="summary" aria-label="summary">
@@ -2778,7 +2786,7 @@ def research_backtest_page() -> str:
     <body>
       <header>
         <h1>Research Backtest</h1>
-        <p>研究资产层指数回测，不代表 ETF 可执行收益，也不替代 V11 production candidate。<a href="/">Dashboard</a> · <a href="/research-universe">Research Universe</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/production-readiness">Production Readiness</a></p>
+        <p>研究资产层指数回测，不代表 ETF 可执行收益，也不替代 V11 production candidate。<a href="/">Dashboard</a> · <a href="/research-universe">Research Universe</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/shadow-portfolio">Shadow Portfolio</a> · <a href="/production-readiness">Production Readiness</a></p>
       </header>
       <main>
         <section>
@@ -2875,6 +2883,7 @@ def execution_backtest_page() -> str:
     mapping_review = load_mapping_review_report()
     approval_package = load_mapping_approval_package()
     decision_ledger = load_mapping_decision_ledger()
+    approval_record = load_mapping_approval_record()
     metrics = "\n".join(_mapping_rows(report.get("metrics", {}), empty="Execution backtest report not generated yet"))
     overlap = "\n".join(_mapping_rows(report.get("research_overlap_metrics", {}), empty="No research overlap metrics recorded"))
     gap = "\n".join(_mapping_rows(report.get("execution_gap", {}), empty="No execution gap recorded"))
@@ -2896,10 +2905,43 @@ def execution_backtest_page() -> str:
     semantic_rows = "\n".join(_mapping_rows(approval_package.get("semantic_evidence",{}), empty="No ETF tracking-index evidence recorded"))
     collision_rows = "\n".join(_mapping_rows(approval_package.get("full_collision_exposure",{}), empty="No existing proxy collision recorded"))
     frozen_rows = "\n".join(_mapping_rows({"policy":decision_ledger.get("policy"),"frozen_count":decision_ledger.get("frozen_count"),"decisions":decision_ledger.get("decisions")}, empty="No frozen mapping decisions recorded"))
+    approval_record_rows = "\n".join(_mapping_rows(approval_record, empty="No explicit approval record recorded"))
+    approval_notice = ("Formal mapping is applied for execution validation and shadow use only; production approval remains false." if approval_record.get("available") else "No formal mapping has been changed. Explicit human approval is required before updating asset_mapping.json.")
     warnings = "\n".join(_message_rows(report.get("warnings", []), empty="No execution backtest warnings"))
-    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><title>Execution Backtest</title><style>{_report_page_css()}</style></head><body><header><h1>Execution Backtest</h1><p>This execution backtest is an ETF proxy validation, not a production trading instruction. <a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/research-universe">Research Universe</a></p></header><main>
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><title>Execution Backtest</title><style>{_report_page_css()}</style></head><body><header><h1>Execution Backtest</h1><p>This execution backtest is an ETF proxy validation, not a production trading instruction. <a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/research-universe">Research Universe</a> · <a href="/shadow-portfolio">Shadow Portfolio</a></p></header><main>
     <section><h2>Status</h2><table><tbody>{"<tr><td>Available</td><td>" + escape(str(report.get("available", False))) + "</td></tr><tr><td>Data Provider</td><td>" + escape(str(report.get("data_provider", "unknown"))) + "</td></tr><tr><td>Period</td><td>" + escape(str(report.get("period", {}))) + "</td></tr>"}</tbody></table></section>
-    <section><h2>Dataset Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>Selective Mapping Approval Package</h2><p>No formal mapping has been changed. Explicit human approval is required before updating asset_mapping.json.</p><table><tbody>{approval_rows}</tbody></table></section><section><h2>Exact Drawdown Reconciliation</h2><table><tbody>{exact_rows}</tbody></table></section><section><h2>ETF Tracking Index Evidence</h2><table><tbody>{semantic_rows}</tbody></table></section><section><h2>Exposure Differences</h2><table><tbody>{semantic_rows}</tbody></table></section><section><h2>Existing Proxy Collision</h2><table><tbody>{collision_rows}</tbody></table></section><section><h2>Ready for Explicit Human Decision?</h2><table><tbody>{approval_rows}</tbody></table></section><section><h2>Frozen Research-Only and Rejected Proposals</h2><table><tbody>{frozen_rows}</tbody></table></section><section><h2>Real ETF Data Audit</h2><table><tbody>{audit_summary}</tbody></table></section><section><h2>Execution Metrics</h2><table><tbody>{metrics}</tbody></table></section><section><h2>Research Overlap Metrics</h2><table><tbody>{overlap}</tbody></table></section><section><h2>Execution Gap</h2><table><tbody>{gap}</tbody></table></section><section><h2>Mapping Summary</h2><table><tbody>{mapping}</tbody></table></section><section><h2>Aggregate Cash Breakdown</h2><table><tbody>{cash}</tbody></table></section><section><h2>Mapping Proposal</h2><table><tbody>{proposal_rows}</tbody></table></section><section><h2>Per-Proposal Marginal Impact</h2><table><tbody>{attribution_rows}</tbody></table></section><section><h2>Drawdown Attribution</h2><table><tbody>{attribution_rows}</tbody></table></section><section><h2>Full Proxy Collision Exposure</h2><table><tbody>{counter_rows}</tbody></table></section><section><h2>Semantic Mapping Review</h2><p>Statistical correlation alone is not sufficient evidence for an ETF execution mapping.</p><table><tbody>{review_rows}</tbody></table></section><section><h2>Ready for Mapping Update Task?</h2><table><tbody>{review_rows}</tbody></table></section><section><h2>Baseline vs Counterfactual</h2><table><tbody>{counter_rows}</tbody></table></section><section><h2>Unmapped Assets</h2><table><tbody>{unmapped}</tbody></table></section><section><h2>Low Quality Proxies</h2><table><tbody>{low_quality}</tbody></table></section><section><h2>Mapping Improvement</h2><table><tbody>{improvement_rows}</tbody></table></section><section><h2>Proxy Candidate Research</h2><table><tbody>{proxy_rows}</tbody></table></section><section><h2>Ready for Execution Validation?</h2><table><tbody>{decision}</tbody></table></section><section><h2>Warnings</h2><table><tbody>{warnings}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
+    <section><h2>Dataset Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>Explicit Mapping Approval Record</h2><p>{escape(approval_notice)}</p><table><tbody>{approval_record_rows}</tbody></table></section><section><h2>Selective Mapping Approval Package</h2><table><tbody>{approval_rows}</tbody></table></section><section><h2>Exact Drawdown Reconciliation</h2><table><tbody>{exact_rows}</tbody></table></section><section><h2>ETF Tracking Index Evidence</h2><table><tbody>{semantic_rows}</tbody></table></section><section><h2>Exposure Differences</h2><table><tbody>{semantic_rows}</tbody></table></section><section><h2>Existing Proxy Collision</h2><table><tbody>{collision_rows}</tbody></table></section><section><h2>Ready for Explicit Human Decision?</h2><table><tbody>{approval_rows}</tbody></table></section><section><h2>Frozen Research-Only and Rejected Proposals</h2><table><tbody>{frozen_rows}</tbody></table></section><section><h2>Real ETF Data Audit</h2><table><tbody>{audit_summary}</tbody></table></section><section><h2>Execution Metrics</h2><table><tbody>{metrics}</tbody></table></section><section><h2>Research Overlap Metrics</h2><table><tbody>{overlap}</tbody></table></section><section><h2>Execution Gap</h2><table><tbody>{gap}</tbody></table></section><section><h2>Mapping Summary</h2><table><tbody>{mapping}</tbody></table></section><section><h2>Aggregate Cash Breakdown</h2><table><tbody>{cash}</tbody></table></section><section><h2>Mapping Proposal</h2><table><tbody>{proposal_rows}</tbody></table></section><section><h2>Per-Proposal Marginal Impact</h2><table><tbody>{attribution_rows}</tbody></table></section><section><h2>Drawdown Attribution</h2><table><tbody>{attribution_rows}</tbody></table></section><section><h2>Full Proxy Collision Exposure</h2><table><tbody>{counter_rows}</tbody></table></section><section><h2>Semantic Mapping Review</h2><p>Statistical correlation alone is not sufficient evidence for an ETF execution mapping.</p><table><tbody>{review_rows}</tbody></table></section><section><h2>Ready for Mapping Update Task?</h2><table><tbody>{review_rows}</tbody></table></section><section><h2>Baseline vs Counterfactual</h2><table><tbody>{counter_rows}</tbody></table></section><section><h2>Unmapped Assets</h2><table><tbody>{unmapped}</tbody></table></section><section><h2>Low Quality Proxies</h2><table><tbody>{low_quality}</tbody></table></section><section><h2>Mapping Improvement</h2><table><tbody>{improvement_rows}</tbody></table></section><section><h2>Proxy Candidate Research</h2><table><tbody>{proxy_rows}</tbody></table></section><section><h2>Ready for Execution Validation?</h2><table><tbody>{decision}</tbody></table></section><section><h2>Warnings</h2><table><tbody>{warnings}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
+
+
+@app.get("/shadow-portfolio", response_class=HTMLResponse)
+def shadow_portfolio_page() -> str:
+    report = load_execution_aware_shadow_portfolio()
+    status_rows = "\n".join(_mapping_rows({key:report.get(key) for key in ("available","status","production_approved","source_strategy","source_allocation_date","data_as_of")}, empty="Shadow portfolio report not generated yet"))
+    research_rows = "\n".join(_mapping_rows(report.get("research_weights", {}), empty="No research weights recorded"))
+    execution_rows = "\n".join(_mapping_rows(report.get("execution_weights", {}), empty="No execution weights recorded"))
+    cash_rows = "\n".join(_mapping_rows(report.get("cash_breakdown", {}), empty="No cash breakdown recorded"))
+    mapping_rows = "\n".join(_shadow_mapping_rows(report.get("mapping_explanations", [])))
+    frozen_rows = "\n".join(_mapping_rows({"research_only":report.get("frozen_research_only_assets", []),"rejected_proxy":report.get("rejected_proxy_assets", [])}, empty="No frozen assets recorded"))
+    constraint_rows = "\n".join(_mapping_rows(report.get("constraint_checks", {}), empty="No constraint checks recorded"))
+    provenance_rows = "\n".join(_mapping_rows(report.get("data_provenance", {}), empty="No provenance recorded"))
+    warning_rows = "\n".join(_message_rows(report.get("warnings", []), empty="No warnings recorded"))
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Execution-Aware Shadow Portfolio</title><style>{_report_page_css()}</style></head><body><header><h1>Execution-Aware Shadow Portfolio</h1><p>This is an experimental execution-aware shadow allocation. It is not a production portfolio or trading instruction. <a href="/">Dashboard</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a></p></header><main><section><h2>Shadow Status</h2><table><tbody>{status_rows}</tbody></table></section><section><h2>Source Research Allocation</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Research Weights</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Executable ETF Weights</h2><table><tbody>{execution_rows}</tbody></table></section><section><h2>Cash Breakdown</h2><table><tbody>{cash_rows}</tbody></table></section><section><h2>Mapping Explanations</h2><table><thead><tr><th>Research Asset</th><th>Weight</th><th>Destination</th><th>Quality</th><th>Decision</th><th>Reason</th></tr></thead><tbody>{mapping_rows}</tbody></table></section><section><h2>Frozen Research-Only Assets</h2><table><tbody>{frozen_rows}</tbody></table></section><section><h2>Constraint Checks</h2><table><tbody>{constraint_rows}</tbody></table></section><section><h2>Data Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>V11 Boundary</h2><p>V11 remains the existing production candidate. This shadow allocation does not replace or modify V11.</p></section><section><h2>Warnings</h2><table><tbody>{warning_rows}</tbody></table></section></main>{_unified_shell_scripts()}</body></html>"""
+
+
+def _shadow_mapping_rows(rows: list[dict]) -> list[str]:
+    if not rows:
+        return ['<tr><td colspan="6">No mapping explanations recorded</td></tr>']
+    return [
+        "<tr>"
+        f"<td>{escape(str(row.get('research_asset_id', '')))}</td>"
+        f"<td>{escape(str(row.get('research_weight', '')))}</td>"
+        f"<td>{escape(str(row.get('destination', '')))}</td>"
+        f"<td>{escape(str(row.get('mapping_quality', '')))}</td>"
+        f"<td>{escape(str(row.get('decision_status', '')))}</td>"
+        f"<td>{escape(str(row.get('reason', '')))}</td>"
+        "</tr>"
+        for row in rows
+    ]
 
 
 def _research_universe_rows(rows: list[dict]) -> list[str]:

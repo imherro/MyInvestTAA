@@ -19,7 +19,10 @@ def test_execution_period_is_not_before_research_period(): assert REPORT['period
 def test_execution_period_respects_new_energy_etf_start(): assert REPORT['period']['start']>='2021-01-22'
 def test_execution_has_overlap_metrics_and_gap(): assert REPORT['research_overlap_metrics'] and 'annual_return_gap' in REPORT['execution_gap']
 def test_execution_report_warns_not_production(): assert any('not a production trading instruction' in x for x in REPORT['warnings'])
-def test_none_mapping_becomes_unmapped(): assert any(x['research_asset_id']=='931743CNY010.CSI' for x in REPORT['unmapped_assets'])
+def test_human_approved_medium_mapping_becomes_executable():
+ rows=build_execution_mapping(RESEARCH['monthly_allocations'],MAPPINGS,ASSETS)
+ target=next(x for x in rows if x['research_asset_id']=='931743CNY010.CSI')
+ assert target['proxy_id']=='512760.SH' and target['mapping_quality']=='medium' and target['executable'] is True
 def test_low_quality_mapping_is_excluded_by_default(): assert any(x['reason']=='low_quality_proxy_excluded' for x in REPORT['unmapped_assets'])
 def test_low_quality_mapping_can_be_allowed():
  rows=build_execution_mapping(RESEARCH['monthly_allocations'],MAPPINGS,ASSETS,allow_low_quality_proxy=True)

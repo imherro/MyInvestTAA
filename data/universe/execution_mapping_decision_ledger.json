@@ -6,13 +6,16 @@
     {
       "research_asset_id": "931743CNY010.CSI",
       "proposed_proxy": "512760.SH",
-      "status": "pending_explicit_human_approval",
+      "status": "approved_for_execution_validation",
       "semantic_quality": "acceptable",
       "statistical_quality": "eligible_for_recommendation",
-      "decision_reason": "The candidate passed the statistical gate and conservative semantic screening, but the formal mapping requires explicit human approval.",
+      "decision_reason": "Explicitly human-approved for execution validation and shadow use; not approved for production trading.",
       "decision_source_report": "execution_mapping_review_report.json",
       "decided_at": "2026-07-13",
-      "requires_manual_approval": true
+      "requires_manual_approval": true,
+      "approval_record": "execution_mapping_approval_record.json",
+      "approved_at": "2026-07-13",
+      "production_approved": false
     },
     {
       "research_asset_id": "931688CNY010.CSI",

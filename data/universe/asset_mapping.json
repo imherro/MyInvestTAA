@@ -66,10 +66,10 @@
   {
     "research_asset_id": "931743CNY010.CSI",
     "research_asset_name": "半导体材料设备全收益",
-    "primary_execution_proxy": null,
-    "execution_proxies": [],
-    "mapping_quality": "none",
-    "notes": "未确认明确 ETF 代理，不硬凑映射"
+    "primary_execution_proxy": "512760.SH",
+    "execution_proxies": ["512760.SH"],
+    "mapping_quality": "medium",
+    "notes": "Human-approved for execution validation and shadow use. Broader semiconductor-chip proxy; not a direct materials-equipment index tracker."
   },
   {
     "research_asset_id": "H21152.CSI",

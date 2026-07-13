@@ -370,7 +370,8 @@ def test_audit_counts_data_apis():
 def test_audit_counts_mapping_quality():
     audit = build_research_universe_audit()
 
-    assert audit["mapping_quality_counts"]["none"] == 22
+    assert audit["mapping_quality_counts"]["none"] == 21
+    assert audit["mapping_quality_counts"]["medium"] == 5
     assert audit["mapping_quality_counts"]["low"] == 1
 
 

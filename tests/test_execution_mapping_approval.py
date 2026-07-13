@@ -200,9 +200,10 @@ def test_broader_proxy_exposure_is_disclosed():
     assert SEMANTIC["semantic_quality"] == "acceptable"
 
 
-def test_only_931743_is_pending_explicit_human_approval():
-    pending = [row for row in LEDGER["decisions"] if row["status"] == "pending_explicit_human_approval"]
-    assert [row["research_asset_id"] for row in pending] == [TARGET_ASSET_ID]
+def test_only_931743_is_approved_for_execution_validation():
+    approved = [row for row in LEDGER["decisions"] if row["status"] == "approved_for_execution_validation"]
+    assert [row["research_asset_id"] for row in approved] == [TARGET_ASSET_ID]
+    assert approved[0]["production_approved"] is False
 
 
 @pytest.mark.parametrize("asset_id", ["931688CNY010.CSI", "H00805.CSI"])
@@ -262,10 +263,11 @@ def test_package_is_ready_for_explicit_decision_but_not_approved():
     assert "approved" not in APPROVAL
 
 
-def test_formal_mapping_remains_unchanged():
+def test_formal_mapping_is_now_human_approved_for_execution_validation():
     mapping = next(row for row in load_asset_mappings() if row.research_asset_id == TARGET_ASSET_ID)
-    assert mapping.primary_execution_proxy is None
-    assert mapping.mapping_quality == "none"
+    assert mapping.primary_execution_proxy == "512760.SH"
+    assert mapping.execution_proxies == ["512760.SH"]
+    assert mapping.mapping_quality == "medium"
 
 
 def test_approval_package_loader_missing(tmp_path):
@@ -320,8 +322,8 @@ def test_execution_page_has_task_031_sections(section):
     assert section in CLIENT.get("/execution-backtest").text
 
 
-def test_execution_page_requires_explicit_human_approval():
+def test_execution_page_shows_human_approval_application_boundary():
     text = CLIENT.get("/execution-backtest").text
-    assert "No formal mapping has been changed. Explicit human approval is required before updating asset_mapping.json." in text
+    assert "Formal mapping is applied for execution validation and shadow use only; production approval remains false." in text
     assert "https://invest.okbbc.com/header.js" in text
     assert "https://invest.okbbc.com/footer.js" in text
