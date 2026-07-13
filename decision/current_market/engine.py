@@ -1,9 +1,16 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+import math
 
 from decision.current_market.explain import build_cash_explanation, build_decision_summary
 from decision.current_market.freshness import evaluate_freshness
+from decision.current_market.source_policy import (
+    sha256_file,
+    verify_current_decision_source_entry,
+    verify_current_decision_sources,
+)
+from engine.asset_registry.loader import ROOT
 
 
 CURRENT_SNAPSHOT_MODE = "current_decision_with_lagged_market_data"
@@ -38,12 +45,12 @@ def build_current_market_decision(
     )
     research_allocation = _research_allocation(research, market_data_as_of)
     execution_shadow = _execution_shadow(shadow)
+    source_hash_verification = verify_current_decision_sources(source_manifest)
     execution_validation = _execution_validation(
         execution_report,
         sources.get("gate_policy", {}),
         source_manifest.get("execution_gate_policy", {}),
     )
-    source_hash_verification = _source_hash_status(source_manifest)
     freshness = evaluate_freshness(
         market_data_as_of=market_data_as_of,
         decision_date=decision_date,
@@ -86,13 +93,6 @@ def build_current_market_decision(
         and not violations
         and cash.get("reconciled")
     )
-    decision_summary = build_decision_summary(
-        market_state=market_state,
-        shadow=shadow,
-        execution=execution_validation,
-        freshness=freshness,
-        cash_text=cash["text"],
-    )
     review_blockers = _review_blockers(
         production_candidate=production_candidate,
         execution_validation=execution_validation,
@@ -102,15 +102,22 @@ def build_current_market_decision(
         violations=violations,
         cash=cash,
     )
-    decision_summary["blocking_conditions"] = list(
-        dict.fromkeys(decision_summary["blocking_conditions"] + review_blockers)
-    )
     status = (
         "stale"
         if freshness.get("status") == "stale"
         else "user_review_ready"
         if ready_for_user_review
         else "unavailable"
+    )
+    decision_summary = build_decision_summary(
+        market_state=market_state,
+        shadow=shadow,
+        execution=execution_validation,
+        freshness=freshness,
+        cash_text=cash["text"],
+        ready_for_user_review=ready_for_user_review,
+        status=status,
+        evidence_blockers=review_blockers,
     )
     return {
         "available": evidence_complete,
@@ -296,23 +303,10 @@ def _execution_shadow(shadow: dict) -> dict:
 
 
 def _execution_validation(report: dict, gate_policy: dict, policy_source: dict) -> dict:
+    evidence = validate_execution_decision_evidence(report, gate_policy, policy_source)
     decision = report.get("decision", {})
     metrics = report.get("metrics", {})
     mapping = report.get("mapping_summary", {})
-    metric_fields = ("annual_return", "max_drawdown", "sharpe")
-    mapping_fields = ("tradable_weight_coverage", "untradable_month_ratio")
-    metrics_available = all(
-        isinstance(metrics.get(field), (int, float)) for field in metric_fields
-    ) and all(isinstance(mapping.get(field), (int, float)) for field in mapping_fields)
-    decision_available = isinstance(
-        decision.get("ready_for_execution_validation"), bool
-    ) and isinstance(decision.get("reasons"), list)
-    policy_available = bool(
-        gate_policy.get("available")
-        and policy_source.get("available")
-        and policy_source.get("sha256")
-    )
-    available = bool(report.get("available") and decision_available and metrics_available)
     policy_fields = (
         "policy_id",
         "tradable_weight_coverage_min",
@@ -323,11 +317,15 @@ def _execution_validation(report: dict, gate_policy: dict, policy_source: dict) 
         "source",
     )
     return {
-        "available": available,
+        "available": evidence["valid"],
         "ready": decision.get("ready_for_execution_validation") is True,
-        "reasons": decision.get("reasons", []) if decision_available else [],
-        "metrics_available": metrics_available,
-        "evidence_complete": bool(available and policy_available),
+        "reasons": decision.get("reasons", [])
+        if isinstance(decision.get("reasons"), list)
+        else [],
+        "metrics_available": evidence["metrics_available"],
+        "evidence_complete": evidence["valid"],
+        "policy_schema_verified": evidence["policy_schema_verified"],
+        "semantic_errors": evidence["errors"],
         "annual_return": metrics.get("annual_return"),
         "max_drawdown": metrics.get("max_drawdown"),
         "sharpe": metrics.get("sharpe"),
@@ -337,28 +335,116 @@ def _execution_validation(report: dict, gate_policy: dict, policy_source: dict) 
             **{field: gate_policy.get(field) for field in policy_fields},
             "policy_hash": policy_source.get("sha256"),
             "manifest_source": policy_source.get("path"),
-            "available": policy_available,
+            "available": evidence["policy_schema_verified"],
+            "policy_schema_verified": evidence["policy_schema_verified"],
+            "policy_hash_verified": evidence["policy_hash_verified"],
+            "execution_engine_source_hash": evidence[
+                "execution_engine_source_hash"
+            ],
         },
         "source": "reports/execution_backtest_report.json",
         "source_as_of": report.get("period", {}).get("end"),
-        "message": None if available else "execution validation report unavailable or incomplete",
+        "message": None
+        if evidence["valid"]
+        else "execution validation report unavailable or semantically incomplete",
     }
 
 
-def _source_hash_status(manifest: dict) -> dict:
-    required = [row for row in manifest.values() if row.get("required")]
-    errors = []
-    for row in required:
-        if not row.get("available"):
-            errors.append(f"required source unavailable: {row.get('source')}")
-        elif not isinstance(row.get("sha256"), str) or len(row["sha256"]) != 64:
-            errors.append(f"required source hash invalid: {row.get('source')}")
+def validate_execution_decision_evidence(
+    report: dict,
+    gate_policy: dict,
+    policy_source: dict,
+) -> dict:
+    errors: list[str] = []
+    if report.get("available") is not True:
+        errors.append("execution report unavailable")
+
+    decision = report.get("decision", {})
+    ready = decision.get("ready_for_execution_validation")
+    reasons = decision.get("reasons")
+    if not isinstance(ready, bool):
+        errors.append("execution decision ready_for_execution_validation must be boolean")
+    if not isinstance(reasons, list):
+        errors.append("execution decision reasons must be list[str]")
+    else:
+        if any(not isinstance(reason, str) for reason in reasons):
+            errors.append("execution decision reason must be a string")
+        if any(isinstance(reason, str) and not reason.strip() for reason in reasons):
+            errors.append("execution decision reason must be non-empty")
+        if ready is True and reasons:
+            errors.append("execution decision ready=true requires empty reasons")
+        if ready is False and not reasons:
+            errors.append("execution decision ready=false requires non-empty reasons")
+
+    metrics = report.get("metrics", {})
+    mapping = report.get("mapping_summary", {})
+    metric_errors: list[str] = []
+    for field in ("annual_return", "max_drawdown", "sharpe"):
+        if not _is_finite_number(metrics.get(field)):
+            metric_errors.append(f"execution metric {field} must be finite")
+    for field in ("tradable_weight_coverage", "untradable_month_ratio"):
+        value = mapping.get(field)
+        if not _is_finite_number(value):
+            metric_errors.append(f"execution metric {field} must be finite")
+        elif not 0 <= float(value) <= 1:
+            metric_errors.append(f"execution metric {field} must be between 0 and 1")
+    errors.extend(metric_errors)
+
+    period = report.get("period", {})
+    start = period.get("start")
+    end = period.get("end")
+    if not isinstance(start, str) or not start:
+        errors.append("execution period start is required")
+    if not isinstance(end, str) or not end:
+        errors.append("execution period end is required")
+    if isinstance(start, str) and start and isinstance(end, str) and end and start > end:
+        errors.append("execution period start must not be after end")
+
+    policy_errors: list[str] = []
+    policy_id = gate_policy.get("policy_id")
+    if not isinstance(policy_id, str) or not policy_id.strip():
+        policy_errors.append("execution gate policy policy_id must be non-empty")
+    for field in (
+        "tradable_weight_coverage_min",
+        "untradable_month_ratio_max",
+        "max_drawdown_min",
+        "sharpe_min",
+        "annual_return_gap_min",
+    ):
+        if not _is_finite_number(gate_policy.get(field)):
+            policy_errors.append(f"execution gate policy {field} must be finite")
+    for field in ("tradable_weight_coverage_min", "untradable_month_ratio_max"):
+        value = gate_policy.get(field)
+        if _is_finite_number(value) and not 0 <= float(value) <= 1:
+            policy_errors.append(f"execution gate policy {field} must be between 0 and 1")
+    if gate_policy.get("source") != "backtest/execution/engine.py:_decision":
+        policy_errors.append("execution gate policy source is invalid")
+
+    policy_source_errors = verify_current_decision_source_entry(
+        "execution_gate_policy", policy_source
+    )
+    errors.extend(policy_errors)
+    errors.extend(policy_source_errors)
+    policy_schema_verified = not policy_errors and not policy_source_errors
+    execution_engine = ROOT / "backtest" / "execution" / "engine.py"
     return {
         "valid": not errors,
-        "required_count": len(required),
-        "available_required_count": sum(bool(row.get("available")) for row in required),
+        "metrics_available": not metric_errors,
+        "policy_schema_verified": policy_schema_verified,
+        "policy_hash_verified": not policy_source_errors,
+        "execution_engine_source_hash": sha256_file(execution_engine)
+        if execution_engine.exists()
+        else None,
         "errors": errors,
     }
+
+
+def _is_finite_number(value: object) -> bool:
+    return (
+        isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and math.isfinite(float(value))
+    )
 
 
 def _governance_state_as_of(manifest: dict) -> str | None:
@@ -385,6 +471,7 @@ def _review_blockers(
         blockers.append("V11 and Shadow boundary is not verified")
     if not execution_validation.get("available"):
         blockers.append("execution validation report unavailable")
+        blockers.extend(execution_validation.get("semantic_errors", []))
     elif not execution_validation.get("evidence_complete"):
         blockers.append("execution validation evidence is incomplete")
     blockers.extend(source_hash_verification.get("errors", []))

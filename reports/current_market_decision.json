@@ -5,7 +5,7 @@
   "production_actionable": false,
   "as_of": "2026-07-08",
   "decision_date": "2026-07-13",
-  "generated_at": "2026-07-13T06:47:17+00:00",
+  "generated_at": "2026-07-13T07:14:06+00:00",
   "market_data_as_of": "2026-07-08",
   "governance_state_as_of": "2026-07-13",
   "snapshot_mode": "current_decision_with_lagged_market_data",
@@ -224,6 +224,8 @@
     ],
     "metrics_available": true,
     "evidence_complete": true,
+    "policy_schema_verified": true,
+    "semantic_errors": [],
     "annual_return": 0.057103,
     "max_drawdown": -0.169053,
     "sharpe": 0.544214,
@@ -239,7 +241,10 @@
       "source": "backtest/execution/engine.py:_decision",
       "policy_hash": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
       "manifest_source": "config/execution_validation_policy.json",
-      "available": true
+      "available": true,
+      "policy_schema_verified": true,
+      "policy_hash_verified": true,
+      "execution_engine_source_hash": "8704cc7117619542f51eb2dc94be954a3278447e814af464dfc51253b10591bb"
     },
     "source": "reports/execution_backtest_report.json",
     "source_as_of": "2026-07-08",
@@ -340,10 +345,7 @@
       "The 40% Shadow cash weight is not a single timing call: 30% from research strategy cash; 10% from research-only assets without an approved execution ETF (931688CNY010.CSI).",
       "V11 remains unchanged; Research and Shadow do not replace it."
     ],
-    "blocking_conditions": [
-      "tradable weight coverage is below 70%",
-      "untradable month ratio exceeds 20%"
-    ]
+    "blocking_conditions": []
   },
   "data_freshness": {
     "status": "pass",
@@ -498,6 +500,7 @@
     "valid": true,
     "required_count": 9,
     "available_required_count": 9,
+    "verified_count": 9,
     "errors": []
   },
   "warnings": [

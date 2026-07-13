@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 
@@ -21,6 +20,7 @@ from backtest.execution.shadow_report import (
 )
 from backtest.research.report import RESEARCH_BACKTEST_REPORT, load_research_backtest_report
 from decision.current_market.models import SourceSnapshot
+from decision.current_market.source_policy import ALL_SOURCE_DEFINITIONS, sha256_file
 from engine.asset_registry import load_execution_universe
 from engine.asset_registry.loader import ASSET_MAPPING_FILE, ROOT
 
@@ -28,20 +28,6 @@ from engine.asset_registry.loader import ASSET_MAPPING_FILE, ROOT
 STRATEGY_DIAGNOSIS_REPORT = ROOT / "reports" / "strategy_diagnosis_report.json"
 EXECUTION_GATE_POLICY = ROOT / "config" / "execution_validation_policy.json"
 V11_CURRENT_ALLOCATION_REPORT = ROOT / "reports" / "v11_current_allocation.json"
-
-
-SOURCE_DEFINITIONS = {
-    "market_and_v11": (STRATEGY_DIAGNOSIS_REPORT, True, "market_data"),
-    "research_allocation": (RESEARCH_BACKTEST_REPORT, True, "market_data"),
-    "execution_validation": (EXECUTION_BACKTEST_REPORT, True, "market_data"),
-    "execution_shadow": (SHADOW_PORTFOLIO_REPORT, True, "market_data"),
-    "execution_price_manifest": (PRICE_MANIFEST_REPORT, True, "market_data"),
-    "approval_integrity": (APPROVAL_INTEGRITY_SEAL, True, "governance"),
-    "decision_ledger": (DECISION_LEDGER, True, "governance"),
-    "asset_mapping": (ASSET_MAPPING_FILE, True, "governance"),
-    "execution_gate_policy": (EXECUTION_GATE_POLICY, True, "policy"),
-    "v11_current_allocation": (V11_CURRENT_ALLOCATION_REPORT, False, "market_data"),
-}
 
 
 def load_current_market_sources() -> dict:
@@ -81,14 +67,16 @@ def load_current_market_sources() -> dict:
     source_manifest = {
         name: SourceSnapshot(
             source=name,
-            path=_relative(path),
-            sha256=_sha256(path) if path.exists() else None,
-            available=path.exists(),
+            path=definition["path"],
+            sha256=sha256_file(ROOT / definition["path"])
+            if (ROOT / definition["path"]).exists()
+            else None,
+            available=(ROOT / definition["path"]).exists(),
             source_as_of=as_of.get(name),
-            required=required,
-            temporal_role=temporal_role,
+            required=definition["required"],
+            temporal_role=definition["temporal_role"],
         ).as_dict()
-        for name, (path, required, temporal_role) in SOURCE_DEFINITIONS.items()
+        for name, definition in ALL_SOURCE_DEFINITIONS.items()
     }
     return {
         "diagnosis": diagnosis,
@@ -124,14 +112,3 @@ def _approved_at(ledger: dict) -> str | None:
         ),
         None,
     )
-
-
-def _relative(path: Path) -> str:
-    try:
-        return str(path.resolve().relative_to(ROOT.resolve())).replace("\\", "/")
-    except ValueError:
-        return str(path.resolve())
-
-
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()

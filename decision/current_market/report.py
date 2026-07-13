@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import json
-import hashlib
 from pathlib import Path
 
+from decision.current_market.explain import decision_headline
+from decision.current_market.source_policy import verify_current_decision_sources
 from engine.asset_registry.loader import ROOT
 
 
@@ -50,7 +51,9 @@ def load_current_market_decision(
         else verify_sources
     )
     if should_verify:
-        verification = _verify_source_manifest(value["source_manifest"])
+        verification = verify_current_decision_sources(
+            value["source_manifest"], root=ROOT
+        )
         value["source_hash_verification"] = verification
         if not verification["valid"]:
             value["available"] = False
@@ -59,6 +62,15 @@ def load_current_market_decision(
             value["production_actionable"] = False
             value["message"] = (
                 "current market decision snapshot source drifted; rebuild required"
+            )
+            summary = value.setdefault("decision_summary", {})
+            summary["headline"] = decision_headline(
+                status="unavailable", ready_for_user_review=False
+            )
+            summary["blocking_conditions"] = list(
+                dict.fromkeys(
+                    summary.get("blocking_conditions", []) + verification["errors"]
+                )
             )
     return value
 
@@ -89,40 +101,3 @@ def _schema_errors(value) -> list[str]:
     if "source_manifest" in value and not isinstance(value["source_manifest"], dict):
         errors.append("source_manifest must be an object")
     return errors
-
-
-def _verify_source_manifest(manifest: dict) -> dict:
-    errors = []
-    required_count = 0
-    verified_count = 0
-    for name, row in manifest.items():
-        if not isinstance(row, dict) or not row.get("required"):
-            continue
-        required_count += 1
-        path_value = row.get("path")
-        expected = row.get("sha256")
-        if not path_value or not expected:
-            errors.append(f"required source metadata incomplete: {name}")
-            continue
-        source = (ROOT / path_value).resolve()
-        try:
-            source.relative_to(ROOT.resolve())
-        except ValueError:
-            errors.append(f"required source path escapes project root: {name}")
-            continue
-        if not source.exists():
-            errors.append(f"required source missing: {name}")
-            continue
-        actual = hashlib.sha256(source.read_bytes()).hexdigest()
-        if actual != expected:
-            errors.append(f"required source hash mismatch: {name}")
-            continue
-        verified_count += 1
-    if required_count == 0:
-        errors.append("required source manifest is empty")
-    return {
-        "valid": not errors,
-        "required_count": required_count,
-        "verified_count": verified_count,
-        "errors": errors,
-    }

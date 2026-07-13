@@ -61,13 +61,26 @@ def build_cash_explanation(cash_breakdown: dict, mapping_explanations: list[dict
     }
 
 
-def build_decision_summary(*, market_state: dict, shadow: dict, execution: dict, freshness: dict, cash_text: str) -> dict:
-    historical = freshness.get("status") != "pass"
-    headline = (
-        "Historical verified decision snapshot"
-        if historical
-        else "Verified local allocation snapshot ready for user review"
-    )
+def decision_headline(*, status: str, ready_for_user_review: bool) -> str:
+    if ready_for_user_review:
+        return "Verified local allocation snapshot ready for user review"
+    if status == "stale":
+        return "Historical verified decision snapshot"
+    return "Decision snapshot unavailable for user review"
+
+
+def build_decision_summary(
+    *,
+    market_state: dict,
+    shadow: dict,
+    execution: dict,
+    freshness: dict,
+    cash_text: str,
+    ready_for_user_review: bool,
+    status: str,
+    evidence_blockers: list[str],
+) -> dict:
+    historical = status == "stale"
     executable = [
         f"{asset_id}: {weight:.0%}"
         for asset_id, weight in shadow.get("execution_weights", {}).items()
@@ -78,15 +91,10 @@ def build_decision_summary(*, market_state: dict, shadow: dict, execution: dict,
         for row in shadow.get("mapping_explanations", [])
         if row.get("destination") == "CASH" and row.get("research_asset_id") != "CASH"
     ]
-    blocking = list(freshness.get("errors", []))
-    if not execution.get("available"):
-        blocking.append("execution validation report unavailable")
-    elif not execution.get("metrics_available"):
-        blocking.append("execution validation metrics are incomplete")
-    else:
-        blocking.extend(execution.get("reasons", []))
     return {
-        "headline": headline,
+        "headline": decision_headline(
+            status=status, ready_for_user_review=ready_for_user_review
+        ),
         "current_stance": (
             "Side-by-side review only; no production action is created."
             if not historical
@@ -99,5 +107,5 @@ def build_decision_summary(*, market_state: dict, shadow: dict, execution: dict,
             cash_text,
             "V11 remains unchanged; Research and Shadow do not replace it.",
         ],
-        "blocking_conditions": list(dict.fromkeys(blocking)),
+        "blocking_conditions": list(dict.fromkeys(evidence_blockers)),
     }
