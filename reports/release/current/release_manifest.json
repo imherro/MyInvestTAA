@@ -1,7 +1,7 @@
 {
   "available": true,
-  "release_id": "taa-20260713-573db9ad212b",
-  "commit_sha": "0984c2cd646ac1b4cb5a6d99279239b579f15f2d",
+  "release_id": "taa-20260713-73da1670364d",
+  "commit_sha": "3cced18388fcc65e2ef5744cb966398ef5b73536",
   "market_data_as_of": "2026-07-08",
   "decision_date": "2026-07-13",
   "generated_at": "2026-07-13T08:15:34+00:00",
@@ -226,8 +226,8 @@
     {
       "path": "system_acceptance_report.json",
       "role": "system acceptance",
-      "sha256": "cd6658adcb39871e2eecde9eceec9d24daf6320fb90b950a885fc314e8586b1e",
-      "semantic_hash": "c85dab3faecf551f277c7812b9bb353940bc18eb275e5ffd69d7187fbcbfd548",
+      "sha256": "8662d7d258d3a8031499e877378f1e45c1805b41474d141d0445672f8585a656",
+      "semantic_hash": "bee539ac530e69815596192fbddfd65efa71e6369e15a62c580d7a5207b2cffd",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -340,16 +340,16 @@
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "573db9ad212bc90a9538b6a64590f3a785e603dc8fab030850e34a187f60cdea",
+    "input_fingerprint": "73da1670364d85974518b3e547675e4f6aca4174d1bc1c82f6e4954337378755",
     "first_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
     "second_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
     "first_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
     "second_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
     "artifact_hash_differences": []
   },
-  "acceptance_report_hash": "cd6658adcb39871e2eecde9eceec9d24daf6320fb90b950a885fc314e8586b1e",
-  "raw_release_hash": "db540cae917b730fc85b5e8e7a35a78f3a2a1afbf25d2b3e9d9eba9a52f09b96",
-  "semantic_release_hash": "9c341243cff7a021ea245b5b036654c759f72ea0ab43c51dfe777a1da12825e8",
+  "acceptance_report_hash": "8662d7d258d3a8031499e877378f1e45c1805b41474d141d0445672f8585a656",
+  "raw_release_hash": "a1300c76103dff2a2e7d1597d54132e132ada466a595784ec6647d0168ba4fa9",
+  "semantic_release_hash": "47539c0ec8cfcb223f97229491860bfade3c1f21082c30aebdb92d07fa49f3bd",
   "production_boundary": {
     "verified": true,
     "v11_candidate": true,
