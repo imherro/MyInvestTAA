@@ -92,7 +92,7 @@ def test_release_manifest_contract(field):
     "field",
     ["path", "role", "sha256", "semantic_hash", "source_as_of", "classification", "dependencies"],
 )
-@pytest.mark.parametrize("index", range(11))
+@pytest.mark.parametrize("index", range(len(MANIFEST["inputs"])))
 def test_each_release_input_contract(index, field):
     assert field in MANIFEST["inputs"][index]
 
@@ -101,7 +101,7 @@ def test_each_release_input_contract(index, field):
     "field",
     ["path", "role", "sha256", "semantic_hash", "source_as_of", "classification", "dependencies"],
 )
-@pytest.mark.parametrize("index", range(9))
+@pytest.mark.parametrize("index", range(len(MANIFEST["artifacts"])))
 def test_each_release_artifact_contract(index, field):
     assert field in MANIFEST["artifacts"][index]
 
@@ -459,6 +459,26 @@ def test_formal_decision_apis_return_committed_release_artifacts(route, artifact
         **json.loads((RELEASE / artifact).read_text(encoding="utf-8")),
         "available": True,
     }
+
+
+def test_counterfactual_api_reads_verified_committed_audit_artifact():
+    payload = CLIENT.get("/api/research/execution-mapping-counterfactual").json()
+    committed = json.loads((RELEASE / "execution_mapping_counterfactual_report.json").read_text(encoding="utf-8"))
+    assert payload["available"] is True
+    assert payload["status"] == "current"
+    assert payload["release_scope"] == "committed_release"
+    assert payload["input_contract_verification"]["verified"] is True
+    assert payload["impact"] == committed["impact"]
+    assert any(row["path"] == "execution_mapping_counterfactual_report.json" for row in MANIFEST["artifacts"])
+
+
+def test_stale_counterfactual_cannot_enter_release(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        "release.orchestrator.load_counterfactual_report",
+        lambda *_: {"available": True, "status": "stale", "input_contract_verification": {"verified": False, "errors": ["proposal drift"]}},
+    )
+    with pytest.raises(ReleaseBuildError, match="counterfactual audit artifact is unavailable or stale"):
+        _build_base_candidate(tmp_path / "candidate", ROOT, _config())
 
 
 @pytest.mark.parametrize(

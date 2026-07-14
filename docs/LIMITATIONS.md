@@ -8,6 +8,8 @@
 
 The binary untradable-month metric is intentionally strict: any execution gap marks the month. Use the continuous gap-weight metrics to judge severity, but do not treat them as a replacement for the existing gate.
 
+Non-executable assets are not synonymous with assets that lack an ETF. Reports separately identify assets with no approved proxy and assets whose only available proxy is excluded for low mapping quality.
+
 ## How to interpret 40% CASH
 
 Shadow cash includes the Research model's own cash plus weights that cannot be mapped to a sufficiently approved, price-verified ETF. It is therefore not a pure bearish market view.
@@ -20,7 +22,7 @@ The 931743 research asset currently uses a medium-quality semiconductor ETF prox
 
 Market and ETF data are local offline snapshots, not real-time quotes. A passed release proves consistency with those inputs, not freshness beyond the stated as-of date.
 
-Counterfactual mapping results are configuration-specific. The system marks them historical-only whenever their baseline source hashes no longer match the current formal mapping and execution evidence.
+Counterfactual mapping results are configuration-specific. The system marks them historical-only whenever any required input is missing, damaged, or no longer matches the committed analysis contract. Only a fully verified counterfactual enters the committed release, and it still cannot authorize a mapping change.
 
 ## Not a trading instruction
 

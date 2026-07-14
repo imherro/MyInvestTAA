@@ -8,6 +8,7 @@ import shutil
 import tempfile
 
 from backtest.execution.approval_integrity import validate_approval_integrity
+from backtest.execution.proposal_report import COUNTER, load_counterfactual_report
 from decision.current_market import build_current_market_decision, load_current_market_sources
 from decision.v11_current import build_v11_current_allocation_snapshot
 from decision.v11_current.validation import validate_v11_current_allocation_snapshot
@@ -45,6 +46,8 @@ LOCAL_INPUTS = (
     SourceDefinition("reports/research_backtest_report.json", "research backtest evidence", "verified_external_local_input", "2026-07-08"),
     SourceDefinition("reports/execution_backtest_report.json", "execution backtest evidence", "verified_external_local_input", "2026-07-08"),
     SourceDefinition("reports/execution_aware_shadow_portfolio.json", "execution-aware shadow snapshot", "verified_external_local_input", "2026-07-08"),
+    SourceDefinition("reports/execution_mapping_proposal.json", "counterfactual proposal input", "verified_external_local_input", "2026-07-08"),
+    SourceDefinition("reports/execution_mapping_counterfactual_report.json", "counterfactual audit evidence", "verified_external_local_input", "2026-07-08"),
     SourceDefinition("reports/execution_price_dataset_manifest.json", "execution price provenance", "verified_external_local_input", "2026-07-08"),
     SourceDefinition("reports/execution_mapping_approval_integrity_seal.json", "approval integrity seal", "immutable_governance_artifact", "2026-07-13"),
     SourceDefinition("reports/execution_mapping_approval_record.json", "approved mapping record", "immutable_governance_artifact", "2026-07-13"),
@@ -59,6 +62,7 @@ COPIED_REPORTS = (
     "research_backtest_report.json",
     "execution_backtest_report.json",
     "execution_aware_shadow_portfolio.json",
+    "execution_mapping_counterfactual_report.json",
 )
 
 REQUIRED_ACCEPTANCE_GATES = (
@@ -394,6 +398,9 @@ def _build_base_candidate(
     config: ReleaseBuildConfig,
 ) -> dict:
     directory.mkdir(parents=True, exist_ok=False)
+    counterfactual = load_counterfactual_report(COUNTER)
+    if not counterfactual.get("available") or counterfactual.get("status") != "current" or not counterfactual.get("input_contract_verification", {}).get("verified"):
+        raise ReleaseBuildError("counterfactual audit artifact is unavailable or stale", counterfactual.get("input_contract_verification", {}).get("errors", []))
     for name in COPIED_REPORTS:
         shutil.copyfile(root / "reports" / name, directory / name)
 
@@ -728,6 +735,7 @@ def _artifact_rows(directory: Path, config: ReleaseBuildConfig) -> list[dict]:
         "research_backtest_report.json": ("research validation snapshot", "verified_external_local_input", []),
         "execution_backtest_report.json": ("execution validation snapshot", "verified_external_local_input", ["research_backtest_report.json"]),
         "execution_aware_shadow_portfolio.json": ("shadow portfolio snapshot", "verified_external_local_input", ["research_backtest_report.json", "execution_backtest_report.json"]),
+        "execution_mapping_counterfactual_report.json": ("counterfactual mapping audit", "verified_external_local_input", ["research_backtest_report.json", "execution_backtest_report.json"]),
         "v11_current_allocation.json": ("V11 current allocation", "rebuilt_artifact", ["strategy_diagnosis_report.json"]),
         "current_market_decision.json": ("current market decision", "rebuilt_artifact", ["v11_current_allocation.json", "execution_aware_shadow_portfolio.json"]),
         "ui_route_inventory.json": ("final UI route inventory", "rebuilt_artifact", []),

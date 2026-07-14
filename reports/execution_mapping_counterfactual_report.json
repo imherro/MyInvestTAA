@@ -2,13 +2,14 @@
   "available": true,
   "status": "current",
   "evidence_use": "current_analysis",
+  "release_scope": "mutable_pre_release",
   "data_provider": "tushare",
   "dataset_provenance": {
     "provenance_verified": true,
     "errors": []
   },
   "baseline_contract": {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "sources": {
       "asset_mapping": {
         "path": "data/universe/asset_mapping.json",
@@ -24,7 +25,7 @@
       },
       "execution_backtest_report": {
         "path": "reports/execution_backtest_report.json",
-        "sha256": "ab0a5a0e60601d810fc63d634464c3306cfa768bc42527e327b19e2f1d810126"
+        "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d"
       }
     },
     "baseline_snapshot": {
@@ -41,9 +42,36 @@
         "calmar": 0.337781
       },
       "mapping_summary": {
-        "mapped_research_assets": 9,
-        "unmapped_research_assets": 4,
-        "low_quality_proxy_assets": 1,
+        "mapping_summary_schema_version": "2.0",
+        "executable_research_asset_count": 9,
+        "non_executable_research_asset_count": 4,
+        "no_approved_proxy_asset_count": 3,
+        "low_quality_excluded_asset_count": 1,
+        "executable_research_asset_ids": [
+          "000688CNY01.CSI",
+          "931743CNY010.CSI",
+          "H00015.CSI",
+          "H00300.CSI",
+          "H00852.CSI",
+          "H00905.CSI",
+          "H00922.CSI",
+          "H20007.CSI",
+          "H20771.CSI"
+        ],
+        "non_executable_research_asset_ids": [
+          "931688CNY010.CSI",
+          "H00805.CSI",
+          "H20590.CSI",
+          "H21152.CSI"
+        ],
+        "no_approved_proxy_asset_ids": [
+          "931688CNY010.CSI",
+          "H20590.CSI",
+          "H21152.CSI"
+        ],
+        "low_quality_excluded_asset_ids": [
+          "H00805.CSI"
+        ],
         "untradable_months": 66,
         "untradable_month_ratio": 1.0,
         "binary_any_gap_month_ratio": 1.0,
@@ -51,13 +79,27 @@
         "tradable_weight_coverage": 0.691469,
         "tradable_weight_coverage_total_portfolio": 0.552652,
         "coverage_contract": {
-          "numerator_name": "tradable_translated_weight",
-          "numerator_weight_period_sum": 36.475,
-          "denominator_name": "non_cash_research_weight",
-          "denominator_weight_period_sum": 52.75,
-          "total_portfolio_denominator_weight_period_sum": 66.0,
-          "primary_metric": "tradable_weight_coverage",
-          "primary_metric_definition": "tradable translated ETF weight divided by non-cash research weight"
+          "schema_version": "2.0",
+          "metrics": [
+            {
+              "metric": "tradable_weight_coverage",
+              "numerator": "tradable_translated_weight",
+              "denominator": "non_cash_research_weight",
+              "numerator_weight_period_sum": 36.475,
+              "denominator_weight_period_sum": 52.75,
+              "formula": "tradable_translated_weight / non_cash_research_weight",
+              "unit": "fraction"
+            },
+            {
+              "metric": "tradable_weight_coverage_total_portfolio",
+              "numerator": "tradable_translated_weight",
+              "denominator": "total_research_portfolio_weight",
+              "numerator_weight_period_sum": 36.475,
+              "denominator_weight_period_sum": 66.0,
+              "formula": "tradable_translated_weight / total_research_portfolio_weight",
+              "unit": "fraction"
+            }
+          ]
         },
         "gap_metrics": {
           "definition": "monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
@@ -128,8 +170,59 @@
         "untradable_cash": 0.001515
       }
     },
-    "baseline_snapshot_hash": "942145f219f834586755cecdc9ee113225dba2bbf1061747399c6ac0e1efa6cb",
-    "contract_hash": "30a85b7d5e6b7d21f4c13485a55496f742101da35a671f7e7891f45acaf0f72d"
+    "baseline_snapshot_hash": "699fd39e06e954c42c24757ace64fb51ae727c103a5255143aae8c2151a59de9",
+    "valid": true,
+    "errors": [],
+    "contract_hash": "80605a8f7e047e91a6d8ea91338a0386ca784453c0e2de57cfef6b66cad9256e"
+  },
+  "counterfactual_input_contract": {
+    "schema_version": "1.0",
+    "required_sources": {
+      "execution_mapping_proposal": {
+        "path": "reports/execution_mapping_proposal.json",
+        "sha256": "6ad76e8d5bc0cfb9b1403f1e9543afbb26b7bff20892b66c2be514553d4b3d3e"
+      },
+      "research_backtest_report": {
+        "path": "reports/research_backtest_report.json",
+        "sha256": "5a5451972589dd787e28ed96cc582e860bb7e6caef6eee5bce3c47664e541e07"
+      },
+      "execution_price_dataset_manifest": {
+        "path": "reports/execution_price_dataset_manifest.json",
+        "sha256": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd"
+      },
+      "asset_mapping": {
+        "path": "data/universe/asset_mapping.json",
+        "sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8"
+      },
+      "decision_ledger": {
+        "path": "data/universe/execution_mapping_decision_ledger.json",
+        "sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b"
+      },
+      "approval_integrity_seal": {
+        "path": "reports/execution_mapping_approval_integrity_seal.json",
+        "sha256": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9"
+      },
+      "execution_backtest_report": {
+        "path": "reports/execution_backtest_report.json",
+        "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d"
+      },
+      "execution_engine_code": {
+        "path": "backtest/execution/engine.py",
+        "sha256": "d91bdff30585d1d040cbf97b9b2f60767dbe5bd4e3b1d773bdac5ac347e412eb"
+      },
+      "counterfactual_code": {
+        "path": "backtest/execution/counterfactual.py",
+        "sha256": "ebf130c1b6fd1eb33ae86ac25b308f5b51696a455e28a2030b03ba7328d3d61c"
+      },
+      "proposal_report_code": {
+        "path": "backtest/execution/proposal_report.py",
+        "sha256": "cc69a3a92b91084d6fca638e53a62e35c8dc03850d4443b72aba3c15942e1c71"
+      }
+    },
+    "proposal_overlay_semantic_hash": "49cb13c26e92e55d73c4aef374273a31ef6a74a8dd4c73a089632462f79913ad",
+    "valid": true,
+    "errors": [],
+    "contract_hash": "3f96b7f6465024dfa6617e39703ca1d6457e3eff7655c57695dee9a7f40ad7eb"
   },
   "baseline": {
     "available": true,
@@ -9549,9 +9642,54 @@
       "cash_drag_gap": 0.246591
     },
     "mapping_summary": {
-      "mapped_research_assets": 9,
-      "unmapped_research_assets": 4,
-      "low_quality_proxy_assets": 1,
+      "mapping_summary_schema_version": "2.0",
+      "executable_research_asset_count": 9,
+      "non_executable_research_asset_count": 4,
+      "no_approved_proxy_asset_count": 3,
+      "low_quality_excluded_asset_count": 1,
+      "executable_research_asset_ids": [
+        "000688CNY01.CSI",
+        "931743CNY010.CSI",
+        "H00015.CSI",
+        "H00300.CSI",
+        "H00852.CSI",
+        "H00905.CSI",
+        "H00922.CSI",
+        "H20007.CSI",
+        "H20771.CSI"
+      ],
+      "non_executable_research_asset_ids": [
+        "931688CNY010.CSI",
+        "H00805.CSI",
+        "H20590.CSI",
+        "H21152.CSI"
+      ],
+      "no_approved_proxy_asset_ids": [
+        "931688CNY010.CSI",
+        "H20590.CSI",
+        "H21152.CSI"
+      ],
+      "low_quality_excluded_asset_ids": [
+        "H00805.CSI"
+      ],
+      "legacy_metrics": {
+        "mapped_research_assets": {
+          "value": 9,
+          "deprecated": true,
+          "replacement": "executable_research_asset_count"
+        },
+        "unmapped_research_assets": {
+          "value": 4,
+          "deprecated": true,
+          "legacy_semantics": "non_executable_research_asset_count",
+          "replacement": "non_executable_research_asset_count"
+        },
+        "low_quality_proxy_assets": {
+          "value": 1,
+          "deprecated": true,
+          "replacement": "low_quality_excluded_asset_count"
+        }
+      },
       "untradable_months": 66,
       "untradable_month_ratio": 1.0,
       "binary_any_gap_month_ratio": 1.0,
@@ -9559,13 +9697,27 @@
       "tradable_weight_coverage": 0.691469,
       "tradable_weight_coverage_total_portfolio": 0.552652,
       "coverage_contract": {
-        "numerator_name": "tradable_translated_weight",
-        "numerator_weight_period_sum": 36.475,
-        "denominator_name": "non_cash_research_weight",
-        "denominator_weight_period_sum": 52.75,
-        "total_portfolio_denominator_weight_period_sum": 66.0,
-        "primary_metric": "tradable_weight_coverage",
-        "primary_metric_definition": "tradable translated ETF weight divided by non-cash research weight"
+        "schema_version": "2.0",
+        "metrics": [
+          {
+            "metric": "tradable_weight_coverage",
+            "numerator": "tradable_translated_weight",
+            "denominator": "non_cash_research_weight",
+            "numerator_weight_period_sum": 36.475,
+            "denominator_weight_period_sum": 52.75,
+            "formula": "tradable_translated_weight / non_cash_research_weight",
+            "unit": "fraction"
+          },
+          {
+            "metric": "tradable_weight_coverage_total_portfolio",
+            "numerator": "tradable_translated_weight",
+            "denominator": "total_research_portfolio_weight",
+            "numerator_weight_period_sum": 36.475,
+            "denominator_weight_period_sum": 66.0,
+            "formula": "tradable_translated_weight / total_research_portfolio_weight",
+            "unit": "fraction"
+          }
+        ]
       },
       "gap_metrics": {
         "definition": "monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
@@ -9635,7 +9787,7 @@
       "missing_price_cash": 0.0,
       "untradable_cash": 0.001515
     },
-    "unmapped_assets": [
+    "non_executable_assets": [
       {
         "research_asset_id": "931688CNY010.CSI",
         "proxy_id": null,
@@ -9649,6 +9801,29 @@
         "mapping_quality": "low",
         "executable": false,
         "reason": "low_quality_proxy_excluded"
+      },
+      {
+        "research_asset_id": "H20590.CSI",
+        "proxy_id": null,
+        "mapping_quality": "none",
+        "executable": false,
+        "reason": "mapping_unavailable"
+      },
+      {
+        "research_asset_id": "H21152.CSI",
+        "proxy_id": null,
+        "mapping_quality": "none",
+        "executable": false,
+        "reason": "mapping_unavailable"
+      }
+    ],
+    "unmapped_assets": [
+      {
+        "research_asset_id": "931688CNY010.CSI",
+        "proxy_id": null,
+        "mapping_quality": "none",
+        "executable": false,
+        "reason": "mapping_unavailable"
       },
       {
         "research_asset_id": "H20590.CSI",
@@ -9683,7 +9858,24 @@
       "ready_for_execution_validation": false,
       "reasons": [
         "tradable weight coverage is below 70%",
-        "untradable month ratio exceeds 20%"
+        "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable."
+      ],
+      "reason_details": [
+        {
+          "code": "TRADABLE_COVERAGE_BELOW_MIN",
+          "metric": "tradable_weight_coverage",
+          "actual": 0.691469,
+          "threshold": 0.7,
+          "message": "tradable weight coverage is below 70%"
+        },
+        {
+          "code": "ANY_GAP_MONTH_RATIO_ABOVE_MAX",
+          "metric": "untradable_month_ratio",
+          "actual": 1.0,
+          "threshold": 0.2,
+          "message": "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable.",
+          "semantic_alias": "binary_any_gap_month_ratio"
+        }
       ],
       "warning": "This is not production approval or a trading instruction."
     },
@@ -19167,9 +19359,47 @@
       "cash_drag_gap": 0.001515
     },
     "mapping_summary": {
-      "mapped_research_assets": 13,
-      "unmapped_research_assets": 0,
-      "low_quality_proxy_assets": 0,
+      "mapping_summary_schema_version": "2.0",
+      "executable_research_asset_count": 13,
+      "non_executable_research_asset_count": 0,
+      "no_approved_proxy_asset_count": 0,
+      "low_quality_excluded_asset_count": 0,
+      "executable_research_asset_ids": [
+        "000688CNY01.CSI",
+        "931688CNY010.CSI",
+        "931743CNY010.CSI",
+        "H00015.CSI",
+        "H00300.CSI",
+        "H00805.CSI",
+        "H00852.CSI",
+        "H00905.CSI",
+        "H00922.CSI",
+        "H20007.CSI",
+        "H20590.CSI",
+        "H20771.CSI",
+        "H21152.CSI"
+      ],
+      "non_executable_research_asset_ids": [],
+      "no_approved_proxy_asset_ids": [],
+      "low_quality_excluded_asset_ids": [],
+      "legacy_metrics": {
+        "mapped_research_assets": {
+          "value": 13,
+          "deprecated": true,
+          "replacement": "executable_research_asset_count"
+        },
+        "unmapped_research_assets": {
+          "value": 0,
+          "deprecated": true,
+          "legacy_semantics": "non_executable_research_asset_count",
+          "replacement": "non_executable_research_asset_count"
+        },
+        "low_quality_proxy_assets": {
+          "value": 0,
+          "deprecated": true,
+          "replacement": "low_quality_excluded_asset_count"
+        }
+      },
       "untradable_months": 1,
       "untradable_month_ratio": 0.015152,
       "binary_any_gap_month_ratio": 0.015152,
@@ -19177,13 +19407,27 @@
       "tradable_weight_coverage": 0.998104,
       "tradable_weight_coverage_total_portfolio": 0.797727,
       "coverage_contract": {
-        "numerator_name": "tradable_translated_weight",
-        "numerator_weight_period_sum": 52.65,
-        "denominator_name": "non_cash_research_weight",
-        "denominator_weight_period_sum": 52.75,
-        "total_portfolio_denominator_weight_period_sum": 66.0,
-        "primary_metric": "tradable_weight_coverage",
-        "primary_metric_definition": "tradable translated ETF weight divided by non-cash research weight"
+        "schema_version": "2.0",
+        "metrics": [
+          {
+            "metric": "tradable_weight_coverage",
+            "numerator": "tradable_translated_weight",
+            "denominator": "non_cash_research_weight",
+            "numerator_weight_period_sum": 52.65,
+            "denominator_weight_period_sum": 52.75,
+            "formula": "tradable_translated_weight / non_cash_research_weight",
+            "unit": "fraction"
+          },
+          {
+            "metric": "tradable_weight_coverage_total_portfolio",
+            "numerator": "tradable_translated_weight",
+            "denominator": "total_research_portfolio_weight",
+            "numerator_weight_period_sum": 52.65,
+            "denominator_weight_period_sum": 66.0,
+            "formula": "tradable_translated_weight / total_research_portfolio_weight",
+            "unit": "fraction"
+          }
+        ]
       },
       "gap_metrics": {
         "definition": "monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
@@ -19253,6 +19497,7 @@
       "missing_price_cash": 0.0,
       "untradable_cash": 0.001515
     },
+    "non_executable_assets": [],
     "unmapped_assets": [],
     "low_quality_proxy_assets": [],
     "warnings": [
@@ -19263,6 +19508,7 @@
     "decision": {
       "ready_for_execution_validation": true,
       "reasons": [],
+      "reason_details": [],
       "warning": "This is not production approval or a trading instruction."
     },
     "common_period_metrics": {
@@ -19283,6 +19529,28 @@
     "max_drawdown_delta": -0.126511,
     "sharpe_delta": 0.045643,
     "cash_drag_delta": -0.245076
+  },
+  "delta_contract": {
+    "delta_unit": "fraction_point",
+    "display_unit": "percentage_points",
+    "fraction_point_metrics": [
+      "tradable_weight_coverage_delta",
+      "untradable_month_ratio_delta",
+      "annual_return_delta",
+      "max_drawdown_delta",
+      "cash_drag_delta"
+    ],
+    "unitless_metrics": [
+      "sharpe_delta"
+    ],
+    "display_values": {
+      "tradable_weight_coverage_delta": 30.6635,
+      "untradable_month_ratio_delta": -98.4848,
+      "annual_return_delta": 3.7585,
+      "max_drawdown_delta": -12.6511,
+      "cash_drag_delta": -24.5076,
+      "sharpe_delta": 0.045643
+    }
   },
   "proxy_collision_diagnostics": {
     "proxy_collisions": [

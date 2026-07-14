@@ -3,7 +3,8 @@ from copy import deepcopy
 import pytest
 from fastapi.testclient import TestClient
 from backend.main import app
-from backtest.execution.proposal_report import build_counterfactual_baseline_contract, load_counterfactual_report, load_mapping_proposal_report
+from backtest.execution import proposal_report
+from backtest.execution.proposal_report import build_counterfactual_baseline_contract, build_counterfactual_input_contract, load_counterfactual_report, load_mapping_proposal_report
 
 CLIENT=TestClient(app); PROPOSAL=load_mapping_proposal_report(); COUNTER=load_counterfactual_report()
 
@@ -25,6 +26,10 @@ def test_counterfactual_has_current_baseline_contract():
  assert COUNTER['status']=='current'
  assert COUNTER['evidence_use']=='current_analysis'
  assert COUNTER['baseline_contract_verification']['verified'] is True
+ assert COUNTER['input_contract_verification']['verified'] is True
+ assert COUNTER['counterfactual_input_contract']['valid'] is True
+ assert COUNTER['delta_contract']['delta_unit']=='fraction_point'
+ assert COUNTER['delta_contract']['display_unit']=='percentage_points'
 def test_legacy_counterfactual_is_historical_only(tmp_path):
  payload=deepcopy(COUNTER);payload.pop('baseline_contract',None)
  path=tmp_path/'legacy-counterfactual.json';path.write_text(json.dumps(payload),encoding='utf-8')
@@ -46,6 +51,34 @@ def test_counterfactual_embedded_baseline_drift_is_stale(tmp_path):
  loaded=load_counterfactual_report(path)
  assert loaded['status']=='stale'
  assert any('embedded baseline' in error for error in loaded['baseline_contract_verification']['errors'])
+def test_counterfactual_proposal_overlay_drift_is_stale(tmp_path):
+ payload=deepcopy(COUNTER);payload['counterfactual_input_contract']=build_counterfactual_input_contract()
+ payload['counterfactual_input_contract']['proposal_overlay_semantic_hash']='0'*64
+ path=tmp_path/'drifted-overlay.json';path.write_text(json.dumps(payload),encoding='utf-8')
+ loaded=load_counterfactual_report(path)
+ assert loaded['status']=='stale' and loaded['evidence_use']=='historical_only'
+ assert any('overlay semantic hash' in error for error in loaded['input_contract_verification']['errors'])
+def test_counterfactual_required_source_missing_is_fail_closed(monkeypatch,tmp_path):
+ missing=tmp_path/'missing-execution.json'
+ monkeypatch.setitem(proposal_report.COUNTERFACTUAL_BASELINE_SOURCES,'execution_backtest_report',missing)
+ monkeypatch.setitem(proposal_report.COUNTERFACTUAL_INPUT_SOURCES,'execution_backtest_report',missing)
+ path=tmp_path/'counter.json';path.write_text(json.dumps(COUNTER),encoding='utf-8')
+ loaded=load_counterfactual_report(path)
+ assert loaded['available'] is True and loaded['status']=='stale' and loaded['evidence_use']=='historical_only'
+ assert loaded['decision']['ready_for_manual_mapping_approval'] is False
+ assert any('missing' in error for error in loaded['input_contract_verification']['errors'])
+def test_counterfactual_required_json_damage_is_fail_closed(monkeypatch,tmp_path):
+ damaged=tmp_path/'execution.json';damaged.write_text('{broken',encoding='utf-8')
+ monkeypatch.setitem(proposal_report.COUNTERFACTUAL_BASELINE_SOURCES,'execution_backtest_report',damaged)
+ monkeypatch.setitem(proposal_report.COUNTERFACTUAL_INPUT_SOURCES,'execution_backtest_report',damaged)
+ path=tmp_path/'counter.json';path.write_text(json.dumps(COUNTER),encoding='utf-8')
+ loaded=load_counterfactual_report(path)
+ assert loaded['available'] is True and loaded['status']=='stale'
+ assert any('damaged' in error for error in loaded['input_contract_verification']['errors'])
+def test_counterfactual_report_damage_is_unavailable(tmp_path):
+ path=tmp_path/'counter.json';path.write_text('{broken',encoding='utf-8')
+ loaded=load_counterfactual_report(path)
+ assert loaded['available'] is False and loaded['status']=='unavailable'
 def test_proposal_api(): assert CLIENT.get('/api/research/execution-mapping-proposal').status_code==200
 def test_counterfactual_api(): assert CLIENT.get('/api/research/execution-mapping-counterfactual').status_code==200
 def test_page_sections():

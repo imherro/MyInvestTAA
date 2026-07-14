@@ -23,7 +23,7 @@ def test_human_approved_medium_mapping_becomes_executable():
  rows=build_execution_mapping(RESEARCH['monthly_allocations'],MAPPINGS,ASSETS)
  target=next(x for x in rows if x['research_asset_id']=='931743CNY010.CSI')
  assert target['proxy_id']=='512760.SH' and target['mapping_quality']=='medium' and target['executable'] is True
-def test_low_quality_mapping_is_excluded_by_default(): assert any(x['reason']=='low_quality_proxy_excluded' for x in REPORT['unmapped_assets'])
+def test_low_quality_mapping_is_excluded_by_default(): assert any(x['reason']=='low_quality_proxy_excluded' for x in REPORT['low_quality_proxy_assets'])
 def test_low_quality_mapping_can_be_allowed():
  rows=build_execution_mapping(RESEARCH['monthly_allocations'],MAPPINGS,ASSETS,allow_low_quality_proxy=True)
  assert next(x for x in rows if x['research_asset_id']=='H00805.CSI')['executable'] is True
@@ -34,9 +34,27 @@ def test_execution_weights_keep_cash_for_unmapped_assets(): assert any('CASH' in
 def test_execution_decision_is_present(): assert 'ready_for_execution_validation' in REPORT['decision']
 def test_execution_coverage_contract_names_both_denominators():
  contract=REPORT['mapping_summary']['coverage_contract']
- assert contract['numerator_name']=='tradable_translated_weight'
- assert contract['denominator_name']=='non_cash_research_weight'
+ assert contract['schema_version']=='2.0'
+ assert [row['denominator'] for row in contract['metrics']]==['non_cash_research_weight','total_research_portfolio_weight']
+ assert all(row['numerator']=='tradable_translated_weight' and row['unit']=='fraction' for row in contract['metrics'])
  assert REPORT['mapping_summary']['tradable_weight_coverage_total_portfolio'] <= REPORT['mapping_summary']['tradable_weight_coverage']
+def test_mapping_summary_v2_separates_non_executable_reasons():
+ summary=REPORT['mapping_summary']
+ assert summary['mapping_summary_schema_version']=='2.0'
+ assert (summary['executable_research_asset_count'],summary['non_executable_research_asset_count'],summary['no_approved_proxy_asset_count'],summary['low_quality_excluded_asset_count'])==(9,4,3,1)
+ assert summary['low_quality_excluded_asset_ids']==['H00805.CSI']
+ assert 'H00805.CSI' not in summary['no_approved_proxy_asset_ids']
+ assert set(summary['no_approved_proxy_asset_ids'])|set(summary['low_quality_excluded_asset_ids'])==set(summary['non_executable_research_asset_ids'])
+ assert not set(summary['no_approved_proxy_asset_ids'])&set(summary['low_quality_excluded_asset_ids'])
+def test_legacy_mapping_counts_are_deprecated_and_not_top_level():
+ summary=REPORT['mapping_summary']
+ assert 'unmapped_research_assets' not in summary
+ assert summary['legacy_metrics']['unmapped_research_assets']['deprecated'] is True
+def test_execution_reason_details_explain_any_gap_semantics():
+ detail=next(row for row in REPORT['decision']['reason_details'] if row['code']=='ANY_GAP_MONTH_RATIO_ABOVE_MAX')
+ assert detail['metric']=='untradable_month_ratio'
+ assert detail['semantic_alias']=='binary_any_gap_month_ratio'
+ assert 'does not mean the whole portfolio was untradable' in detail['message']
 def test_execution_gap_metrics_preserve_binary_gate_and_add_severity():
  summary=REPORT['mapping_summary'];gaps=summary['gap_metrics']
  assert summary['binary_any_gap_month_ratio']==summary['untradable_month_ratio']
@@ -55,6 +73,8 @@ def test_execution_api_reads_local_report(): assert CLIENT.get('/api/research/ex
 def test_execution_page_renders_sections():
  text=CLIENT.get('/execution-backtest').text
  for value in ('Execution Backtest','Execution Gap','Mapping Summary','Ready for Execution Validation?','header.js','footer.js'): assert value in text
+ assert '当前不可执行资产' in text and '无获批代理' in text and '低质量代理已排除' in text
+ assert '<h2>Unmapped Assets</h2>' not in text
 def test_execution_api_does_not_call_tushare(monkeypatch):
  monkeypatch.setattr('data_provider.tushare_provider.TushareProvider._client',lambda *a,**k: (_ for _ in ()).throw(AssertionError('no live fetch')))
  assert CLIENT.get('/api/research/execution-backtest').status_code==200

@@ -135,5 +135,5 @@ def test_mapping_improvement_api_is_read_only():
 
 def test_execution_page_shows_real_audit_controls():
     page = CLIENT.get("/execution-backtest").text
-    for section in ("Data Provider", "Real ETF Data Audit", "Aggregate Cash Breakdown", "Unmapped Assets", "Low Quality Proxies", "Mapping Improvement"):
+    for section in ("Data Provider", "Real ETF Data Audit", "Aggregate Cash Breakdown", "当前不可执行资产", "无获批代理", "低质量代理已排除", "Mapping Improvement"):
         assert section in page

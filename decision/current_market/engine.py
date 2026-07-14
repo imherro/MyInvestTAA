@@ -398,6 +398,9 @@ def _execution_validation(report: dict, gate_policy: dict, policy_source: dict) 
         "reasons": decision.get("reasons", [])
         if isinstance(decision.get("reasons"), list)
         else [],
+        "reason_details": decision.get("reason_details", [])
+        if isinstance(decision.get("reason_details"), list)
+        else [],
         "metrics_available": evidence["metrics_available"],
         "evidence_complete": evidence["valid"],
         "policy_schema_verified": evidence["policy_schema_verified"],
@@ -445,6 +448,7 @@ def validate_execution_decision_evidence(
     decision = report.get("decision", {})
     ready = decision.get("ready_for_execution_validation")
     reasons = decision.get("reasons")
+    reason_details = decision.get("reason_details")
     if not isinstance(ready, bool):
         errors.append("execution decision ready_for_execution_validation must be boolean")
     if not isinstance(reasons, list):
@@ -458,6 +462,10 @@ def validate_execution_decision_evidence(
             errors.append("execution decision ready=true requires empty reasons")
         if ready is False and not reasons:
             errors.append("execution decision ready=false requires non-empty reasons")
+    if not isinstance(reason_details, list) or any(not isinstance(row, dict) for row in reason_details):
+        errors.append("execution decision reason_details must be list[object]")
+    elif reasons != [row.get("message") for row in reason_details]:
+        errors.append("execution decision reasons must match structured reason_details messages")
 
     metrics = report.get("metrics", {})
     mapping = report.get("mapping_summary", {})
@@ -493,28 +501,25 @@ def validate_execution_decision_evidence(
             "binary_any_gap_month_ratio must equal legacy untradable_month_ratio"
         )
     contract = mapping.get("coverage_contract", {})
-    if contract.get("numerator_name") != "tradable_translated_weight":
-        metric_errors.append("execution coverage numerator definition is invalid")
-    if contract.get("denominator_name") != "non_cash_research_weight":
-        metric_errors.append("execution coverage denominator definition is invalid")
-    for field in (
-        "numerator_weight_period_sum",
-        "denominator_weight_period_sum",
-        "total_portfolio_denominator_weight_period_sum",
-    ):
-        if not _is_finite_number(contract.get(field)):
-            metric_errors.append(f"execution coverage contract {field} must be finite")
-    numerator = contract.get("numerator_weight_period_sum")
-    non_cash_denominator = contract.get("denominator_weight_period_sum")
-    total_denominator = contract.get("total_portfolio_denominator_weight_period_sum")
-    if all(_is_finite_number(value) for value in (numerator, non_cash_denominator)) and float(non_cash_denominator) > 0:
-        expected = float(numerator) / float(non_cash_denominator)
-        if abs(expected - float(mapping.get("tradable_weight_coverage", -1))) > 0.000001:
-            metric_errors.append("execution non-cash coverage does not reconcile")
-    if all(_is_finite_number(value) for value in (numerator, total_denominator)) and float(total_denominator) > 0:
-        expected = float(numerator) / float(total_denominator)
-        if abs(expected - float(mapping.get("tradable_weight_coverage_total_portfolio", -1))) > 0.000001:
-            metric_errors.append("execution total-portfolio coverage does not reconcile")
+    coverage_rows = contract.get("metrics") if contract.get("schema_version") == "2.0" else None
+    coverage_by_metric = {row.get("metric"): row for row in coverage_rows or [] if isinstance(row, dict)}
+    expected_coverage = {
+        "tradable_weight_coverage": "non_cash_research_weight",
+        "tradable_weight_coverage_total_portfolio": "total_research_portfolio_weight",
+    }
+    if set(coverage_by_metric) != set(expected_coverage):
+        metric_errors.append("execution coverage contract v2 metrics are incomplete")
+    for metric, denominator_name in expected_coverage.items():
+        row = coverage_by_metric.get(metric, {})
+        if row.get("numerator") != "tradable_translated_weight" or row.get("denominator") != denominator_name or row.get("unit") != "fraction":
+            metric_errors.append(f"execution coverage contract definition is invalid: {metric}")
+            continue
+        numerator = row.get("numerator_weight_period_sum")
+        denominator = row.get("denominator_weight_period_sum")
+        if not all(_is_finite_number(value) for value in (numerator, denominator)) or float(denominator) <= 0:
+            metric_errors.append(f"execution coverage contract sums are invalid: {metric}")
+        elif abs(float(numerator) / float(denominator) - float(mapping.get(metric, -1))) > 0.000001:
+            metric_errors.append(f"execution coverage does not reconcile: {metric}")
     gap_metrics = mapping.get("gap_metrics", {})
     for field in (
         "average_gap_weight",
@@ -556,6 +561,20 @@ def validate_execution_decision_evidence(
         value for value in quality_counts.values() if isinstance(value, int)
     ) != count_scope.get("included_asset_count"):
         metric_errors.append("execution mapping quality counts are inconsistent")
+    if mapping.get("mapping_summary_schema_version") != "2.0":
+        metric_errors.append("execution mapping summary schema v2 is required")
+    executable_ids = mapping.get("executable_research_asset_ids")
+    non_executable_ids = mapping.get("non_executable_research_asset_ids")
+    no_proxy_ids = mapping.get("no_approved_proxy_asset_ids")
+    low_quality_ids = mapping.get("low_quality_excluded_asset_ids")
+    if not all(isinstance(value, list) for value in (executable_ids, non_executable_ids, no_proxy_ids, low_quality_ids)):
+        metric_errors.append("execution mapping summary v2 asset lists are required")
+    else:
+        if set(no_proxy_ids) & set(low_quality_ids) or set(no_proxy_ids) | set(low_quality_ids) != set(non_executable_ids):
+            metric_errors.append("execution non-executable reason lists are inconsistent")
+        count_pairs = (("executable_research_asset_count", executable_ids),("non_executable_research_asset_count", non_executable_ids),("no_approved_proxy_asset_count", no_proxy_ids),("low_quality_excluded_asset_count", low_quality_ids))
+        if any(mapping.get(field) != len(values) for field, values in count_pairs):
+            metric_errors.append("execution mapping summary v2 counts are inconsistent")
     errors.extend(metric_errors)
 
     period = report.get("period", {})

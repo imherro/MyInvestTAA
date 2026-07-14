@@ -5,7 +5,7 @@
   "production_actionable": false,
   "as_of": "2026-07-08",
   "decision_date": "2026-07-13",
-  "generated_at": "2026-07-14T04:04:00+00:00",
+  "generated_at": "2026-07-14T04:30:56+00:00",
   "market_data_as_of": "2026-07-08",
   "governance_state_as_of": "2026-07-13",
   "snapshot_mode": "current_decision_with_lagged_market_data",
@@ -542,7 +542,24 @@
     "ready": false,
     "reasons": [
       "tradable weight coverage is below 70%",
-      "untradable month ratio exceeds 20%"
+      "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable."
+    ],
+    "reason_details": [
+      {
+        "code": "TRADABLE_COVERAGE_BELOW_MIN",
+        "metric": "tradable_weight_coverage",
+        "actual": 0.691469,
+        "threshold": 0.7,
+        "message": "tradable weight coverage is below 70%"
+      },
+      {
+        "code": "ANY_GAP_MONTH_RATIO_ABOVE_MAX",
+        "metric": "untradable_month_ratio",
+        "actual": 1.0,
+        "threshold": 0.2,
+        "message": "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable.",
+        "semantic_alias": "binary_any_gap_month_ratio"
+      }
     ],
     "metrics_available": true,
     "evidence_complete": true,
@@ -556,13 +573,27 @@
     "untradable_month_ratio": 1.0,
     "binary_any_gap_month_ratio": 1.0,
     "coverage_contract": {
-      "numerator_name": "tradable_translated_weight",
-      "numerator_weight_period_sum": 36.475,
-      "denominator_name": "non_cash_research_weight",
-      "denominator_weight_period_sum": 52.75,
-      "total_portfolio_denominator_weight_period_sum": 66.0,
-      "primary_metric": "tradable_weight_coverage",
-      "primary_metric_definition": "tradable translated ETF weight divided by non-cash research weight"
+      "schema_version": "2.0",
+      "metrics": [
+        {
+          "metric": "tradable_weight_coverage",
+          "numerator": "tradable_translated_weight",
+          "denominator": "non_cash_research_weight",
+          "numerator_weight_period_sum": 36.475,
+          "denominator_weight_period_sum": 52.75,
+          "formula": "tradable_translated_weight / non_cash_research_weight",
+          "unit": "fraction"
+        },
+        {
+          "metric": "tradable_weight_coverage_total_portfolio",
+          "numerator": "tradable_translated_weight",
+          "denominator": "total_research_portfolio_weight",
+          "numerator_weight_period_sum": 36.475,
+          "denominator_weight_period_sum": 66.0,
+          "formula": "tradable_translated_weight / total_research_portfolio_weight",
+          "unit": "fraction"
+        }
+      ]
     },
     "gap_metrics": {
       "definition": "monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
@@ -637,7 +668,7 @@
       "available": true,
       "policy_schema_verified": true,
       "policy_hash_verified": true,
-      "execution_engine_source_hash": "2b4f02acc59102658dff7e9694b80d507ac7cb6adf32688b9765b4e8e1ddfa2a"
+      "execution_engine_source_hash": "d91bdff30585d1d040cbf97b9b2f60767dbe5bd4e3b1d773bdac5ac347e412eb"
     },
     "source": "reports/execution_backtest_report.json",
     "source_as_of": "2026-07-08",
@@ -778,7 +809,7 @@
     "key_risks": [
       "Market risk state: high_mixed_trend",
       "tradable weight coverage is below 70%",
-      "untradable month ratio exceeds 20%",
+      "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable.",
       "At least one research-only asset has no approved execution ETF.",
       "At least one execution proxy is medium quality and broader than its research index."
     ]
@@ -932,7 +963,7 @@
     "execution_validation": {
       "source": "execution_validation",
       "path": "reports/execution_backtest_report.json",
-      "sha256": "ab0a5a0e60601d810fc63d634464c3306cfa768bc42527e327b19e2f1d810126",
+      "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
       "available": true,
       "source_as_of": "2026-07-08",
       "required": true,
