@@ -427,7 +427,7 @@ def test_route_inventory_and_cleanup_prove_final_visibility():
     assert cleanup["visible_link_count_after"] < cleanup["visible_link_count_before"]
     assert cleanup["verified"] is True
     assert all(section["verified"] is True for section in cleanup["proof"].values())
-    assert cleanup["proof"]["route_scan"]["scanned_count"] == 26
+    assert cleanup["proof"]["route_scan"]["scanned_count"] == 27
     assert cleanup["proof"]["route_scan"]["unclassified_routes"] == []
 
 
@@ -775,7 +775,7 @@ def test_acceptance_required_gate_list_is_complete():
 def test_actual_route_scan_has_no_unknown_pages():
     routes = scan_backend_web_routes(ROOT)
     inventory = build_route_inventory(routes)
-    assert len(routes) == 26
+    assert len(routes) == 27
     assert inventory["verified"] is True
     assert inventory["unclassified_routes"] == []
 

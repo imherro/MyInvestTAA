@@ -21,6 +21,7 @@ from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from backtest.research import load_research_backtest_report
 from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report, load_proxy_research_report, load_mapping_proposal_report, load_price_dataset_manifest, load_mapping_attribution_report, load_mapping_review_report, load_mapping_approval_package, load_mapping_decision_ledger, load_mapping_approval_record, load_execution_aware_shadow_portfolio, load_approval_integrity_seal, load_transaction_status
+from backtest.execution.v2 import load_execution_v2_report
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
@@ -140,10 +141,11 @@ def _apply_final_information_architecture(html: str, path: str) -> str:
             f'{_primary_navigation()}</header>'
         )
         html = _replace_html_region(html, "<header>", "</header>", header)
-    elif path in {"/research-backtest", "/execution-backtest", "/shadow-portfolio"}:
+    elif path in {"/research-backtest", "/execution-backtest", "/execution-backtest-v2", "/shadow-portfolio"}:
         label = {
             "/research-backtest": "研究资产层历史验证，不等于真实 ETF 实盘收益。",
             "/execution-backtest": "真实 ETF 执行验证；当前未通过既定覆盖率门槛。",
+            "/execution-backtest-v2": "动态可投资时间线实验；不替代正式 V1，也不进入当前配置决策。",
             "/shadow-portfolio": "实验性 Shadow 配置，不是生产组合，也不能替代 V11。",
         }[path]
         notice = f'<section><p><strong>高级研究/审计页面：</strong>{label} 本页内容均为非交易指令。</p><p><a href="/research-validation">返回研究与执行验证</a></p></section>'
@@ -383,6 +385,11 @@ def get_research_backtest_diagnostics() -> dict:
 @app.get("/api/research/execution-backtest")
 def get_execution_backtest_report() -> dict:
     return load_execution_backtest_report()
+
+
+@app.get("/api/research/execution-backtest-v2")
+def get_execution_backtest_v2_report() -> dict:
+    return load_execution_v2_report()
 
 
 @app.get("/api/research/execution-universe-data-audit")
@@ -908,11 +915,29 @@ def research_validation_page() -> str:
     cards = (
         ("Research Backtest", "/research-backtest", "研究资产层的历史配置测试，用于判断配置逻辑，不等于真实 ETF 收益。", "研究结果"),
         ("Execution Backtest", "/execution-backtest", "使用真实 ETF 数据验证研究配置能否执行，以及执行后损失多少收益或增加多少风险。", "执行验证"),
+        ("Execution Engine V2 B1", "/execution-backtest-v2", "逐日判断每只 ETF 是否可投资，并保留晚上市和缺价日期；目前只用于实验验证。", "实验性时间线"),
         ("Execution-Aware Shadow", "/shadow-portfolio", "将最新研究权重转换为真实 ETF 和现金的实验性配置，不是生产组合。", "实验性 Shadow"),
         ("Mapping Evidence", "/system-status#mapping-governance", "记录研究指数与 ETF 代理关系、人工批准和语义限制，主要供审计使用。", "高级审计内容"),
     )
     card_html = "".join(f'<div class="card"><span class="tag warn">{tag}</span><h3>{title}</h3><p>{description}</p><a class="button" href="{href}">查看详情</a></div>' for title, href, description, tag in cards)
-    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>研究与执行验证</title><style>{_product_css()}</style></head><body><header><h1>研究与执行验证</h1><p class="subtle">供高级用户查看研究策略、真实 ETF 执行映射、执行差距和 Shadow 证据。所有内容均不用于直接交易。</p>{_primary_navigation()}</header><main><section class="alert"><span class="tag blocked">尚未通过验证</span><h2>Execution Validation 当前未通过</h2><p>这不代表整个系统不可用；它表示研究配置映射到真实 ETF 后，历史覆盖率和存在执行缺口的月份尚未达到既定门槛。</p><ul>{reasons}</ul></section><section><h2>覆盖率和缺口怎么理解</h2><div class="grid-3"><div class="card"><h3>非现金研究权重覆盖率</h3><p><strong>{float(execution.get('tradable_weight_coverage',0) or 0):.2%}</strong></p><p>分子是可交易 ETF 权重，分母是研究组合的非现金权重，不是整个组合资产。</p></div><div class="card"><h3>全组合可交易权重</h3><p><strong>{float(execution.get('tradable_weight_coverage_total_portfolio',0) or 0):.2%}</strong></p><p>以研究组合全部权重为分母，表示组合中实际落到 ETF 的权重。</p></div><div class="card"><h3>存在任意缺口的月份</h3><p><strong>{float(execution.get('binary_any_gap_month_ratio',0) or 0):.2%}</strong></p><p>某月只要出现任何不可执行权重就计入；不表示当月整个组合都不能交易。</p></div></div><p class="subtle">平均缺口权重 {float(gaps.get('average_gap_weight',0) or 0):.2%}，最大缺口权重 {float(gaps.get('max_gap_weight',0) or 0):.2%}。原有验证门槛保持不变。</p></section><section><h2>四类高级内容</h2><div class="grid-2">{card_html}</div></section><section><h2>如何正确理解</h2><ul><li>Research 验证配置逻辑，不等于 ETF 实盘收益。</li><li>Execution 验证真实 ETF 能否复现研究结果。</li><li>Shadow 是实验快照，不能替代 V11，也不能直接下单。</li><li>medium-quality mapping 表示主题接近但范围更宽，并非直接跟踪。</li></ul></section></main><footer>高级研究内容 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>研究与执行验证</title><style>{_product_css()}</style></head><body><header><h1>研究与执行验证</h1><p class="subtle">供高级用户查看研究策略、真实 ETF 执行映射、执行差距和 Shadow 证据。所有内容均不用于直接交易。</p>{_primary_navigation()}</header><main><section class="alert"><span class="tag blocked">尚未通过验证</span><h2>Execution Validation 当前未通过</h2><p>这不代表整个系统不可用；它表示研究配置映射到真实 ETF 后，历史覆盖率和存在执行缺口的月份尚未达到既定门槛。</p><ul>{reasons}</ul></section><section><h2>覆盖率和缺口怎么理解</h2><div class="grid-3"><div class="card"><h3>非现金研究权重覆盖率</h3><p><strong>{float(execution.get('tradable_weight_coverage',0) or 0):.2%}</strong></p><p>分子是可交易 ETF 权重，分母是研究组合的非现金权重，不是整个组合资产。</p></div><div class="card"><h3>全组合可交易权重</h3><p><strong>{float(execution.get('tradable_weight_coverage_total_portfolio',0) or 0):.2%}</strong></p><p>以研究组合全部权重为分母，表示组合中实际落到 ETF 的权重。</p></div><div class="card"><h3>存在任意缺口的月份</h3><p><strong>{float(execution.get('binary_any_gap_month_ratio',0) or 0):.2%}</strong></p><p>某月只要出现任何不可执行权重就计入；不表示当月整个组合都不能交易。</p></div></div><p class="subtle">平均缺口权重 {float(gaps.get('average_gap_weight',0) or 0):.2%}，最大缺口权重 {float(gaps.get('max_gap_weight',0) or 0):.2%}。原有验证门槛保持不变。</p></section><section><h2>五类高级内容</h2><div class="grid-2">{card_html}</div></section><section><h2>如何正确理解</h2><ul><li>Research 验证配置逻辑，不等于 ETF 实盘收益。</li><li>Execution V1 仍是正式验证口径，V2 B1 只是独立实验。</li><li>Shadow 是实验快照，不能替代 V11，也不能直接下单。</li><li>medium-quality mapping 表示主题接近但范围更宽，并非直接跟踪。</li></ul></section></main><footer>高级研究内容 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
+
+
+@app.get("/execution-backtest-v2", response_class=HTMLResponse)
+def execution_backtest_v2_page() -> str:
+    report = load_execution_v2_report()
+    periods = report.get("periods", {})
+    metrics = report.get("metrics_net", {})
+    timeline = report.get("investability_summary", {})
+    comparison = report.get("comparison_to_v1", {})
+    first_event = (report.get("monthly_allocations") or [{}])[0]
+    period_rows = "\n".join(_mapping_rows(periods, empty="V2 报告尚未生成"))
+    metric_rows = "\n".join(_mapping_rows(metrics, empty="暂无指标"))
+    timeline_rows = "\n".join(_mapping_rows(timeline, empty="暂无时间线摘要"))
+    event_rows = "\n".join(_mapping_rows(first_event, empty="暂无执行事件"))
+    comparison_rows = "\n".join(_mapping_rows(comparison, empty="暂无 V1/V2 对照"))
+    warning_rows = "\n".join(_message_rows(report.get("warnings", []), empty="暂无警告"))
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Execution Engine V2 B1</title><style>{_product_css()}</style></head><body><header><h1>Execution Engine V2 B1</h1><p class="subtle">动态可投资时间线实验，用来观察 ETF 晚上市和缺价时组合如何处理。</p>{_primary_navigation()}</header><main><section class="alert"><span class="tag warn">实验验证</span><h2>V1 仍是正式执行验证口径</h2><p>本页不进入 Current Decision，不替代 V1，不生成订单、份额、金额或目标价。</p></section><section><h2>回测时间范围</h2><p>研究期、V2 模拟期、首次实际持有 ETF 日期和与 V1 的共同对比期分别列示，避免把不同区间直接混为一谈。</p><div class="table-wrap"><table><tbody>{period_rows}</tbody></table></div></section><section><h2>V2 实验指标</h2><p>本阶段交易成本、滑点和现金收益均为 0；指标只能用于验证时间线和记账逻辑。</p><div class="table-wrap"><table><tbody>{metric_rows}</tbody></table></div></section><section><h2>可投资时间线摘要</h2><p>每只 ETF 独立判断；不会为了凑齐所有 ETF 而统一删除日期。</p><div class="table-wrap"><table><tbody>{timeline_rows}</tbody></table></div></section><section><h2>首个执行事件</h2><p>研究信号在下一个交易日执行。尚未上市、无获批代理或缺少入场价格的权重分别进入现金原因桶。</p><div class="table-wrap"><table><tbody>{event_rows}</tbody></table></div></section><section><h2>V1 与 V2 中性对照</h2><p>差异只作归因展示，不能据此认定 V2 更优或替代 V1。</p><div class="table-wrap"><table><tbody>{comparison_rows}</tbody></table></div></section><section><h2>当前限制</h2><table><tbody>{warning_rows}</tbody></table><p><a class="button" href="/api/research/execution-backtest-v2">查看只读 JSON</a></p></section></main><footer>实验性执行验证 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
 
 
 @app.get("/system-status", response_class=HTMLResponse)

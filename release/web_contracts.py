@@ -16,6 +16,7 @@ PRIMARY_NAVIGATION = (
 ADVANCED_ROUTES = {
     "/research-backtest": "研究资产层历史验证",
     "/execution-backtest": "真实 ETF 执行验证",
+    "/execution-backtest-v2": "实验性动态可投资时间线",
     "/shadow-portfolio": "实验性 Shadow 快照",
     "/diagnosis": "策略诊断审计",
     "/production-readiness": "生产候选证据",

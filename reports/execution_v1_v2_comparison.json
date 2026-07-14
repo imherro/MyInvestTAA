@@ -1,0 +1,44 @@
+{
+  "available": true,
+  "status": "neutral_attribution_only",
+  "interpretation": "Metric differences are descriptive and do not establish V2 superiority.",
+  "v1_period": {
+    "start": "2021-02-04",
+    "end": "2026-07-08"
+  },
+  "v2_simulation_period": {
+    "start": "2021-01-14",
+    "end": "2026-07-08"
+  },
+  "common_comparison_period": {
+    "start": "2021-02-04",
+    "end": "2026-07-08"
+  },
+  "v1_common_metrics": {
+    "annual_return": 0.057103,
+    "max_drawdown": -0.169053,
+    "sharpe": 0.544214,
+    "calmar": 0.337781
+  },
+  "v2_common_metrics": {
+    "annual_return": 0.066695,
+    "max_drawdown": -0.170261,
+    "sharpe": 0.621403,
+    "calmar": 0.391722
+  },
+  "calendar_attribution": {
+    "days_retained_that_v1_deleted": 16,
+    "period_extension_days": 15
+  },
+  "b1_policy_attribution": {
+    "transaction_cost": 0.0,
+    "slippage": 0.0,
+    "cash_yield": 0.0,
+    "late_etf_policy": "route unavailable target weight to not_yet_investable_cash",
+    "missing_price_policy": "retain calendar; freeze held valuation; block unheld entry"
+  },
+  "days_retained_that_v1_deleted": 16,
+  "period_extension_days": 15,
+  "v1_report_sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
+  "eligible_to_replace_v1": false
+}
