@@ -63,6 +63,11 @@ def build_current_market_decision(
         ),
     )
     source_hash_verification = verify_current_decision_sources(source_manifest)
+    if sources.get("source_path_overrides"):
+        source_hash_verification = verify_current_decision_sources(
+            source_manifest,
+            path_overrides=sources["source_path_overrides"],
+        )
     execution_validation = _execution_validation(
         execution_report,
         sources.get("gate_policy", {}),
@@ -316,6 +321,9 @@ def _production_candidate(
         "allocation_integrity": allocation_snapshot.get("source_integrity", {})
         if snapshot_present
         else {},
+        "release_artifact_dependency": allocation_snapshot.get(
+            "release_artifact_dependency"
+        ),
         "message": (
             None
             if allocation_available

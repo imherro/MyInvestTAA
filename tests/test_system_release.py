@@ -19,8 +19,11 @@ from release.models import ReleaseBuildConfig
 from release.orchestrator import (
     LOCAL_INPUTS,
     PROTECTED_FILE_HASHES,
+    REQUIRED_ACCEPTANCE_GATES,
     ReleaseBuildError,
     build_system_release,
+    _build_base_candidate,
+    _candidate_content_hashes,
     _exclusive_lock,
     _preflight_inputs,
     _promote_release,
@@ -28,6 +31,12 @@ from release.orchestrator import (
     load_release_json,
     recover_release,
     verify_release_directory,
+)
+from release.web_contracts import (
+    PRIMARY_NAVIGATION,
+    build_legacy_cleanup_report,
+    build_route_inventory,
+    scan_backend_web_routes,
 )
 
 
@@ -233,7 +242,8 @@ def test_release_is_verified_and_reproducible():
     status = verify_release_directory(RELEASE)
     assert status["verified"] is True
     assert MANIFEST["reproducibility"]["verified"] is True
-    assert MANIFEST["reproducibility"]["first_build_hash"] == MANIFEST["reproducibility"]["second_build_hash"]
+    assert MANIFEST["reproducibility"]["first_candidate_raw_hash"] == MANIFEST["reproducibility"]["second_candidate_raw_hash"]
+    assert MANIFEST["reproducibility"]["first_candidate_semantic_hash"] == MANIFEST["reproducibility"]["second_candidate_semantic_hash"]
     assert MANIFEST["reproducibility"]["artifact_hash_differences"] == []
 
 
@@ -414,12 +424,10 @@ def test_route_inventory_and_cleanup_prove_final_visibility():
     assert inventory["primary_navigation_count"] == 5
     assert cleanup["visible_link_count_after"] == 5
     assert cleanup["visible_link_count_after"] < cleanup["visible_link_count_before"]
-    assert cleanup["proof"] == {
-        "import_scan_passed": True,
-        "route_reference_scan_passed": True,
-        "test_reference_scan_passed": True,
-        "release_dependency_scan_passed": True,
-    }
+    assert cleanup["verified"] is True
+    assert all(section["verified"] is True for section in cleanup["proof"].values())
+    assert cleanup["proof"]["route_scan"]["scanned_count"] == 26
+    assert cleanup["proof"]["route_scan"]["unclassified_routes"] == []
 
 
 def test_documented_rebuild_command_is_exact_and_executable_help():
@@ -450,3 +458,278 @@ def test_home_release_failure_hides_current_decision_primary_action(monkeypatch)
     assert "当前结论不可依赖" in html
     assert 'class="button primary" href="/system-status"' in html
     assert 'class="button primary" href="/current-decision"' not in html
+
+
+def _copied_release(tmp_path: Path) -> Path:
+    root = tmp_path / "repo"
+    shutil.copytree(RELEASE, root / "reports" / "release" / "current")
+    return root
+
+
+def _write_json(path: Path, value: dict) -> None:
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _resign_manifest(directory: Path, manifest: dict) -> None:
+    manifest_path = directory / "release_manifest.json"
+    _write_json(manifest_path, manifest)
+    marker = json.loads((directory / "COMMITTED.json").read_text(encoding="utf-8"))
+    marker["release_manifest_hash"] = sha256_file(manifest_path)
+    _write_json(directory / "COMMITTED.json", marker)
+
+
+@pytest.mark.parametrize(
+    "target, mutate",
+    [
+        ("release_manifest.json", lambda value: value.update({"generated_at": "2026-07-13T08:15:35+00:00"})),
+        ("system_acceptance_report.json", lambda value: value.update({"generated_at": "2026-07-13T08:15:35+00:00"})),
+        ("current_market_decision.json", lambda value: value.update({"status": "tampered"})),
+        ("COMMITTED.json", lambda value: value.update({"release_id": "tampered-release"})),
+    ],
+)
+def test_committed_loader_rejects_valid_json_tampering(tmp_path, target, mutate):
+    root = _copied_release(tmp_path)
+    path = root / "reports" / "release" / "current" / target
+    value = json.loads(path.read_text(encoding="utf-8"))
+    mutate(value)
+    _write_json(path, value)
+    result = load_release_json("release_manifest.json", root=root)
+    assert result["available"] is False
+    assert result["message"] == "committed system release integrity failed"
+    assert result["errors"]
+
+
+def test_committed_loader_rejects_missing_marker(tmp_path):
+    root = _copied_release(tmp_path)
+    (root / "reports" / "release" / "current" / "COMMITTED.json").unlink()
+    result = load_release_json("system_acceptance_report.json", root=root)
+    assert result["available"] is False
+    assert result["message"] == "committed system release integrity failed"
+
+
+def test_custom_loader_can_explicitly_disable_committed_verification(tmp_path):
+    path = tmp_path / "reports" / "release" / "current" / "sample.json"
+    path.parent.mkdir(parents=True)
+    _write_json(path, {"value": 1})
+    assert load_release_json("sample.json", root=tmp_path, verify_committed=False) == {
+        "value": 1,
+        "available": True,
+    }
+
+
+@pytest.mark.parametrize(
+    "field,error",
+    [
+        ("raw_release_hash", "raw release hash mismatch"),
+        ("semantic_release_hash", "semantic release hash mismatch"),
+        ("dependency_graph_hash", "dependency graph hash mismatch"),
+    ],
+)
+def test_release_level_hash_tampering_is_recomputed(tmp_path, field, error):
+    root = _copied_release(tmp_path)
+    directory = root / "reports" / "release" / "current"
+    manifest = json.loads((directory / "release_manifest.json").read_text(encoding="utf-8"))
+    manifest[field] = "0" * 64
+    _resign_manifest(directory, manifest)
+    result = verify_release_directory(directory)
+    assert result["verified"] is False
+    assert error in result["errors"]
+
+
+def test_semantic_artifact_hash_tampering_is_recomputed(tmp_path):
+    root = _copied_release(tmp_path)
+    directory = root / "reports" / "release" / "current"
+    manifest = json.loads((directory / "release_manifest.json").read_text(encoding="utf-8"))
+    row = next(item for item in manifest["artifacts"] if item["path"] == "current_market_decision.json")
+    row["semantic_hash"] = "0" * 64
+    manifest["semantic_release_hash"] = semantic_hash({item["path"]: item["semantic_hash"] for item in manifest["artifacts"]})
+    _resign_manifest(directory, manifest)
+    result = verify_release_directory(directory)
+    assert result["verified"] is False
+    assert "artifact semantic hash mismatch: current_market_decision.json" in result["errors"]
+
+
+def test_missing_artifact_dependency_is_rejected(tmp_path):
+    root = _copied_release(tmp_path)
+    directory = root / "reports" / "release" / "current"
+    manifest = json.loads((directory / "release_manifest.json").read_text(encoding="utf-8"))
+    manifest["artifacts"][0]["dependencies"].append("missing.json")
+    _resign_manifest(directory, manifest)
+    result = verify_release_directory(directory)
+    assert result["verified"] is False
+    assert any("artifact dependency missing" in error for error in result["errors"])
+
+
+def test_duplicate_manifest_paths_are_rejected(tmp_path):
+    root = _copied_release(tmp_path)
+    directory = root / "reports" / "release" / "current"
+    manifest = json.loads((directory / "release_manifest.json").read_text(encoding="utf-8"))
+    manifest["artifacts"].append(copy.deepcopy(manifest["artifacts"][0]))
+    _resign_manifest(directory, manifest)
+    result = verify_release_directory(directory)
+    assert result["verified"] is False
+    assert "duplicate artifact path" in result["errors"]
+
+
+@pytest.mark.parametrize(
+    "target,value,error",
+    [
+        ("release_manifest.json", [], "release JSON invalid: ValueError"),
+        ("system_acceptance_report.json", [], "release JSON invalid: ValueError"),
+        ("COMMITTED.json", [], "release JSON invalid: ValueError"),
+        ("release_manifest.json", {"artifacts": [{"path": []}], "inputs": []}, "artifact path must be a string"),
+    ],
+)
+def test_structurally_invalid_control_json_fails_closed(tmp_path, target, value, error):
+    root = _copied_release(tmp_path)
+    directory = root / "reports" / "release" / "current"
+    _write_json(directory / target, value)
+    result = verify_release_directory(directory)
+    assert result["verified"] is False
+    assert error in result["errors"]
+
+
+def test_acceptance_release_id_mismatch_is_rejected_even_when_hashes_are_updated(tmp_path):
+    root = _copied_release(tmp_path)
+    directory = root / "reports" / "release" / "current"
+    acceptance_path = directory / "system_acceptance_report.json"
+    acceptance = json.loads(acceptance_path.read_text(encoding="utf-8"))
+    acceptance["release_id"] = "different-release"
+    _write_json(acceptance_path, acceptance)
+    manifest = json.loads((directory / "release_manifest.json").read_text(encoding="utf-8"))
+    acceptance_row = next(item for item in manifest["artifacts"] if item["path"] == "system_acceptance_report.json")
+    acceptance_row["sha256"] = sha256_file(acceptance_path)
+    acceptance_row["semantic_hash"] = semantic_hash(acceptance)
+    manifest["acceptance_report_hash"] = acceptance_row["sha256"]
+    manifest["raw_release_hash"] = semantic_hash({item["path"]: item["sha256"] for item in manifest["artifacts"]})
+    manifest["semantic_release_hash"] = semantic_hash({item["path"]: item["semantic_hash"] for item in manifest["artifacts"]})
+    _resign_manifest(directory, manifest)
+    result = verify_release_directory(directory)
+    assert result["verified"] is False
+    assert "acceptance release ID mismatch" in result["errors"]
+
+
+def test_failed_acceptance_gate_is_rejected_even_when_all_hashes_are_updated(tmp_path):
+    root = _copied_release(tmp_path)
+    directory = root / "reports" / "release" / "current"
+    acceptance_path = directory / "system_acceptance_report.json"
+    acceptance = json.loads(acceptance_path.read_text(encoding="utf-8"))
+    acceptance["reproducibility"]["verified"] = False
+    acceptance["system_acceptance_passed"] = True
+    _write_json(acceptance_path, acceptance)
+    manifest = json.loads((directory / "release_manifest.json").read_text(encoding="utf-8"))
+    manifest["reproducibility"]["verified"] = False
+    row = next(item for item in manifest["artifacts"] if item["path"] == "system_acceptance_report.json")
+    row["sha256"] = sha256_file(acceptance_path)
+    row["semantic_hash"] = semantic_hash(acceptance)
+    manifest["acceptance_report_hash"] = row["sha256"]
+    manifest["raw_release_hash"] = semantic_hash({item["path"]: item["sha256"] for item in manifest["artifacts"]})
+    manifest["semantic_release_hash"] = semantic_hash({item["path"]: item["semantic_hash"] for item in manifest["artifacts"]})
+    _resign_manifest(directory, manifest)
+    result = verify_release_directory(directory)
+    assert result["verified"] is False
+    assert "release reproducibility is not verified" in result["errors"]
+    assert "acceptance gate failed: reproducibility" in result["errors"]
+
+
+def test_staged_v11_is_actual_current_decision_input_and_root_loader_is_not_called(tmp_path, monkeypatch):
+    import decision.current_market.sources as source_module
+
+    def forbidden_root_loader(*args, **kwargs):
+        raise AssertionError("root V11 loader must not be called")
+
+    monkeypatch.setattr(source_module, "load_v11_current_allocation", forbidden_root_loader)
+    directory = tmp_path / "candidate"
+    base = _build_base_candidate(directory, ROOT, _config())
+    current = base["current"]
+    v11 = base["v11"]
+    dependency = current["release_dependencies"]["v11_current_allocation"]
+    assert current["production_candidate"]["allocation"] == v11["allocation"]
+    assert dependency["sha256"] == sha256_file(directory / "v11_current_allocation.json")
+    assert current["source_manifest"]["v11_current_allocation"]["sha256"] == dependency["sha256"]
+    assert current["source_manifest"]["v11_current_allocation"]["release_artifact_path"] == "v11_current_allocation.json"
+    assert current["production_candidate"]["release_artifact_dependency"] == "v11_current_allocation.json"
+
+
+def test_real_candidate_hashes_come_from_base_artifact_content(tmp_path):
+    directory = tmp_path / "candidate"
+    _build_base_candidate(directory, ROOT, _config())
+    raw_hash, semantic_candidate_hash = _candidate_content_hashes(directory)
+    assert raw_hash == MANIFEST["reproducibility"]["first_candidate_raw_hash"]
+    assert semantic_candidate_hash == MANIFEST["reproducibility"]["first_candidate_semantic_hash"]
+
+
+def test_acceptance_required_gate_list_is_complete():
+    assert ACCEPTANCE["required_gates"] == list(REQUIRED_ACCEPTANCE_GATES)
+    assert all(ACCEPTANCE[name]["verified"] is True for name in REQUIRED_ACCEPTANCE_GATES)
+
+
+def test_actual_route_scan_has_no_unknown_pages():
+    routes = scan_backend_web_routes(ROOT)
+    inventory = build_route_inventory(routes)
+    assert len(routes) == 26
+    assert inventory["verified"] is True
+    assert inventory["unclassified_routes"] == []
+
+
+def test_unknown_web_route_fails_inventory_and_cleanup():
+    inventory = build_route_inventory(scan_backend_web_routes(ROOT) + ["/unknown-user-page"])
+    cleanup = build_legacy_cleanup_report(ROOT, inventory)
+    assert inventory["verified"] is False
+    assert inventory["unclassified_routes"] == ["/unknown-user-page"]
+    assert cleanup["verified"] is False
+    assert cleanup["proof"]["route_scan"]["verified"] is False
+
+
+def test_hidden_route_reentering_primary_navigation_fails_cleanup(monkeypatch):
+    import release.web_contracts as web_contracts
+
+    inventory = build_route_inventory(scan_backend_web_routes(ROOT))
+    monkeypatch.setattr(
+        web_contracts,
+        "PRIMARY_NAVIGATION",
+        PRIMARY_NAVIGATION + (("/diagnosis", "错误一级入口", "不应出现"),),
+    )
+    cleanup = build_legacy_cleanup_report(ROOT, inventory)
+    assert cleanup["verified"] is False
+    assert "/diagnosis" in cleanup["proof"]["reference_scan"]["hidden_or_archived_in_primary"]
+
+
+def _assert_failed_build_never_promotes(monkeypatch, tmp_path, *, web_failure=False):
+    import release.orchestrator as orchestrator
+
+    promoted = []
+    output_dir = f"temp/{tmp_path.name}-release"
+    staging_root = ROOT / "reports" / ".release-staging"
+    staging_before = set(staging_root.iterdir()) if staging_root.exists() else set()
+    monkeypatch.setattr(orchestrator, "_promote_release", lambda *args: promoted.append(args))
+    if web_failure:
+        monkeypatch.setattr(
+            orchestrator,
+            "validate_web_contract",
+            lambda *args: {"verified": False, "errors": ["simulated Web contract failure"]},
+        )
+    else:
+        monkeypatch.setattr(
+            orchestrator,
+            "_directory_hash_differences",
+            lambda *args: [{"path": "simulated.json", "first": "a", "second": "b"}],
+        )
+    try:
+        with pytest.raises(ReleaseBuildError):
+            build_system_release(_config(output_dir=output_dir), root=ROOT)
+        assert promoted == []
+        assert not (ROOT / output_dir / "current").exists()
+    finally:
+        shutil.rmtree(ROOT / output_dir, ignore_errors=True)
+        if staging_root.exists():
+            for path in set(staging_root.iterdir()) - staging_before:
+                shutil.rmtree(path, ignore_errors=True)
+
+
+def test_reproducibility_failure_blocks_promotion(monkeypatch, tmp_path):
+    _assert_failed_build_never_promotes(monkeypatch, tmp_path)
+
+
+def test_web_contract_failure_blocks_promotion(monkeypatch, tmp_path):
+    _assert_failed_build_never_promotes(monkeypatch, tmp_path, web_failure=True)

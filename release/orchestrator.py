@@ -5,7 +5,6 @@ import json
 import os
 from pathlib import Path
 import shutil
-import subprocess
 import tempfile
 
 from backtest.execution.approval_integrity import validate_approval_integrity
@@ -24,6 +23,12 @@ from release.contracts import (
     write_json,
 )
 from release.models import ReleaseBuildConfig, SourceDefinition
+from release.web_contracts import (
+    build_legacy_cleanup_report,
+    build_route_inventory,
+    scan_backend_web_routes,
+    validate_web_contract,
+)
 
 
 PROTECTED_BASELINE_COMMIT = "6183bfdf6fcf5225ac141c6b670cda97eb00ca97"
@@ -54,6 +59,25 @@ COPIED_REPORTS = (
     "research_backtest_report.json",
     "execution_backtest_report.json",
     "execution_aware_shadow_portfolio.json",
+)
+
+REQUIRED_ACCEPTANCE_GATES = (
+    "data_integrity",
+    "strategy_integrity",
+    "v11_snapshot_integrity",
+    "execution_integrity",
+    "mapping_governance_integrity",
+    "shadow_integrity",
+    "current_decision_integrity",
+    "identifier_integrity",
+    "temporal_integrity",
+    "production_boundary",
+    "reproducibility",
+    "api_web_contract",
+    "ui_information_architecture",
+    "legacy_cleanup",
+    "documentation",
+    "protected_files",
 )
 
 
@@ -90,17 +114,24 @@ def build_system_release(config: ReleaseBuildConfig, *, root: Path = ROOT) -> di
         )
         first = build_root / "first"
         second = build_root / "second"
-        reproducibility = {
-            "verified": True,
-            "first_build_hash": fingerprint,
-            "second_build_hash": fingerprint,
-            "artifact_hash_differences": [],
-        }
         try:
-            first_summary = _build_candidate(first, root, config, release_id, inputs, reproducibility)
-            second_summary = _build_candidate(second, root, config, release_id, inputs, reproducibility)
+            first_context = _build_base_candidate(first, root, config)
+            second_context = _build_base_candidate(second, root, config)
             differences = _directory_hash_differences(first, second)
-            if differences:
+            first_raw, first_semantic = _candidate_content_hashes(first)
+            second_raw, second_semantic = _candidate_content_hashes(second)
+            reproducibility = {
+                "verified": not differences
+                and first_raw == second_raw
+                and first_semantic == second_semantic,
+                "input_fingerprint": fingerprint,
+                "first_candidate_raw_hash": first_raw,
+                "second_candidate_raw_hash": second_raw,
+                "first_candidate_semantic_hash": first_semantic,
+                "second_candidate_semantic_hash": second_semantic,
+                "artifact_hash_differences": differences,
+            }
+            if not reproducibility["verified"]:
                 failure = {
                     "status": "failed",
                     "release_id": release_id,
@@ -109,6 +140,36 @@ def build_system_release(config: ReleaseBuildConfig, *, root: Path = ROOT) -> di
                 }
                 write_json(build_root / "failure.json", failure)
                 raise ReleaseBuildError(failure["errors"][0], differences)
+            first_summary = _finalize_candidate(
+                first,
+                root,
+                config,
+                release_id,
+                inputs,
+                reproducibility,
+                first_context,
+            )
+            _finalize_candidate(
+                second,
+                root,
+                config,
+                release_id,
+                inputs,
+                reproducibility,
+                second_context,
+            )
+            final_differences = _directory_hash_differences(first, second)
+            if final_differences:
+                raise ReleaseBuildError(
+                    "finalized candidates are not reproducible", final_differences
+                )
+            first_verification = verify_release_directory(first)
+            second_verification = verify_release_directory(second)
+            if not first_verification["verified"] or not second_verification["verified"]:
+                raise ReleaseBuildError(
+                    "finalized candidate verification failed",
+                    first_verification["errors"] + second_verification["errors"],
+                )
             _promote_release(first, release_root, release_id)
             shutil.rmtree(second, ignore_errors=True)
             if build_root.exists() and not any(build_root.iterdir()):
@@ -130,8 +191,23 @@ def build_system_release(config: ReleaseBuildConfig, *, root: Path = ROOT) -> di
             raise
 
 
-def load_release_json(name: str, *, root: Path = ROOT) -> dict:
-    path = root / "reports" / "release" / "current" / name
+def load_release_json(
+    name: str,
+    *,
+    root: Path = ROOT,
+    verify_committed: bool = True,
+) -> dict:
+    current = root / "reports" / "release" / "current"
+    path = current / name
+    if verify_committed:
+        status = verify_release_directory(current)
+        if not status.get("verified"):
+            return {
+                "available": False,
+                "verified": False,
+                "message": "committed system release integrity failed",
+                "errors": status.get("errors", []),
+            }
     if not path.exists():
         return {"available": False, "verified": False, "message": f"{name} is unavailable"}
     try:
@@ -158,11 +234,92 @@ def verify_release_directory(directory: Path) -> dict:
         marker = read_json(marker_path)
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
         return {"available": False, "verified": False, "errors": [f"release JSON invalid: {type(exc).__name__}"]}
+    if not all(isinstance(value, dict) for value in (manifest, acceptance, marker)):
+        return {
+            "available": True,
+            "verified": False,
+            "errors": ["release control files must be JSON objects"],
+        }
     errors: list[str] = []
-    for artifact in manifest.get("artifacts", []):
-        path = directory / artifact.get("path", "")
+    artifacts = manifest.get("artifacts", [])
+    inputs = manifest.get("inputs", [])
+    if not isinstance(artifacts, list) or not isinstance(inputs, list):
+        return {"available": True, "verified": False, "errors": ["manifest inputs and artifacts must be lists"], "manifest": manifest, "acceptance": acceptance}
+    artifact_paths = [
+        row.get("path")
+        for row in artifacts
+        if isinstance(row, dict) and isinstance(row.get("path"), str)
+    ]
+    input_paths = [
+        row.get("path")
+        for row in inputs
+        if isinstance(row, dict) and isinstance(row.get("path"), str)
+    ]
+    if len(artifact_paths) != len(artifacts):
+        errors.append("artifact path must be a string")
+    if len(input_paths) != len(inputs):
+        errors.append("input path must be a string")
+    if len(artifact_paths) != len(set(artifact_paths)):
+        errors.append("duplicate artifact path")
+    if len(input_paths) != len(set(input_paths)):
+        errors.append("duplicate input path")
+    artifact_path_set = set(artifact_paths)
+    for artifact in artifacts:
+        if not isinstance(artifact, dict):
+            errors.append("artifact manifest entry must be an object")
+            continue
+        relative = artifact.get("path")
+        if not isinstance(relative, str) or not relative:
+            continue
+        path = (directory / relative).resolve()
+        try:
+            path.relative_to(directory.resolve())
+        except ValueError:
+            errors.append(f"artifact path escapes release: {relative}")
+            continue
         if not path.exists() or sha256_file(path) != artifact.get("sha256"):
-            errors.append(f"artifact integrity failed: {artifact.get('path')}")
+            errors.append(f"artifact integrity failed: {relative}")
+            continue
+        try:
+            value = read_json(path)
+        except (OSError, UnicodeError, json.JSONDecodeError, ValueError):
+            errors.append(f"artifact JSON invalid: {relative}")
+            continue
+        if semantic_hash(value) != artifact.get("semantic_hash"):
+            errors.append(f"artifact semantic hash mismatch: {relative}")
+        dependencies = artifact.get("dependencies", [])
+        if not isinstance(dependencies, list) or not all(
+            isinstance(dependency, str) for dependency in dependencies
+        ):
+            errors.append(f"artifact dependencies must be strings: {relative}")
+            continue
+        for dependency in dependencies:
+            if dependency not in artifact_path_set:
+                errors.append(f"artifact dependency missing: {relative} -> {dependency}")
+    expected_raw = semantic_hash(
+        {
+            row["path"]: row["sha256"]
+            for row in artifacts
+            if isinstance(row, dict)
+            and isinstance(row.get("path"), str)
+            and isinstance(row.get("sha256"), str)
+        }
+    )
+    expected_semantic = semantic_hash(
+        {
+            row["path"]: row["semantic_hash"]
+            for row in artifacts
+            if isinstance(row, dict)
+            and isinstance(row.get("path"), str)
+            and isinstance(row.get("semantic_hash"), str)
+        }
+    )
+    if manifest.get("raw_release_hash") != expected_raw:
+        errors.append("raw release hash mismatch")
+    if manifest.get("semantic_release_hash") != expected_semantic:
+        errors.append("semantic release hash mismatch")
+    if manifest.get("dependency_graph_hash") != semantic_hash(manifest.get("dependency_graph")):
+        errors.append("dependency graph hash mismatch")
     if sha256_file(acceptance_path) != manifest.get("acceptance_report_hash"):
         errors.append("acceptance report hash mismatch")
     if marker.get("release_id") != manifest.get("release_id"):
@@ -173,6 +330,25 @@ def verify_release_directory(directory: Path) -> dict:
         errors.append("release manifest is not verified")
     if acceptance.get("system_acceptance_passed") is not True:
         errors.append("system acceptance did not pass")
+    if acceptance.get("release_id") != manifest.get("release_id"):
+        errors.append("acceptance release ID mismatch")
+    if marker.get("committed") is not True:
+        errors.append("release committed marker is false")
+    if acceptance.get("reproducibility") != manifest.get("reproducibility"):
+        errors.append("acceptance reproducibility mismatch")
+    if manifest.get("reproducibility", {}).get("verified") is not True:
+        errors.append("release reproducibility is not verified")
+    if acceptance.get("required_gates") != list(REQUIRED_ACCEPTANCE_GATES):
+        errors.append("acceptance required gate list mismatch")
+    for gate in REQUIRED_ACCEPTANCE_GATES:
+        if acceptance.get(gate, {}).get("verified") is not True:
+            errors.append(f"acceptance gate failed: {gate}")
+    if acceptance.get("execution_integrity", {}).get(
+        "nonblocking_when_not_ready"
+    ) is not True:
+        errors.append("execution non-ready evidence is incomplete")
+    if acceptance.get("shadow_integrity", {}).get("production_approved") is not False:
+        errors.append("Shadow production boundary is invalid")
     return {"available": True, "verified": not errors, "errors": errors, "manifest": manifest, "acceptance": acceptance}
 
 
@@ -212,13 +388,10 @@ def clean_staging(*, root: Path = ROOT, keep_failed: bool = True) -> dict:
     return {"removed": removed, "retained": retained}
 
 
-def _build_candidate(
+def _build_base_candidate(
     directory: Path,
     root: Path,
     config: ReleaseBuildConfig,
-    release_id: str,
-    inputs: list[dict],
-    reproducibility: dict,
 ) -> dict:
     directory.mkdir(parents=True, exist_ok=False)
     for name in COPIED_REPORTS:
@@ -231,34 +404,80 @@ def _build_candidate(
         generated_at=config.generated_at,
         diagnosis_report_path=root / "reports" / "strategy_diagnosis_report.json",
     )
+    verification = validate_v11_current_allocation_snapshot(
+        v11, diagnosis, verify_source_files=True
+    )
+    v11["source_integrity"] = verification["source_integrity"]
+    v11["release_artifact_dependency"] = "v11_current_allocation.json"
     write_json(directory / "v11_current_allocation.json", v11)
 
-    sources = load_current_market_sources()
+    sources = load_current_market_sources(
+        v11_allocation=v11,
+        v11_source_path=directory / "v11_current_allocation.json",
+    )
     current = build_current_market_decision(
         sources=sources,
         market_data_as_of=config.market_data_as_of,
         decision_date=config.decision_date,
         generated_at=config.generated_at,
     )
+    current["release_dependencies"] = {
+        "v11_current_allocation": {
+            "path": "v11_current_allocation.json",
+            "sha256": sha256_file(directory / "v11_current_allocation.json"),
+            "snapshot_payload_hash": v11["source_integrity"][
+                "snapshot_payload_hash"
+            ],
+            "declared": True,
+        }
+    }
     write_json(directory / "current_market_decision.json", current)
 
-    route_inventory = _ui_route_inventory()
-    cleanup = _legacy_cleanup_report(route_inventory)
+    actual_routes = scan_backend_web_routes(root)
+    route_inventory = build_route_inventory(actual_routes)
+    cleanup = build_legacy_cleanup_report(root, route_inventory)
     write_json(directory / "ui_route_inventory.json", route_inventory)
     write_json(directory / "legacy_cleanup_report.json", cleanup)
 
+    return {
+        "diagnosis": diagnosis,
+        "v11": v11,
+        "current": current,
+        "shadow": read_json(
+            root / "reports" / "execution_aware_shadow_portfolio.json"
+        ),
+        "route_inventory": route_inventory,
+        "cleanup": cleanup,
+    }
+
+
+def _finalize_candidate(
+    directory: Path,
+    root: Path,
+    config: ReleaseBuildConfig,
+    release_id: str,
+    inputs: list[dict],
+    reproducibility: dict,
+    base: dict,
+) -> dict:
+
     protected = _protected_file_status(root)
+    web_contract = validate_web_contract(root, base["route_inventory"])
     acceptance = _system_acceptance(
         root=root,
         config=config,
         release_id=release_id,
         inputs=inputs,
-        diagnosis=diagnosis,
-        v11=v11,
-        current=current,
-        shadow=read_json(root / "reports" / "execution_aware_shadow_portfolio.json"),
+        diagnosis=base["diagnosis"],
+        v11=base["v11"],
+        current=base["current"],
+        shadow=base["shadow"],
         protected=protected,
         reproducibility=reproducibility,
+        web_contract=web_contract,
+        route_inventory=base["route_inventory"],
+        cleanup=base["cleanup"],
+        staged_v11_hash=sha256_file(directory / "v11_current_allocation.json"),
     )
     write_json(directory / "system_acceptance_report.json", acceptance)
 
@@ -343,6 +562,36 @@ def _system_acceptance(**context) -> dict:
     execution = current.get("execution_validation", {})
     approval = validate_approval_integrity()
     identifier = current.get("comparison", {})
+    dependency = current.get("release_dependencies", {}).get(
+        "v11_current_allocation", {}
+    )
+    manifest_v11 = current.get("source_manifest", {}).get(
+        "v11_current_allocation", {}
+    )
+    candidate = current.get("production_candidate", {})
+    staged_dependency = {
+        "verified": dependency.get("declared") is True
+        and dependency.get("path") == "v11_current_allocation.json"
+        and dependency.get("sha256") == context["staged_v11_hash"]
+        and manifest_v11.get("sha256") == context["staged_v11_hash"]
+        and manifest_v11.get("release_artifact_path")
+        == "v11_current_allocation.json"
+        and dependency.get("snapshot_payload_hash")
+        == v11.get("source_integrity", {}).get("snapshot_payload_hash")
+        and candidate.get("allocation") == v11.get("allocation")
+        and candidate.get("allocation_integrity", {}).get("snapshot_payload_hash")
+        == v11.get("source_integrity", {}).get("snapshot_payload_hash")
+        and candidate.get("release_artifact_dependency")
+        == "v11_current_allocation.json",
+        "artifact_path": dependency.get("path"),
+        "staged_v11_hash": context["staged_v11_hash"],
+        "current_decision_v11_hash": manifest_v11.get("sha256"),
+        "payload_hash": dependency.get("snapshot_payload_hash"),
+        "root_v11_excluded": bool(
+            current.get("source_hash_verification", {}).get("valid")
+            and manifest_v11.get("release_artifact_path")
+        ),
+    }
     forbidden = (
         forbidden_field_paths(v11)
         + forbidden_field_paths(current)
@@ -389,8 +638,10 @@ def _system_acceptance(**context) -> dict:
             "production_approved": shadow.get("production_approved") is True,
         },
         "current_decision_integrity": {
-            "verified": current.get("ready_for_user_review") is True,
+            "verified": current.get("ready_for_user_review") is True
+            and staged_dependency["verified"],
             "status": current.get("status"),
+            "staged_v11_dependency": staged_dependency,
         },
         "identifier_integrity": {
             "verified": identifier.get("identifier_normalization_verified") is True,
@@ -415,42 +666,52 @@ def _system_acceptance(**context) -> dict:
             "forbidden_field_paths": forbidden,
         },
         "api_web_contract": {
-            "verified": True,
+            **context["web_contract"],
             "read_only_release_apis": ["/api/system/release-manifest", "/api/system/acceptance"],
-            "primary_pages": ["/", "/current-decision", "/v11-current-allocation", "/research-validation", "/system-status"],
-            "network_accessed": False,
+            "primary_pages": context["web_contract"].get(
+                "primary_navigation", []
+            ),
         },
+        "ui_information_architecture": {
+            "verified": context["route_inventory"].get("verified") is True
+            and context["route_inventory"].get("primary_navigation_count") == 5
+            and not context["route_inventory"].get("unclassified_routes"),
+            "route_scan_count": context["route_inventory"].get(
+                "actual_route_count", 0
+            ),
+            "unclassified_routes": context["route_inventory"].get(
+                "unclassified_routes", []
+            ),
+        },
+        "legacy_cleanup": context["cleanup"],
         "documentation": documentation,
         "protected_files": protected,
     }
-    required = [
-        checks["data_integrity"]["verified"],
-        checks["strategy_integrity"]["verified"],
-        checks["v11_snapshot_integrity"]["verified"],
-        checks["execution_integrity"]["verified"],
-        checks["execution_integrity"]["nonblocking_when_not_ready"],
-        checks["mapping_governance_integrity"]["verified"],
-        checks["shadow_integrity"]["verified"],
-        checks["shadow_integrity"]["production_approved"] is False,
-        checks["current_decision_integrity"]["verified"],
-        checks["identifier_integrity"]["verified"],
-        checks["temporal_integrity"]["verified"],
-        checks["production_boundary"]["verified"],
-        checks["documentation"]["verified"],
-        checks["protected_files"]["verified"],
+    required_gate_names = list(REQUIRED_ACCEPTANCE_GATES)
+    required = [checks[name].get("verified") is True for name in required_gate_names]
+    required.extend(
+        [
+            checks["execution_integrity"]["nonblocking_when_not_ready"],
+            checks["shadow_integrity"]["production_approved"] is False,
+        ]
+    )
+    blocking = [
+        f"{name} verification failed"
+        for name in required_gate_names
+        if checks[name].get("verified") is not True
     ]
-    blocking: list[str] = []
-    if not all(required):
-        for name, value in checks.items():
-            if isinstance(value, dict) and value.get("verified") is False:
-                blocking.append(f"{name} verification failed")
-    passed = not blocking
+    if not checks["execution_integrity"]["nonblocking_when_not_ready"]:
+        blocking.append("execution non-ready evidence is incomplete")
+    if checks["shadow_integrity"]["production_approved"] is not False:
+        blocking.append("Shadow production boundary is invalid")
+    passed = all(required) and not blocking
     return {
         "available": True,
         "release_id": context["release_id"],
         "generated_at": config.generated_at,
         "system_acceptance_passed": passed,
         "project_completion_candidate": passed,
+        "required_gates": required_gate_names,
         **checks,
         "known_nonblocking_conditions": [
             "Execution Validation remains false because coverage and untradable-month thresholds are not met.",
@@ -532,64 +793,6 @@ def _protected_file_status(root: Path) -> dict:
     return {"baseline_commit": PROTECTED_BASELINE_COMMIT, "verified": not errors, "files": files, "errors": errors}
 
 
-def _ui_route_inventory() -> dict:
-    primary = {
-        "/": ("系统首页", "primary", "keep", "普通用户状态和入口"),
-        "/current-decision": ("当前配置决策", "primary", "keep", "人工审核的综合快照"),
-        "/v11-current-allocation": ("V11 模型配置", "primary", "keep", "正式候选模型输出"),
-        "/research-validation": ("研究与执行验证", "advanced", "aggregate", "高级研究入口"),
-        "/system-status": ("系统与数据状态", "audit", "keep", "发布与数据审计"),
-    }
-    advanced = {
-        "/research-backtest": "研究资产层历史验证",
-        "/execution-backtest": "真实 ETF 执行验证",
-        "/shadow-portfolio": "实验性 Shadow 快照",
-        "/diagnosis": "策略诊断审计",
-        "/production-readiness": "生产候选证据",
-        "/research-universe": "研究和执行资产池审计",
-        "/benchmark-validation": "基准验证证据",
-        "/strategy-governance": "策略治理证据",
-        "/selection-research": "研究选择证据",
-        "/strategy-promotion": "策略晋级证据",
-        "/adaptive-strategy": "历史研究页面",
-        "/risk-exposure": "风险暴露审计",
-        "/final-strategy": "历史策略汇总",
-        "/attribution": "历史归因分析",
-    }
-    archived = {
-        "/legacy-dashboard": "早期样例和研发 Dashboard",
-        "/research": "早期研究页",
-        "/pipeline": "早期数据管道页",
-        "/real-research": "早期真实数据页",
-        "/validation": "早期验证页",
-        "/experiment": "早期实验页",
-        "/quality": "早期数据质量页",
-    }
-    routes: list[dict] = []
-    for route, (title, value, action, reason) in primary.items():
-        routes.append({"route": route, "title": title, "current_user_value": value, "linked_from_global_navigation": True, "backend_dependency": ["backend/main.py"], "report_dependency": [], "test_dependency": ["tests/test_system_release.py"], "action": action, "reason": reason})
-    for route, reason in advanced.items():
-        routes.append({"route": route, "title": route.strip("/").replace("-", " ").title(), "current_user_value": "advanced", "linked_from_global_navigation": False, "backend_dependency": ["backend/main.py"], "report_dependency": ["formal report loader"], "test_dependency": ["existing API/Web tests"], "action": "hide", "reason": reason})
-    for route, reason in archived.items():
-        routes.append({"route": route, "title": route.strip("/").replace("-", " ").title(), "current_user_value": "none", "linked_from_global_navigation": False, "backend_dependency": ["backend/main.py"], "report_dependency": [], "test_dependency": ["legacy compatibility tests"], "action": "archive", "reason": reason})
-    return {"available": True, "verified": True, "primary_navigation_count": 5, "routes": routes}
-
-
-def _legacy_cleanup_report(inventory: dict) -> dict:
-    routes = inventory["routes"]
-    return {
-        "available": True,
-        "deleted_routes": [],
-        "deleted_modules": [],
-        "hidden_routes": [row["route"] for row in routes if row["action"] == "hide"],
-        "archived_routes": [row["route"] for row in routes if row["action"] == "archive"],
-        "retained_backend_dependencies": ["Strategy Diagnosis", "Research Backtest", "Execution Backtest", "Shadow builder", "mapping approval and integrity", "transaction recovery"],
-        "visible_link_count_before": 20,
-        "visible_link_count_after": 5,
-        "proof": {"import_scan_passed": True, "route_reference_scan_passed": True, "test_reference_scan_passed": True, "release_dependency_scan_passed": True},
-    }
-
-
 def _directory_hash_differences(first: Path, second: Path) -> list[dict]:
     first_files = {path.relative_to(first).as_posix(): sha256_file(path) for path in first.rglob("*") if path.is_file()}
     second_files = {path.relative_to(second).as_posix(): sha256_file(path) for path in second.rglob("*") if path.is_file()}
@@ -598,6 +801,18 @@ def _directory_hash_differences(first: Path, second: Path) -> list[dict]:
         for path in sorted(set(first_files) | set(second_files))
         if first_files.get(path) != second_files.get(path)
     ]
+
+
+def _candidate_content_hashes(directory: Path) -> tuple[str, str]:
+    files = sorted(path for path in directory.rglob("*.json") if path.is_file())
+    raw = {
+        path.relative_to(directory).as_posix(): sha256_file(path) for path in files
+    }
+    semantic = {
+        path.relative_to(directory).as_posix(): semantic_hash(read_json(path))
+        for path in files
+    }
+    return semantic_hash(raw), semantic_hash(semantic)
 
 
 def _promote_release(candidate: Path, release_root: Path, release_id: str) -> None:

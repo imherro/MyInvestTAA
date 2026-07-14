@@ -35,7 +35,11 @@ EXECUTION_GATE_POLICY = ROOT / "config" / "execution_validation_policy.json"
 V11_CURRENT_ALLOCATION_REPORT = ROOT / "reports" / "v11_current_allocation.json"
 
 
-def load_current_market_sources() -> dict:
+def load_current_market_sources(
+    *,
+    v11_allocation: dict | None = None,
+    v11_source_path: Path | None = None,
+) -> dict:
     diagnosis = _load_json_report(
         STRATEGY_DIAGNOSIS_REPORT, "strategy diagnosis report not found"
     )
@@ -49,7 +53,9 @@ def load_current_market_sources() -> dict:
     gate_policy = _load_json_report(
         EXECUTION_GATE_POLICY, "execution validation policy not found"
     )
-    v11_allocation = load_v11_current_allocation()
+    if v11_allocation is None:
+        v11_allocation = load_v11_current_allocation()
+        v11_source_path = V11_CURRENT_ALLOCATION_REPORT
     instrument_aliases = load_execution_instrument_aliases(
         EXECUTION_INSTRUMENT_ALIASES
     )
@@ -75,16 +81,38 @@ def load_current_market_sources() -> dict:
         name: SourceSnapshot(
             source=name,
             path=definition["path"],
-            sha256=sha256_file(ROOT / definition["path"])
-            if (ROOT / definition["path"]).exists()
+            sha256=sha256_file(
+                v11_source_path
+                if name == "v11_current_allocation" and v11_source_path is not None
+                else ROOT / definition["path"]
+            )
+            if (
+                v11_source_path
+                if name == "v11_current_allocation" and v11_source_path is not None
+                else ROOT / definition["path"]
+            ).exists()
             else None,
-            available=(ROOT / definition["path"]).exists(),
+            available=(
+                v11_source_path
+                if name == "v11_current_allocation" and v11_source_path is not None
+                else ROOT / definition["path"]
+            ).exists(),
             source_as_of=as_of.get(name),
             required=definition["required"],
             temporal_role=definition["temporal_role"],
         ).as_dict()
         for name, definition in ALL_SOURCE_DEFINITIONS.items()
     }
+    source_path_overrides = (
+        {"v11_current_allocation": v11_source_path}
+        if v11_source_path is not None
+        and v11_source_path.resolve() != V11_CURRENT_ALLOCATION_REPORT.resolve()
+        else {}
+    )
+    if source_path_overrides:
+        source_manifest["v11_current_allocation"]["release_artifact_path"] = (
+            "v11_current_allocation.json"
+        )
     return {
         "diagnosis": diagnosis,
         "research": research,
@@ -99,6 +127,7 @@ def load_current_market_sources() -> dict:
         "v11_allocation": v11_allocation,
         "instrument_aliases": instrument_aliases,
         "source_manifest": source_manifest,
+        "source_path_overrides": source_path_overrides,
     }
 
 

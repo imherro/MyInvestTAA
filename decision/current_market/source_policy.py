@@ -77,6 +77,7 @@ def verify_current_decision_source_entry(
     row: object,
     *,
     root: Path = ROOT,
+    path_overrides: dict[str, Path] | None = None,
 ) -> list[str]:
     definition = ALL_SOURCE_DEFINITIONS.get(name)
     if definition is None:
@@ -97,12 +98,17 @@ def verify_current_decision_source_entry(
     if row.get("temporal_role") != expected_role:
         errors.append(f"source temporal role mismatch: {name}")
 
-    source = (root / expected_path).resolve()
+    source = (
+        path_overrides.get(name)
+        if path_overrides and name in path_overrides
+        else root / expected_path
+    ).resolve()
     try:
         source.relative_to(root.resolve())
     except ValueError:
-        errors.append(f"source path escapes project root: {name}")
-        return errors
+        if not (path_overrides and name in path_overrides):
+            errors.append(f"source path escapes project root: {name}")
+            return errors
 
     exists = source.exists()
     if row.get("available") is not exists:
@@ -127,6 +133,7 @@ def verify_current_decision_sources(
     manifest: object,
     *,
     root: Path = ROOT,
+    path_overrides: dict[str, Path] | None = None,
 ) -> dict:
     if not isinstance(manifest, dict):
         return {
@@ -150,7 +157,9 @@ def verify_current_decision_sources(
     available_required_count = 0
     for name, definition in ALL_SOURCE_DEFINITIONS.items():
         row = manifest.get(name)
-        row_errors = verify_current_decision_source_entry(name, row, root=root)
+        row_errors = verify_current_decision_source_entry(
+            name, row, root=root, path_overrides=path_overrides
+        )
         errors.extend(row_errors)
         if definition["required"] and isinstance(row, dict) and row.get("available"):
             available_required_count += 1

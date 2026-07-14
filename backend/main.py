@@ -52,6 +52,7 @@ from decision.current_market.explain import decision_headline
 from decision.current_market.report import load_current_market_decision
 from decision.v11_current import load_v11_current_allocation
 from release.orchestrator import load_release_json
+from release.web_contracts import primary_navigation_html
 from storage import MarketDataRepository, connect_database
 
 
@@ -463,13 +464,7 @@ def get_risk_budget() -> dict:
 
 
 def _primary_navigation() -> str:
-    return """<nav class="primary-nav" aria-label="主要导航">
-      <a href="/">系统首页<span>状态和入口</span></a>
-      <a href="/current-decision">当前配置决策<span>人工审核快照</span></a>
-      <a href="/v11-current-allocation">V11 模型配置<span>正式候选模型</span></a>
-      <a href="/research-validation">研究与执行验证<span>高级研究内容</span></a>
-      <a href="/system-status">系统与数据状态<span>发布和数据审计</span></a>
-    </nav>"""
+    return primary_navigation_html()
 
 
 def _product_css() -> str:
