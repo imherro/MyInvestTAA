@@ -22,7 +22,7 @@ The 931743 research asset currently uses a medium-quality semiconductor ETF prox
 
 Market and ETF data are local offline snapshots, not real-time quotes. A passed release proves consistency with those inputs, not freshness beyond the stated as-of date.
 
-Counterfactual mapping results are configuration-specific. The system marks them historical-only whenever any required input is missing, damaged, or no longer matches the committed analysis contract. Only a fully verified counterfactual enters the committed release, and it still cannot authorize a mapping change.
+Counterfactual mapping results are configuration-specific. The system marks mutable evidence historical-only whenever any required input is missing, damaged, or no longer matches the analysis contract. Only a fully verified counterfactual enters the committed release. The formal API additionally verifies the whole release directory and returns unavailable on any release-level integrity failure; it never falls back to mutable evidence. Counterfactual evidence still cannot authorize a mapping change.
 
 ## Not a trading instruction
 

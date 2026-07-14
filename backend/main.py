@@ -20,7 +20,7 @@ from backtest.evaluation import rolling_analysis
 from backtest.simulator import run_sample_backtest
 from backtest.taa import run_taa_backtest
 from backtest.research import load_research_backtest_report
-from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report, load_proxy_research_report, load_mapping_proposal_report, load_counterfactual_report, load_price_dataset_manifest, load_mapping_attribution_report, load_mapping_review_report, load_mapping_approval_package, load_mapping_decision_ledger, load_mapping_approval_record, load_execution_aware_shadow_portfolio, load_approval_integrity_seal, load_transaction_status
+from backtest.execution import load_execution_backtest_report, load_mapping_improvement_report, load_proxy_research_report, load_mapping_proposal_report, load_price_dataset_manifest, load_mapping_attribution_report, load_mapping_review_report, load_mapping_approval_package, load_mapping_decision_ledger, load_mapping_approval_record, load_execution_aware_shadow_portfolio, load_approval_integrity_seal, load_transaction_status
 from data_pipeline import (
     build_full_validation_report,
     build_real_performance_report,
@@ -56,7 +56,7 @@ from decision.current_market.instrument_ids import (
     resolve_canonical_instrument_id,
 )
 from decision.current_market.explain import decision_headline
-from release.orchestrator import load_release_json
+from release.orchestrator import load_committed_counterfactual_report, load_release_json
 from release.web_contracts import primary_navigation_html
 from storage import MarketDataRepository, connect_database
 
@@ -405,7 +405,7 @@ def get_execution_mapping_proposal() -> dict:
 
 @app.get("/api/research/execution-mapping-counterfactual")
 def get_execution_mapping_counterfactual() -> dict:
-    return load_counterfactual_report()
+    return load_committed_counterfactual_report()
 
 @app.get("/api/research/execution-mapping-attribution")
 def get_execution_mapping_attribution() -> dict:
@@ -3126,7 +3126,7 @@ def execution_backtest_page() -> str:
     improvement = load_mapping_improvement_report()
     proxy_research = load_proxy_research_report()
     proposal = load_mapping_proposal_report()
-    counterfactual = load_counterfactual_report()
+    counterfactual = load_committed_counterfactual_report()
     provenance = load_price_dataset_manifest()
     attribution = load_mapping_attribution_report()
     mapping_review = load_mapping_review_report()

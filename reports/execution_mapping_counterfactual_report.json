@@ -216,13 +216,13 @@
       },
       "proposal_report_code": {
         "path": "backtest/execution/proposal_report.py",
-        "sha256": "cc69a3a92b91084d6fca638e53a62e35c8dc03850d4443b72aba3c15942e1c71"
+        "sha256": "bdf77e11b106df6202830701d9708fdca03d871ccf997eb0c65be3d1fd3506d3"
       }
     },
     "proposal_overlay_semantic_hash": "49cb13c26e92e55d73c4aef374273a31ef6a74a8dd4c73a089632462f79913ad",
     "valid": true,
     "errors": [],
-    "contract_hash": "3f96b7f6465024dfa6617e39703ca1d6457e3eff7655c57695dee9a7f40ad7eb"
+    "contract_hash": "fcd210b30f7e9de9da1f6bb8a4566269e6eba93b86dabde27b3858f3b9c00e98"
   },
   "baseline": {
     "available": true,

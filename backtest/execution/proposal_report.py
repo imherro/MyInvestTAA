@@ -6,7 +6,6 @@ from engine.asset_registry.loader import ASSET_MAPPING_FILE, ROOT
 
 PROPOSAL = ROOT / "reports" / "execution_mapping_proposal.json"
 COUNTER = ROOT / "reports" / "execution_mapping_counterfactual_report.json"
-COMMITTED_COUNTER = ROOT / "reports" / "release" / "current" / "execution_mapping_counterfactual_report.json"
 COUNTERFACTUAL_BASELINE_SOURCES = {
     "asset_mapping": ASSET_MAPPING_FILE,
     "decision_ledger": ROOT / "data" / "universe" / "execution_mapping_decision_ledger.json",
@@ -133,27 +132,39 @@ def validate_counterfactual_input_contract(contract):
     return _verification(errors, expected)
 
 
-def load_counterfactual_report(path=None):
-    target = path or (COMMITTED_COUNTER if COMMITTED_COUNTER.exists() else COUNTER)
-    value = load_report(target, "execution mapping counterfactual report not generated or readable")
-    if not value.get("available"):
-        value.update({"available": False, "status": "unavailable", "evidence_use": "unavailable"})
-        return value
+def validate_counterfactual_payload(value, *, expected_scope="mutable_pre_release", committed=False):
+    if not isinstance(value, dict):
+        return {"available": False, "status": "unavailable", "evidence_use": "unavailable", "message": "counterfactual payload is invalid"}
+    value = dict(value)
+    value["available"] = True
     baseline_status = validate_counterfactual_baseline_contract(value.get("baseline_contract"), value.get("baseline", {}))
     input_status = validate_counterfactual_input_contract(value.get("counterfactual_input_contract"))
     errors = [*baseline_status["errors"], *input_status["errors"]]
+    if value.get("release_scope") != expected_scope:
+        errors.append(f"counterfactual release scope mismatch: expected {expected_scope}")
     verified = not errors
     value["baseline_contract_verification"] = baseline_status
     value["input_contract_verification"] = input_status
+    value["validation_errors"] = errors
     value["status"] = "current" if verified else "stale"
     value["evidence_use"] = "current_analysis" if verified else "historical_only"
-    value["release_scope"] = "committed_release" if target == COMMITTED_COUNTER else "mutable_pre_release"
     if not verified:
+        if committed:
+            return {"available": False, "status": "unavailable", "evidence_use": "unavailable", "message": "committed counterfactual validation failed", "errors": errors}
         decision = value.setdefault("decision", {})
         decision["ready_for_manual_mapping_approval"] = False
         decision["reasons"] = list(dict.fromkeys([*decision.get("reasons", []), "counterfactual inputs no longer match current formal sources"]))
         value.setdefault("warnings", []).append("Historical-only counterfactual: required inputs do not match the current formal sources.")
     return value
+
+
+def load_counterfactual_report(path=None):
+    target = path or COUNTER
+    value = load_report(target, "execution mapping counterfactual report not generated or readable")
+    if not value.get("available"):
+        value.update({"available": False, "status": "unavailable", "evidence_use": "unavailable"})
+        return value
+    return validate_counterfactual_payload(value, expected_scope="mutable_pre_release")
 
 
 def _build_source_rows(sources):

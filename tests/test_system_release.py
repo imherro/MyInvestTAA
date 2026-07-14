@@ -29,6 +29,7 @@ from release.orchestrator import (
     _promote_release,
     clean_staging,
     load_release_json,
+    load_committed_counterfactual_report,
     recover_release,
     verify_release_directory,
 )
@@ -470,6 +471,9 @@ def test_counterfactual_api_reads_verified_committed_audit_artifact():
     assert payload["input_contract_verification"]["verified"] is True
     assert payload["impact"] == committed["impact"]
     assert any(row["path"] == "execution_mapping_counterfactual_report.json" for row in MANIFEST["artifacts"])
+    assert committed["release_scope"] == "committed_release"
+    assert ACCEPTANCE["counterfactual_integrity"]["verified"] is True
+    assert "counterfactual_integrity" in ACCEPTANCE["required_gates"]
 
 
 def test_stale_counterfactual_cannot_enter_release(monkeypatch, tmp_path):
@@ -479,6 +483,33 @@ def test_stale_counterfactual_cannot_enter_release(monkeypatch, tmp_path):
     )
     with pytest.raises(ReleaseBuildError, match="counterfactual audit artifact is unavailable or stale"):
         _build_base_candidate(tmp_path / "candidate", ROOT, _config())
+
+
+@pytest.mark.parametrize("field,value", [("impact", {"annual_return_delta": 9}), ("decision", {"ready_for_manual_mapping_approval": True}), ("delta_contract", {"display_values": {"annual_return_delta": 999}})])
+def test_committed_counterfactual_tampering_fails_closed(tmp_path, field, value):
+    target = tmp_path / "reports" / "release" / "current"
+    shutil.copytree(RELEASE, target)
+    path = target / "execution_mapping_counterfactual_report.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload[field] = value
+    _write_json(path, payload)
+    loaded = load_committed_counterfactual_report(root=tmp_path)
+    assert loaded["available"] is False
+    assert loaded["status"] == "unavailable"
+    assert loaded["message"] == "committed system release integrity failed"
+
+
+@pytest.mark.parametrize("control", ["COMMITTED.json", "release_manifest.json", "system_acceptance_report.json"])
+def test_missing_release_control_file_blocks_counterfactual_without_fallback(tmp_path, control):
+    target = tmp_path / "reports" / "release" / "current"
+    shutil.copytree(RELEASE, target)
+    (target / control).unlink()
+    mutable = tmp_path / "reports" / "execution_mapping_counterfactual_report.json"
+    mutable.parent.mkdir(parents=True, exist_ok=True)
+    mutable.write_text((RELEASE / "execution_mapping_counterfactual_report.json").read_text(encoding="utf-8"), encoding="utf-8")
+    loaded = load_committed_counterfactual_report(root=tmp_path)
+    assert loaded["available"] is False
+    assert loaded["message"] == "committed system release integrity failed"
 
 
 @pytest.mark.parametrize(

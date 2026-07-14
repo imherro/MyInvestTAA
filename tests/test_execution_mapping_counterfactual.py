@@ -4,7 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 from backend.main import app
 from backtest.execution import proposal_report
-from backtest.execution.proposal_report import build_counterfactual_baseline_contract, build_counterfactual_input_contract, load_counterfactual_report, load_mapping_proposal_report
+from backtest.execution.proposal_report import build_counterfactual_baseline_contract, build_counterfactual_input_contract, load_counterfactual_report, load_mapping_proposal_report, validate_counterfactual_payload
 
 CLIENT=TestClient(app); PROPOSAL=load_mapping_proposal_report(); COUNTER=load_counterfactual_report()
 
@@ -79,6 +79,22 @@ def test_counterfactual_report_damage_is_unavailable(tmp_path):
  path=tmp_path/'counter.json';path.write_text('{broken',encoding='utf-8')
  loaded=load_counterfactual_report(path)
  assert loaded['available'] is False and loaded['status']=='unavailable'
+def test_mutable_counterfactual_scope_mismatch_is_stale(tmp_path):
+ payload=deepcopy(COUNTER);payload['release_scope']='committed_release'
+ path=tmp_path/'counter.json';path.write_text(json.dumps(payload),encoding='utf-8')
+ loaded=load_counterfactual_report(path)
+ assert loaded['available'] is True and loaded['status']=='stale'
+ assert any('release scope mismatch' in error for error in loaded['validation_errors'])
+def test_committed_scope_mismatch_is_unavailable():
+ payload=deepcopy(COUNTER);payload['release_scope']='mutable_pre_release'
+ loaded=validate_counterfactual_payload(payload,expected_scope='committed_release',committed=True)
+ assert loaded['available'] is False and loaded['status']=='unavailable'
+def test_counterfactual_api_returns_200_when_committed_release_integrity_fails(monkeypatch):
+ monkeypatch.setattr('backend.main.load_committed_counterfactual_report',lambda:{'available':False,'status':'unavailable','evidence_use':'unavailable','message':'committed system release integrity failed'})
+ response=CLIENT.get('/api/research/execution-mapping-counterfactual')
+ assert response.status_code==200
+ assert response.json()['available'] is False
+ assert response.json()['message']=='committed system release integrity failed'
 def test_proposal_api(): assert CLIENT.get('/api/research/execution-mapping-proposal').status_code==200
 def test_counterfactual_api(): assert CLIENT.get('/api/research/execution-mapping-counterfactual').status_code==200
 def test_page_sections():

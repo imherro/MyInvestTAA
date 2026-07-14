@@ -8,7 +8,7 @@ import shutil
 import tempfile
 
 from backtest.execution.approval_integrity import validate_approval_integrity
-from backtest.execution.proposal_report import COUNTER, load_counterfactual_report
+from backtest.execution.proposal_report import COUNTER, load_counterfactual_report, validate_counterfactual_payload
 from decision.current_market import build_current_market_decision, load_current_market_sources
 from decision.v11_current import build_v11_current_allocation_snapshot
 from decision.v11_current.validation import validate_v11_current_allocation_snapshot
@@ -70,6 +70,7 @@ REQUIRED_ACCEPTANCE_GATES = (
     "strategy_integrity",
     "v11_snapshot_integrity",
     "execution_integrity",
+    "counterfactual_integrity",
     "mapping_governance_integrity",
     "shadow_integrity",
     "current_decision_integrity",
@@ -224,6 +225,19 @@ def load_release_json(
         }
     value.setdefault("available", True)
     return value
+
+
+def load_committed_counterfactual_report(*, root: Path = ROOT) -> dict:
+    value = load_release_json("execution_mapping_counterfactual_report.json", root=root)
+    if not value.get("available"):
+        return {
+            "available": False,
+            "status": "unavailable",
+            "evidence_use": "unavailable",
+            "message": "committed system release integrity failed",
+            "errors": value.get("errors", []),
+        }
+    return validate_counterfactual_payload(value, expected_scope="committed_release", committed=True)
 
 
 def verify_release_directory(directory: Path) -> dict:
@@ -402,7 +416,20 @@ def _build_base_candidate(
     if not counterfactual.get("available") or counterfactual.get("status") != "current" or not counterfactual.get("input_contract_verification", {}).get("verified"):
         raise ReleaseBuildError("counterfactual audit artifact is unavailable or stale", counterfactual.get("input_contract_verification", {}).get("errors", []))
     for name in COPIED_REPORTS:
-        shutil.copyfile(root / "reports" / name, directory / name)
+        if name == "execution_mapping_counterfactual_report.json":
+            committed_counterfactual = dict(counterfactual)
+            committed_counterfactual["release_scope"] = "committed_release"
+            committed_counterfactual["production_actionable"] = False
+            write_json(directory / name, committed_counterfactual)
+        else:
+            shutil.copyfile(root / "reports" / name, directory / name)
+    staged_counterfactual = validate_counterfactual_payload(
+        read_json(directory / "execution_mapping_counterfactual_report.json"),
+        expected_scope="committed_release",
+        committed=True,
+    )
+    if not staged_counterfactual.get("available"):
+        raise ReleaseBuildError("staged counterfactual audit artifact is invalid", staged_counterfactual.get("errors", []))
 
     diagnosis = read_json(root / "reports" / "strategy_diagnosis_report.json")
     v11 = build_v11_current_allocation_snapshot(
@@ -455,6 +482,7 @@ def _build_base_candidate(
         ),
         "route_inventory": route_inventory,
         "cleanup": cleanup,
+        "counterfactual": staged_counterfactual,
     }
 
 
@@ -479,6 +507,7 @@ def _finalize_candidate(
         v11=base["v11"],
         current=base["current"],
         shadow=base["shadow"],
+        counterfactual=base["counterfactual"],
         protected=protected,
         reproducibility=reproducibility,
         web_contract=web_contract,
@@ -567,6 +596,7 @@ def _system_acceptance(**context) -> dict:
     diagnosis = context["diagnosis"]
     v11_validation = validate_v11_current_allocation_snapshot(v11, diagnosis, verify_source_files=True)
     execution = current.get("execution_validation", {})
+    counterfactual = context["counterfactual"]
     approval = validate_approval_integrity()
     identifier = current.get("comparison", {})
     dependency = current.get("release_dependencies", {}).get(
@@ -635,6 +665,24 @@ def _system_acceptance(**context) -> dict:
             "execution_validation_ready": execution.get("ready") is True,
             "reasons": execution.get("reasons", []),
             "nonblocking_when_not_ready": execution.get("ready") is False and bool(execution.get("reasons")),
+        },
+        "counterfactual_integrity": {
+            "verified": counterfactual.get("available") is True
+            and counterfactual.get("status") == "current"
+            and counterfactual.get("evidence_use") == "current_analysis"
+            and counterfactual.get("release_scope") == "committed_release"
+            and counterfactual.get("baseline_contract_verification", {}).get("verified") is True
+            and counterfactual.get("input_contract_verification", {}).get("verified") is True
+            and counterfactual.get("decision", {}).get("ready_for_manual_mapping_approval") is False
+            and counterfactual.get("production_actionable") is False,
+            "status": counterfactual.get("status"),
+            "evidence_use": counterfactual.get("evidence_use"),
+            "release_scope": counterfactual.get("release_scope"),
+            "baseline_contract_verified": counterfactual.get("baseline_contract_verification", {}).get("verified") is True,
+            "input_contract_verified": counterfactual.get("input_contract_verification", {}).get("verified") is True,
+            "ready_for_manual_mapping_approval": counterfactual.get("decision", {}).get("ready_for_manual_mapping_approval"),
+            "production_actionable": counterfactual.get("production_actionable"),
+            "errors": [*counterfactual.get("baseline_contract_verification", {}).get("errors", []), *counterfactual.get("input_contract_verification", {}).get("errors", [])],
         },
         "mapping_governance_integrity": {
             "verified": all(approval.get(field) is True for field in ("approval_record_verified", "package_verified", "mapping_verified", "ledger_verified", "seal_verified")),
