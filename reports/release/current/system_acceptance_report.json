@@ -1,6 +1,6 @@
 {
   "available": true,
-  "release_id": "taa-20260713-3362be569b7f",
+  "release_id": "taa-20260713-7dd19b4d616b",
   "generated_at": "2026-07-13T08:15:34+00:00",
   "system_acceptance_passed": true,
   "project_completion_candidate": true,
@@ -24,7 +24,7 @@
   ],
   "data_integrity": {
     "verified": true,
-    "input_count": 11
+    "input_count": 13
   },
   "strategy_integrity": {
     "verified": true
@@ -39,7 +39,7 @@
     "execution_validation_ready": false,
     "reasons": [
       "tradable weight coverage is below 70%",
-      "untradable month ratio exceeds 20%"
+      "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable."
     ],
     "nonblocking_when_not_ready": true
   },
@@ -74,11 +74,11 @@
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "3362be569b7f4562d4cf36268aaf7cfcd864492ad31658e6352c48b70799f7e8",
-    "first_candidate_raw_hash": "7282e937cd99327ee6104fa261510ff4673fbf8648c8779120fd2ef11ddb6049",
-    "second_candidate_raw_hash": "7282e937cd99327ee6104fa261510ff4673fbf8648c8779120fd2ef11ddb6049",
-    "first_candidate_semantic_hash": "3a53d2325883d0c21bac4daf7c016693bb6f1ad177f9c63f0becaadcaa6bed02",
-    "second_candidate_semantic_hash": "3a53d2325883d0c21bac4daf7c016693bb6f1ad177f9c63f0becaadcaa6bed02",
+    "input_fingerprint": "7dd19b4d616b49ea1a4f5fa522ba6dd732dd925fa5007613c187167e5d5d80a2",
+    "first_candidate_raw_hash": "f67df1ac85e412177767dea216d260b4835e25bffb3a2b80b87831041d61d802",
+    "second_candidate_raw_hash": "f67df1ac85e412177767dea216d260b4835e25bffb3a2b80b87831041d61d802",
+    "first_candidate_semantic_hash": "60ffb5ddf9edc84cd01e08ce7ed693948077e5e146b49d25f0f885b1e80e69ed",
+    "second_candidate_semantic_hash": "60ffb5ddf9edc84cd01e08ce7ed693948077e5e146b49d25f0f885b1e80e69ed",
     "artifact_hash_differences": []
   },
   "production_boundary": {

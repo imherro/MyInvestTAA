@@ -1,7 +1,7 @@
 {
   "available": true,
-  "release_id": "taa-20260713-3362be569b7f",
-  "commit_sha": "5d4824ffc4da923f1c5db94d452aae0be8ed49a4",
+  "release_id": "taa-20260713-7dd19b4d616b",
+  "commit_sha": "fc4e00577e20304c685b0ad461a56bef4c1cdd89",
   "market_data_as_of": "2026-07-08",
   "decision_date": "2026-07-13",
   "generated_at": "2026-07-13T08:15:34+00:00",
@@ -29,8 +29,8 @@
     {
       "path": "reports/execution_backtest_report.json",
       "role": "execution backtest evidence",
-      "sha256": "ab0a5a0e60601d810fc63d634464c3306cfa768bc42527e327b19e2f1d810126",
-      "semantic_hash": "0e2e8fb384a4086431f3d02bf694c1a01540151ac86318800169027584a10540",
+      "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
+      "semantic_hash": "b96d503ce286edf1987ad14e4a1b203ce06316e7bc6ce53ca9ca39c3fc7cfc6d",
       "source_as_of": "2026-07-08",
       "classification": "verified_external_local_input",
       "dependencies": []
@@ -40,6 +40,24 @@
       "role": "execution-aware shadow snapshot",
       "sha256": "e07070629d66d1e0f09be007f512dfca09d8688acfd952193bbac1d45beb54ab",
       "semantic_hash": "922e4a4f3d12016fd76c4192d0ac32cc23f687626c1b17c74ed000f3040a7d4b",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "reports/execution_mapping_proposal.json",
+      "role": "counterfactual proposal input",
+      "sha256": "6ad76e8d5bc0cfb9b1403f1e9543afbb26b7bff20892b66c2be514553d4b3d3e",
+      "semantic_hash": "3093e87e9a52c75a673e0de6cc6f526b69ab1652461679b614358aa01bf9956c",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "reports/execution_mapping_counterfactual_report.json",
+      "role": "counterfactual audit evidence",
+      "sha256": "f82e8e94834a13c613ede6e3223102f0167df9fee5a5ac0222035350a5e129f1",
+      "semantic_hash": "e874897282ef57f1a757566d2cbf1bc46937a20eedd946ee42f5c1b45e821e6e",
       "source_as_of": "2026-07-08",
       "classification": "verified_external_local_input",
       "dependencies": []
@@ -130,8 +148,8 @@
     {
       "path": "execution_backtest_report.json",
       "role": "execution validation snapshot",
-      "sha256": "ab0a5a0e60601d810fc63d634464c3306cfa768bc42527e327b19e2f1d810126",
-      "semantic_hash": "0e2e8fb384a4086431f3d02bf694c1a01540151ac86318800169027584a10540",
+      "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
+      "semantic_hash": "b96d503ce286edf1987ad14e4a1b203ce06316e7bc6ce53ca9ca39c3fc7cfc6d",
       "source_as_of": "2026-07-08",
       "classification": "verified_external_local_input",
       "dependencies": [
@@ -143,6 +161,18 @@
       "role": "shadow portfolio snapshot",
       "sha256": "e07070629d66d1e0f09be007f512dfca09d8688acfd952193bbac1d45beb54ab",
       "semantic_hash": "922e4a4f3d12016fd76c4192d0ac32cc23f687626c1b17c74ed000f3040a7d4b",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": [
+        "research_backtest_report.json",
+        "execution_backtest_report.json"
+      ]
+    },
+    {
+      "path": "execution_mapping_counterfactual_report.json",
+      "role": "counterfactual mapping audit",
+      "sha256": "f82e8e94834a13c613ede6e3223102f0167df9fee5a5ac0222035350a5e129f1",
+      "semantic_hash": "e874897282ef57f1a757566d2cbf1bc46937a20eedd946ee42f5c1b45e821e6e",
       "source_as_of": "2026-07-08",
       "classification": "verified_external_local_input",
       "dependencies": [
@@ -164,8 +194,8 @@
     {
       "path": "current_market_decision.json",
       "role": "current market decision",
-      "sha256": "9f7c3c0c3eb26472d06864aa4e341f092f6835986ba23cf090a46bc10cc94dc0",
-      "semantic_hash": "d52842d189d3de5a3bc120c62ada6d1ef1d04c45b9320f38d07b3cf5fce6f0ed",
+      "sha256": "1561c40c9c6f5ef6cec2dea39beaed2bc847a60eb37503c48451ed42a33d03a4",
+      "semantic_hash": "16ae528f9853ee84ad20e41121288b8da70018898ab1396a9a139102114a2079",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -196,8 +226,8 @@
     {
       "path": "system_acceptance_report.json",
       "role": "system acceptance",
-      "sha256": "1e44ad6db46098ca22501b3006ed922d05cf4e7057d11333f769de5ca4bccc6c",
-      "semantic_hash": "4f58922db34218ded21dd889601fb3a12b1b31de5c5620af246b0c426c8babd5",
+      "sha256": "4fa5550ed37d3178956cea77e76573f69869ded636c7a1472471087f53cd93f1",
+      "semantic_hash": "633ee9f1ed860c838c93897fabb7b4d3828a1195be71984a448c796e01cebbfd",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -310,16 +340,16 @@
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "3362be569b7f4562d4cf36268aaf7cfcd864492ad31658e6352c48b70799f7e8",
-    "first_candidate_raw_hash": "7282e937cd99327ee6104fa261510ff4673fbf8648c8779120fd2ef11ddb6049",
-    "second_candidate_raw_hash": "7282e937cd99327ee6104fa261510ff4673fbf8648c8779120fd2ef11ddb6049",
-    "first_candidate_semantic_hash": "3a53d2325883d0c21bac4daf7c016693bb6f1ad177f9c63f0becaadcaa6bed02",
-    "second_candidate_semantic_hash": "3a53d2325883d0c21bac4daf7c016693bb6f1ad177f9c63f0becaadcaa6bed02",
+    "input_fingerprint": "7dd19b4d616b49ea1a4f5fa522ba6dd732dd925fa5007613c187167e5d5d80a2",
+    "first_candidate_raw_hash": "f67df1ac85e412177767dea216d260b4835e25bffb3a2b80b87831041d61d802",
+    "second_candidate_raw_hash": "f67df1ac85e412177767dea216d260b4835e25bffb3a2b80b87831041d61d802",
+    "first_candidate_semantic_hash": "60ffb5ddf9edc84cd01e08ce7ed693948077e5e146b49d25f0f885b1e80e69ed",
+    "second_candidate_semantic_hash": "60ffb5ddf9edc84cd01e08ce7ed693948077e5e146b49d25f0f885b1e80e69ed",
     "artifact_hash_differences": []
   },
-  "acceptance_report_hash": "1e44ad6db46098ca22501b3006ed922d05cf4e7057d11333f769de5ca4bccc6c",
-  "raw_release_hash": "3276a4512522c2ddf6c048794d34df9f21b518c8667207521ff22b137e88be9f",
-  "semantic_release_hash": "23daf8ef516bb5971fd0ada85e2a35c9e58a69f3432455f7ac54b3578eddf725",
+  "acceptance_report_hash": "4fa5550ed37d3178956cea77e76573f69869ded636c7a1472471087f53cd93f1",
+  "raw_release_hash": "1f6a4ef391a7a161d777e835bbc8e23ed891fb3bd5775839d8959664fd794080",
+  "semantic_release_hash": "71e3b4d1f90174219182d3bc734ca430801ac50301817ecbe70ba1553a753128",
   "production_boundary": {
     "verified": true,
     "v11_candidate": true,
