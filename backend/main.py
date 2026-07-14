@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from html import escape
+from functools import lru_cache
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -48,6 +50,11 @@ from engine.recovery import analyze_recovery_events
 from engine.regime import detect_market_regime
 from engine.risk import build_risk_budget
 from engine.taa_score import build_taa_ranking
+from data.universe.loader import load_china_etf_universe
+from decision.current_market.instrument_ids import (
+    load_execution_instrument_aliases,
+    resolve_canonical_instrument_id,
+)
 from decision.current_market.explain import decision_headline
 from release.orchestrator import load_release_json
 from release.web_contracts import primary_navigation_html
@@ -82,6 +89,30 @@ def _inject_unified_shell(html: str) -> str:
     if "</body>" in html:
         return html.replace("</body>", f"{scripts}</body>", 1)
     return f"{html}{scripts}"
+
+
+@lru_cache(maxsize=1)
+def _execution_instrument_names() -> dict[str, str]:
+    names = {asset.asset_id: asset.name for asset in load_execution_universe()}
+    aliases = load_execution_instrument_aliases()
+    if aliases.get("verified"):
+        for asset in load_china_etf_universe():
+            canonical = resolve_canonical_instrument_id(asset["id"], aliases)
+            if canonical:
+                names.setdefault(canonical, asset["name"])
+    return names
+
+
+def _label_execution_instruments(html: str) -> str:
+    for asset_id, asset_name in _execution_instrument_names().items():
+        code = re.escape(asset_id)
+        name = escape(asset_name)
+        html = re.sub(
+            rf"(?<![0-9A-Z]){code}(?![0-9A-Z])(?!\s+{re.escape(name)})",
+            f"{asset_id} {name}",
+            html,
+        )
+    return html
 
 
 def _apply_final_information_architecture(html: str, path: str) -> str:
@@ -145,7 +176,7 @@ async def add_unified_shell_to_html(request, call_next):
     headers = dict(response.headers)
     headers.pop("content-length", None)
     return Response(
-        content=_inject_unified_shell(html),
+        content=_inject_unified_shell(_label_execution_instruments(html)),
         status_code=response.status_code,
         headers=headers,
         media_type=response.media_type,

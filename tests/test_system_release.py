@@ -461,6 +461,49 @@ def test_formal_decision_apis_return_committed_release_artifacts(route, artifact
     }
 
 
+@pytest.mark.parametrize(
+    "route,labels",
+    [
+        (
+            "/current-decision",
+            (
+                "510500.SH 中证500ETF",
+                "512760.SH 半导体ETF",
+                "588000.SH 科创50ETF",
+            ),
+        ),
+        (
+            "/current-decision",
+            (
+                "510300.SH 沪深300ETF",
+                "512100.SH 中证1000ETF",
+                "518880.SH 黄金ETF",
+                "512010.SH 医药ETF",
+                "512170.SH 医疗ETF",
+            ),
+        ),
+        (
+            "/shadow-portfolio",
+            (
+                "510500.SH 中证500ETF",
+                "512760.SH 半导体ETF",
+                "588000.SH 科创50ETF",
+            ),
+        ),
+    ],
+)
+def test_html_pages_label_etf_codes_with_registered_names(route, labels):
+    text = CLIENT.get(route).text
+    for label in labels:
+        assert label in text
+
+
+def test_etf_display_labels_do_not_change_json_api_contract():
+    text = CLIENT.get("/api/decision/current-market").text
+    assert "510500.SH" in text
+    assert "510500.SH 中证500ETF" not in text
+
+
 def test_home_release_failure_hides_current_decision_primary_action(monkeypatch):
     import backend.main as main_module
 
