@@ -559,6 +559,6 @@ def test_shadow_page_has_required_warning_and_unified_shell():
     assert "https://invest.okbbc.com/footer.js" in text
 
 
-@pytest.mark.parametrize("page", ["/", "/research-backtest", "/execution-backtest"])
+@pytest.mark.parametrize("page", ["/research-validation", "/research-backtest", "/execution-backtest"])
 def test_existing_pages_link_to_shadow_portfolio(page):
     assert 'href="/shadow-portfolio"' in CLIENT.get(page).text

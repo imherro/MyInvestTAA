@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, date, datetime
 import math
+import re
 
 from decision.current_market.explain import build_cash_explanation, build_decision_summary
 from decision.current_market.freshness import evaluate_freshness
@@ -25,6 +26,7 @@ def build_current_market_decision(
     decision_date: str | None = None,
     snapshot_mode: str = CURRENT_SNAPSHOT_MODE,
     as_of: str | None = None,
+    generated_at: str | None = None,
 ) -> dict:
     market_data_as_of = market_data_as_of or as_of
     if not market_data_as_of:
@@ -146,7 +148,8 @@ def build_current_market_decision(
         "production_actionable": False,
         "as_of": market_data_as_of,
         "decision_date": decision_date,
-        "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "generated_at": generated_at
+        or datetime.now(UTC).isoformat(timespec="seconds"),
         "market_data_as_of": market_data_as_of,
         "governance_state_as_of": governance_state_as_of,
         "snapshot_mode": snapshot_mode,
@@ -237,6 +240,14 @@ def _production_candidate(
         and strategy == "V11_PRODUCTION_FUSION"
         and readiness.get("status")
     )
+    integrity = allocation_snapshot.get("source_integrity", {})
+    expected_payload_hash = integrity.get("snapshot_payload_hash")
+    actual_payload_hash = integrity.get("actual_snapshot_payload_hash")
+    payload_hash_verified = bool(
+        isinstance(expected_payload_hash, str)
+        and re.fullmatch(r"[0-9a-f]{64}", expected_payload_hash)
+        and actual_payload_hash == expected_payload_hash
+    )
     allocation_available = bool(
         allocation_snapshot.get("available")
         and allocation_snapshot.get("strategy") == strategy
@@ -244,7 +255,9 @@ def _production_candidate(
         and allocation_snapshot.get("allocation")
         and allocation_snapshot.get("production_actionable") is False
         and allocation_snapshot.get("trading_instruction") is False
-        and allocation_snapshot.get("source_integrity", {}).get("verified") is True
+        and integrity.get("verified") is True
+        and integrity.get("semantic_verified") is True
+        and payload_hash_verified
         and not allocation_snapshot.get("constraint_checks", {}).get("violations")
     )
     allocation = allocation_snapshot.get("allocation", {}) if allocation_available else {}
@@ -265,6 +278,8 @@ def _production_candidate(
         "boundary_verified": boundary_verified,
         "snapshot_present": snapshot_present,
         "snapshot_integrity_verified": allocation_available,
+        "snapshot_semantic_verified": integrity.get("semantic_verified") is True,
+        "snapshot_payload_hash_verified": payload_hash_verified,
         "snapshot_valid_or_missing": snapshot_valid_or_missing,
         "unchanged": unchanged,
         "allocation": allocation,

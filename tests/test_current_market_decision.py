@@ -469,7 +469,7 @@ def test_current_decision_page_sections(section):
 
 def test_current_decision_page_has_exact_warning_and_unified_shell():
     text = CLIENT.get("/current-decision").text
-    assert "Decision prepared on 2026-07-13 using market data through 2026-07-08. This page does not create orders or replace V11." in text
+    assert "用于人工判断。它不会生成订单，也不会自动替换 V11。" in text
     assert "https://invest.okbbc.com/header.js" in text
     assert "https://invest.okbbc.com/footer.js" in text
 
@@ -894,8 +894,8 @@ def test_fixed_page_temporal_sections(section):
 
 def test_fixed_page_explains_lagged_market_data():
     text = CLIENT.get("/current-decision").text
-    assert "Decision prepared on 2026-07-13 using market data through 2026-07-08." in text
-    assert "This page does not create orders or replace V11." in text
+    assert "最近一次经过来源校验的离线决策快照" in text
+    assert "不会生成订单，也不会自动替换 V11" in text
 
 
 def _build_with_execution_value(section: str, field: str, value) -> dict:

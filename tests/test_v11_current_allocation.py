@@ -551,7 +551,7 @@ def test_current_decision_v11_sections(section):
 
 def test_v11_web_page_has_exact_non_trading_warning_and_no_form():
     text = CLIENT.get("/v11-current-allocation").text
-    assert "This is an offline V11 model allocation snapshot. It is not an order or trading instruction." in text
+    assert "不是下单指令，也不表示系统已获得自动交易授权" in text
     assert "<form" not in text.lower()
     assert "quantity" not in text.lower()
     assert "target price" not in text.lower()

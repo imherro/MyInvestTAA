@@ -66,7 +66,8 @@ def test_research_universe_page_returns_sections():
 
 
 def test_dashboard_links_research_universe_page():
-    response = client.get("/")
+    response = client.get("/research-universe")
 
     assert response.status_code == 200
-    assert "/research-universe" in response.text
+    assert "Research Universe" in response.text
+    assert "/research-universe" not in client.get("/").text

@@ -232,31 +232,54 @@ TAA 有价值，但也有明显风险：
 
 它既不是纯长期躺平，也不是短线追涨杀跌，而是介于两者之间的系统化资产配置方法：长期有底座，短期有弹性，调整有证据，风险有边界。
 
-## 十四、MVP 运行方式
+## 十四、普通用户快速开始
 
-当前 MVP 已实现 `Drawdown + Asset Anchor` 的基础工程骨架：
+本系统是离线、只读的资产配置决策支持工具，不是自动交易系统。
 
-- `GET /`：Web Dashboard。
-- `GET /api/assets`：样例资产池。
-- `GET /api/taa/ranking`：TAA 机会排名。
+1. 打开 `http://localhost:8025/`，先确认系统发布状态和数据日期。
+2. 进入“当前配置决策”，阅读市场状态、V11、Research、Shadow 和执行限制。
+3. 需要理解正式候选模型时，再看“V11 模型配置”。
+4. 只有需要研究细节时进入“研究与执行验证”。
+5. 需要核查版本、来源哈希或限制时进入“系统与数据状态”。
 
-本地启动：
+| 页面 | 面向对象 | 用途 | 是否交易指令 |
+| --- | --- | --- | --- |
+| 系统首页 | 所有用户 | 状态、摘要和下一步入口 | 否 |
+| 当前配置决策 | 所有用户 | 综合人工审核快照 | 否 |
+| V11 模型配置 | 所有用户 | 查看正式候选模型权重 | 否 |
+| 研究与执行验证 | 高级用户 | 查看研究和真实 ETF 执行差异 | 否 |
+| 系统与数据状态 | 维护者 | 验证数据、发布和已知限制 | 否 |
+
+启动 Web：
 
 ```powershell
 python backend/main.py
 ```
 
-访问：
+## 十五、完整离线重建
 
-```text
-http://localhost:8025
-```
-
-运行测试：
+所有时间参数都必须显式提供。正式重建命令只有这一条：
 
 ```powershell
-python -m pytest
+python scripts/build_system_release.py --market-data-as-of 2026-07-08 --decision-date 2026-07-13 --generated-at 2026-07-13T08:15:34+00:00 --provider local --output-dir reports/release
 ```
+
+验证当前发布：
+
+```powershell
+python scripts/verify_system_release.py
+```
+
+## 十六、常见误解
+
+- V11 ready 只表示模型快照完整，不等于自动交易已授权。
+- Shadow 是研究配置映射到 ETF 后的实验快照，不是另一个正式组合。
+- Research Backtest 测试研究指数层配置，不是 ETF 实盘回测。
+- Shadow 的 40% 现金包含研究现金和无法可靠映射的 research-only 权重，不完全代表看空。
+- Execution Validation=false 表示真实 ETF 历史覆盖率未达门槛，不代表整个只读决策系统失效。
+- Current Decision ready 只表示证据完整、可供人工审核，不代表可以直接执行。
+
+更多说明见 `docs/ARCHITECTURE.md`、`docs/OFFLINE_BUILD.md`、`docs/OPERATIONS.md`、`docs/DATA_CONTRACTS.md` 和 `docs/LIMITATIONS.md`。
 
 当前版本使用 `data/sample/assets.json` 的样例资产和价格序列，不连接真实行情源，不执行任何交易。
 

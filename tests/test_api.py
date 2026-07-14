@@ -7,7 +7,7 @@ client = TestClient(app)
 
 
 def test_dashboard_returns_strategy_comparison_sections():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "Strategy Comparison" in response.text
@@ -461,77 +461,77 @@ def test_production_readiness_page_returns_sections():
 
 
 def test_dashboard_links_validation_report():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/validation" in response.text
 
 
 def test_dashboard_links_experiment_report():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/experiment" in response.text
 
 
 def test_dashboard_links_strategy_diagnosis():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/diagnosis" in response.text
 
 
 def test_dashboard_links_strategy_governance():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/strategy-governance" in response.text
 
 
 def test_dashboard_links_selection_research():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/selection-research" in response.text
 
 
 def test_dashboard_links_strategy_promotion():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/strategy-promotion" in response.text
 
 
 def test_dashboard_links_adaptive_strategy():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/adaptive-strategy" in response.text
 
 
 def test_dashboard_links_risk_exposure():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/risk-exposure" in response.text
 
 
 def test_dashboard_links_final_strategy():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/final-strategy" in response.text
 
 
 def test_dashboard_links_production_readiness():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/production-readiness" in response.text
 
 
 def test_dashboard_links_benchmark_validation():
-    response = client.get("/")
+    response = client.get("/legacy-dashboard")
 
     assert response.status_code == 200
     assert "/benchmark-validation" in response.text

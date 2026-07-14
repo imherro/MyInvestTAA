@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 from pathlib import Path
+import re
 
 from engine.asset_registry.loader import ROOT
 
@@ -10,6 +11,9 @@ from engine.asset_registry.loader import ROOT
 EXECUTION_INSTRUMENT_ALIASES = (
     ROOT / "data" / "universe" / "execution_instrument_aliases.json"
 )
+
+CANONICAL_INSTRUMENT_ID = re.compile(r"^[0-9]{6}\.(?:SH|SZ)$")
+ALLOWED_INSTRUMENT_TYPES = {"etf", "cash"}
 
 
 def load_execution_instrument_aliases(
@@ -115,6 +119,7 @@ def _alias_index(registry: object) -> tuple[list[str], dict[str, str]]:
     aliases = registry.get("aliases")
     if not isinstance(aliases, list) or not aliases:
         return errors + ["execution instrument aliases must be a non-empty list"], {}
+    parsed_rows: list[tuple[str, str]] = []
     for position, row in enumerate(aliases):
         if not isinstance(row, dict):
             errors.append(f"execution instrument alias must be an object: {position}")
@@ -127,10 +132,23 @@ def _alias_index(registry: object) -> tuple[list[str], dict[str, str]]:
         if not isinstance(canonical, str) or not canonical:
             errors.append(f"canonical instrument id is invalid: {position}")
             continue
+        instrument_type = row.get("instrument_type")
+        source = row.get("source")
+        if instrument_type not in ALLOWED_INSTRUMENT_TYPES:
+            errors.append(f"instrument type is invalid: {position}")
+        if not isinstance(source, str) or not source.strip():
+            errors.append(f"instrument alias source is invalid: {position}")
+        if canonical != "CASH" and not CANONICAL_INSTRUMENT_ID.fullmatch(canonical):
+            errors.append(f"canonical instrument id format is invalid: {canonical}")
+        if canonical == "CASH" and instrument_type != "cash":
+            errors.append("CASH instrument type must be cash")
+        if canonical != "CASH" and instrument_type != "etf":
+            errors.append(f"listed instrument type must be etf: {canonical}")
         if legacy in seen_legacy:
             errors.append(f"legacy asset ID is duplicated: {legacy}")
             continue
         seen_legacy.add(legacy)
+        parsed_rows.append((legacy, canonical))
         owner = canonical_owners.get(canonical)
         if owner is not None and owner != legacy:
             errors.append(
@@ -140,6 +158,12 @@ def _alias_index(registry: object) -> tuple[list[str], dict[str, str]]:
         index[legacy] = canonical
         index[canonical] = canonical
         canonical_owners[canonical] = legacy
+    legacy_ids = {legacy for legacy, _ in parsed_rows}
+    for legacy, canonical in parsed_rows:
+        if canonical in legacy_ids and canonical != legacy:
+            errors.append(
+                f"alias namespace shadowing is not allowed: {legacy} -> {canonical}"
+            )
     return list(dict.fromkeys(errors)), index
 
 

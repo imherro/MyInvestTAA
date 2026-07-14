@@ -115,7 +115,9 @@ def test_homepage_links_to_research_backtest():
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "/research-backtest" in response.text
+    assert "/research-validation" in response.text
+    assert "/research-backtest" not in response.text
+    assert "/research-backtest" in client.get("/research-validation").text
 
 
 def test_research_universe_links_to_research_backtest():

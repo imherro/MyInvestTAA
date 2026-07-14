@@ -51,6 +51,7 @@ from engine.taa_score import build_taa_ranking
 from decision.current_market.explain import decision_headline
 from decision.current_market.report import load_current_market_decision
 from decision.v11_current import load_v11_current_allocation
+from release.orchestrator import load_release_json
 from storage import MarketDataRepository, connect_database
 
 
@@ -84,6 +85,47 @@ def _inject_unified_shell(html: str) -> str:
     return f"{html}{scripts}"
 
 
+def _apply_final_information_architecture(html: str, path: str) -> str:
+    if path == "/current-decision":
+        html = html.replace("<title>Current Market Decision</title>", "<title>当前配置决策</title>")
+        header = (
+            '<header><h1>当前配置决策</h1>'
+            '<p>本页汇总最近一次经过来源校验的离线决策快照，用于人工判断。它不会生成订单，也不会自动替换 V11。</p>'
+            '<p><span class="tag good">已验证快照</span><span class="tag warn">仅供人工审核</span><span class="tag blocked">非交易指令</span></p>'
+            f'{_primary_navigation()}</header>'
+        )
+        html = _replace_html_region(html, "<header>", "</header>", header)
+        html = html.replace("<h2>Decision Status</h2>", "<h2>当前结论</h2>")
+    elif path == "/v11-current-allocation":
+        html = html.replace("<title>V11 Current Allocation</title>", "<title>V11 模型配置</title>")
+        header = (
+            '<header><h1>V11 模型配置</h1>'
+            '<p>这是 V11 正式候选模型的离线配置快照，不是下单指令，也不表示系统已获得自动交易授权。</p>'
+            '<p><span class="tag good">正式候选模型</span><span class="tag warn">模型输出</span><span class="tag blocked">未授权自动交易</span></p>'
+            f'{_primary_navigation()}</header>'
+        )
+        html = _replace_html_region(html, "<header>", "</header>", header)
+    elif path in {"/research-backtest", "/execution-backtest", "/shadow-portfolio"}:
+        label = {
+            "/research-backtest": "研究资产层历史验证，不等于真实 ETF 实盘收益。",
+            "/execution-backtest": "真实 ETF 执行验证；当前未通过既定覆盖率门槛。",
+            "/shadow-portfolio": "实验性 Shadow 配置，不是生产组合，也不能替代 V11。",
+        }[path]
+        notice = f'<section><p><strong>高级研究/审计页面：</strong>{label} 本页内容均为非交易指令。</p><p><a href="/research-validation">返回研究与执行验证</a></p></section>'
+        html = html.replace("<main>", f"<main>{notice}", 1)
+    if path in {"/", "/current-decision", "/v11-current-allocation", "/research-validation", "/system-status"}:
+        html = html.replace("</style>", f"{_product_css()}</style>", 1)
+    return html
+
+
+def _replace_html_region(html: str, start: str, end: str, replacement: str) -> str:
+    start_index = html.find(start)
+    end_index = html.find(end, start_index + len(start))
+    if start_index < 0 or end_index < 0:
+        return html
+    return html[:start_index] + replacement + html[end_index + len(end):]
+
+
 @app.middleware("http")
 async def add_unified_shell_to_html(request, call_next):
     response = await call_next(request)
@@ -98,7 +140,9 @@ async def add_unified_shell_to_html(request, call_next):
         body += chunk
 
     charset = getattr(response, "charset", None) or "utf-8"
-    html = body.decode(charset)
+    html = _apply_final_information_architecture(
+        body.decode(charset), request.url.path
+    )
     headers = dict(response.headers)
     headers.pop("content-length", None)
     return Response(
@@ -375,6 +419,16 @@ def get_v11_current_allocation() -> dict:
     return load_v11_current_allocation()
 
 
+@app.get("/api/system/release-manifest")
+def get_system_release_manifest() -> dict:
+    return load_release_json("release_manifest.json")
+
+
+@app.get("/api/system/acceptance")
+def get_system_acceptance() -> dict:
+    return load_release_json("system_acceptance_report.json")
+
+
 @app.get("/api/recovery/{asset_id}")
 def get_recovery(asset_id: str) -> dict:
     history = load_price_history(asset_id)
@@ -408,7 +462,114 @@ def get_risk_budget() -> dict:
     return build_risk_budget(regime).as_dict()
 
 
+def _primary_navigation() -> str:
+    return """<nav class="primary-nav" aria-label="主要导航">
+      <a href="/">系统首页<span>状态和入口</span></a>
+      <a href="/current-decision">当前配置决策<span>人工审核快照</span></a>
+      <a href="/v11-current-allocation">V11 模型配置<span>正式候选模型</span></a>
+      <a href="/research-validation">研究与执行验证<span>高级研究内容</span></a>
+      <a href="/system-status">系统与数据状态<span>发布和数据审计</span></a>
+    </nav>"""
+
+
+def _product_css() -> str:
+    return """
+      :root { color-scheme: light; --bg:#f5f7f8; --panel:#fff; --ink:#17202a; --muted:#5b6874; --line:#d8dee3; --green:#116149; --red:#a32929; --blue:#175ea8; --amber:#8a5a00; }
+      * { box-sizing:border-box; }
+      body { margin:0; background:var(--bg); color:var(--ink); font-family:Arial,"Microsoft YaHei",sans-serif; line-height:1.6; }
+      header, main, footer { width:min(1180px,calc(100% - 32px)); margin:0 auto; }
+      header { padding:26px 0 14px; }
+      h1 { margin:0; font-size:32px; letter-spacing:0; }
+      h2 { font-size:22px; margin:0 0 14px; letter-spacing:0; }
+      h3 { font-size:17px; margin:0 0 8px; letter-spacing:0; }
+      p { margin:7px 0; }
+      .subtle { color:var(--muted); }
+      .primary-nav { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:1px; margin:18px 0; border:1px solid var(--line); background:var(--line); }
+      .primary-nav a { background:#fff; color:var(--ink); text-decoration:none; padding:12px; font-weight:700; min-width:0; }
+      .primary-nav a span { display:block; color:var(--muted); font-size:12px; font-weight:400; }
+      .status-strip { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px; margin:16px 0; }
+      .status-item, section, .card { background:var(--panel); border:1px solid var(--line); border-radius:6px; }
+      .status-item { padding:11px; }
+      .status-item strong { display:block; font-size:14px; }
+      .status-item span { display:block; color:var(--muted); font-size:12px; }
+      .status-good { border-left:4px solid var(--green); }
+      .status-blocked { border-left:4px solid var(--red); }
+      main { display:grid; gap:14px; padding-bottom:30px; min-width:0; }
+      section { padding:20px; min-width:0; }
+      .hero { border-left:5px solid var(--blue); }
+      .alert { border-left:5px solid var(--red); background:#fff8f8; }
+      .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+      .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+      .card { padding:16px; min-width:0; overflow-wrap:anywhere; }
+      .tag { display:inline-block; border:1px solid var(--line); padding:2px 7px; margin:0 5px 5px 0; font-size:12px; font-weight:700; }
+      .tag.good { color:var(--green); border-color:#87b4a5; }
+      .tag.warn { color:var(--amber); border-color:#d8bd7a; }
+      .tag.blocked { color:var(--red); border-color:#d8a0a0; }
+      .actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:16px; }
+      .button { display:inline-flex; align-items:center; min-height:42px; padding:8px 14px; border:1px solid var(--blue); color:var(--blue); text-decoration:none; font-weight:700; border-radius:4px; }
+      .button.primary { background:var(--blue); color:#fff; }
+      ul, ol { margin:8px 0; padding-left:23px; }
+      table { width:100%; border-collapse:collapse; }
+      th, td { border-bottom:1px solid var(--line); padding:8px; text-align:left; vertical-align:top; }
+      .table-wrap { overflow-x:auto; }
+      details { border-top:1px solid var(--line); padding-top:10px; margin-top:12px; }
+      summary { cursor:pointer; font-weight:700; }
+      footer { color:var(--muted); border-top:1px solid var(--line); padding:18px 0 28px; }
+      @media (max-width:900px) { .primary-nav { grid-template-columns:repeat(2,minmax(0,1fr)); } .status-strip { grid-template-columns:repeat(3,minmax(0,1fr)); } .grid-3 { grid-template-columns:1fr; } table { max-width:100%; } }
+      @media (max-width:560px) { header,main,footer { width:min(100% - 20px,1180px); } h1 { font-size:26px; } .primary-nav,.status-strip,.grid-2 { grid-template-columns:1fr; } section { padding:15px; } }
+    """
+
+
 @app.get("/", response_class=HTMLResponse)
+def system_home() -> str:
+    manifest = load_release_json("release_manifest.json")
+    acceptance = load_release_json("system_acceptance_report.json")
+    decision = load_current_market_decision()
+    v11 = load_v11_current_allocation()
+    release_ok = bool(
+        manifest.get("verified") is True
+        and acceptance.get("system_acceptance_passed") is True
+        and not acceptance.get("blocking_errors")
+    )
+    decision_ready = decision.get("ready_for_user_review") is True if release_ok else False
+    execution = decision.get("execution_validation", {})
+    shadow_weights = decision.get("execution_shadow", {}).get("etf_weights", {})
+    shadow_cash = float(shadow_weights.get("CASH", 0.0)) if isinstance(shadow_weights, dict) else 0.0
+    v11_equity = float(v11.get("equity_weight", 0.0) or 0.0)
+    v11_cash = float(v11.get("cash_weight", 0.0) or 0.0)
+    blocking = acceptance.get("blocking_errors", [])
+    reasons = execution.get("reasons", [])
+    main_action = (
+        '<a class="button primary" href="/current-decision">查看当前配置决策</a>'
+        if decision_ready
+        else '<a class="button primary" href="/system-status">查看阻塞原因</a>'
+    )
+    blocking_html = "".join(f"<li>{escape(str(item))}</li>" for item in (blocking or reasons)) or "<li>无系统级阻塞；执行验证门槛仍未通过。</li>"
+    release_label = "已验证" if release_ok else "不可用或未通过"
+    release_class = "status-good" if release_ok else "status-blocked"
+    decision_label = "可供人工审核" if decision_ready else "当前不可依赖"
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>MyInvestTAA 系统首页</title><style>{_product_css()}</style></head><body>
+    <header><h1>MyInvestTAA</h1><p class="subtle">离线、多层、可验证的资产配置决策支持系统</p>{_primary_navigation()}</header>
+    <main>
+      <div class="status-strip" aria-label="系统摘要">
+        <div class="status-item {release_class}"><strong>{release_label}</strong><span>系统发布状态</span></div>
+        <div class="status-item"><strong>{escape(str(manifest.get('market_data_as_of','不可用')))}</strong><span>市场数据截至</span></div>
+        <div class="status-item"><strong>{escape(str(manifest.get('decision_date','不可用')))}</strong><span>决策日期</span></div>
+        <div class="status-item"><strong>{decision_label}</strong><span>当前快照</span></div>
+        <div class="status-item status-blocked"><strong>未授权</strong><span>自动交易</span></div>
+        <div class="status-item status-blocked"><strong>{'已通过' if execution.get('ready') else '尚未通过'}</strong><span>执行验证</span></div>
+      </div>
+      <section class="{'hero' if decision_ready else 'alert'}"><h2>{'现在该看什么' if decision_ready else '当前结论不可依赖'}</h2><p>{'当前系统已生成一份经过来源校验的本地配置快照。建议先查看“当前配置决策”，了解市场状态、V11、Shadow 以及尚未通过的执行条件。' if decision_ready else '发布或必要来源未通过完整性检查。请先查看系统与数据状态；在修复前不要把页面内容当作当前配置结论。'}</p><div class="actions">{main_action}<a class="button" href="/v11-current-allocation">查看 V11 模型配置</a></div></section>
+      <section><h2>普通用户建议阅读顺序</h2><ol><li>先确认上方系统状态没有红色阻塞。</li><li>进入“当前配置决策”，查看可供人工审核的综合快照。</li><li>需要了解正式候选模型时查看“V11 模型配置”。</li><li>只有需要研究细节时进入“研究与执行验证”。</li><li>需要核查数据、版本和来源哈希时进入“系统与数据状态”。</li></ol></section>
+      <section><h2>当前市场与配置摘要</h2><div class="grid-3"><div class="card"><h3>市场和风险</h3><p>市场：{escape(str(decision.get('market_state',{}).get('regime','不可用')))}</p><p>风险：{escape(str(decision.get('market_state',{}).get('risk_level','不可用')))}</p></div><div class="card"><h3>V11 模型</h3><p>风险资产：{v11_equity:.1%}</p><p>现金：{v11_cash:.1%}</p></div><div class="card"><h3>Execution Shadow</h3><p>ETF：{1-shadow_cash:.1%}</p><p>现金：{shadow_cash:.1%}</p><p class="subtle">实验性配置，不是生产组合。</p></div></div></section>
+      <section><h2>三种结果如何理解</h2><div class="grid-3"><div class="card"><span class="tag good">正式候选模型</span><h3>V11 模型配置</h3><p>当前离线模型权重。它是模型输出，但尚未授权自动交易。</p></div><div class="card"><span class="tag warn">研究结果</span><h3>Research 配置</h3><p>用于验证资产配置逻辑，不代表能买到完全相同的工具。</p></div><div class="card"><span class="tag blocked">实验性 Shadow</span><h3>Execution Shadow</h3><p>把研究权重映射为真实 ETF 和现金后的实验快照，不是生产组合。</p></div></div></section>
+      <section><h2>当前限制</h2><ul><li>Execution Validation 尚未通过。</li><li>Shadow 中的 research-only 资产会转为现金，因此当前现金约 40%。</li><li>931743 使用主题接近但覆盖更宽的 medium-quality 半导体 ETF 代理。</li><li>市场和 ETF 数据是离线快照，不是实时行情。</li><li>所有结果只供人工审核。</li></ul><h3>主要阻塞或限制原因</h3><ul>{blocking_html}</ul></section>
+      <section><h2>本系统不会做什么</h2><div class="grid-2"><ul><li>不会自动下单或计算买卖数量。</li><li>不会提供目标价格或任何买入、卖出操作按钮。</li><li>不会自动选择 V11 或 Shadow。</li></ul><ul><li>不会合并生成未经验证的新组合。</li><li>不会把研究回测直接当成实盘建议。</li><li>不会因历史收益较高而自动替换 V11。</li></ul></div></section>
+      <section><h2>高级入口</h2><div class="actions"><a class="button" href="/research-validation">研究与执行验证</a><a class="button" href="/system-status">系统与数据状态</a></div></section>
+    </main><footer>数据截至 {escape(str(manifest.get('market_data_as_of','不可用')))} · Release {escape(str(manifest.get('release_id','不可用')))} · 非交易指令 · <a href="/system-status">查看文档清单</a></footer>{_unified_shell_scripts()}</body></html>"""
+
+
+@app.get("/legacy-dashboard", response_class=HTMLResponse)
 def dashboard() -> str:
     ranking = build_taa_ranking(load_assets())
     regime = detect_market_regime(load_price_history("510300"))
@@ -707,6 +868,43 @@ def dashboard() -> str:
     </body>
     </html>
     """
+
+
+@app.get("/research-validation", response_class=HTMLResponse)
+def research_validation_page() -> str:
+    decision = load_current_market_decision()
+    execution = decision.get("execution_validation", {})
+    reasons = "".join(f"<li>{escape(str(value))}</li>" for value in execution.get("reasons", [])) or "<li>未记录原因，请查看系统状态。</li>"
+    cards = (
+        ("Research Backtest", "/research-backtest", "研究资产层的历史配置测试，用于判断配置逻辑，不等于真实 ETF 收益。", "研究结果"),
+        ("Execution Backtest", "/execution-backtest", "使用真实 ETF 数据验证研究配置能否执行，以及执行后损失多少收益或增加多少风险。", "执行验证"),
+        ("Execution-Aware Shadow", "/shadow-portfolio", "将最新研究权重转换为真实 ETF 和现金的实验性配置，不是生产组合。", "实验性 Shadow"),
+        ("Mapping Evidence", "/system-status#mapping-governance", "记录研究指数与 ETF 代理关系、人工批准和语义限制，主要供审计使用。", "高级审计内容"),
+    )
+    card_html = "".join(f'<div class="card"><span class="tag warn">{tag}</span><h3>{title}</h3><p>{description}</p><a class="button" href="{href}">查看详情</a></div>' for title, href, description, tag in cards)
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>研究与执行验证</title><style>{_product_css()}</style></head><body><header><h1>研究与执行验证</h1><p class="subtle">供高级用户查看研究策略、真实 ETF 执行映射、执行差距和 Shadow 证据。所有内容均不用于直接交易。</p>{_primary_navigation()}</header><main><section class="alert"><span class="tag blocked">尚未通过验证</span><h2>Execution Validation 当前未通过</h2><p>这不代表整个系统不可用；它表示研究配置映射到真实 ETF 后，历史覆盖率和不可执行月份尚未达到既定门槛。</p><ul>{reasons}</ul></section><section><h2>四类高级内容</h2><div class="grid-2">{card_html}</div></section><section><h2>如何正确理解</h2><ul><li>Research 验证配置逻辑，不等于 ETF 实盘收益。</li><li>Execution 验证真实 ETF 能否复现研究结果。</li><li>Shadow 是实验快照，不能替代 V11，也不能直接下单。</li><li>medium-quality mapping 表示主题接近但范围更宽，并非直接跟踪。</li></ul></section></main><footer>高级研究内容 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
+
+
+@app.get("/system-status", response_class=HTMLResponse)
+def system_status_page() -> str:
+    manifest = load_release_json("release_manifest.json")
+    acceptance = load_release_json("system_acceptance_report.json")
+    available = manifest.get("verified") is True and acceptance.get("system_acceptance_passed") is True
+    conditions = "".join(f"<li>{escape(str(value))}</li>" for value in acceptance.get("known_nonblocking_conditions", [])) or "<li>无可用验收报告。</li>"
+    errors = "".join(f"<li>{escape(str(value))}</li>" for value in acceptance.get("blocking_errors", [])) or "<li>无阻塞错误。</li>"
+    protected = acceptance.get("protected_files", {})
+    sections = (
+        ("Data Integrity", acceptance.get("data_integrity", {}).get("verified")),
+        ("V11 Integrity", acceptance.get("v11_snapshot_integrity", {}).get("verified")),
+        ("Execution Validation", acceptance.get("execution_integrity", {}).get("execution_validation_ready")),
+        ("Mapping Governance", acceptance.get("mapping_governance_integrity", {}).get("verified")),
+        ("Shadow Integrity", acceptance.get("shadow_integrity", {}).get("verified")),
+        ("Current Decision Status", acceptance.get("current_decision_integrity", {}).get("verified")),
+        ("Reproducibility", acceptance.get("reproducibility", {}).get("verified")),
+        ("Protected Files", protected.get("verified")),
+    )
+    status_html = "".join(f'<div class="card"><h3>{name}</h3><span class="tag {"good" if value else "blocked"}">{"已验证" if value else "尚未通过验证"}</span></div>' for name, value in sections)
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>系统与数据状态</title><style>{_product_css()}</style></head><body><header><h1>系统与数据状态</h1><p><strong>This system status page verifies a reproducible local decision-support release. It does not authorize automated trading.</strong></p>{_primary_navigation()}</header><main><section class="{'hero' if available else 'alert'}"><h2>{'系统验收已通过' if available else '系统验收不可用或未通过'}</h2><div class="grid-3"><div class="card"><h3>Release ID</h3><p>{escape(str(manifest.get('release_id','不可用')))}</p></div><div class="card"><h3>Build Mode</h3><p>{escape(str(manifest.get('build_mode','不可用')))}</p></div><div class="card"><h3>Commit SHA</h3><p>{escape(str(manifest.get('commit_sha','不可用')))}</p></div><div class="card"><h3>Market Data As-Of</h3><p>{escape(str(manifest.get('market_data_as_of','不可用')))}</p></div><div class="card"><h3>Decision Date</h3><p>{escape(str(manifest.get('decision_date','不可用')))}</p></div><div class="card"><h3>Production Boundary</h3><p>未授权自动交易</p></div></div></section><section><h2>验收项目</h2><div class="grid-3">{status_html}</div></section><section id="mapping-governance"><h2>已知非阻塞条件</h2><ul>{conditions}</ul></section><section><h2>阻塞错误</h2><ul>{errors}</ul></section><section><h2>文档入口</h2><div class="table-wrap"><table><thead><tr><th>文档</th><th>用途</th></tr></thead><tbody><tr><td>README.md</td><td>普通用户快速开始</td></tr><tr><td>docs/OFFLINE_BUILD.md</td><td>离线重建和验证</td></tr><tr><td>docs/OPERATIONS.md</td><td>恢复、清理和故障处理</td></tr><tr><td>docs/DATA_CONTRACTS.md</td><td>报告和字段契约</td></tr><tr><td>docs/LIMITATIONS.md</td><td>当前限制和非交易边界</td></tr></tbody></table></div><details><summary>技术审计信息</summary><p>Release manifest、acceptance report、来源哈希和受保护文件状态可通过只读 API 查看。</p><ul><li><a href="/api/system/release-manifest">Release Manifest API</a></li><li><a href="/api/system/acceptance">System Acceptance API</a></li><li><a href="/diagnosis">Strategy Diagnosis（高级审计）</a></li><li><a href="/production-readiness">Production Readiness（高级审计）</a></li></ul></details></section></main><footer>系统验收与数据审计入口 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
 
 
 @app.get("/research", response_class=HTMLResponse)

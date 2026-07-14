@@ -6,3 +6,7 @@ __pycache__/
 data/local/
 logs/
 temp/
+reports/.release-staging/
+reports/release/.build.lock
+reports/release/previous/
+reports/release/damaged-current/
