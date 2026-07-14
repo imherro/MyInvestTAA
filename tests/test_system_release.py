@@ -447,6 +447,20 @@ def test_system_status_mandatory_warning_is_exact():
     assert "This system status page verifies a reproducible local decision-support release. It does not authorize automated trading." in text
 
 
+@pytest.mark.parametrize(
+    "route,artifact",
+    [
+        ("/api/decision/current-market", "current_market_decision.json"),
+        ("/api/decision/v11-current-allocation", "v11_current_allocation.json"),
+    ],
+)
+def test_formal_decision_apis_return_committed_release_artifacts(route, artifact):
+    assert CLIENT.get(route).json() == {
+        **json.loads((RELEASE / artifact).read_text(encoding="utf-8")),
+        "available": True,
+    }
+
+
 def test_home_release_failure_hides_current_decision_primary_action(monkeypatch):
     import backend.main as main_module
 

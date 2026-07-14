@@ -166,6 +166,23 @@ def validate_web_contract(root: Path, inventory: dict) -> dict:
                     "build_mode": "offline_local",
                     "commit_sha": "0" * 40,
                 }
+            if name == "current_market_decision.json":
+                return {
+                    "available": True,
+                    "verified": True,
+                    "status": "user_review_ready",
+                    "ready_for_user_review": True,
+                    "production_actionable": False,
+                    "execution_validation": {"ready": False, "reasons": []},
+                    "execution_shadow": {"etf_weights": {"CASH": 1.0}},
+                }
+            if name == "v11_current_allocation.json":
+                return {
+                    "available": True,
+                    "verified": True,
+                    "equity_weight": 0.0,
+                    "cash_weight": 1.0,
+                }
             return {
                 "available": True,
                 "verified": True,

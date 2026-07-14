@@ -495,8 +495,8 @@ def test_v11_api_reads_the_local_snapshot():
 
 def test_v11_api_returns_unavailable_without_500(monkeypatch):
     monkeypatch.setattr(
-        "backend.main.load_v11_current_allocation",
-        lambda: {"available": False, "status": "unavailable", "errors": ["invalid"]},
+        "backend.main.load_release_json",
+        lambda name: {"available": False, "status": "unavailable", "errors": ["invalid"]},
     )
     response = CLIENT.get("/api/decision/v11-current-allocation")
     assert response.status_code == 200

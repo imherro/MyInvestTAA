@@ -49,8 +49,6 @@ from engine.regime import detect_market_regime
 from engine.risk import build_risk_budget
 from engine.taa_score import build_taa_ranking
 from decision.current_market.explain import decision_headline
-from decision.current_market.report import load_current_market_decision
-from decision.v11_current import load_v11_current_allocation
 from release.orchestrator import load_release_json
 from release.web_contracts import primary_navigation_html
 from storage import MarketDataRepository, connect_database
@@ -412,12 +410,12 @@ def get_execution_mapping_transaction_status() -> dict:
 
 @app.get("/api/decision/current-market")
 def get_current_market_decision() -> dict:
-    return load_current_market_decision()
+    return load_release_json("current_market_decision.json")
 
 
 @app.get("/api/decision/v11-current-allocation")
 def get_v11_current_allocation() -> dict:
-    return load_v11_current_allocation()
+    return load_release_json("v11_current_allocation.json")
 
 
 @app.get("/api/system/release-manifest")
@@ -519,8 +517,8 @@ def _product_css() -> str:
 def system_home() -> str:
     manifest = load_release_json("release_manifest.json")
     acceptance = load_release_json("system_acceptance_report.json")
-    decision = load_current_market_decision()
-    v11 = load_v11_current_allocation()
+    decision = load_release_json("current_market_decision.json")
+    v11 = load_release_json("v11_current_allocation.json")
     release_ok = bool(
         manifest.get("verified") is True
         and acceptance.get("system_acceptance_passed") is True
@@ -867,7 +865,7 @@ def dashboard() -> str:
 
 @app.get("/research-validation", response_class=HTMLResponse)
 def research_validation_page() -> str:
-    decision = load_current_market_decision()
+    decision = load_release_json("current_market_decision.json")
     execution = decision.get("execution_validation", {})
     reasons = "".join(f"<li>{escape(str(value))}</li>" for value in execution.get("reasons", [])) or "<li>未记录原因，请查看系统状态。</li>"
     cards = (
@@ -3150,7 +3148,7 @@ def shadow_portfolio_page() -> str:
 
 @app.get("/v11-current-allocation", response_class=HTMLResponse)
 def v11_current_allocation_page() -> str:
-    report = load_v11_current_allocation()
+    report = load_release_json("v11_current_allocation.json")
     status_rows = "\n".join(
         _mapping_rows(
             {
@@ -3259,7 +3257,7 @@ def v11_current_allocation_page() -> str:
 
 @app.get("/current-decision", response_class=HTMLResponse)
 def current_decision_page() -> str:
-    report = load_current_market_decision()
+    report = load_release_json("current_market_decision.json")
     market_rows = "\n".join(_mapping_rows(report.get("market_state", {}), empty="Current market state report not generated yet"))
     risk_rows = "\n".join(_mapping_rows(report.get("risk_summary", {}), empty="No risk summary recorded"))
     v11_rows = "\n".join(_mapping_rows(report.get("production_candidate", {}), empty="No V11 candidate snapshot recorded"))

@@ -425,10 +425,7 @@ def test_current_decision_api_reads_local_report():
 
 
 def test_current_decision_api_missing_report_does_not_500(monkeypatch):
-    monkeypatch.setattr(
-        "backend.main.load_current_market_decision",
-        lambda: {"available": False, "message": "missing"},
-    )
+    monkeypatch.setattr("backend.main.load_release_json", lambda name: {"available": False, "message": "missing"})
     response = CLIENT.get("/api/decision/current-market")
     assert response.status_code == 200
     assert response.json() == {"available": False, "message": "missing"}
@@ -1112,8 +1109,8 @@ def test_current_report_business_result_is_unchanged_after_semantic_hardening():
 
 def test_unavailable_web_page_never_claims_ready(monkeypatch):
     monkeypatch.setattr(
-        "backend.main.load_current_market_decision",
-        lambda: {
+        "backend.main.load_release_json",
+        lambda name: {
             "available": False,
             "status": "unavailable",
             "ready_for_user_review": False,
