@@ -82,5 +82,6 @@ def _asset_row(asset: ResearchAsset, reason: str) -> dict:
         "category": asset.category,
         "sleeve": asset.sleeve,
         "return_basis": asset.return_basis,
+        "eligible_for_allocation": asset.eligible_for_allocation,
         "reason": reason,
     }

@@ -2,6 +2,7 @@ from backtest.execution.gap import build_execution_gap
 from backtest.execution.mapping import build_execution_mapping
 from backtest.execution.models import ExecutionBacktestConfig
 from backtest.research.metrics import build_metrics
+from statistics import median
 
 def run_execution_backtest(research_report, execution_price_data, mappings, execution_universe, *, config=None, data_provider="unknown"):
     cfg=config or ExecutionBacktestConfig(); allocations=research_report.get("monthly_allocations",[])
@@ -47,9 +48,58 @@ def _cash_drag(rows): return sum(float(r.get("weights",{}).get("CASH",0)) for r 
 def _summary(rows,allocations,translated=None):
     mapped=[r for r in rows if r["executable"]]; total=sum(sum(v for k,v in a.get("weights",{}).items() if k!="CASH") for a in allocations); covered=sum(sum(a.get("weights",{}).get(r["research_asset_id"],0) for r in mapped) for a in allocations)
     translated=translated or []
-    untradable=[row for row in translated if sum(row.get("cash_breakdown",{}).get(key,0) for key in ("unmapped_cash","low_quality_proxy_cash","missing_price_cash","untradable_cash"))>1e-10]
+    gap_keys=("unmapped_cash","low_quality_proxy_cash","missing_price_cash","untradable_cash")
+    gap_weights=[sum(float(row.get("cash_breakdown",{}).get(key,0)) for key in gap_keys) for row in translated]
+    untradable=[row for row,gap_weight in zip(translated,gap_weights) if gap_weight>1e-10]
     tradable=sum(sum(weight for asset_id,weight in row.get("weights",{}).items() if asset_id!="CASH") for row in translated)
-    return {"mapped_research_assets":len(mapped),"unmapped_research_assets":len(rows)-len(mapped),"low_quality_proxy_assets":sum(r["mapping_quality"]=="low" for r in rows),"untradable_months":len(untradable),"untradable_month_ratio":round(len(untradable)/len(translated),6) if translated else 0,"mapping_weight_coverage":round(covered/total,6) if total else 0,"tradable_weight_coverage":round(tradable/total,6) if total else 0}
+    total_portfolio=sum(sum(float(weight) for weight in allocation.get("weights",{}).values()) for allocation in allocations)
+    quality_counts={quality:sum(row.get("mapping_quality")==quality for row in rows) for quality in ("high","medium","low","none")}
+    reason_breakdown={}
+    for key in gap_keys:
+        values=[float(row.get("cash_breakdown",{}).get(key,0)) for row in translated]
+        affected=sum(value>1e-10 for value in values)
+        reason_breakdown[key]={
+            "average_weight":round(sum(values)/len(values),6) if values else 0.0,
+            "max_weight":round(max(values),6) if values else 0.0,
+            "affected_months":affected,
+            "affected_month_ratio":round(affected/len(values),6) if values else 0.0,
+        }
+    return {
+        "mapped_research_assets":len(mapped),
+        "unmapped_research_assets":len(rows)-len(mapped),
+        "low_quality_proxy_assets":sum(r["mapping_quality"]=="low" for r in rows),
+        "untradable_months":len(untradable),
+        "untradable_month_ratio":round(len(untradable)/len(translated),6) if translated else 0,
+        "binary_any_gap_month_ratio":round(len(untradable)/len(translated),6) if translated else 0,
+        "mapping_weight_coverage":round(covered/total,6) if total else 0,
+        "tradable_weight_coverage":round(tradable/total,6) if total else 0,
+        "tradable_weight_coverage_total_portfolio":round(tradable/total_portfolio,6) if total_portfolio else 0,
+        "coverage_contract":{
+            "numerator_name":"tradable_translated_weight",
+            "numerator_weight_period_sum":round(tradable,10),
+            "denominator_name":"non_cash_research_weight",
+            "denominator_weight_period_sum":round(total,10),
+            "total_portfolio_denominator_weight_period_sum":round(total_portfolio,10),
+            "primary_metric":"tradable_weight_coverage",
+            "primary_metric_definition":"tradable translated ETF weight divided by non-cash research weight",
+        },
+        "gap_metrics":{
+            "definition":"monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
+            "average_gap_weight":round(sum(gap_weights)/len(gap_weights),6) if gap_weights else 0.0,
+            "median_gap_weight":round(median(gap_weights),6) if gap_weights else 0.0,
+            "max_gap_weight":round(max(gap_weights),6) if gap_weights else 0.0,
+            "gap_month_ratio_gt_1pct":round(sum(value>.01 for value in gap_weights)/len(gap_weights),6) if gap_weights else 0.0,
+            "gap_month_ratio_gt_5pct":round(sum(value>.05 for value in gap_weights)/len(gap_weights),6) if gap_weights else 0.0,
+            "gap_month_ratio_gt_10pct":round(sum(value>.10 for value in gap_weights)/len(gap_weights),6) if gap_weights else 0.0,
+            "gap_reason_breakdown":reason_breakdown,
+        },
+        "mapping_count_scope":{
+            "count_scope":"research_assets_present_in_source_allocations",
+            "included_asset_ids":sorted(row["research_asset_id"] for row in rows),
+            "included_asset_count":len(rows),
+            "mapping_quality_counts":quality_counts,
+        },
+    }
 def _aggregate_cash_breakdown(translated):
     keys=("research_cash","unmapped_cash","low_quality_proxy_cash","missing_price_cash","untradable_cash")
     count=len(translated)

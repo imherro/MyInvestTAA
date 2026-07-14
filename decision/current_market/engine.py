@@ -350,6 +350,8 @@ def _research_allocation(research: dict, market_data_as_of: str) -> dict:
     return {
         "available": True,
         "strategy": research.get("strategy"),
+        "universe_count": research.get("universe_count"),
+        "universe_scope": research.get("universe_scope", {}),
         "allocation_date": latest["date"],
         "weights": latest.get("weights", {}),
         "status": "research_only",
@@ -404,7 +406,14 @@ def _execution_validation(report: dict, gate_policy: dict, policy_source: dict) 
         "max_drawdown": metrics.get("max_drawdown"),
         "sharpe": metrics.get("sharpe"),
         "tradable_weight_coverage": mapping.get("tradable_weight_coverage"),
+        "tradable_weight_coverage_total_portfolio": mapping.get(
+            "tradable_weight_coverage_total_portfolio"
+        ),
         "untradable_month_ratio": mapping.get("untradable_month_ratio"),
+        "binary_any_gap_month_ratio": mapping.get("binary_any_gap_month_ratio"),
+        "coverage_contract": mapping.get("coverage_contract", {}),
+        "gap_metrics": mapping.get("gap_metrics", {}),
+        "mapping_count_scope": mapping.get("mapping_count_scope", {}),
         "gate_policy": {
             **{field: gate_policy.get(field) for field in policy_fields},
             "policy_hash": policy_source.get("sha256"),
@@ -462,6 +471,91 @@ def validate_execution_decision_evidence(
             metric_errors.append(f"execution metric {field} must be finite")
         elif not 0 <= float(value) <= 1:
             metric_errors.append(f"execution metric {field} must be between 0 and 1")
+    for field in (
+        "tradable_weight_coverage_total_portfolio",
+        "binary_any_gap_month_ratio",
+    ):
+        value = mapping.get(field)
+        if not _is_finite_number(value):
+            metric_errors.append(f"execution metric {field} must be finite")
+        elif not 0 <= float(value) <= 1:
+            metric_errors.append(f"execution metric {field} must be between 0 and 1")
+    if (
+        _is_finite_number(mapping.get("binary_any_gap_month_ratio"))
+        and _is_finite_number(mapping.get("untradable_month_ratio"))
+        and abs(
+            float(mapping["binary_any_gap_month_ratio"])
+            - float(mapping["untradable_month_ratio"])
+        )
+        > 0.000001
+    ):
+        metric_errors.append(
+            "binary_any_gap_month_ratio must equal legacy untradable_month_ratio"
+        )
+    contract = mapping.get("coverage_contract", {})
+    if contract.get("numerator_name") != "tradable_translated_weight":
+        metric_errors.append("execution coverage numerator definition is invalid")
+    if contract.get("denominator_name") != "non_cash_research_weight":
+        metric_errors.append("execution coverage denominator definition is invalid")
+    for field in (
+        "numerator_weight_period_sum",
+        "denominator_weight_period_sum",
+        "total_portfolio_denominator_weight_period_sum",
+    ):
+        if not _is_finite_number(contract.get(field)):
+            metric_errors.append(f"execution coverage contract {field} must be finite")
+    numerator = contract.get("numerator_weight_period_sum")
+    non_cash_denominator = contract.get("denominator_weight_period_sum")
+    total_denominator = contract.get("total_portfolio_denominator_weight_period_sum")
+    if all(_is_finite_number(value) for value in (numerator, non_cash_denominator)) and float(non_cash_denominator) > 0:
+        expected = float(numerator) / float(non_cash_denominator)
+        if abs(expected - float(mapping.get("tradable_weight_coverage", -1))) > 0.000001:
+            metric_errors.append("execution non-cash coverage does not reconcile")
+    if all(_is_finite_number(value) for value in (numerator, total_denominator)) and float(total_denominator) > 0:
+        expected = float(numerator) / float(total_denominator)
+        if abs(expected - float(mapping.get("tradable_weight_coverage_total_portfolio", -1))) > 0.000001:
+            metric_errors.append("execution total-portfolio coverage does not reconcile")
+    gap_metrics = mapping.get("gap_metrics", {})
+    for field in (
+        "average_gap_weight",
+        "median_gap_weight",
+        "max_gap_weight",
+        "gap_month_ratio_gt_1pct",
+        "gap_month_ratio_gt_5pct",
+        "gap_month_ratio_gt_10pct",
+    ):
+        value = gap_metrics.get(field)
+        if not _is_finite_number(value):
+            metric_errors.append(f"execution gap metric {field} must be finite")
+        elif not 0 <= float(value) <= 1:
+            metric_errors.append(f"execution gap metric {field} must be between 0 and 1")
+    if all(
+        _is_finite_number(gap_metrics.get(field))
+        for field in (
+            "gap_month_ratio_gt_1pct",
+            "gap_month_ratio_gt_5pct",
+            "gap_month_ratio_gt_10pct",
+        )
+    ) and not (
+        float(gap_metrics["gap_month_ratio_gt_10pct"])
+        <= float(gap_metrics["gap_month_ratio_gt_5pct"])
+        <= float(gap_metrics["gap_month_ratio_gt_1pct"])
+        <= float(mapping.get("binary_any_gap_month_ratio", -1))
+    ):
+        metric_errors.append("execution gap threshold ratios are not monotonic")
+    count_scope = mapping.get("mapping_count_scope", {})
+    included_ids = count_scope.get("included_asset_ids")
+    quality_counts = count_scope.get("mapping_quality_counts")
+    if count_scope.get("count_scope") != "research_assets_present_in_source_allocations":
+        metric_errors.append("execution mapping count scope is invalid")
+    if not isinstance(included_ids, list) or len(included_ids) != count_scope.get(
+        "included_asset_count"
+    ):
+        metric_errors.append("execution mapping included asset scope is inconsistent")
+    if set(quality_counts or {}) != {"high", "medium", "low", "none"} or sum(
+        value for value in quality_counts.values() if isinstance(value, int)
+    ) != count_scope.get("included_asset_count"):
+        metric_errors.append("execution mapping quality counts are inconsistent")
     errors.extend(metric_errors)
 
     period = report.get("period", {})

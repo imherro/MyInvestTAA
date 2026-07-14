@@ -9421,8 +9421,79 @@
     "low_quality_proxy_assets": 1,
     "untradable_months": 66,
     "untradable_month_ratio": 1.0,
+    "binary_any_gap_month_ratio": 1.0,
     "mapping_weight_coverage": 0.693365,
-    "tradable_weight_coverage": 0.691469
+    "tradable_weight_coverage": 0.691469,
+    "tradable_weight_coverage_total_portfolio": 0.552652,
+    "coverage_contract": {
+      "numerator_name": "tradable_translated_weight",
+      "numerator_weight_period_sum": 36.475,
+      "denominator_name": "non_cash_research_weight",
+      "denominator_weight_period_sum": 52.75,
+      "total_portfolio_denominator_weight_period_sum": 66.0,
+      "primary_metric": "tradable_weight_coverage",
+      "primary_metric_definition": "tradable translated ETF weight divided by non-cash research weight"
+    },
+    "gap_metrics": {
+      "definition": "monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
+      "average_gap_weight": 0.246591,
+      "median_gap_weight": 0.25,
+      "max_gap_weight": 0.45,
+      "gap_month_ratio_gt_1pct": 1.0,
+      "gap_month_ratio_gt_5pct": 1.0,
+      "gap_month_ratio_gt_10pct": 0.757576,
+      "gap_reason_breakdown": {
+        "unmapped_cash": {
+          "average_weight": 0.087879,
+          "max_weight": 0.2,
+          "affected_months": 51,
+          "affected_month_ratio": 0.772727
+        },
+        "low_quality_proxy_cash": {
+          "average_weight": 0.157197,
+          "max_weight": 0.25,
+          "affected_months": 44,
+          "affected_month_ratio": 0.666667
+        },
+        "missing_price_cash": {
+          "average_weight": 0.0,
+          "max_weight": 0.0,
+          "affected_months": 0,
+          "affected_month_ratio": 0.0
+        },
+        "untradable_cash": {
+          "average_weight": 0.001515,
+          "max_weight": 0.1,
+          "affected_months": 1,
+          "affected_month_ratio": 0.015152
+        }
+      }
+    },
+    "mapping_count_scope": {
+      "count_scope": "research_assets_present_in_source_allocations",
+      "included_asset_ids": [
+        "000688CNY01.CSI",
+        "931688CNY010.CSI",
+        "931743CNY010.CSI",
+        "H00015.CSI",
+        "H00300.CSI",
+        "H00805.CSI",
+        "H00852.CSI",
+        "H00905.CSI",
+        "H00922.CSI",
+        "H20007.CSI",
+        "H20590.CSI",
+        "H20771.CSI",
+        "H21152.CSI"
+      ],
+      "included_asset_count": 13,
+      "mapping_quality_counts": {
+        "high": 4,
+        "medium": 5,
+        "low": 1,
+        "none": 3
+      }
+    }
   },
   "aggregate_cash_breakdown": {
     "research_cash": 0.200758,

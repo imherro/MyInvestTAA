@@ -26,6 +26,25 @@ def test_run_research_backtest_returns_available_report():
     assert report["available"] is True
     assert report["strategy"] == "RESEARCH_TAA_MVP"
     assert report["universe_count"] == 13
+    assert report["universe_scope"]["included_asset_count"] == 13
+    assert report["universe_scope"]["included_asset_ids"] == sorted(
+        asset.asset_id for asset in ASSETS
+    )
+
+
+def test_full_registry_scope_explains_monitor_only_exclusion():
+    from engine.asset_registry import load_research_universe
+
+    all_assets = load_research_universe()
+    report = run_research_backtest(all_assets, _mock_dataset())
+    scope = report["universe_scope"]
+    assert scope["registered_asset_count"] == 32
+    excluded = {row["asset_id"]: row for row in scope["excluded_assets"]}
+    assert excluded["399606.SZ"]["eligible_for_allocation"] is False
+    assert excluded["399606.SZ"]["reason"] in {
+        "not_eligible_for_allocation",
+        "readiness_blocked",
+    }
 
 
 def test_run_research_backtest_outputs_equity_curve_and_allocations():

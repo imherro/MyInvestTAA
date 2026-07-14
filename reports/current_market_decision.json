@@ -5,7 +5,7 @@
   "production_actionable": false,
   "as_of": "2026-07-08",
   "decision_date": "2026-07-13",
-  "generated_at": "2026-07-13T08:15:34+00:00",
+  "generated_at": "2026-07-14T04:04:00+00:00",
   "market_data_as_of": "2026-07-08",
   "governance_state_as_of": "2026-07-13",
   "snapshot_mode": "current_decision_with_lagged_market_data",
@@ -37,6 +37,8 @@
     "boundary_verified": true,
     "snapshot_present": true,
     "snapshot_integrity_verified": true,
+    "snapshot_semantic_verified": true,
+    "snapshot_payload_hash_verified": true,
     "snapshot_valid_or_missing": true,
     "unchanged": true,
     "allocation": {
@@ -177,11 +179,243 @@
       "errors": [],
       "actual_snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464"
     },
+    "release_artifact_dependency": null,
     "message": null
   },
   "research_allocation": {
     "available": true,
     "strategy": "RESEARCH_TAA_MVP",
+    "universe_count": 13,
+    "universe_scope": {
+      "count_scope": "available_allocation_eligible_total_or_net_return_assets_after_readiness_validation",
+      "registered_asset_count": 32,
+      "registered_asset_ids": [
+        "000688CNY01.CSI",
+        "399606.SZ",
+        "801050.SI",
+        "801080.SI",
+        "801120.SI",
+        "801150.SI",
+        "801160.SI",
+        "801180.SI",
+        "801710.SI",
+        "801720.SI",
+        "801730.SI",
+        "801740.SI",
+        "801750.SI",
+        "801760.SI",
+        "801770.SI",
+        "801780.SI",
+        "801790.SI",
+        "801880.SI",
+        "801890.SI",
+        "801950.SI",
+        "931688CNY010.CSI",
+        "931743CNY010.CSI",
+        "H00015.CSI",
+        "H00300.CSI",
+        "H00805.CSI",
+        "H00852.CSI",
+        "H00905.CSI",
+        "H00922.CSI",
+        "H20007.CSI",
+        "H20590.CSI",
+        "H20771.CSI",
+        "H21152.CSI"
+      ],
+      "included_asset_count": 13,
+      "included_asset_ids": [
+        "000688CNY01.CSI",
+        "931688CNY010.CSI",
+        "931743CNY010.CSI",
+        "H00015.CSI",
+        "H00300.CSI",
+        "H00805.CSI",
+        "H00852.CSI",
+        "H00905.CSI",
+        "H00922.CSI",
+        "H20007.CSI",
+        "H20590.CSI",
+        "H20771.CSI",
+        "H21152.CSI"
+      ],
+      "excluded_asset_count": 19,
+      "excluded_assets": [
+        {
+          "asset_id": "399606.SZ",
+          "name": "创业板R",
+          "category": "broad_base",
+          "sleeve": "equity_core",
+          "return_basis": "total_return",
+          "eligible_for_allocation": false,
+          "reason": "readiness_blocked"
+        },
+        {
+          "asset_id": "801120.SI",
+          "name": "食品饮料",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801150.SI",
+          "name": "医药生物",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801080.SI",
+          "name": "电子",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801730.SI",
+          "name": "电力设备",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801750.SI",
+          "name": "计算机",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801770.SI",
+          "name": "通信",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801760.SI",
+          "name": "传媒",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801160.SI",
+          "name": "公用事业",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801050.SI",
+          "name": "有色金属",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801950.SI",
+          "name": "煤炭",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801780.SI",
+          "name": "银行",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801790.SI",
+          "name": "非银金融",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801180.SI",
+          "name": "房地产",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801880.SI",
+          "name": "汽车",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801740.SI",
+          "name": "国防军工",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801890.SI",
+          "name": "机械设备",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801710.SI",
+          "name": "建筑材料",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        },
+        {
+          "asset_id": "801720.SI",
+          "name": "建筑装饰",
+          "category": "industry",
+          "sleeve": "industry_monitor",
+          "return_basis": "price_index",
+          "eligible_for_allocation": false,
+          "reason": "not_eligible_for_allocation"
+        }
+      ],
+      "unavailable_asset_count": 0,
+      "unavailable_assets": []
+    },
     "allocation_date": "2026-06-30",
     "weights": {
       "931743CNY010.CSI": 0.1,
@@ -263,7 +497,7 @@
       "violations": []
     },
     "snapshot_integrity": {
-      "research_report_hash": "bcdaaab5b20597308157d008b5346506929ee22cb6a2c8f6b24c1ff4263a6788",
+      "research_report_hash": "5a5451972589dd787e28ed96cc582e860bb7e6caef6eee5bce3c47664e541e07",
       "mapping_registry_hash": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
       "decision_ledger_hash": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
       "approval_record_hash": "a859269a8f944f011b90660c8b52c7b5f9e86959bed0dd8334ff10d876ad0f7e",
@@ -318,7 +552,78 @@
     "max_drawdown": -0.169053,
     "sharpe": 0.544214,
     "tradable_weight_coverage": 0.691469,
+    "tradable_weight_coverage_total_portfolio": 0.552652,
     "untradable_month_ratio": 1.0,
+    "binary_any_gap_month_ratio": 1.0,
+    "coverage_contract": {
+      "numerator_name": "tradable_translated_weight",
+      "numerator_weight_period_sum": 36.475,
+      "denominator_name": "non_cash_research_weight",
+      "denominator_weight_period_sum": 52.75,
+      "total_portfolio_denominator_weight_period_sum": 66.0,
+      "primary_metric": "tradable_weight_coverage",
+      "primary_metric_definition": "tradable translated ETF weight divided by non-cash research weight"
+    },
+    "gap_metrics": {
+      "definition": "monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
+      "average_gap_weight": 0.246591,
+      "median_gap_weight": 0.25,
+      "max_gap_weight": 0.45,
+      "gap_month_ratio_gt_1pct": 1.0,
+      "gap_month_ratio_gt_5pct": 1.0,
+      "gap_month_ratio_gt_10pct": 0.757576,
+      "gap_reason_breakdown": {
+        "unmapped_cash": {
+          "average_weight": 0.087879,
+          "max_weight": 0.2,
+          "affected_months": 51,
+          "affected_month_ratio": 0.772727
+        },
+        "low_quality_proxy_cash": {
+          "average_weight": 0.157197,
+          "max_weight": 0.25,
+          "affected_months": 44,
+          "affected_month_ratio": 0.666667
+        },
+        "missing_price_cash": {
+          "average_weight": 0.0,
+          "max_weight": 0.0,
+          "affected_months": 0,
+          "affected_month_ratio": 0.0
+        },
+        "untradable_cash": {
+          "average_weight": 0.001515,
+          "max_weight": 0.1,
+          "affected_months": 1,
+          "affected_month_ratio": 0.015152
+        }
+      }
+    },
+    "mapping_count_scope": {
+      "count_scope": "research_assets_present_in_source_allocations",
+      "included_asset_ids": [
+        "000688CNY01.CSI",
+        "931688CNY010.CSI",
+        "931743CNY010.CSI",
+        "H00015.CSI",
+        "H00300.CSI",
+        "H00805.CSI",
+        "H00852.CSI",
+        "H00905.CSI",
+        "H00922.CSI",
+        "H20007.CSI",
+        "H20590.CSI",
+        "H20771.CSI",
+        "H21152.CSI"
+      ],
+      "included_asset_count": 13,
+      "mapping_quality_counts": {
+        "high": 4,
+        "medium": 5,
+        "low": 1,
+        "none": 3
+      }
+    },
     "gate_policy": {
       "policy_id": "EXECUTION_VALIDATION_POLICY_V1",
       "tradable_weight_coverage_min": 0.7,
@@ -332,7 +637,7 @@
       "available": true,
       "policy_schema_verified": true,
       "policy_hash_verified": true,
-      "execution_engine_source_hash": "8704cc7117619542f51eb2dc94be954a3278447e814af464dfc51253b10591bb"
+      "execution_engine_source_hash": "2b4f02acc59102658dff7e9694b80d507ac7cb6adf32688b9765b4e8e1ddfa2a"
     },
     "source": "reports/execution_backtest_report.json",
     "source_as_of": "2026-07-08",
@@ -618,7 +923,7 @@
     "research_allocation": {
       "source": "research_allocation",
       "path": "reports/research_backtest_report.json",
-      "sha256": "bcdaaab5b20597308157d008b5346506929ee22cb6a2c8f6b24c1ff4263a6788",
+      "sha256": "5a5451972589dd787e28ed96cc582e860bb7e6caef6eee5bce3c47664e541e07",
       "available": true,
       "source_as_of": "2026-07-08",
       "required": true,
@@ -627,7 +932,7 @@
     "execution_validation": {
       "source": "execution_validation",
       "path": "reports/execution_backtest_report.json",
-      "sha256": "dc883b6246294c5d72d8b3795e2ab4dacfaf7774f3998d07d249e9e3fa08c4c0",
+      "sha256": "ab0a5a0e60601d810fc63d634464c3306cfa768bc42527e327b19e2f1d810126",
       "available": true,
       "source_as_of": "2026-07-08",
       "required": true,
@@ -636,7 +941,7 @@
     "execution_shadow": {
       "source": "execution_shadow",
       "path": "reports/execution_aware_shadow_portfolio.json",
-      "sha256": "a06ed062c63379169446ef99119a536f9cb976e44982084aa48170fcce73043e",
+      "sha256": "e07070629d66d1e0f09be007f512dfca09d8688acfd952193bbac1d45beb54ab",
       "available": true,
       "source_as_of": "2026-07-08",
       "required": true,

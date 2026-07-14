@@ -1,8 +1,9 @@
 import json
+from copy import deepcopy
 import pytest
 from fastapi.testclient import TestClient
 from backend.main import app
-from backtest.execution.proposal_report import load_counterfactual_report, load_mapping_proposal_report
+from backtest.execution.proposal_report import build_counterfactual_baseline_contract, load_counterfactual_report, load_mapping_proposal_report
 
 CLIENT=TestClient(app); PROPOSAL=load_mapping_proposal_report(); COUNTER=load_counterfactual_report()
 
@@ -20,6 +21,31 @@ def test_common_metrics_exist(key): assert COUNTER[key]["common_period_metrics"]
 @pytest.mark.parametrize("item",COUNTER["proxy_collision_diagnostics"]["proxy_collisions"])
 def test_collision_is_auditable(item): assert {"proxy_id","research_asset_ids","max_aggregate_weight","violation"}<=set(item)
 def test_counterfactual_is_not_manual_approval(): assert COUNTER["decision"]["ready_for_manual_mapping_approval"] is False
+def test_counterfactual_has_current_baseline_contract():
+ assert COUNTER['status']=='current'
+ assert COUNTER['evidence_use']=='current_analysis'
+ assert COUNTER['baseline_contract_verification']['verified'] is True
+def test_legacy_counterfactual_is_historical_only(tmp_path):
+ payload=deepcopy(COUNTER);payload.pop('baseline_contract',None)
+ path=tmp_path/'legacy-counterfactual.json';path.write_text(json.dumps(payload),encoding='utf-8')
+ loaded=load_counterfactual_report(path)
+ assert loaded['status']=='stale'
+ assert loaded['evidence_use']=='historical_only'
+ assert loaded['decision']['ready_for_manual_mapping_approval'] is False
+def test_counterfactual_source_hash_drift_is_stale(tmp_path):
+ payload=deepcopy(COUNTER);payload['baseline_contract']=build_counterfactual_baseline_contract()
+ payload['baseline_contract']['sources']['asset_mapping']['sha256']='0'*64
+ path=tmp_path/'drifted-counterfactual.json';path.write_text(json.dumps(payload),encoding='utf-8')
+ loaded=load_counterfactual_report(path)
+ assert loaded['status']=='stale'
+ assert any('asset_mapping' in error for error in loaded['baseline_contract_verification']['errors'])
+def test_counterfactual_embedded_baseline_drift_is_stale(tmp_path):
+ payload=deepcopy(COUNTER);payload['baseline_contract']=build_counterfactual_baseline_contract()
+ payload['baseline']['metrics']['annual_return']=-0.99
+ path=tmp_path/'drifted-baseline.json';path.write_text(json.dumps(payload),encoding='utf-8')
+ loaded=load_counterfactual_report(path)
+ assert loaded['status']=='stale'
+ assert any('embedded baseline' in error for error in loaded['baseline_contract_verification']['errors'])
 def test_proposal_api(): assert CLIENT.get('/api/research/execution-mapping-proposal').status_code==200
 def test_counterfactual_api(): assert CLIENT.get('/api/research/execution-mapping-counterfactual').status_code==200
 def test_page_sections():

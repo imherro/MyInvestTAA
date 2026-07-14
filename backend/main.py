@@ -126,6 +126,11 @@ def _apply_final_information_architecture(html: str, path: str) -> str:
         )
         html = _replace_html_region(html, "<header>", "</header>", header)
         html = html.replace("<h2>Decision Status</h2>", "<h2>当前结论</h2>")
+        html = html.replace(
+            "<section><h2>Execution Gate Policy</h2>",
+            '<section><h2>覆盖率与缺口口径</h2><p>主要覆盖率以研究组合的非现金权重为分母，不是全组合资产。存在缺口月份比例表示该月出现了任意不可执行权重，不表示整个组合都无法交易。连续缺口权重和双分母覆盖率已列入上方执行验证数据，原门槛保持不变。</p></section><section><h2>Execution Gate Policy</h2>',
+            1,
+        )
     elif path == "/v11-current-allocation":
         html = html.replace("<title>V11 Current Allocation</title>", "<title>V11 模型配置</title>")
         header = (
@@ -898,6 +903,7 @@ def dashboard() -> str:
 def research_validation_page() -> str:
     decision = load_release_json("current_market_decision.json")
     execution = decision.get("execution_validation", {})
+    gaps = execution.get("gap_metrics", {})
     reasons = "".join(f"<li>{escape(str(value))}</li>" for value in execution.get("reasons", [])) or "<li>未记录原因，请查看系统状态。</li>"
     cards = (
         ("Research Backtest", "/research-backtest", "研究资产层的历史配置测试，用于判断配置逻辑，不等于真实 ETF 收益。", "研究结果"),
@@ -906,7 +912,7 @@ def research_validation_page() -> str:
         ("Mapping Evidence", "/system-status#mapping-governance", "记录研究指数与 ETF 代理关系、人工批准和语义限制，主要供审计使用。", "高级审计内容"),
     )
     card_html = "".join(f'<div class="card"><span class="tag warn">{tag}</span><h3>{title}</h3><p>{description}</p><a class="button" href="{href}">查看详情</a></div>' for title, href, description, tag in cards)
-    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>研究与执行验证</title><style>{_product_css()}</style></head><body><header><h1>研究与执行验证</h1><p class="subtle">供高级用户查看研究策略、真实 ETF 执行映射、执行差距和 Shadow 证据。所有内容均不用于直接交易。</p>{_primary_navigation()}</header><main><section class="alert"><span class="tag blocked">尚未通过验证</span><h2>Execution Validation 当前未通过</h2><p>这不代表整个系统不可用；它表示研究配置映射到真实 ETF 后，历史覆盖率和不可执行月份尚未达到既定门槛。</p><ul>{reasons}</ul></section><section><h2>四类高级内容</h2><div class="grid-2">{card_html}</div></section><section><h2>如何正确理解</h2><ul><li>Research 验证配置逻辑，不等于 ETF 实盘收益。</li><li>Execution 验证真实 ETF 能否复现研究结果。</li><li>Shadow 是实验快照，不能替代 V11，也不能直接下单。</li><li>medium-quality mapping 表示主题接近但范围更宽，并非直接跟踪。</li></ul></section></main><footer>高级研究内容 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>研究与执行验证</title><style>{_product_css()}</style></head><body><header><h1>研究与执行验证</h1><p class="subtle">供高级用户查看研究策略、真实 ETF 执行映射、执行差距和 Shadow 证据。所有内容均不用于直接交易。</p>{_primary_navigation()}</header><main><section class="alert"><span class="tag blocked">尚未通过验证</span><h2>Execution Validation 当前未通过</h2><p>这不代表整个系统不可用；它表示研究配置映射到真实 ETF 后，历史覆盖率和存在执行缺口的月份尚未达到既定门槛。</p><ul>{reasons}</ul></section><section><h2>覆盖率和缺口怎么理解</h2><div class="grid-3"><div class="card"><h3>非现金研究权重覆盖率</h3><p><strong>{float(execution.get('tradable_weight_coverage',0) or 0):.2%}</strong></p><p>分子是可交易 ETF 权重，分母是研究组合的非现金权重，不是整个组合资产。</p></div><div class="card"><h3>全组合可交易权重</h3><p><strong>{float(execution.get('tradable_weight_coverage_total_portfolio',0) or 0):.2%}</strong></p><p>以研究组合全部权重为分母，表示组合中实际落到 ETF 的权重。</p></div><div class="card"><h3>存在任意缺口的月份</h3><p><strong>{float(execution.get('binary_any_gap_month_ratio',0) or 0):.2%}</strong></p><p>某月只要出现任何不可执行权重就计入；不表示当月整个组合都不能交易。</p></div></div><p class="subtle">平均缺口权重 {float(gaps.get('average_gap_weight',0) or 0):.2%}，最大缺口权重 {float(gaps.get('max_gap_weight',0) or 0):.2%}。原有验证门槛保持不变。</p></section><section><h2>四类高级内容</h2><div class="grid-2">{card_html}</div></section><section><h2>如何正确理解</h2><ul><li>Research 验证配置逻辑，不等于 ETF 实盘收益。</li><li>Execution 验证真实 ETF 能否复现研究结果。</li><li>Shadow 是实验快照，不能替代 V11，也不能直接下单。</li><li>medium-quality mapping 表示主题接近但范围更宽，并非直接跟踪。</li></ul></section></main><footer>高级研究内容 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
 
 
 @app.get("/system-status", response_class=HTMLResponse)
@@ -3139,7 +3145,7 @@ def execution_backtest_page() -> str:
     improvement_rows = "\n".join(_mapping_rows(improvement, empty="No mapping improvement report recorded"))
     proxy_rows = "\n".join(_proxy_research_rows(proxy_research.get("research_assets", [])))
     proposal_rows = "\n".join(_mapping_rows({"status":proposal.get("status"),"proposal_count":len(proposal.get("proposals",[])),"warnings":proposal.get("warnings",[])}, empty="No mapping proposal recorded"))
-    counter_rows = "\n".join(_mapping_rows({"common_period":counterfactual.get("common_comparison_period"),"impact":counterfactual.get("impact"),"decision":counterfactual.get("decision")}, empty="No counterfactual report recorded"))
+    counter_rows = "\n".join(_mapping_rows({"status":counterfactual.get("status"),"evidence_use":counterfactual.get("evidence_use"),"baseline_contract_verification":counterfactual.get("baseline_contract_verification"),"common_period":counterfactual.get("common_comparison_period"),"impact":counterfactual.get("impact"),"decision":counterfactual.get("decision")}, empty="No counterfactual report recorded"))
     provenance_rows = "\n".join(_mapping_rows({key:provenance.get(key) for key in ("provider","return_basis","asset_count","provenance_verified","errors")}, empty="No dataset provenance recorded"))
     attribution_rows = "\n".join(_mapping_rows({"proposal_count":len(attribution.get("proposal_attributions",[])),"full_overlay":attribution.get("full_overlay")}, empty="No proposal attribution recorded"))
     review_rows = "\n".join(_mapping_rows(mapping_review.get("decision",{}), empty="No semantic mapping review recorded"))

@@ -52,6 +52,17 @@ def run_research_backtest(
         "available": True,
         "strategy": cfg.strategy,
         "universe_count": len(valid_assets),
+        "universe_scope": {
+            "count_scope": "available_allocation_eligible_total_or_net_return_assets_after_readiness_validation",
+            "registered_asset_count": len(assets),
+            "registered_asset_ids": sorted(asset.asset_id for asset in assets),
+            "included_asset_count": len(valid_assets),
+            "included_asset_ids": sorted(asset.asset_id for asset in valid_assets),
+            "excluded_asset_count": len(validation["excluded_assets"]),
+            "excluded_assets": validation["excluded_assets"],
+            "unavailable_asset_count": len(validation["unavailable_assets"]),
+            "unavailable_assets": validation["unavailable_assets"],
+        },
         "period": {
             "start": equity_curve[0]["date"] if equity_curve else None,
             "end": equity_curve[-1]["date"] if equity_curve else None,

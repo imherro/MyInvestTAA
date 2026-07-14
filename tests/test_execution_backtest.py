@@ -32,6 +32,22 @@ def test_default_mapping_uses_primary_proxy_only():
  assert next(x for x in rows if x['research_asset_id']=='H00300.CSI')['proxy_id']=='510300.SH'
 def test_execution_weights_keep_cash_for_unmapped_assets(): assert any('CASH' in x['weights'] for x in REPORT['monthly_allocations'])
 def test_execution_decision_is_present(): assert 'ready_for_execution_validation' in REPORT['decision']
+def test_execution_coverage_contract_names_both_denominators():
+ contract=REPORT['mapping_summary']['coverage_contract']
+ assert contract['numerator_name']=='tradable_translated_weight'
+ assert contract['denominator_name']=='non_cash_research_weight'
+ assert REPORT['mapping_summary']['tradable_weight_coverage_total_portfolio'] <= REPORT['mapping_summary']['tradable_weight_coverage']
+def test_execution_gap_metrics_preserve_binary_gate_and_add_severity():
+ summary=REPORT['mapping_summary'];gaps=summary['gap_metrics']
+ assert summary['binary_any_gap_month_ratio']==summary['untradable_month_ratio']
+ assert 0 <= gaps['average_gap_weight'] <= gaps['max_gap_weight'] <= 1
+ assert gaps['gap_month_ratio_gt_10pct'] <= gaps['gap_month_ratio_gt_5pct'] <= gaps['gap_month_ratio_gt_1pct'] <= summary['binary_any_gap_month_ratio']
+ assert set(gaps['gap_reason_breakdown'])=={'unmapped_cash','low_quality_proxy_cash','missing_price_cash','untradable_cash'}
+def test_execution_mapping_counts_have_explicit_scope():
+ scope=REPORT['mapping_summary']['mapping_count_scope']
+ assert scope['count_scope']=='research_assets_present_in_source_allocations'
+ assert scope['included_asset_count']==len(scope['included_asset_ids'])==13
+ assert sum(scope['mapping_quality_counts'].values())==13
 def test_execution_report_write_and_load(tmp_path):
  path=tmp_path/'execution.json'; write_execution_backtest_report(REPORT,path); assert load_execution_backtest_report(path)['available'] is True
 def test_execution_report_missing_file(tmp_path): assert load_execution_backtest_report(tmp_path/'missing.json')['available'] is False
