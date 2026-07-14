@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "run_id": "execution-v2-b2-cost-a422ad3f4440e024",
+  "scenario_id": "base_cost",
+  "policy_sha256": "e26e6199d76566680c8db4a7891f407a32ed9257691891a481743729c1e8f645",
+  "b1_output_set_hash": "3edefb9ede72dd40bcb5416be593699306859f5f5898dce7b7778df800174615",
+  "date_grid_hash": "e85bb71deca5eeacddc745fa5434a89fabaedf1c0fd219668bf0d5092ee336cd",
+  "artifacts": {
+    "execution_backtest_v2_b2_cost_report.json": {
+      "sha256": "7339c84f443ef616ac4fa57276e6a6f65d6981c5df982585c5959b3f35067b66",
+      "semantic_sha256": "77f4df608761fd87ec9ee5e9303428bd1f958a05a943bff10c9f77bf9a80c294"
+    },
+    "execution_v2_b2_cost_ledger.json": {
+      "sha256": "36914abec832deef8af3e3adab4b8d28fc09bba2fa3b5cc171b1454975d47bdf",
+      "semantic_sha256": "26b81b46042a5c17d2935f6146a867839904d35c0b3c31ebf98e083cccef0729"
+    },
+    "execution_v2_b1_b2_cost_comparison.json": {
+      "sha256": "75bd980598180c9a8f79ff43d2f453b709aa21039a3c128af6e5f24a16a070f8",
+      "semantic_sha256": "643dea54b87d0d045368e38fe1a4a4f1314876744dec746eac1e369213e8980c"
+    }
+  },
+  "output_set_hash": "8b2a1b411e652aefda05a5154373e072f657789111e1891944c30269b8be4aa6",
+  "verified": true,
+  "errors": []
+}

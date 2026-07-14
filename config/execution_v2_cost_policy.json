@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "EXECUTION_V2_COST_POLICY_V1",
+  "scenario_id": "base_cost",
+  "effective_date": "2021-01-01",
+  "commission": {
+    "buy_bps": 10.0,
+    "sell_bps": 10.0,
+    "minimum_fee_enabled": false
+  },
+  "slippage": {
+    "buy_bps": 5.0,
+    "sell_bps": 5.0
+  },
+  "tax": {
+    "buy_bps": 0.0,
+    "sell_bps": 0.0,
+    "source": "Explicit research assumption for ETF execution validation; not a broker schedule or market fact.",
+    "verified": true
+  },
+  "fund_expense_treatment": "embedded_in_qfq_market_price",
+  "cash_yield": 0.0,
+  "assumption_source": "Versioned research policy. Replace with a verified broker schedule before any implementation study.",
+  "evidence_status": "research_assumption_not_market_verified",
+  "production_approved": false,
+  "verified": true
+}

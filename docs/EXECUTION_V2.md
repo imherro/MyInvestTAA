@@ -50,3 +50,11 @@ The Web/API loader fails closed unless the marker, manifest, all artifact hashes
 ## B1 golden freeze
 
 `reports/execution_v2_b1_golden.json` freezes the B1 periods, gross/net metrics, gross/net curves, coverage contract, and gap metrics as one semantic business payload. Domain-contract or audit-schema changes must reproduce the same payload hash before cost or cash-yield work can begin. Internal rebalance and pending paths use the dataclasses in `backtest/execution/v2/domain.py`; outward JSON remains explicit and stable.
+
+## B2-1 transaction costs
+
+B2-1 is a separate experimental scenario layered on the verified B1 output set. It does not rewrite B1 artifacts or change the Web/API, Current Decision, mapping approvals, or formal release gate. Its commission and slippage rates are explicit research assumptions, not a broker fee schedule or observed market-impact evidence. ETF fund expenses remain embedded in adjusted market prices, taxes are explicitly configured, and cash yield is fixed at zero.
+
+Costs are calculated only from executed pre-trade and post-trade notional differences. A deferred adjustment incurs no cost while pending and is charged only on its completed recovery date. Sales execute before buys; buy notional is proportionally reduced when transaction costs would otherwise require borrowing. The ledger records the parent event, optional pending-adjustment ID, instrument, direction, pre/requested/executed values, gross notional, cost components, policy hash, and mapping quality.
+
+The B2-1 report preserves B1's exact date grid and includes a daily accounting bridge, cumulative cost curve, instrument/year/mapping-quality attribution, observation-count and elapsed-calendar annualization, and turnover stated in initial-NAV units. Its deterministic run ID binds the B1 input and output identities, cost-policy hash, scenario, date grid, strategy, and all cost-engine source hashes. A separate staged output set and commit marker fail closed on source or artifact tampering.
