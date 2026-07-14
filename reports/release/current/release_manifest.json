@@ -1,0 +1,331 @@
+{
+  "available": true,
+  "release_id": "taa-20260713-cdfe43d5e735",
+  "commit_sha": "88eac8a6986487bf1a18e1904f310d8038ab3b15",
+  "market_data_as_of": "2026-07-08",
+  "decision_date": "2026-07-13",
+  "generated_at": "2026-07-13T08:15:34+00:00",
+  "build_mode": "offline_local",
+  "network_accessed": false,
+  "inputs": [
+    {
+      "path": "reports/strategy_diagnosis_report.json",
+      "role": "canonical strategy diagnosis",
+      "sha256": "1f96ff6b6c27da8516168729a12607971225cad4478f6e010f921c64b91bebbd",
+      "semantic_hash": "e4c915c838557073d1a1275d7e42036cf8664f19b962b46d9fc734187cf9afc5",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "reports/research_backtest_report.json",
+      "role": "research backtest evidence",
+      "sha256": "bcdaaab5b20597308157d008b5346506929ee22cb6a2c8f6b24c1ff4263a6788",
+      "semantic_hash": "2e26ac8330ac29b05eda5d2753e7627e23d9b601f2b36c9c75ef6ba49028ba8e",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "reports/execution_backtest_report.json",
+      "role": "execution backtest evidence",
+      "sha256": "dc883b6246294c5d72d8b3795e2ab4dacfaf7774f3998d07d249e9e3fa08c4c0",
+      "semantic_hash": "b4bc7dc01ab5e1f6e3f110f64d675fafc20fddbbd8b2bff78c884fb69949ae4a",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "reports/execution_aware_shadow_portfolio.json",
+      "role": "execution-aware shadow snapshot",
+      "sha256": "a06ed062c63379169446ef99119a536f9cb976e44982084aa48170fcce73043e",
+      "semantic_hash": "8fa396f6b7d7ea752f25015434387bded87660792bcea07fbe54248ede13ae31",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "reports/execution_price_dataset_manifest.json",
+      "role": "execution price provenance",
+      "sha256": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd",
+      "semantic_hash": "d265f2b9505d4d7acdc8baabe0657791e788e42b1625bd568e22e7e582468573",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "reports/execution_mapping_approval_integrity_seal.json",
+      "role": "approval integrity seal",
+      "sha256": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9",
+      "semantic_hash": "08c359e12d050e5d8223d05e6b104084dfd6be1980f6f050890bed576fb41346",
+      "source_as_of": "2026-07-13",
+      "classification": "immutable_governance_artifact",
+      "dependencies": []
+    },
+    {
+      "path": "reports/execution_mapping_approval_record.json",
+      "role": "approved mapping record",
+      "sha256": "a859269a8f944f011b90660c8b52c7b5f9e86959bed0dd8334ff10d876ad0f7e",
+      "semantic_hash": "6e8bc339dbc1dc14731181ea4e5c41212aca83a9f2b6a96468635ba9d3e2e2e8",
+      "source_as_of": "2026-07-13",
+      "classification": "immutable_governance_artifact",
+      "dependencies": []
+    },
+    {
+      "path": "data/universe/asset_mapping.json",
+      "role": "research-to-execution registry",
+      "sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+      "semantic_hash": "e7a88995edfb34adfdfd38ee242c0f8799e2309229be6db5a4a29af63f41af0f",
+      "source_as_of": null,
+      "classification": "immutable_governance_artifact",
+      "dependencies": []
+    },
+    {
+      "path": "data/universe/execution_mapping_decision_ledger.json",
+      "role": "mapping decision ledger",
+      "sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+      "semantic_hash": "f551de8f6e36f99dc44d9f1603e0102f5143fb4d8ca14b3f73803ffb7fb9a1de",
+      "source_as_of": null,
+      "classification": "immutable_governance_artifact",
+      "dependencies": []
+    },
+    {
+      "path": "data/universe/execution_instrument_aliases.json",
+      "role": "canonical instrument identity registry",
+      "sha256": "48ddcd85742c6ce476b4e3a525be071a3e0f1e23dac850d42fcedfbb30d56938",
+      "semantic_hash": "ee94e9c10036ecff6d94cd4e3dfd48ecfc51dc763180f87f1540714631821906",
+      "source_as_of": null,
+      "classification": "immutable_governance_artifact",
+      "dependencies": []
+    },
+    {
+      "path": "config/execution_validation_policy.json",
+      "role": "execution validation gate policy",
+      "sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
+      "semantic_hash": "b8984178aef08182847f82cc44d74ceb8d21b8b0091795eb794c143c2f2e13f5",
+      "source_as_of": null,
+      "classification": "immutable_governance_artifact",
+      "dependencies": []
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "strategy_diagnosis_report.json",
+      "role": "strategy diagnosis snapshot",
+      "sha256": "1f96ff6b6c27da8516168729a12607971225cad4478f6e010f921c64b91bebbd",
+      "semantic_hash": "e4c915c838557073d1a1275d7e42036cf8664f19b962b46d9fc734187cf9afc5",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "research_backtest_report.json",
+      "role": "research validation snapshot",
+      "sha256": "bcdaaab5b20597308157d008b5346506929ee22cb6a2c8f6b24c1ff4263a6788",
+      "semantic_hash": "2e26ac8330ac29b05eda5d2753e7627e23d9b601f2b36c9c75ef6ba49028ba8e",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": []
+    },
+    {
+      "path": "execution_backtest_report.json",
+      "role": "execution validation snapshot",
+      "sha256": "dc883b6246294c5d72d8b3795e2ab4dacfaf7774f3998d07d249e9e3fa08c4c0",
+      "semantic_hash": "b4bc7dc01ab5e1f6e3f110f64d675fafc20fddbbd8b2bff78c884fb69949ae4a",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": [
+        "research_backtest_report.json"
+      ]
+    },
+    {
+      "path": "execution_aware_shadow_portfolio.json",
+      "role": "shadow portfolio snapshot",
+      "sha256": "a06ed062c63379169446ef99119a536f9cb976e44982084aa48170fcce73043e",
+      "semantic_hash": "8fa396f6b7d7ea752f25015434387bded87660792bcea07fbe54248ede13ae31",
+      "source_as_of": "2026-07-08",
+      "classification": "verified_external_local_input",
+      "dependencies": [
+        "research_backtest_report.json",
+        "execution_backtest_report.json"
+      ]
+    },
+    {
+      "path": "v11_current_allocation.json",
+      "role": "V11 current allocation",
+      "sha256": "37692c2c7a03899f89d1a290032167f36d4366357a8ff88731b0472b473332e8",
+      "semantic_hash": "537f43743bc7128c994bddda532b15fd4a0ac4c11ff3ec6b5264816a5de3c60f",
+      "source_as_of": "2026-07-08",
+      "classification": "rebuilt_artifact",
+      "dependencies": [
+        "strategy_diagnosis_report.json"
+      ]
+    },
+    {
+      "path": "current_market_decision.json",
+      "role": "current market decision",
+      "sha256": "54a20a61ebfd2988848fe67b3c4c7a31fa178e9cf874937eabd5cea717f26b53",
+      "semantic_hash": "c598bfc3e2281c05c19c62312de68a4e2681daae833e8071c907db74949a2825",
+      "source_as_of": "2026-07-08",
+      "classification": "rebuilt_artifact",
+      "dependencies": [
+        "v11_current_allocation.json",
+        "execution_aware_shadow_portfolio.json"
+      ]
+    },
+    {
+      "path": "ui_route_inventory.json",
+      "role": "final UI route inventory",
+      "sha256": "7ef55e55d5a4ce42416e15ee86b0906702b5a6b3bc0d5cb302ef42dc5b22bdf1",
+      "semantic_hash": "7fe43c62c3f711cd6653588c0b6d52577f7845d21bb985beb1cf9eac76a622b7",
+      "source_as_of": "2026-07-08",
+      "classification": "rebuilt_artifact",
+      "dependencies": []
+    },
+    {
+      "path": "legacy_cleanup_report.json",
+      "role": "legacy UI cleanup evidence",
+      "sha256": "05d29c8abe80fcead2ae9537fe47b6bb71fa3853009516350006358762e56c90",
+      "semantic_hash": "8098532932249e665f54eb7471b11e7183f88a74ad27b9c1228dbd589f773cff",
+      "source_as_of": "2026-07-08",
+      "classification": "rebuilt_artifact",
+      "dependencies": [
+        "ui_route_inventory.json"
+      ]
+    },
+    {
+      "path": "system_acceptance_report.json",
+      "role": "system acceptance",
+      "sha256": "0c1988ff5ee40e2c6f10e6fd2e38c28ccd144e1080b94f8f6a7ed40ee811d261",
+      "semantic_hash": "71420be08f0c707b5a3ce48c436ec0485b72b1e5aa13db46561c637629d76de7",
+      "source_as_of": "2026-07-08",
+      "classification": "rebuilt_artifact",
+      "dependencies": [
+        "current_market_decision.json"
+      ]
+    }
+  ],
+  "dependency_graph": {
+    "steps": [
+      {
+        "name": "local_input_preflight",
+        "dependencies": []
+      },
+      {
+        "name": "strategy_diagnosis",
+        "dependencies": [
+          "local_input_preflight"
+        ]
+      },
+      {
+        "name": "v11_current_allocation",
+        "dependencies": [
+          "strategy_diagnosis"
+        ]
+      },
+      {
+        "name": "research_backtest_validation",
+        "dependencies": [
+          "local_input_preflight"
+        ]
+      },
+      {
+        "name": "execution_backtest_validation",
+        "dependencies": [
+          "research_backtest_validation"
+        ]
+      },
+      {
+        "name": "approval_integrity_verification",
+        "dependencies": [
+          "local_input_preflight"
+        ]
+      },
+      {
+        "name": "execution_aware_shadow_portfolio",
+        "dependencies": [
+          "research_backtest_validation",
+          "execution_backtest_validation",
+          "approval_integrity_verification"
+        ]
+      },
+      {
+        "name": "current_market_decision",
+        "dependencies": [
+          "v11_current_allocation",
+          "execution_aware_shadow_portfolio"
+        ]
+      },
+      {
+        "name": "system_acceptance_report",
+        "dependencies": [
+          "current_market_decision"
+        ]
+      },
+      {
+        "name": "release_manifest",
+        "dependencies": [
+          "system_acceptance_report"
+        ]
+      }
+    ]
+  },
+  "dependency_graph_hash": "1c30c389d141a5c151e8af9318ceb6418f777050a72a3c54d5ea34300c72d070",
+  "protected_file_hashes": {
+    "baseline_commit": "6183bfdf6fcf5225ac141c6b670cda97eb00ca97",
+    "verified": true,
+    "files": [
+      {
+        "path": "backtest/taa/engine.py",
+        "baseline_sha256": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
+        "actual_sha256": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
+        "verified": true
+      },
+      {
+        "path": "data_pipeline/strategy_diagnosis.py",
+        "baseline_sha256": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
+        "actual_sha256": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
+        "verified": true
+      },
+      {
+        "path": "config/execution_validation_policy.json",
+        "baseline_sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
+        "actual_sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
+        "verified": true
+      },
+      {
+        "path": "data/universe/asset_mapping.json",
+        "baseline_sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+        "actual_sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+        "verified": true
+      },
+      {
+        "path": "data/universe/execution_mapping_decision_ledger.json",
+        "baseline_sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+        "actual_sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+        "verified": true
+      }
+    ],
+    "errors": []
+  },
+  "reproducibility": {
+    "verified": true,
+    "first_build_hash": "cdfe43d5e735287e38fe64ca32e16b81c4d383a2f2b58e2e411d9e925e8f4225",
+    "second_build_hash": "cdfe43d5e735287e38fe64ca32e16b81c4d383a2f2b58e2e411d9e925e8f4225",
+    "artifact_hash_differences": []
+  },
+  "acceptance_report_hash": "0c1988ff5ee40e2c6f10e6fd2e38c28ccd144e1080b94f8f6a7ed40ee811d261",
+  "raw_release_hash": "4d2529a3128715b97baffb277cd68a676dbf58ae354187ce0ecb3b6a16b7e6a8",
+  "semantic_release_hash": "252240197152ff5d37f112950e2e464f972b38d24cf87d4d7b50b95c2e20780c",
+  "production_boundary": {
+    "verified": true,
+    "v11_candidate": true,
+    "shadow_production_approved": false,
+    "execution_validation_ready": false,
+    "production_actionable": false,
+    "trading_instruction": false,
+    "forbidden_field_paths": []
+  },
+  "verified": true,
+  "errors": []
+}

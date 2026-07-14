@@ -1,0 +1,134 @@
+{
+  "available": true,
+  "release_id": "taa-20260713-cdfe43d5e735",
+  "generated_at": "2026-07-13T08:15:34+00:00",
+  "system_acceptance_passed": true,
+  "project_completion_candidate": true,
+  "data_integrity": {
+    "verified": true,
+    "input_count": 11
+  },
+  "strategy_integrity": {
+    "verified": true
+  },
+  "v11_snapshot_integrity": {
+    "verified": true,
+    "semantic_verified": true,
+    "errors": []
+  },
+  "execution_integrity": {
+    "verified": true,
+    "execution_validation_ready": false,
+    "reasons": [
+      "tradable weight coverage is below 70%",
+      "untradable month ratio exceeds 20%"
+    ],
+    "nonblocking_when_not_ready": true
+  },
+  "mapping_governance_integrity": {
+    "verified": true,
+    "errors": []
+  },
+  "shadow_integrity": {
+    "verified": true,
+    "production_approved": false
+  },
+  "current_decision_integrity": {
+    "verified": true,
+    "status": "user_review_ready"
+  },
+  "identifier_integrity": {
+    "verified": true,
+    "unresolved_ids": []
+  },
+  "temporal_integrity": {
+    "verified": true,
+    "market_data_as_of": "2026-07-08",
+    "decision_date": "2026-07-13"
+  },
+  "reproducibility": {
+    "verified": true,
+    "first_build_hash": "cdfe43d5e735287e38fe64ca32e16b81c4d383a2f2b58e2e411d9e925e8f4225",
+    "second_build_hash": "cdfe43d5e735287e38fe64ca32e16b81c4d383a2f2b58e2e411d9e925e8f4225",
+    "artifact_hash_differences": []
+  },
+  "production_boundary": {
+    "verified": true,
+    "v11_candidate": true,
+    "shadow_production_approved": false,
+    "execution_validation_ready": false,
+    "production_actionable": false,
+    "trading_instruction": false,
+    "forbidden_field_paths": []
+  },
+  "api_web_contract": {
+    "verified": true,
+    "read_only_release_apis": [
+      "/api/system/release-manifest",
+      "/api/system/acceptance"
+    ],
+    "primary_pages": [
+      "/",
+      "/current-decision",
+      "/v11-current-allocation",
+      "/research-validation",
+      "/system-status"
+    ],
+    "network_accessed": false
+  },
+  "documentation": {
+    "verified": true,
+    "files": [
+      "README.md",
+      "docs/ARCHITECTURE.md",
+      "docs/OFFLINE_BUILD.md",
+      "docs/OPERATIONS.md",
+      "docs/DATA_CONTRACTS.md",
+      "docs/LIMITATIONS.md"
+    ],
+    "missing": []
+  },
+  "protected_files": {
+    "baseline_commit": "6183bfdf6fcf5225ac141c6b670cda97eb00ca97",
+    "verified": true,
+    "files": [
+      {
+        "path": "backtest/taa/engine.py",
+        "baseline_sha256": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
+        "actual_sha256": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
+        "verified": true
+      },
+      {
+        "path": "data_pipeline/strategy_diagnosis.py",
+        "baseline_sha256": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
+        "actual_sha256": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
+        "verified": true
+      },
+      {
+        "path": "config/execution_validation_policy.json",
+        "baseline_sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
+        "actual_sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
+        "verified": true
+      },
+      {
+        "path": "data/universe/asset_mapping.json",
+        "baseline_sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+        "actual_sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+        "verified": true
+      },
+      {
+        "path": "data/universe/execution_mapping_decision_ledger.json",
+        "baseline_sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+        "actual_sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+        "verified": true
+      }
+    ],
+    "errors": []
+  },
+  "known_nonblocking_conditions": [
+    "Execution Validation remains false because coverage and untradable-month thresholds are not met.",
+    "Current Decision is for user review and is not production actionable.",
+    "The existing Starlette/httpx deprecation warning remains."
+  ],
+  "blocking_errors": []
+}

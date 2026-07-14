@@ -1,0 +1,152 @@
+{
+  "available": true,
+  "status": "shadow_only",
+  "production_approved": false,
+  "source_strategy": "RESEARCH_TAA_MVP",
+  "source_allocation_date": "2026-06-30",
+  "data_as_of": "2026-07-08",
+  "research_weights": {
+    "931743CNY010.CSI": 0.1,
+    "931688CNY010.CSI": 0.1,
+    "000688CNY01.CSI": 0.25,
+    "H00905.CSI": 0.25,
+    "CASH": 0.3
+  },
+  "execution_weights": {
+    "510500.SH": 0.25,
+    "512760.SH": 0.1,
+    "588000.SH": 0.25,
+    "CASH": 0.4
+  },
+  "cash_breakdown": {
+    "research_cash": 0.3,
+    "unmapped_cash": 0.0,
+    "research_only_cash": 0.1,
+    "rejected_proxy_cash": 0.0,
+    "low_quality_proxy_cash": 0.0,
+    "missing_price_cash": 0.0
+  },
+  "mapping_explanations": [
+    {
+      "research_asset_id": "931743CNY010.CSI",
+      "research_weight": 0.1,
+      "destination": "512760.SH",
+      "mapping_quality": "medium",
+      "decision_status": "approved_for_execution_validation",
+      "reason": "approved_or_registered_execution_mapping",
+      "production_approved": false
+    },
+    {
+      "research_asset_id": "931688CNY010.CSI",
+      "research_weight": 0.1,
+      "destination": "CASH",
+      "mapping_quality": "none",
+      "decision_status": "research_only",
+      "reason": "research_only_cash",
+      "production_approved": false
+    },
+    {
+      "research_asset_id": "000688CNY01.CSI",
+      "research_weight": 0.25,
+      "destination": "588000.SH",
+      "mapping_quality": "high",
+      "decision_status": null,
+      "reason": "approved_or_registered_execution_mapping",
+      "production_approved": false
+    },
+    {
+      "research_asset_id": "H00905.CSI",
+      "research_weight": 0.25,
+      "destination": "510500.SH",
+      "mapping_quality": "high",
+      "decision_status": null,
+      "reason": "approved_or_registered_execution_mapping",
+      "production_approved": false
+    },
+    {
+      "research_asset_id": "CASH",
+      "research_weight": 0.3,
+      "destination": "CASH",
+      "reason": "research_cash"
+    }
+  ],
+  "constraint_checks": {
+    "single_etf_max": 0.35,
+    "weight_sum": 1.0,
+    "violations": []
+  },
+  "data_provenance": {
+    "provider": "tushare",
+    "return_basis": "qfq",
+    "provenance_verified": true,
+    "dataset_generated_at": "2026-07-13T03:47:41+00:00",
+    "asset_count": 13
+  },
+  "approval_integrity": {
+    "approval_record_verified": true,
+    "package_verified": true,
+    "mapping_verified": true,
+    "ledger_verified": true,
+    "seal_verified": true,
+    "errors": []
+  },
+  "snapshot_integrity": {
+    "research_report_hash": "bcdaaab5b20597308157d008b5346506929ee22cb6a2c8f6b24c1ff4263a6788",
+    "mapping_registry_hash": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+    "decision_ledger_hash": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+    "approval_record_hash": "a859269a8f944f011b90660c8b52c7b5f9e86959bed0dd8334ff10d876ad0f7e",
+    "approval_seal_hash": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9",
+    "price_manifest_hash": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd",
+    "verified": true,
+    "errors": []
+  },
+  "price_as_of_by_proxy": {
+    "510500.SH": {
+      "requested_as_of": "2026-07-08",
+      "actual_price_date": "2026-07-08",
+      "staleness_calendar_days": 0,
+      "usable": true
+    },
+    "512760.SH": {
+      "requested_as_of": "2026-07-08",
+      "actual_price_date": "2026-07-08",
+      "staleness_calendar_days": 0,
+      "usable": true
+    },
+    "588000.SH": {
+      "requested_as_of": "2026-07-08",
+      "actual_price_date": "2026-07-08",
+      "staleness_calendar_days": 0,
+      "usable": true
+    }
+  },
+  "approved_mapping_records": [
+    {
+      "research_asset_id": "931743CNY010.CSI",
+      "approved_proxy": "512760.SH",
+      "approved_mapping_quality": "medium",
+      "approval_record": "execution_mapping_approval_record.json",
+      "production_approved": false
+    }
+  ],
+  "frozen_research_only_assets": [
+    "931688CNY010.CSI",
+    "H00805.CSI"
+  ],
+  "rejected_proxy_assets": [
+    "H20590.CSI",
+    "H21152.CSI"
+  ],
+  "warnings": [
+    "This is an experimental execution-aware shadow allocation. It is not a production portfolio or trading instruction.",
+    "V11 remains the existing production candidate and is not replaced by this shadow allocation.",
+    "Weights are research ratios only; no orders, quantities, or target prices are produced."
+  ],
+  "transaction_status": {
+    "available": true,
+    "status": "idle",
+    "pending": false,
+    "commit_marker": false,
+    "errors": []
+  }
+}

@@ -1,0 +1,425 @@
+{
+  "available": true,
+  "verified": true,
+  "primary_navigation_count": 5,
+  "routes": [
+    {
+      "route": "/",
+      "title": "系统首页",
+      "current_user_value": "primary",
+      "linked_from_global_navigation": true,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "tests/test_system_release.py"
+      ],
+      "action": "keep",
+      "reason": "普通用户状态和入口"
+    },
+    {
+      "route": "/current-decision",
+      "title": "当前配置决策",
+      "current_user_value": "primary",
+      "linked_from_global_navigation": true,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "tests/test_system_release.py"
+      ],
+      "action": "keep",
+      "reason": "人工审核的综合快照"
+    },
+    {
+      "route": "/v11-current-allocation",
+      "title": "V11 模型配置",
+      "current_user_value": "primary",
+      "linked_from_global_navigation": true,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "tests/test_system_release.py"
+      ],
+      "action": "keep",
+      "reason": "正式候选模型输出"
+    },
+    {
+      "route": "/research-validation",
+      "title": "研究与执行验证",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": true,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "tests/test_system_release.py"
+      ],
+      "action": "aggregate",
+      "reason": "高级研究入口"
+    },
+    {
+      "route": "/system-status",
+      "title": "系统与数据状态",
+      "current_user_value": "audit",
+      "linked_from_global_navigation": true,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "tests/test_system_release.py"
+      ],
+      "action": "keep",
+      "reason": "发布与数据审计"
+    },
+    {
+      "route": "/research-backtest",
+      "title": "Research Backtest",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "研究资产层历史验证"
+    },
+    {
+      "route": "/execution-backtest",
+      "title": "Execution Backtest",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "真实 ETF 执行验证"
+    },
+    {
+      "route": "/shadow-portfolio",
+      "title": "Shadow Portfolio",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "实验性 Shadow 快照"
+    },
+    {
+      "route": "/diagnosis",
+      "title": "Diagnosis",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "策略诊断审计"
+    },
+    {
+      "route": "/production-readiness",
+      "title": "Production Readiness",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "生产候选证据"
+    },
+    {
+      "route": "/research-universe",
+      "title": "Research Universe",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "研究和执行资产池审计"
+    },
+    {
+      "route": "/benchmark-validation",
+      "title": "Benchmark Validation",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "基准验证证据"
+    },
+    {
+      "route": "/strategy-governance",
+      "title": "Strategy Governance",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "策略治理证据"
+    },
+    {
+      "route": "/selection-research",
+      "title": "Selection Research",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "研究选择证据"
+    },
+    {
+      "route": "/strategy-promotion",
+      "title": "Strategy Promotion",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "策略晋级证据"
+    },
+    {
+      "route": "/adaptive-strategy",
+      "title": "Adaptive Strategy",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "历史研究页面"
+    },
+    {
+      "route": "/risk-exposure",
+      "title": "Risk Exposure",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "风险暴露审计"
+    },
+    {
+      "route": "/final-strategy",
+      "title": "Final Strategy",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "历史策略汇总"
+    },
+    {
+      "route": "/attribution",
+      "title": "Attribution",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "existing API/Web tests"
+      ],
+      "action": "hide",
+      "reason": "历史归因分析"
+    },
+    {
+      "route": "/legacy-dashboard",
+      "title": "Legacy Dashboard",
+      "current_user_value": "none",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "legacy compatibility tests"
+      ],
+      "action": "archive",
+      "reason": "早期样例和研发 Dashboard"
+    },
+    {
+      "route": "/research",
+      "title": "Research",
+      "current_user_value": "none",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "legacy compatibility tests"
+      ],
+      "action": "archive",
+      "reason": "早期研究页"
+    },
+    {
+      "route": "/pipeline",
+      "title": "Pipeline",
+      "current_user_value": "none",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "legacy compatibility tests"
+      ],
+      "action": "archive",
+      "reason": "早期数据管道页"
+    },
+    {
+      "route": "/real-research",
+      "title": "Real Research",
+      "current_user_value": "none",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "legacy compatibility tests"
+      ],
+      "action": "archive",
+      "reason": "早期真实数据页"
+    },
+    {
+      "route": "/validation",
+      "title": "Validation",
+      "current_user_value": "none",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "legacy compatibility tests"
+      ],
+      "action": "archive",
+      "reason": "早期验证页"
+    },
+    {
+      "route": "/experiment",
+      "title": "Experiment",
+      "current_user_value": "none",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "legacy compatibility tests"
+      ],
+      "action": "archive",
+      "reason": "早期实验页"
+    },
+    {
+      "route": "/quality",
+      "title": "Quality",
+      "current_user_value": "none",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [],
+      "test_dependency": [
+        "legacy compatibility tests"
+      ],
+      "action": "archive",
+      "reason": "早期数据质量页"
+    }
+  ]
+}

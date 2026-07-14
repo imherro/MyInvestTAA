@@ -1,0 +1,46 @@
+{
+  "available": true,
+  "deleted_routes": [],
+  "deleted_modules": [],
+  "hidden_routes": [
+    "/research-backtest",
+    "/execution-backtest",
+    "/shadow-portfolio",
+    "/diagnosis",
+    "/production-readiness",
+    "/research-universe",
+    "/benchmark-validation",
+    "/strategy-governance",
+    "/selection-research",
+    "/strategy-promotion",
+    "/adaptive-strategy",
+    "/risk-exposure",
+    "/final-strategy",
+    "/attribution"
+  ],
+  "archived_routes": [
+    "/legacy-dashboard",
+    "/research",
+    "/pipeline",
+    "/real-research",
+    "/validation",
+    "/experiment",
+    "/quality"
+  ],
+  "retained_backend_dependencies": [
+    "Strategy Diagnosis",
+    "Research Backtest",
+    "Execution Backtest",
+    "Shadow builder",
+    "mapping approval and integrity",
+    "transaction recovery"
+  ],
+  "visible_link_count_before": 20,
+  "visible_link_count_after": 5,
+  "proof": {
+    "import_scan_passed": true,
+    "route_reference_scan_passed": true,
+    "test_reference_scan_passed": true,
+    "release_dependency_scan_passed": true
+  }
+}
