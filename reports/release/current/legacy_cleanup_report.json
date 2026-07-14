@@ -1,46 +1,97 @@
 {
   "available": true,
+  "verified": true,
   "deleted_routes": [],
   "deleted_modules": [],
   "hidden_routes": [
-    "/research-backtest",
-    "/execution-backtest",
-    "/shadow-portfolio",
-    "/diagnosis",
-    "/production-readiness",
-    "/research-universe",
-    "/benchmark-validation",
-    "/strategy-governance",
-    "/selection-research",
-    "/strategy-promotion",
     "/adaptive-strategy",
-    "/risk-exposure",
+    "/attribution",
+    "/benchmark-validation",
+    "/diagnosis",
+    "/execution-backtest",
     "/final-strategy",
-    "/attribution"
+    "/production-readiness",
+    "/research-backtest",
+    "/research-universe",
+    "/risk-exposure",
+    "/selection-research",
+    "/shadow-portfolio",
+    "/strategy-governance",
+    "/strategy-promotion"
   ],
   "archived_routes": [
-    "/legacy-dashboard",
-    "/research",
-    "/pipeline",
-    "/real-research",
-    "/validation",
     "/experiment",
-    "/quality"
+    "/legacy-dashboard",
+    "/pipeline",
+    "/quality",
+    "/real-research",
+    "/research",
+    "/validation"
   ],
   "retained_backend_dependencies": [
-    "Strategy Diagnosis",
-    "Research Backtest",
-    "Execution Backtest",
-    "Shadow builder",
-    "mapping approval and integrity",
-    "transaction recovery"
+    "data_pipeline/strategy_diagnosis.py",
+    "backtest/research/engine.py",
+    "backtest/execution/engine.py",
+    "backtest/execution/shadow_portfolio.py",
+    "backtest/execution/approval_integrity.py",
+    "scripts/recover_execution_mapping_transaction.py",
+    "scripts/recover_system_release.py"
   ],
-  "visible_link_count_before": 20,
+  "visible_link_count_before": 26,
   "visible_link_count_after": 5,
   "proof": {
-    "import_scan_passed": true,
-    "route_reference_scan_passed": true,
-    "test_reference_scan_passed": true,
-    "release_dependency_scan_passed": true
-  }
+    "route_scan": {
+      "scanned_count": 26,
+      "classified_count": 26,
+      "unclassified_routes": [],
+      "verified": true
+    },
+    "reference_scan": {
+      "primary_count": 5,
+      "navigation_routes": [
+        "/",
+        "/current-decision",
+        "/research-validation",
+        "/system-status",
+        "/v11-current-allocation"
+      ],
+      "hidden_or_archived_in_primary": [],
+      "verified": true
+    },
+    "test_dependency_scan": {
+      "retained_route_count": 21,
+      "route_test_references": [
+        "/adaptive-strategy",
+        "/attribution",
+        "/benchmark-validation",
+        "/diagnosis",
+        "/execution-backtest",
+        "/experiment",
+        "/final-strategy",
+        "/legacy-dashboard",
+        "/pipeline",
+        "/production-readiness",
+        "/quality",
+        "/real-research",
+        "/research",
+        "/research-backtest",
+        "/research-universe",
+        "/risk-exposure",
+        "/selection-research",
+        "/shadow-portfolio",
+        "/strategy-governance",
+        "/strategy-promotion",
+        "/validation"
+      ],
+      "explicit_reason_routes": [],
+      "missing_test_or_reason": [],
+      "verified": true
+    },
+    "release_dependency_scan": {
+      "required_module_count": 7,
+      "missing_modules": [],
+      "verified": true
+    }
+  },
+  "errors": []
 }

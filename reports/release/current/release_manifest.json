@@ -1,7 +1,7 @@
 {
   "available": true,
-  "release_id": "taa-20260713-cdfe43d5e735",
-  "commit_sha": "88eac8a6986487bf1a18e1904f310d8038ab3b15",
+  "release_id": "taa-20260713-563adfdf5e37",
+  "commit_sha": "e25b0236778335773509427751b4c20b3de44e96",
   "market_data_as_of": "2026-07-08",
   "decision_date": "2026-07-13",
   "generated_at": "2026-07-13T08:15:34+00:00",
@@ -153,8 +153,8 @@
     {
       "path": "v11_current_allocation.json",
       "role": "V11 current allocation",
-      "sha256": "37692c2c7a03899f89d1a290032167f36d4366357a8ff88731b0472b473332e8",
-      "semantic_hash": "537f43743bc7128c994bddda532b15fd4a0ac4c11ff3ec6b5264816a5de3c60f",
+      "sha256": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
+      "semantic_hash": "796782686ad0ee5f8092a3eb15ff7e325b723b5cff0fc5edb342fd698a6bde2b",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -164,8 +164,8 @@
     {
       "path": "current_market_decision.json",
       "role": "current market decision",
-      "sha256": "54a20a61ebfd2988848fe67b3c4c7a31fa178e9cf874937eabd5cea717f26b53",
-      "semantic_hash": "c598bfc3e2281c05c19c62312de68a4e2681daae833e8071c907db74949a2825",
+      "sha256": "b468a1fd57ea926def79ddc8c45e5bcf6bc6ca5c47e57f509697e4d8ee8001fc",
+      "semantic_hash": "6e03a629add7af6fc6f6231b32688f21247970a98ad27fb8cc30d9306e922a57",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -176,8 +176,8 @@
     {
       "path": "ui_route_inventory.json",
       "role": "final UI route inventory",
-      "sha256": "7ef55e55d5a4ce42416e15ee86b0906702b5a6b3bc0d5cb302ef42dc5b22bdf1",
-      "semantic_hash": "7fe43c62c3f711cd6653588c0b6d52577f7845d21bb985beb1cf9eac76a622b7",
+      "sha256": "7329427e40db5965e58d5746413565f1ab1ddf89b48dba7de10f54d799e0de71",
+      "semantic_hash": "8d069de5ffe3f6589e876823b32acc3b7b992c3dc2a9519d99bd11b9a75c2d56",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": []
@@ -185,8 +185,8 @@
     {
       "path": "legacy_cleanup_report.json",
       "role": "legacy UI cleanup evidence",
-      "sha256": "05d29c8abe80fcead2ae9537fe47b6bb71fa3853009516350006358762e56c90",
-      "semantic_hash": "8098532932249e665f54eb7471b11e7183f88a74ad27b9c1228dbd589f773cff",
+      "sha256": "220259378f1d51bdabe5f89a22cc02a4df3e0d46dd0541e87e54e6c33bd0c5cf",
+      "semantic_hash": "4cc4dcf749cee03e59b874d9578e095c1972dbf372d0777bc32171245fbd2ebc",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -196,8 +196,8 @@
     {
       "path": "system_acceptance_report.json",
       "role": "system acceptance",
-      "sha256": "0c1988ff5ee40e2c6f10e6fd2e38c28ccd144e1080b94f8f6a7ed40ee811d261",
-      "semantic_hash": "71420be08f0c707b5a3ce48c436ec0485b72b1e5aa13db46561c637629d76de7",
+      "sha256": "6ffc3f48fe1e22683fb4e6ab4b683c4aa080935ee9da07b7bf6bfad8b9e24c35",
+      "semantic_hash": "e326de4cf057f7e4027fdb2f18a7aea4bae049be30f90075639b4fdd363e51cc",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -310,13 +310,16 @@
   },
   "reproducibility": {
     "verified": true,
-    "first_build_hash": "cdfe43d5e735287e38fe64ca32e16b81c4d383a2f2b58e2e411d9e925e8f4225",
-    "second_build_hash": "cdfe43d5e735287e38fe64ca32e16b81c4d383a2f2b58e2e411d9e925e8f4225",
+    "input_fingerprint": "563adfdf5e378432a8c1eed059010037c7efdb036bc9aa95000efe33c054b929",
+    "first_candidate_raw_hash": "cd4b0c755f20d6c0aeab7199088603f0111a0797a4af5200607d5149391d2308",
+    "second_candidate_raw_hash": "cd4b0c755f20d6c0aeab7199088603f0111a0797a4af5200607d5149391d2308",
+    "first_candidate_semantic_hash": "a641c3ef7dd0f358f7afa1e952394c61678515858f45d91bf9ba52df636c32ac",
+    "second_candidate_semantic_hash": "a641c3ef7dd0f358f7afa1e952394c61678515858f45d91bf9ba52df636c32ac",
     "artifact_hash_differences": []
   },
-  "acceptance_report_hash": "0c1988ff5ee40e2c6f10e6fd2e38c28ccd144e1080b94f8f6a7ed40ee811d261",
-  "raw_release_hash": "4d2529a3128715b97baffb277cd68a676dbf58ae354187ce0ecb3b6a16b7e6a8",
-  "semantic_release_hash": "252240197152ff5d37f112950e2e464f972b38d24cf87d4d7b50b95c2e20780c",
+  "acceptance_report_hash": "6ffc3f48fe1e22683fb4e6ab4b683c4aa080935ee9da07b7bf6bfad8b9e24c35",
+  "raw_release_hash": "efd985fe9422171e868e220e8770f332d4fe8de20d4d06516e5761facb762463",
+  "semantic_release_hash": "5fe79890f36f73c3e12f944b769f44f02e4a3c695693451feb4bb71011f5df62",
   "production_boundary": {
     "verified": true,
     "v11_candidate": true,

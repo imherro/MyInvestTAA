@@ -1,9 +1,27 @@
 {
   "available": true,
-  "release_id": "taa-20260713-cdfe43d5e735",
+  "release_id": "taa-20260713-563adfdf5e37",
   "generated_at": "2026-07-13T08:15:34+00:00",
   "system_acceptance_passed": true,
   "project_completion_candidate": true,
+  "required_gates": [
+    "data_integrity",
+    "strategy_integrity",
+    "v11_snapshot_integrity",
+    "execution_integrity",
+    "mapping_governance_integrity",
+    "shadow_integrity",
+    "current_decision_integrity",
+    "identifier_integrity",
+    "temporal_integrity",
+    "production_boundary",
+    "reproducibility",
+    "api_web_contract",
+    "ui_information_architecture",
+    "legacy_cleanup",
+    "documentation",
+    "protected_files"
+  ],
   "data_integrity": {
     "verified": true,
     "input_count": 11
@@ -35,7 +53,15 @@
   },
   "current_decision_integrity": {
     "verified": true,
-    "status": "user_review_ready"
+    "status": "user_review_ready",
+    "staged_v11_dependency": {
+      "verified": true,
+      "artifact_path": "v11_current_allocation.json",
+      "staged_v11_hash": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
+      "current_decision_v11_hash": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
+      "payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464",
+      "root_v11_excluded": true
+    }
   },
   "identifier_integrity": {
     "verified": true,
@@ -48,8 +74,11 @@
   },
   "reproducibility": {
     "verified": true,
-    "first_build_hash": "cdfe43d5e735287e38fe64ca32e16b81c4d383a2f2b58e2e411d9e925e8f4225",
-    "second_build_hash": "cdfe43d5e735287e38fe64ca32e16b81c4d383a2f2b58e2e411d9e925e8f4225",
+    "input_fingerprint": "563adfdf5e378432a8c1eed059010037c7efdb036bc9aa95000efe33c054b929",
+    "first_candidate_raw_hash": "cd4b0c755f20d6c0aeab7199088603f0111a0797a4af5200607d5149391d2308",
+    "second_candidate_raw_hash": "cd4b0c755f20d6c0aeab7199088603f0111a0797a4af5200607d5149391d2308",
+    "first_candidate_semantic_hash": "a641c3ef7dd0f358f7afa1e952394c61678515858f45d91bf9ba52df636c32ac",
+    "second_candidate_semantic_hash": "a641c3ef7dd0f358f7afa1e952394c61678515858f45d91bf9ba52df636c32ac",
     "artifact_hash_differences": []
   },
   "production_boundary": {
@@ -63,6 +92,44 @@
   },
   "api_web_contract": {
     "verified": true,
+    "network_accessed": false,
+    "network_import_matches": [],
+    "primary_navigation": [
+      "/",
+      "/current-decision",
+      "/v11-current-allocation",
+      "/research-validation",
+      "/system-status"
+    ],
+    "page_results": [
+      {
+        "route": "/",
+        "verified": true,
+        "errors": []
+      },
+      {
+        "route": "/current-decision",
+        "verified": true,
+        "errors": []
+      },
+      {
+        "route": "/v11-current-allocation",
+        "verified": true,
+        "errors": []
+      },
+      {
+        "route": "/research-validation",
+        "verified": true,
+        "errors": []
+      },
+      {
+        "route": "/system-status",
+        "verified": true,
+        "errors": []
+      }
+    ],
+    "route_inventory_verified": true,
+    "errors": [],
     "read_only_release_apis": [
       "/api/system/release-manifest",
       "/api/system/acceptance"
@@ -73,8 +140,109 @@
       "/v11-current-allocation",
       "/research-validation",
       "/system-status"
+    ]
+  },
+  "ui_information_architecture": {
+    "verified": true,
+    "route_scan_count": 26,
+    "unclassified_routes": []
+  },
+  "legacy_cleanup": {
+    "available": true,
+    "verified": true,
+    "deleted_routes": [],
+    "deleted_modules": [],
+    "hidden_routes": [
+      "/adaptive-strategy",
+      "/attribution",
+      "/benchmark-validation",
+      "/diagnosis",
+      "/execution-backtest",
+      "/final-strategy",
+      "/production-readiness",
+      "/research-backtest",
+      "/research-universe",
+      "/risk-exposure",
+      "/selection-research",
+      "/shadow-portfolio",
+      "/strategy-governance",
+      "/strategy-promotion"
     ],
-    "network_accessed": false
+    "archived_routes": [
+      "/experiment",
+      "/legacy-dashboard",
+      "/pipeline",
+      "/quality",
+      "/real-research",
+      "/research",
+      "/validation"
+    ],
+    "retained_backend_dependencies": [
+      "data_pipeline/strategy_diagnosis.py",
+      "backtest/research/engine.py",
+      "backtest/execution/engine.py",
+      "backtest/execution/shadow_portfolio.py",
+      "backtest/execution/approval_integrity.py",
+      "scripts/recover_execution_mapping_transaction.py",
+      "scripts/recover_system_release.py"
+    ],
+    "visible_link_count_before": 26,
+    "visible_link_count_after": 5,
+    "proof": {
+      "route_scan": {
+        "scanned_count": 26,
+        "classified_count": 26,
+        "unclassified_routes": [],
+        "verified": true
+      },
+      "reference_scan": {
+        "primary_count": 5,
+        "navigation_routes": [
+          "/",
+          "/current-decision",
+          "/research-validation",
+          "/system-status",
+          "/v11-current-allocation"
+        ],
+        "hidden_or_archived_in_primary": [],
+        "verified": true
+      },
+      "test_dependency_scan": {
+        "retained_route_count": 21,
+        "route_test_references": [
+          "/adaptive-strategy",
+          "/attribution",
+          "/benchmark-validation",
+          "/diagnosis",
+          "/execution-backtest",
+          "/experiment",
+          "/final-strategy",
+          "/legacy-dashboard",
+          "/pipeline",
+          "/production-readiness",
+          "/quality",
+          "/real-research",
+          "/research",
+          "/research-backtest",
+          "/research-universe",
+          "/risk-exposure",
+          "/selection-research",
+          "/shadow-portfolio",
+          "/strategy-governance",
+          "/strategy-promotion",
+          "/validation"
+        ],
+        "explicit_reason_routes": [],
+        "missing_test_or_reason": [],
+        "verified": true
+      },
+      "release_dependency_scan": {
+        "required_module_count": 7,
+        "missing_modules": [],
+        "verified": true
+      }
+    },
+    "errors": []
   },
   "documentation": {
     "verified": true,

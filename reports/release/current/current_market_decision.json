@@ -179,6 +179,7 @@
       "errors": [],
       "actual_snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464"
     },
+    "release_artifact_dependency": "v11_current_allocation.json",
     "message": null
   },
   "research_allocation": {
@@ -701,11 +702,12 @@
     "v11_current_allocation": {
       "source": "v11_current_allocation",
       "path": "reports/v11_current_allocation.json",
-      "sha256": "37692c2c7a03899f89d1a290032167f36d4366357a8ff88731b0472b473332e8",
+      "sha256": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
       "available": true,
       "source_as_of": "2026-07-08",
       "required": false,
-      "temporal_role": "market_data"
+      "temporal_role": "market_data",
+      "release_artifact_path": "v11_current_allocation.json"
     }
   },
   "source_hash_verification": {
@@ -719,5 +721,13 @@
     "This report is for user review only and is not a production trading instruction.",
     "V11 remains unchanged and is not replaced by the Research or Shadow allocation.",
     "No orders, quantities, shares, target prices, or merged portfolio are produced."
-  ]
+  ],
+  "release_dependencies": {
+    "v11_current_allocation": {
+      "path": "v11_current_allocation.json",
+      "sha256": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
+      "snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464",
+      "declared": true
+    }
+  }
 }

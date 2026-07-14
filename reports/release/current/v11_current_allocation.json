@@ -180,10 +180,12 @@
     "snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464",
     "verified": true,
     "semantic_verified": true,
-    "errors": []
+    "errors": [],
+    "actual_snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464"
   },
   "errors": [],
   "warnings": [
     "This is an offline V11 model allocation snapshot, not an order or trading instruction."
-  ]
+  ],
+  "release_artifact_dependency": "v11_current_allocation.json"
 }
