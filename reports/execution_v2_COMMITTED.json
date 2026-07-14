@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "strategy": "EXECUTION_PROXY_V2_EXPERIMENTAL",
+  "output_set_hash": "db0152090b3bb4eb97bc64b7bc3f82e9293235d21de4174e3c9cfc1e25364e05",
+  "manifest_sha256": "3ae9e07770ee2b5498f641da5f963cefec85b49d01022d43b9abf5fb73967128",
+  "committed": true
+}

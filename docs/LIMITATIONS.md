@@ -30,9 +30,11 @@ Execution Engine V2 B1 is an independent research experiment. It does not replac
 
 - The official local China-equity trade calendar is retained without taking a global intersection of ETF price dates.
 - Each ETF becomes eligible independently. In B1, the verified exchange listing date is used as the investable start date; this does not prove minimum liquidity or implementation capacity.
-- An unheld ETF with no price cannot be entered and its target weight remains cash. A held ETF with no current price is valued at its last verified price, contributes zero return for that day, and cannot be traded.
+- An unheld ETF with no price cannot be entered and its target weight remains cash. A held ETF with no current price is valued at its last verified price, contributes zero return for that day, and cannot be traded. Its incomplete target adjustment is recorded separately from cash and retried on the first verified-price day; a newer signal supersedes the old target without deleting its audit record.
 - Signals execute no earlier than the next local trading day. B1 assumes zero commission, zero slippage, and zero cash yield.
 - Results are experimental attribution evidence only and never produce orders, shares, quantities, amounts, or target prices.
+- V1/V2 metrics must be read from the named comparison view. Only `exact_shared_observation_dates` uses an identical observation grid; `master_calendar_aligned` carries V1 NAV forward for analysis and is not a reconstructed V1 execution history.
+- The canonical V2 API is fail-closed against the committed output manifest. Individual JSON files are not valid evidence when their committed set does not verify.
 
 ## Not a trading instruction
 

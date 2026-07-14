@@ -1,14 +1,17 @@
 from copy import deepcopy
 import hashlib
 import json
+from pathlib import Path
 
 from fastapi.testclient import TestClient
+import pytest
 
 from backtest.execution.data_loader import load_execution_price_dataset
 from backtest.execution.report import load_execution_backtest_report
 from backtest.execution.v2 import load_execution_v2_report, run_execution_backtest_v2
 from backtest.execution.v2.calendar import load_trade_calendar
 from backtest.execution.v2.investability import load_instrument_metadata
+from backtest.execution.v2 import report as report_io
 from backtest.research.report import load_research_backtest_report
 from backend.main import app
 from engine.asset_registry import load_asset_mappings, load_execution_universe
@@ -38,6 +41,21 @@ def _run(prices=None, mappings=None, assets=None):
     )[0]
 
 
+def _synthetic_rebalance(target_weight=0.0, missing_dates=("2021-03-01",), extra_allocations=()):
+    prices = deepcopy(PRICES)
+    prices["510300.SH"] = [row for row in prices["510300.SH"] if row.date not in missing_dates]
+    allocations = [
+        {"date": "2021-02-19", "weights": {"H00300.CSI": 0.25, "CASH": 0.75}},
+        {"date": "2021-02-26", "weights": {"H00300.CSI": target_weight, "CASH": 1 - target_weight}},
+        *extra_allocations,
+    ]
+    research = {"period": {"start": "2021-02-18", "end": "2021-03-08"}, "monthly_allocations": allocations}
+    return run_execution_backtest_v2(
+        research, prices, MAPPINGS, ASSETS, CALENDAR, METADATA, v1_report=V1,
+        data_provider="synthetic_missing_rebalance",
+    )[0]
+
+
 def _remove_price(asset_id, date):
     prices = deepcopy(PRICES)
     prices[asset_id] = [row for row in prices[asset_id] if row.date != date]
@@ -64,7 +82,7 @@ def test_v2_report_is_experimental_and_not_a_v1_replacement():
 
 def test_v2_uses_independent_calendar_and_retains_dates_v1_deleted():
     assert REPORT["calendar_contract"]["global_etf_date_intersection_used"] is False
-    assert REPORT["periods"]["simulation_calendar_period"]["start"] == "2021-01-14"
+    assert REPORT["periods"]["master_calendar_period"]["start"] == "2021-01-14"
     assert REPORT["periods"]["common_v1_comparison_period"]["start"] == "2021-02-04"
     assert REPORT["comparison_to_v1"]["days_retained_that_v1_deleted"] == 16
 
@@ -190,3 +208,231 @@ def test_v2_is_linked_only_from_advanced_research_validation():
     assert "/execution-backtest-v2" in CLIENT.get("/research-validation").text
     assert "/execution-backtest-v2" not in CLIENT.get("/current-decision").text
     assert "/execution-backtest-v2" not in CLIENT.get("/").text
+
+
+@pytest.mark.parametrize("target_weight,direction", [(0.0, "reduce"), (0.1, "reduce"), (0.4, "increase")])
+def test_missing_held_asset_on_rebalance_creates_real_pending_and_recovers(target_weight, direction):
+    report = _synthetic_rebalance(target_weight)
+    event = report["monthly_allocations"][1]
+    pending = event["deferred_adjustments"][0]
+    assert event["scheduled_execution_date"] == "2021-03-01"
+    assert event["actual_execution_date"] == "2021-03-02"
+    assert event["execution_status"] == "completed"
+    assert pending["status"] == "completed"
+    assert pending["direction"] == direction
+    assert pending["completed_date"] == "2021-03-02"
+    assert pending["deferred_days"] == 1
+    assert event["cash_breakdown"]["missing_entry_price_cash"] == 0
+    assert event["reconciliation"]["verified"] is True
+
+
+def test_frozen_position_is_not_double_counted_as_cash_gap():
+    report = _synthetic_rebalance(0.0)
+    event = report["monthly_allocations"][1]
+    frozen_weight = event["actual_post_trade_weights"]["510300.SH"]
+    assert frozen_weight > 0
+    assert event["cash_breakdown"]["missing_entry_price_cash"] == 0
+    assert event["actual_post_trade_cash_weight"] < event["requested_target_weights"]["CASH"]
+    assert event["cash_reconciliation"]["cash_reconciliation_error"] == 0
+    assert report["gap_metrics"]["frozen_positions_excluded_from_cash_gap"] is True
+
+
+def test_pending_survives_multiple_missing_days_and_executes_once_on_recovery():
+    report = _synthetic_rebalance(0.0, ("2021-03-01", "2021-03-02"))
+    pending = report["pending_adjustments"][0]
+    assert pending["completed_date"] == "2021-03-03"
+    assert pending["deferred_days"] == 2
+    states = {row["date"]: row for row in report["daily_portfolio_states"]}
+    assert states["2021-03-01"]["stale_valuation_assets"] == ["510300.SH"]
+    assert states["2021-03-02"]["stale_valuation_assets"] == ["510300.SH"]
+    assert "510300.SH" not in states["2021-03-03"]["weights"]
+
+
+def test_new_signal_supersedes_old_pending_without_silent_deletion():
+    report = _synthetic_rebalance(
+        0.0,
+        ("2021-03-01", "2021-03-02"),
+        ({"date": "2021-03-01", "weights": {"H00300.CSI": 0.1, "CASH": 0.9}},),
+    )
+    first, second = report["pending_adjustments"]
+    assert first["status"] == "superseded"
+    assert first["superseded_by_signal_date"] == "2021-03-01"
+    assert second["target_weight"] == 0.1
+    assert second["status"] == "completed"
+
+
+def test_exact_shared_comparison_really_uses_identical_observation_grid():
+    exact = REPORT["comparison_to_v1"]["exact_shared_observation_dates"]
+    assert exact["shared_date_count"] == 1310
+    assert exact["v1_observation_count"] == exact["v2_observation_count"] == exact["shared_date_count"]
+    assert len(exact["date_set_hash"]) == 64
+    aligned = REPORT["comparison_to_v1"]["master_calendar_aligned"]
+    assert aligned["aligned_date_count"] == 1311
+    assert aligned["carried_forward_v1_days"] == 1
+    assert aligned["v1_forward_fill_is_analysis_only"] is True
+
+
+def test_period_contract_does_not_claim_full_fresh_observation():
+    assert "fully_observed_period" not in REPORT["periods"]
+    assert REPORT["periods"]["fresh_price_complete_period"]["available"] is False
+    assert REPORT["periods"]["portfolio_valuation_period"] == REPORT["periods"]["master_calendar_period"]
+
+
+def test_never_held_etf_price_gap_does_not_change_nav():
+    prices = _remove_price("518880.SH", "2021-03-02")
+    mutated = _run(prices=prices)
+    assert mutated["equity_curve_net"] == REPORT["equity_curve_net"]
+
+
+def test_adding_never_held_instrument_does_not_change_nav():
+    prices = deepcopy(PRICES)
+    metadata = deepcopy(METADATA)
+    metadata["999999.SH"] = {
+        **next(iter(metadata.values())),
+        "instrument_id": "999999.SH",
+        "name": "synthetic never-held ETF",
+        "listing_date": "2016-01-01",
+        "investable_start_date": "2016-01-01",
+    }
+    sample = deepcopy(PRICES["510300.SH"])
+    prices["999999.SH"] = sample
+    mutated = run_execution_backtest_v2(
+        RESEARCH, prices, MAPPINGS, ASSETS, CALENDAR, metadata, v1_report=V1,
+        data_provider="synthetic_unused_candidate",
+    )[0]
+    assert mutated["equity_curve_net"] == REPORT["equity_curve_net"]
+
+
+def test_calendar_invalid_date_and_order_fail_closed(tmp_path):
+    value = deepcopy(CALENDAR)
+    value["dates"] = ["2021-02-30"]
+    path = tmp_path / "calendar.json"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    with pytest.raises(ValueError, match="valid ISO"):
+        load_trade_calendar(path)
+    value["dates"] = ["2021-02-02", "2021-02-01"]
+    path.write_text(json.dumps(value), encoding="utf-8")
+    with pytest.raises(ValueError, match="sorted"):
+        load_trade_calendar(path)
+
+
+def test_metadata_invalid_dates_and_inverted_investable_date_fail_closed(tmp_path):
+    rows = list(deepcopy(METADATA).values())
+    rows[0]["listing_date"] = "2021-02-30"
+    path = tmp_path / "metadata.json"
+    path.write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(ValueError, match="invalid execution metadata date"):
+        load_instrument_metadata(path, {row["instrument_id"] for row in rows})
+    rows = list(deepcopy(METADATA).values())
+    rows[0]["investable_start_date"] = "2010-01-01"
+    path.write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(ValueError, match="invalid execution metadata contract"):
+        load_instrument_metadata(path, {row["instrument_id"] for row in rows})
+
+
+@pytest.mark.parametrize("target", [report_io.REPORT, report_io.TIMELINE, report_io.COMPARISON])
+def test_output_artifact_tamper_makes_api_fail_closed(target):
+    original = target.read_bytes()
+    try:
+        value = json.loads(original)
+        value["tampered"] = True
+        target.write_text(json.dumps(value), encoding="utf-8")
+        response = CLIENT.get("/api/research/execution-backtest-v2")
+        assert response.status_code == 200
+        assert response.json()["available"] is False
+        assert response.json()["status"] == "unavailable"
+    finally:
+        target.write_bytes(original)
+
+
+def test_missing_commit_marker_makes_api_fail_closed():
+    original = report_io.COMMITTED.read_bytes()
+    report_io.COMMITTED.unlink()
+    try:
+        response = CLIENT.get("/api/research/execution-backtest-v2")
+        assert response.status_code == 200
+        assert response.json()["available"] is False
+    finally:
+        report_io.COMMITTED.write_bytes(original)
+
+
+def test_interrupted_output_promotion_restores_previous_valid_set(monkeypatch):
+    targets = (*report_io.ARTIFACTS, report_io.MANIFEST, report_io.COMMITTED)
+    before = {path: path.read_bytes() for path in targets}
+    timeline = json.loads(report_io.TIMELINE.read_text(encoding="utf-8"))
+    calls = {"count": 0}
+    original_replace = report_io._replace_file
+
+    def fail_second(source, target):
+        calls["count"] += 1
+        if calls["count"] == 2:
+            raise OSError("synthetic interrupted promotion")
+        return original_replace(source, target)
+
+    monkeypatch.setattr(report_io, "_replace_file", fail_second)
+    with pytest.raises(OSError, match="synthetic interrupted"):
+        report_io.write_execution_v2_outputs(REPORT, timeline, REPORT["comparison_to_v1"])
+    assert all(path.read_bytes() == content for path, content in before.items())
+    assert report_io.verify_execution_v2_output_set()["verified"] is True
+
+
+def test_multiple_frozen_assets_reconcile_without_cash_double_counting():
+    prices = deepcopy(PRICES)
+    for asset_id in ("510300.SH", "516160.SH"):
+        prices[asset_id] = [row for row in prices[asset_id] if row.date != "2021-03-01"]
+    research = {
+        "period": {"start": "2021-02-18", "end": "2021-03-05"},
+        "monthly_allocations": [
+            {"date": "2021-02-19", "weights": {"H00300.CSI": 0.25, "H20771.CSI": 0.1, "CASH": 0.65}},
+            {"date": "2021-02-26", "weights": {"CASH": 1.0}},
+        ],
+    }
+    report = run_execution_backtest_v2(
+        research, prices, MAPPINGS, ASSETS, CALENDAR, METADATA, v1_report=V1,
+        data_provider="synthetic_multi_frozen",
+    )[0]
+    event = report["monthly_allocations"][1]
+    assert set(event["pending_instrument_ids"]) == set()  # Both completed on the recovery day.
+    assert {row["instrument_id"] for row in event["deferred_adjustments"]} == {"510300.SH", "516160.SH"}
+    assert all(row["status"] == "completed" for row in event["deferred_adjustments"])
+    assert event["cash_breakdown"]["missing_entry_price_cash"] == 0
+    assert event["reconciliation"]["verified"] is True
+
+
+def test_full_price_synthetic_case_matches_independent_reference_nav():
+    research = {
+        "period": {"start": "2021-02-18", "end": "2021-02-26"},
+        "monthly_allocations": [
+            {"date": "2021-02-19", "weights": {"H00300.CSI": 0.25, "CASH": 0.75}},
+        ],
+    }
+    report = run_execution_backtest_v2(
+        research, PRICES, MAPPINGS, ASSETS, CALENDAR, METADATA, v1_report=V1,
+        data_provider="synthetic_reference_parity",
+    )[0]
+    price_map = {row.date: row.close for row in PRICES["510300.SH"]}
+    entry_price = price_map["2021-02-22"]
+    for row in report["equity_curve_net"]:
+        expected = 1.0 if row["date"] <= "2021-02-22" else 0.75 + 0.25 * price_map[row["date"]] / entry_price
+        assert abs(row["value"] - expected) < 1e-7
+
+
+def test_output_manifest_commits_one_verified_cross_file_set():
+    manifest = json.loads(report_io.MANIFEST.read_text(encoding="utf-8"))
+    marker = json.loads(report_io.COMMITTED.read_text(encoding="utf-8"))
+    assert manifest["verified"] is True
+    assert set(manifest["artifacts"]) == {path.name for path in report_io.ARTIFACTS}
+    assert all(len(row["sha256"]) == len(row["semantic_sha256"]) == 64 for row in manifest["artifacts"].values())
+    assert marker["committed"] is True
+    assert marker["output_set_hash"] == manifest["output_set_hash"]
+    assert report_io.verify_execution_v2_output_set()["verified"] is True
+
+
+def test_etf_price_before_listing_date_fails_closed():
+    metadata = deepcopy(METADATA)
+    metadata["510300.SH"]["listing_date"] = "2020-01-01"
+    with pytest.raises(ValueError, match="predates listing_date"):
+        run_execution_backtest_v2(
+            RESEARCH, PRICES, MAPPINGS, ASSETS, CALENDAR, metadata, v1_report=V1,
+            data_provider="synthetic_bad_listing",
+        )

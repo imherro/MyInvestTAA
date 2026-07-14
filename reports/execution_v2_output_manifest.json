@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "strategy": "EXECUTION_PROXY_V2_EXPERIMENTAL",
+  "generated_at": "2026-07-14T04:49:59+00:00",
+  "input_source_manifest_hash": "26df642a8e8af38831755ed8268c376aa07be4e9b227657b882a4053905aadef",
+  "artifacts": {
+    "execution_backtest_v2_report.json": {
+      "sha256": "6ee7180b8f31be5e1240bc7f00c73e640d22e10fe14049854ba70204cf739486",
+      "semantic_sha256": "15ef2a6818dfd73acdcc9347d8a74e63aab9b3a7a2db133708302c5d4c3f9f55",
+      "size_bytes": 1162346
+    },
+    "execution_investability_timeline.json": {
+      "sha256": "70134b1d6e5a96cc10355f0f03cf9625b3a2fad2cbba94ace2c7dd5b5dea9c4c",
+      "semantic_sha256": "e5c18c793958216ecb4ddd5cb09cfdb36fc98a2bae7729270c511eacb48fd8dc",
+      "size_bytes": 3142201
+    },
+    "execution_v1_v2_comparison.json": {
+      "sha256": "72217485b023231a614548e562ccd000a4fb0597aba5408f63e5cfd359a86a0f",
+      "semantic_sha256": "b854e801fcdcaf6c73a70ceff47b0ebf71c2af84cb0a8b1c7a17407c411a6e92",
+      "size_bytes": 4233
+    }
+  },
+  "output_set_hash": "db0152090b3bb4eb97bc64b7bc3f82e9293235d21de4174e3c9cfc1e25364e05",
+  "verified": true,
+  "errors": []
+}
