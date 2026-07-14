@@ -1,6 +1,6 @@
 {
   "available": true,
-  "release_id": "taa-20260713-563adfdf5e37",
+  "release_id": "taa-20260713-0936d9b5bb23",
   "generated_at": "2026-07-13T08:15:34+00:00",
   "system_acceptance_passed": true,
   "project_completion_candidate": true,
@@ -74,7 +74,7 @@
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "563adfdf5e378432a8c1eed059010037c7efdb036bc9aa95000efe33c054b929",
+    "input_fingerprint": "0936d9b5bb230df2dc73041b181705636bdbeb36533524e2665e718e4e869db9",
     "first_candidate_raw_hash": "cd4b0c755f20d6c0aeab7199088603f0111a0797a4af5200607d5149391d2308",
     "second_candidate_raw_hash": "cd4b0c755f20d6c0aeab7199088603f0111a0797a4af5200607d5149391d2308",
     "first_candidate_semantic_hash": "a641c3ef7dd0f358f7afa1e952394c61678515858f45d91bf9ba52df636c32ac",
