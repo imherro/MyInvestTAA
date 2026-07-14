@@ -4,30 +4,67 @@ import hashlib
 import json
 from datetime import date as Date
 
-from backtest.execution.v2.costs import execute_targets_with_costs
-from backtest.execution.v2.cost_domain import SERIALIZATION_DECIMALS, VALUE_TOLERANCE
+from backtest.execution.v2.costs import POLICY_PATH, execute_targets_with_costs, load_cost_policy
+from backtest.execution.v2.cost_domain import SERIALIZATION_DECIMALS, VALUE_TOLERANCE, WEIGHT_TOLERANCE
 from backtest.research.metrics import build_metrics
 from engine.asset_registry.loader import ROOT
 
 
-def run_cost_scenario(b1_report, execution_price_data, policy, *, b1_output_set_hash):
+STRATEGY = "EXECUTION_PROXY_V2_B2_COST_EXPERIMENTAL"
+ENGINE_SOURCE_PATHS = (
+    "backtest/execution/v2/cost_domain.py",
+    "backtest/execution/v2/costs.py",
+    "backtest/execution/v2/scenario.py",
+)
+SOURCE_MANIFEST_PATHS = (
+    "reports/execution_v2_COMMITTED.json",
+    "reports/execution_v2_output_manifest.json",
+    "config/execution_v2_cost_policy.json",
+    *ENGINE_SOURCE_PATHS,
+    "backtest/execution/v2/cost_validation.py",
+    "scripts/run_execution_backtest_v2_b2_costs.py",
+)
+
+
+def build_expected_cost_run_identity(
+    *, verified_b1, b1_marker, cost_policy_path, master_dates, strategy, source_paths,
+):
+    current_policy = load_cost_policy(cost_policy_path)
+    engine_source_hashes = {path: _sha(ROOT / path) for path in source_paths}
+    components = {
+        "b1_input_source_manifest_hash": verified_b1["input_source_manifest_hash"],
+        "b1_output_set_hash": b1_marker["output_set_hash"],
+        "cost_policy_hash": current_policy.policy_sha256,
+        "scenario_id": current_policy.scenario_id,
+        "master_date_grid_hash": _hash_json(master_dates),
+        "strategy": strategy,
+        "engine_code_hash": _hash_json(engine_source_hashes),
+        "engine_source_hashes": engine_source_hashes,
+    }
+    return {
+        "components": components,
+        "run_id": f"execution-v2-b2-cost-{_hash_json(components)[:16]}",
+    }
+
+
+def run_cost_scenario(
+    b1_report, execution_price_data, policy, *, b1_output_set_hash,
+    cost_policy_path=POLICY_PATH,
+):
     dates = [row["date"] for row in b1_report["daily_portfolio_states"]]
     price_maps = {asset_id: {row.date: row.close for row in rows} for asset_id, rows in execution_price_data.items()}
     b1_states = {row["date"]: row for row in b1_report["daily_portfolio_states"]}
-    strategy = "EXECUTION_PROXY_V2_B2_COST_EXPERIMENTAL"
+    strategy = STRATEGY
     date_grid_hash = _hash_json(dates)
-    engine_sources = _engine_source_hashes()
-    run_components = {
-        "b1_input_source_manifest_hash": b1_report["input_source_manifest_hash"],
-        "b1_output_set_hash": b1_output_set_hash,
-        "cost_policy_hash": policy.policy_sha256,
-        "scenario_id": policy.scenario_id,
-        "master_date_grid_hash": date_grid_hash,
-        "strategy": strategy,
-        "engine_code_hash": _hash_json(engine_sources),
-        "engine_source_hashes": engine_sources,
-    }
-    run_id = f"execution-v2-b2-cost-{_hash_json(run_components)[:16]}"
+    identity = build_expected_cost_run_identity(
+        verified_b1=b1_report, b1_marker={"output_set_hash": b1_output_set_hash},
+        cost_policy_path=cost_policy_path, master_dates=dates, strategy=strategy,
+        source_paths=ENGINE_SOURCE_PATHS,
+    )
+    if policy.policy_sha256 != identity["components"]["cost_policy_hash"]:
+        raise ValueError("loaded cost policy does not match current policy file")
+    run_components = identity["components"]
+    run_id = identity["run_id"]
     positions = {}
     last_prices = {}
     cash = 1.0
@@ -52,12 +89,13 @@ def run_cost_scenario(b1_report, execution_price_data, policy, *, b1_output_set_
         day_ledger = []
         constraints = []
         for event in b1_states[current_date].get("execution_events", []):
+            event_pre_trade_nav = cash + sum(positions.values())
             if event.get("event_type") == "signal_rebalance":
                 actual_weights = event["actual_post_trade_weights"]
                 deferred_ids = {row["instrument_id"] for row in event.get("deferred_adjustments", [])}
                 instrument_ids = (set(positions) | set(actual_weights)) - deferred_ids - {"CASH"}
                 targets = {
-                    asset_id: pre_trade_nav * actual_weights.get(asset_id, 0.0)
+                    asset_id: event_pre_trade_nav * actual_weights.get(asset_id, 0.0)
                     for asset_id in instrument_ids
                 }
                 qualities = {
@@ -67,13 +105,16 @@ def run_cost_scenario(b1_report, execution_price_data, policy, *, b1_output_set_
                 cash, rows, constraint = execute_targets_with_costs(
                     date_value=current_date, parent_event_id=event["event_id"], pending_adjustment_id=None,
                     positions=positions, cash=cash, targets=targets, policy=policy, mapping_quality=qualities,
+                    event_pre_trade_nav=event_pre_trade_nav,
+                    sequence_start=len(ledger) + len(day_ledger) + 1,
                 )
             elif event.get("event_type") == "pending_adjustment_attempt" and event.get("status") == "completed":
-                targets = {event["instrument_id"]: pre_trade_nav * event["target_weight"]}
+                targets = {event["instrument_id"]: event_pre_trade_nav * event["target_weight"]}
                 cash, rows, constraint = execute_targets_with_costs(
                     date_value=current_date, parent_event_id=event["adjustment_id"],
                     pending_adjustment_id=event["adjustment_id"], positions=positions, cash=cash,
-                    targets=targets, policy=policy,
+                    targets=targets, policy=policy, event_pre_trade_nav=event_pre_trade_nav,
+                    sequence_start=len(ledger) + len(day_ledger) + 1,
                 )
             else:
                 continue
@@ -84,30 +125,39 @@ def run_cost_scenario(b1_report, execution_price_data, policy, *, b1_output_set_
                 else:
                     last_prices.pop(row["instrument_id"], None)
             day_ledger.extend(rows)
-            constraints.append(constraint)
+            event_post_trade_nav = cash + sum(positions.values())
+            constraints.append({
+                **constraint,
+                "parent_event_id": event.get("event_id", event.get("adjustment_id")),
+                "event_pre_trade_nav": round(event_pre_trade_nav, SERIALIZATION_DECIMALS),
+                "event_post_trade_nav": round(event_post_trade_nav, SERIALIZATION_DECIMALS),
+                "event_transaction_cost": round(sum(row["total_cost"] for row in rows), SERIALIZATION_DECIMALS),
+            })
         day_cost = sum(row["total_cost"] for row in day_ledger)
         cumulative_cost += day_cost
         closing_nav = cash + sum(positions.values())
         if abs(closing_nav - (pre_trade_nav - day_cost)) > VALUE_TOLERANCE:
             raise ValueError("daily cost accounting bridge does not reconcile")
-        for row in day_ledger:
-            row["post_trade_cash"] = round(cash, SERIALIZATION_DECIMALS)
         ledger.extend(day_ledger)
         weights = {asset_id: round(value / closing_nav, SERIALIZATION_DECIMALS) for asset_id, value in sorted(positions.items())}
         weights["CASH"] = round(cash / closing_nav, SERIALIZATION_DECIMALS)
+        if abs(sum(weights.values()) - 1.0) > WEIGHT_TOLERANCE:
+            raise ValueError("cost scenario weights do not reconcile")
         curve.append({"date": current_date, "value": round(closing_nav, 8)})
         cumulative_cost_curve.append({"date": current_date, "value": round(cumulative_cost, SERIALIZATION_DECIMALS)})
         daily.append({
-            "date": current_date, "opening_nav": round(opening_nav, 8),
+            "date": current_date, "opening_nav": round(opening_nav, SERIALIZATION_DECIMALS),
             "market_return_pnl": round(pre_trade_nav - opening_nav, SERIALIZATION_DECIMALS),
-            "pre_trade_nav": round(pre_trade_nav, 8), "gross_traded_notional": round(sum(row["gross_traded_notional"] for row in day_ledger), SERIALIZATION_DECIMALS),
-            "transaction_cost": round(day_cost, SERIALIZATION_DECIMALS), "closing_nav": round(closing_nav, 8),
+            "pre_trade_nav": round(pre_trade_nav, SERIALIZATION_DECIMALS), "gross_traded_notional": round(sum(row["gross_traded_notional"] for row in day_ledger), SERIALIZATION_DECIMALS),
+            "transaction_cost": round(day_cost, SERIALIZATION_DECIMALS), "closing_nav": round(closing_nav, SERIALIZATION_DECIMALS),
             "opening_cash": round(opening_cash, SERIALIZATION_DECIMALS),
             "closing_cash": round(cash, SERIALIZATION_DECIMALS), "weights": weights,
             "cost_constraints": constraints,
         })
 
-    attribution = _attribution(ledger)
+    attribution = build_cost_attribution(ledger)
+    source_manifest = _source_manifest()
+    source_manifest_hash = _hash_json(source_manifest)
     report = {
         "available": True, "strategy": strategy, "engine_status": "experimental_validation_only",
         "eligible_to_replace_v1": False, "production_actionable": False, "run_id": run_id,
@@ -124,21 +174,26 @@ def run_cost_scenario(b1_report, execution_price_data, policy, *, b1_output_set_
             "daily_total_cost": round(sum(row["transaction_cost"] for row in daily), SERIALIZATION_DECIMALS),
             "ending_nav_drag": round(b1_report["equity_curve_net"][-1]["value"] - curve[-1]["value"], SERIALIZATION_DECIMALS),
         },
-        "source_manifest": _source_manifest(policy.policy_sha256),
+        "source_manifest": source_manifest, "input_source_manifest_hash": source_manifest_hash,
         "warnings": ["Experimental cost-policy scenario only; not broker execution evidence.", "Cash yield is fixed at zero in B2-1.", "No orders, shares, quantities, or target prices are produced."],
         "validation": {"cash_yield_zero": True, "negative_cash_used": False, "b1_golden_unchanged": b1_report["b1_golden_freeze"]["verified"]},
     }
-    ledger_report = {"available": True, "run_id": run_id, "scenario_id": policy.scenario_id, "policy_sha256": policy.policy_sha256, "rows": ledger, "summary": attribution}
+    ledger_report = {
+        "available": True, "run_id": run_id, "scenario_id": policy.scenario_id,
+        "policy_sha256": policy.policy_sha256, "b1_output_set_hash": b1_output_set_hash,
+        "date_grid_hash": date_grid_hash, "input_source_manifest_hash": source_manifest_hash,
+        "rows": ledger, "summary": attribution,
+    }
     comparison = _comparison(b1_report, report)
-    comparison.update({"run_id": run_id, "scenario_id": policy.scenario_id, "policy_sha256": policy.policy_sha256, "b1_output_set_hash": b1_output_set_hash, "date_grid_hash": date_grid_hash})
+    comparison.update({
+        "run_id": run_id, "scenario_id": policy.scenario_id,
+        "policy_sha256": policy.policy_sha256, "b1_output_set_hash": b1_output_set_hash,
+        "date_grid_hash": date_grid_hash, "input_source_manifest_hash": source_manifest_hash,
+    })
     return report, ledger_report, comparison
 
 
-def expected_run_id(report):
-    return f"execution-v2-b2-cost-{_hash_json(report['run_identity_components'])[:16]}"
-
-
-def _attribution(rows):
+def build_cost_attribution(rows):
     def total(key): return round(sum(row[key] for row in rows), SERIALIZATION_DECIMALS)
     by_instrument = {}
     by_year = {}
@@ -182,27 +237,8 @@ def _comparison(b1, b2):
     }
 
 
-def _source_manifest(policy_hash):
-    paths = [
-        "reports/execution_v2_COMMITTED.json",
-        "reports/execution_v2_output_manifest.json",
-        "config/execution_v2_cost_policy.json",
-        "backtest/execution/v2/cost_domain.py",
-        "backtest/execution/v2/costs.py",
-        "backtest/execution/v2/scenario.py",
-        "backtest/execution/v2/cost_validation.py",
-        "scripts/run_execution_backtest_v2_b2_costs.py",
-    ]
-    return {path: {"sha256": _sha(ROOT / path)} for path in paths} | {"cost_policy": {"sha256": policy_hash}}
-
-
-def _engine_source_hashes():
-    paths = [
-        "backtest/execution/v2/cost_domain.py",
-        "backtest/execution/v2/costs.py",
-        "backtest/execution/v2/scenario.py",
-    ]
-    return {path: _sha(ROOT / path) for path in paths}
+def _source_manifest():
+    return {path: {"sha256": _sha(ROOT / path)} for path in SOURCE_MANIFEST_PATHS}
 
 
 def _metrics_with_dates(curve):

@@ -61,23 +61,34 @@ def load_cost_policy(path: Path | None = None) -> CostPolicy:
     )
 
 
-def execute_targets_with_costs(*, date_value, parent_event_id, pending_adjustment_id, positions, cash, targets, policy, mapping_quality=None):
+def execute_targets_with_costs(
+    *, date_value, parent_event_id, pending_adjustment_id, positions, cash, targets, policy,
+    event_pre_trade_nav, sequence_start=1, mapping_quality=None,
+):
     mapping_quality = mapping_quality or {}
     pre_values = {asset_id: positions.get(asset_id, 0.0) for asset_id in set(positions) | set(targets)}
     sells = {asset_id: target for asset_id, target in targets.items() if target < pre_values.get(asset_id, 0.0) - VALUE_TOLERANCE}
     buys = {asset_id: target for asset_id, target in targets.items() if target > pre_values.get(asset_id, 0.0) + VALUE_TOLERANCE}
     ledger = []
+    sequence = sequence_start
 
     for asset_id, target in sorted(sells.items()):
         pre = positions.get(asset_id, 0.0)
         notional = pre - target
         costs = _costs(notional, "sell", policy)
+        pre_cash = cash
         cash += notional - costs["total_cost"]
+        cash = _validated_cash(cash)
         if target > ZERO_POSITION_TOLERANCE:
             positions[asset_id] = target
         else:
             positions.pop(asset_id, None)
-        ledger.append(_adjustment(date_value, parent_event_id, pending_adjustment_id, asset_id, "sell", pre, target, target, notional, costs, mapping_quality.get(asset_id, "unknown")))
+        ledger.append(_adjustment(
+            date_value, parent_event_id, pending_adjustment_id, asset_id, "sell", pre, target,
+            target, notional, costs, mapping_quality.get(asset_id, "unknown"), sequence,
+            pre_cash, cash, event_pre_trade_nav,
+        ))
+        sequence += 1
 
     requested_buy = sum(target - positions.get(asset_id, 0.0) for asset_id, target in buys.items())
     weighted_rate = max((_total_rate("buy", policy) for _ in buys), default=0.0)
@@ -90,15 +101,24 @@ def execute_targets_with_costs(*, date_value, parent_event_id, pending_adjustmen
         notional = requested * scale
         executed = pre + notional
         costs = _costs(notional, "buy", policy)
+        pre_cash = cash
         cash -= notional + costs["total_cost"]
+        cash = _validated_cash(cash)
         positions[asset_id] = executed
         residual += requested - notional
         if notional > VALUE_TOLERANCE:
-            ledger.append(_adjustment(date_value, parent_event_id, pending_adjustment_id, asset_id, "buy", pre, target, executed, notional, costs, mapping_quality.get(asset_id, "unknown")))
-    if cash < -VALUE_TOLERANCE:
-        raise ValueError("cost execution produced negative cash")
-    if cash < 0:
-        cash = 0.0
+            ledger.append(_adjustment(
+                date_value, parent_event_id, pending_adjustment_id, asset_id, "buy", pre,
+                target, executed, notional, costs, mapping_quality.get(asset_id, "unknown"),
+                sequence, pre_cash, cash, event_pre_trade_nav,
+            ))
+            sequence += 1
+    event_cost = sum(row["total_cost"] for row in ledger)
+    event_post_trade_nav = cash + sum(positions.values())
+    if abs(event_post_trade_nav - (event_pre_trade_nav - event_cost)) > VALUE_TOLERANCE:
+        raise ValueError("event cost accounting bridge does not reconcile")
+    for row in ledger:
+        row["event_post_trade_nav"] = round(event_post_trade_nav, SERIALIZATION_DECIMALS)
     return cash, ledger, {
         "requested_buy_notional": round(requested_buy, SERIALIZATION_DECIMALS),
         "executed_buy_notional": round(requested_buy - residual, SERIALIZATION_DECIMALS),
@@ -123,9 +143,19 @@ def _total_rate(direction, policy):
     return getattr(policy, f"commission_{direction}_bps") + getattr(policy, f"slippage_{direction}_bps") + getattr(policy, f"tax_{direction}_bps")
 
 
-def _adjustment(date_value, parent, pending, asset_id, direction, pre, requested, executed, notional, costs, quality):
+def _validated_cash(value):
+    if value < -VALUE_TOLERANCE:
+        raise ValueError("cost execution produced negative cash")
+    return 0.0 if value < 0 else value
+
+
+def _adjustment(
+    date_value, parent, pending, asset_id, direction, pre, requested, executed, notional,
+    costs, quality, sequence, pre_cash, post_cash, event_pre_nav,
+):
     return ExecutedAdjustment(
-        adjustment_id=f"{parent}-{asset_id}-{direction}-{date_value}", parent_event_id=parent,
+        adjustment_id=f"{parent}-{asset_id}-{direction}-{date_value}", sequence_number=sequence,
+        parent_event_id=parent,
         pending_adjustment_id=pending, instrument_id=asset_id, execution_date=date_value,
         direction=direction, pre_trade_value=round(pre, SERIALIZATION_DECIMALS),
         requested_post_trade_value=round(requested, SERIALIZATION_DECIMALS),
@@ -135,5 +165,9 @@ def _adjustment(date_value, parent, pending, asset_id, direction, pre, requested
         slippage_cost=round(costs["slippage_cost"], SERIALIZATION_DECIMALS),
         tax_cost=round(costs["tax_cost"], SERIALIZATION_DECIMALS),
         total_cost=round(costs["total_cost"], SERIALIZATION_DECIMALS), status="completed",
+        pre_trade_cash=round(pre_cash, SERIALIZATION_DECIMALS),
+        post_trade_cash=round(post_cash, SERIALIZATION_DECIMALS),
+        event_pre_trade_nav=round(event_pre_nav, SERIALIZATION_DECIMALS),
+        event_post_trade_nav=0.0,
         mapping_quality=quality, reason="signal_rebalance" if pending is None else "completed_pending",
     ).as_dict()

@@ -12,9 +12,10 @@
   "turnover_notional_initial_nav_units": 12.6367533717,
   "turnover_denominator": "initial_portfolio_nav_1.0",
   "cost_per_unit_turnover": 0.0015,
-  "run_id": "execution-v2-b2-cost-a422ad3f4440e024",
+  "run_id": "execution-v2-b2-cost-3ec568cdb3efc035",
   "scenario_id": "base_cost",
   "policy_sha256": "e26e6199d76566680c8db4a7891f407a32ed9257691891a481743729c1e8f645",
   "b1_output_set_hash": "3edefb9ede72dd40bcb5416be593699306859f5f5898dce7b7778df800174615",
-  "date_grid_hash": "e85bb71deca5eeacddc745fa5434a89fabaedf1c0fd219668bf0d5092ee336cd"
+  "date_grid_hash": "e85bb71deca5eeacddc745fa5434a89fabaedf1c0fd219668bf0d5092ee336cd",
+  "input_source_manifest_hash": "1e95f7b89096e8c2b0b4deb486d5d63eafcc355c42fae17e37256997087e151f"
 }

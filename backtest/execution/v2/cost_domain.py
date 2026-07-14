@@ -5,7 +5,7 @@ from typing import Literal
 
 
 WEIGHT_TOLERANCE = 1e-8
-VALUE_TOLERANCE = 1e-10
+VALUE_TOLERANCE = 5e-10
 COST_TOLERANCE = 1e-12
 ZERO_POSITION_TOLERANCE = 1e-12
 SERIALIZATION_DECIMALS = 10
@@ -34,6 +34,7 @@ class CostPolicy:
 @dataclass
 class ExecutedAdjustment:
     adjustment_id: str
+    sequence_number: int
     parent_event_id: str
     pending_adjustment_id: str | None
     instrument_id: str
@@ -47,6 +48,10 @@ class ExecutedAdjustment:
     slippage_cost: float
     tax_cost: float
     total_cost: float
+    pre_trade_cash: float
+    post_trade_cash: float
+    event_pre_trade_nav: float
+    event_post_trade_nav: float
     status: str
     mapping_quality: str
     reason: str
