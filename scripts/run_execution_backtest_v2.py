@@ -33,6 +33,7 @@ def main() -> int:
         load_instrument_metadata(),
         v1_report=load_execution_backtest_report(),
         data_provider="verified_local_tushare",
+        enforce_b1_golden=True,
     )
     if not report.get("available"):
         print(json.dumps(report, ensure_ascii=False, indent=2))

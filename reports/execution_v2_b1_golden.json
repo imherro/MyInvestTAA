@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "strategy": "EXECUTION_PROXY_V2_EXPERIMENTAL",
+  "baseline_implementation_commit": "34717c87d7c9e93d8944d621a3df75c72ee66e7a",
+  "business_payload_fields": [
+    "periods",
+    "metrics_gross",
+    "metrics_net",
+    "equity_curve_gross",
+    "equity_curve_net",
+    "coverage_contract",
+    "gap_metrics"
+  ],
+  "business_payload_semantic_sha256": "612062e915811ce6588ba276f339d819d9fe3e164127247546e262f7984e2e55",
+  "v1_report_sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
+  "baseline_output_set_hash": "db0152090b3bb4eb97bc64b7bc3f82e9293235d21de4174e3c9cfc1e25364e05",
+  "verified": true
+}

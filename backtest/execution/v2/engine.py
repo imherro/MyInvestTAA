@@ -7,6 +7,7 @@ from statistics import median
 
 from backtest.execution.mapping import build_execution_mapping
 from backtest.execution.v2.calendar import next_trade_date
+from backtest.execution.v2.domain import ExecutionAttempt, PendingAdjustment, PortfolioSnapshot, RebalanceRequest
 from backtest.execution.v2.investability import build_investability_timeline, investability_state
 from backtest.execution.v2.models import ExecutionV2Config
 from backtest.research.metrics import build_metrics
@@ -33,6 +34,7 @@ def run_execution_backtest_v2(
     v1_report,
     config=None,
     data_provider="unknown",
+    enforce_b1_golden=False,
 ):
     cfg = config or ExecutionV2Config()
     research_period = research_report["period"]
@@ -106,14 +108,12 @@ def run_execution_backtest_v2(
         if stale:
             stale_periods.append({"date": current_date, "instrument_ids": sorted(stale)})
         curve.append({"date": current_date, "value": round(nav, 8)})
+        snapshot = PortfolioSnapshot(current_date, round(nav, 8), weights, sorted(stale)).as_dict()
         daily_states.append(
             {
-                "date": current_date,
-                "nav": round(nav, 8),
-                "weights": weights,
-                "stale_valuation_assets": sorted(stale),
+                **snapshot,
                 "pending_adjustment_ids": [
-                    row["adjustment_id"] for row in pending_records if row["status"] == "pending"
+                    row.adjustment_id for row in pending_records if row.status == "pending"
                 ],
                 "execution_events": day_events,
             }
@@ -144,6 +144,10 @@ def run_execution_backtest_v2(
     }
     comparison = _comparison(v1_report, curve, shared_period, signal_events, timeline_rows, stale_periods)
     source_manifest = _source_manifest()
+    input_source_manifest_hash = _hash_json(source_manifest)
+    run_id = f"execution-v2-b1-{_hash_json({'source': input_source_manifest_hash, 'dates': dates, 'strategy': cfg.strategy})[:16]}"
+    comparison["run_id"] = run_id
+    comparison["input_source_manifest_hash"] = input_source_manifest_hash
     report = {
         "available": True,
         "strategy": cfg.strategy,
@@ -152,6 +156,8 @@ def run_execution_backtest_v2(
         "production_actionable": False,
         "data_provider": data_provider,
         "generated_at": calendar.get("generated_at"),
+        "run_id": run_id,
+        "input_source_manifest_hash": input_source_manifest_hash,
         "periods": periods,
         "calendar_contract": {
             "source": calendar.get("source"),
@@ -184,7 +190,7 @@ def run_execution_backtest_v2(
         "equity_curve_gross": curve,
         "equity_curve_net": curve,
         "monthly_allocations": signal_events,
-        "pending_adjustments": pending_records,
+        "pending_adjustments": [row.as_dict() for row in pending_records],
         "daily_portfolio_states": daily_states,
         "investability_summary": _timeline_summary(timeline_rows, len(stale_periods)),
         "coverage_contract": gap_contract["coverage_contract"],
@@ -214,10 +220,22 @@ def run_execution_backtest_v2(
     timeline = {
         "available": True,
         "strategy": cfg.strategy,
+        "run_id": run_id,
+        "input_source_manifest_hash": input_source_manifest_hash,
         "period": periods["master_calendar_period"],
         "rows": timeline_rows,
         "source_manifest": source_manifest,
     }
+    golden = json.loads((ROOT / "reports" / "execution_v2_b1_golden.json").read_text(encoding="utf-8"))
+    business_payload = {key: report[key] for key in golden["business_payload_fields"]}
+    report["b1_golden_freeze"] = {
+        "expected_semantic_sha256": golden["business_payload_semantic_sha256"],
+        "actual_semantic_sha256": _hash_json(business_payload),
+        "verified": _hash_json(business_payload) == golden["business_payload_semantic_sha256"],
+        "baseline_output_set_hash": golden["baseline_output_set_hash"],
+    }
+    if enforce_b1_golden and not report["b1_golden_freeze"]["verified"]:
+        raise ValueError("B1 golden business payload changed")
     return report, timeline, comparison
 
 
@@ -318,6 +336,13 @@ def _rebalance(
             positions.pop(asset_id, None)
             last_prices.pop(asset_id, None)
 
+    tradable_adjustment_assets = sorted(all_assets - frozen)
+    request = RebalanceRequest(
+        event_id=event_id,
+        signal_date=allocation["date"],
+        scheduled_execution_date=current_date,
+        requested_target_weights={**dict(sorted(requested_targets.items())), "CASH": round(sum(translated["cash_breakdown"].values()), 10)},
+    )
     deferred = []
     for asset_id in sorted(frozen):
         current_weight = positions[asset_id] / nav if nav else 0.0
@@ -338,15 +363,15 @@ def _rebalance(
     cash = nav - sum(positions.values())
     actual_weights = _weights(positions, cash, nav)
     requested_cash = sum(translated["cash_breakdown"].values())
-    deferred_cash_offset = sum(row["deferred_weight_delta"] for row in deferred)
+    deferred_cash_offset = sum(row.deferred_weight_delta for row in deferred)
     position_errors = {
         asset_id: round(
             requested_targets.get(asset_id, 0.0)
             - actual_weights.get(asset_id, 0.0)
             - sum(
-                row["deferred_weight_delta"]
+                row.deferred_weight_delta
                 for row in deferred
-                if row["instrument_id"] == asset_id
+                if row.instrument_id == asset_id
             ),
             10,
         )
@@ -363,7 +388,16 @@ def _rebalance(
         "position_reconciliation_errors": position_errors,
         "verified": abs(cash_error) < 1e-8 and all(abs(value) < 1e-8 for value in position_errors.values()),
     }
-    pending_ids = [row["instrument_id"] for row in deferred]
+    pending_ids = [row.instrument_id for row in deferred]
+    first_status = "partially_completed" if deferred and tradable_adjustment_assets else "deferred" if deferred else "completed"
+    first_snapshot = {
+        "date": current_date,
+        "execution_status": first_status,
+        "actual_post_trade_weights": actual_weights,
+        "actual_post_trade_cash_weight": actual_weights["CASH"],
+        "actual_vs_target_weight_error": round(sum(abs(row.deferred_weight_delta) for row in deferred), 10),
+        "reconciliation": reconciliation,
+    }
     event = {
         "event_id": event_id,
         "event_type": "signal_rebalance",
@@ -373,22 +407,26 @@ def _rebalance(
         "first_attempt_date": current_date,
         "actual_execution_date": None if deferred else current_date,
         "completion_date": None if deferred else current_date,
-        "execution_status": "partially_completed" if deferred and executable_targets else "deferred" if deferred else "completed",
+        "execution_status": first_status,
+        "terminal_status": "open" if deferred else "completed",
         "deferred_days": None if deferred else 0,
         "pending_instrument_ids": pending_ids,
-        "completed_instrument_ids": sorted(executable_targets),
-        "requested_target_weights": {**dict(sorted(requested_targets.items())), "CASH": round(requested_cash, 10)},
+        "completed_instrument_ids": tradable_adjustment_assets,
+        "rebalance_request": request.as_dict(),
+        "requested_target_weights": request.requested_target_weights,
         "executable_target_weights": dict(sorted(executable_targets.items())),
         "actual_post_trade_weights": actual_weights,
         "actual_post_trade_cash_weight": actual_weights["CASH"],
         "weights": actual_weights,
         "cash_breakdown": {key: round(value, 10) for key, value in translated["cash_breakdown"].items()},
         "unavailable_entry_cash": {key: round(translated["cash_breakdown"].get(key, 0.0), 10) for key in GAP_KEYS},
-        "deferred_adjustments": deferred,
-        "actual_vs_target_weight_error": round(sum(abs(row["deferred_weight_delta"]) for row in deferred), 10),
+        "deferred_adjustments": [row.as_dict() for row in deferred],
+        "actual_vs_target_weight_error": first_snapshot["actual_vs_target_weight_error"],
         "cash_reconciliation": {key: value for key, value in reconciliation.items() if "position" not in key},
         "position_reconciliation": {"errors": position_errors, "verified": all(abs(value) < 1e-8 for value in position_errors.values())},
         "reconciliation": reconciliation,
+        "first_attempt_snapshot": first_snapshot,
+        "completion_snapshot": first_snapshot if not deferred else None,
         "translation_details": translated["details"],
         "transaction_cost": 0.0,
     }
@@ -397,37 +435,26 @@ def _rebalance(
 
 def _pending_record(event_id, asset_id, signal_date, scheduled_date, target_weight, current_weight, index):
     delta = target_weight - current_weight
-    return {
-        "adjustment_id": f"{event_id}-{asset_id}-{index + 1}",
-        "parent_event_id": event_id,
-        "instrument_id": asset_id,
-        "signal_date": signal_date,
-        "scheduled_execution_date": scheduled_date,
-        "target_weight": round(target_weight, 10),
-        "pre_trade_weight": round(current_weight, 10),
-        "deferred_weight_delta": round(delta, 10),
-        "direction": "increase" if delta > 0 else "reduce",
-        "reason": "held_asset_missing_price",
-        "status": "pending",
-        "created_date": scheduled_date,
-        "last_attempt_date": scheduled_date,
-        "completed_date": None,
-        "deferred_days": None,
-        "superseded_by_signal_date": None,
-    }
+    return PendingAdjustment(
+        adjustment_id=f"{event_id}-{asset_id}-{index + 1}", parent_event_id=event_id,
+        instrument_id=asset_id, signal_date=signal_date, scheduled_execution_date=scheduled_date,
+        target_weight=round(target_weight, 10), pre_trade_weight=round(current_weight, 10),
+        deferred_weight_delta=round(delta, 10), direction="increase" if delta > 0 else "reduce",
+        created_date=scheduled_date, last_attempt_date=scheduled_date,
+    )
 
 
 def _process_pending(current_date, dates, nav, positions, cash, last_prices, price_maps, pending_records, signal_events):
     attempts = []
     for record in pending_records:
-        if record["status"] != "pending":
+        if record.status != "pending":
             continue
-        record["last_attempt_date"] = current_date
-        asset_id = record["instrument_id"]
+        record.last_attempt_date = current_date
+        asset_id = record.instrument_id
         if current_date not in price_maps.get(asset_id, {}):
             continue
         current_value = positions.get(asset_id, 0.0)
-        desired_value = nav * record["target_weight"]
+        desired_value = nav * record.target_weight
         if desired_value > current_value + cash:
             desired_value = current_value + cash
         cash += current_value - desired_value
@@ -438,24 +465,18 @@ def _process_pending(current_date, dates, nav, positions, cash, last_prices, pri
             positions.pop(asset_id, None)
             last_prices.pop(asset_id, None)
         achieved_weight = desired_value / nav if nav else 0.0
-        completed = abs(achieved_weight - record["target_weight"]) < 1e-8
+        completed = abs(achieved_weight - record.target_weight) < 1e-8
         if completed:
-            record["status"] = "completed"
-            record["completed_date"] = current_date
-            record["deferred_days"] = _trade_day_distance(dates, record["scheduled_execution_date"], current_date)
-        attempts.append(
-            {
-                "event_type": "pending_adjustment_attempt",
-                "adjustment_id": record["adjustment_id"],
-                "instrument_id": asset_id,
-                "date": current_date,
-                "status": record["status"],
-                "target_weight": record["target_weight"],
-                "actual_weight": round(achieved_weight, 10),
-            }
-        )
+            record.status = "completed"
+            record.completed_date = current_date
+            record.deferred_days = _trade_day_distance(dates, record.scheduled_execution_date, current_date)
+        attempts.append(ExecutionAttempt(
+            adjustment_id=record.adjustment_id, instrument_id=asset_id, date=current_date,
+            status=record.status, target_weight=record.target_weight,
+            actual_weight=round(achieved_weight, 10),
+        ).as_dict())
         _refresh_parent_event(
-            record["parent_event_id"], current_date, dates, pending_records, signal_events,
+            record.parent_event_id, current_date, dates, pending_records, signal_events,
             positions, cash, nav,
         )
     return cash, attempts
@@ -465,33 +486,43 @@ def _refresh_parent_event(parent_id, current_date, dates, pending_records, signa
     event = next((row for row in signal_events if row["event_id"] == parent_id), None)
     if not event:
         return
-    children = [row for row in pending_records if row["parent_event_id"] == parent_id]
-    active = [row for row in children if row["status"] == "pending"]
-    event["pending_instrument_ids"] = [row["instrument_id"] for row in active]
+    children = [row for row in pending_records if row.parent_event_id == parent_id]
+    active = [row for row in children if row.status == "pending"]
+    event["pending_instrument_ids"] = [row.instrument_id for row in active]
     event["completed_instrument_ids"] = sorted(
         set(event["completed_instrument_ids"])
-        | {row["instrument_id"] for row in children if row["status"] == "completed"}
+        | {row.instrument_id for row in children if row.status == "completed"}
     )
-    if not active and all(row["status"] == "completed" for row in children):
+    if not active and all(row.status == "completed" for row in children):
         event["execution_status"] = "completed"
         event["completion_date"] = current_date
         event["actual_execution_date"] = current_date
         event["deferred_days"] = _trade_day_distance(dates, event["scheduled_execution_date"], current_date)
         event["completion_actual_weights"] = _weights(positions, cash, nav)
+        event["terminal_status"] = "completed"
+        event["completion_snapshot"] = {
+            "date": current_date,
+            "execution_status": "completed",
+            "actual_post_trade_weights": event["completion_actual_weights"],
+            "actual_post_trade_cash_weight": event["completion_actual_weights"]["CASH"],
+            "completed_adjustment_ids": [row.adjustment_id for row in children],
+            "deferred_days": event["deferred_days"],
+        }
 
 
 def _supersede_pending(current_date, signal_date, pending_records, signal_events):
     affected_parents = set()
     for row in pending_records:
-        if row["status"] == "pending":
-            row["status"] = "superseded"
-            row["superseded_by_signal_date"] = signal_date
-            row["last_attempt_date"] = current_date
-            affected_parents.add(row["parent_event_id"])
+        if row.status == "pending":
+            row.status = "superseded"
+            row.superseded_by_signal_date = signal_date
+            row.last_attempt_date = current_date
+            affected_parents.add(row.parent_event_id)
     for event in signal_events:
         if event["event_id"] in affected_parents:
             event["pending_instrument_ids"] = []
             event["superseded_by_signal_date"] = signal_date
+            event["terminal_status"] = "superseded"
 
 
 def _weights(positions, cash, nav):
@@ -664,13 +695,13 @@ def _timeline_summary(rows, stale_valuation_days):
 def _deferred_summary(records):
     return {
         "created_count": len(records),
-        "completed_count": sum(row["status"] == "completed" for row in records),
-        "pending_count": sum(row["status"] == "pending" for row in records),
-        "superseded_count": sum(row["status"] == "superseded" for row in records),
-        "deferred_held_adjustment_weight": round(sum(abs(row["deferred_weight_delta"]) for row in records), 10),
-        "frozen_position_weight": round(sum(row["pre_trade_weight"] for row in records), 10),
-        "pending_exit_weight": round(sum(abs(row["deferred_weight_delta"]) for row in records if row["direction"] == "reduce"), 10),
-        "pending_entry_adjustment_weight": round(sum(row["deferred_weight_delta"] for row in records if row["direction"] == "increase"), 10),
+        "completed_count": sum(row.status == "completed" for row in records),
+        "pending_count": sum(row.status == "pending" for row in records),
+        "superseded_count": sum(row.status == "superseded" for row in records),
+        "deferred_held_adjustment_weight": round(sum(abs(row.deferred_weight_delta) for row in records), 10),
+        "frozen_position_weight": round(sum(row.pre_trade_weight for row in records), 10),
+        "pending_exit_weight": round(sum(abs(row.deferred_weight_delta) for row in records if row.direction == "reduce"), 10),
+        "pending_entry_adjustment_weight": round(sum(row.deferred_weight_delta for row in records if row.direction == "increase"), 10),
     }
 
 
@@ -700,6 +731,9 @@ def _source_manifest():
         "backtest/execution/v2/calendar.py",
         "backtest/execution/v2/report.py",
         "backtest/execution/v2/models.py",
+        "backtest/execution/v2/domain.py",
+        "reports/execution_v2_b1_golden.json",
+        "scripts/run_execution_backtest_v2.py",
     ]
     manifest = {path: {"sha256": _sha(ROOT / path)} for path in paths}
     price_manifest = json.loads((ROOT / "reports" / "execution_price_dataset_manifest.json").read_text(encoding="utf-8"))

@@ -32,7 +32,8 @@ def write_execution_v2_outputs(report: dict, timeline: dict, comparison: dict) -
             (staging / name).write_text(
                 json.dumps(value, ensure_ascii=False, indent=indent) + "\n", encoding="utf-8"
             )
-        _cross_validate(values)
+        staged_values = {name: _read_json(staging / name) for name in values}
+        _cross_validate(staged_values)
         artifacts = {}
         for name in values:
             path = staging / name
@@ -44,6 +45,7 @@ def write_execution_v2_outputs(report: dict, timeline: dict, comparison: dict) -
         manifest = {
             "schema_version": "1.0",
             "strategy": report.get("strategy"),
+            "run_id": report.get("run_id"),
             "generated_at": report.get("generated_at"),
             "input_source_manifest_hash": _hash_json(report.get("source_manifest", {})),
             "artifacts": artifacts,
@@ -56,6 +58,7 @@ def write_execution_v2_outputs(report: dict, timeline: dict, comparison: dict) -
         marker = {
             "schema_version": "1.0",
             "strategy": report.get("strategy"),
+            "run_id": report.get("run_id"),
             "output_set_hash": manifest["output_set_hash"],
             "manifest_sha256": _sha(manifest_path),
             "committed": True,
@@ -96,6 +99,8 @@ def verify_execution_v2_output_set() -> dict:
             errors.append("output manifest hash mismatch")
         if marker.get("output_set_hash") != manifest.get("output_set_hash"):
             errors.append("output set hash mismatch")
+        if marker.get("run_id") != manifest.get("run_id"):
+            errors.append("output run_id mismatch")
         for path in ARTIFACTS:
             expected = manifest.get("artifacts", {}).get(path.name, {})
             if expected.get("sha256") != _sha(path):
@@ -125,18 +130,50 @@ def _cross_validate(values):
     report = values[REPORT.name]
     timeline = values[TIMELINE.name]
     comparison = values[COMPARISON.name]
+    run_ids = {report.get("run_id"), timeline.get("run_id"), comparison.get("run_id")}
+    if None in run_ids or len(run_ids) != 1:
+        raise ValueError("V2 artifacts do not share one run_id")
+    source_hashes = {
+        report.get("input_source_manifest_hash"),
+        timeline.get("input_source_manifest_hash"),
+        comparison.get("input_source_manifest_hash"),
+    }
+    if None in source_hashes or len(source_hashes) != 1:
+        raise ValueError("V2 artifacts do not share one input source manifest hash")
     if report.get("comparison_to_v1") != comparison:
         raise ValueError("report and comparison artifact disagree")
     if report.get("strategy") != timeline.get("strategy"):
         raise ValueError("report and timeline strategy disagree")
     if report.get("periods", {}).get("master_calendar_period") != timeline.get("period"):
         raise ValueError("report and timeline periods disagree")
+    from backtest.execution.v2.calendar import load_trade_calendar
+
+    master_period = report["periods"]["master_calendar_period"]
+    master_dates = [
+        value for value in load_trade_calendar()["dates"]
+        if master_period["start"] <= value <= master_period["end"]
+    ]
+    report_dates = [row["date"] for row in report.get("daily_portfolio_states", [])]
+    curve_dates = [row["date"] for row in report.get("equity_curve_net", [])]
+    if report_dates != master_dates or curve_dates != master_dates:
+        raise ValueError("report daily date grid does not equal the master calendar")
+    timeline_by_instrument = {}
+    for row in timeline.get("rows", []):
+        timeline_by_instrument.setdefault(row["instrument_id"], []).append(row["date"])
+    if not timeline_by_instrument or any(dates != master_dates for dates in timeline_by_instrument.values()):
+        raise ValueError("each timeline instrument must cover the complete master calendar")
     counts = {}
     for row in timeline.get("rows", []):
         counts[row["state"]] = counts.get(row["state"], 0) + 1
     summary = report.get("investability_summary", {})
     if counts != summary.get("state_counts") or len(timeline.get("rows", [])) != summary.get("timeline_row_count"):
         raise ValueError("timeline summary cannot be reproduced")
+    v1 = _read_json(ROOT / "reports" / "execution_backtest_report.json")
+    v1_dates = {row["date"] for row in v1.get("equity_curve", [])}
+    exact_dates = [value for value in master_dates if value in v1_dates]
+    exact = comparison.get("exact_shared_observation_dates", {})
+    if exact.get("shared_date_count") != len(exact_dates) or exact.get("date_set_hash") != _hash_json(exact_dates):
+        raise ValueError("comparison exact shared date grid is invalid")
 
 
 def _verify_current_sources(source_manifest):

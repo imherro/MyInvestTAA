@@ -142,5 +142,7 @@
   "days_retained_that_v1_deleted": 16,
   "period_extension_days": 15,
   "v1_report_sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
-  "eligible_to_replace_v1": false
+  "eligible_to_replace_v1": false,
+  "run_id": "execution-v2-b1-dfae85714a95a959",
+  "input_source_manifest_hash": "3c9a4c6df9b7da419a2f326c2b44753767807de43054844449ddae995ef61c49"
 }

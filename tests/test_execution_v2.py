@@ -215,13 +215,17 @@ def test_missing_held_asset_on_rebalance_creates_real_pending_and_recovers(targe
     report = _synthetic_rebalance(target_weight)
     event = report["monthly_allocations"][1]
     pending = event["deferred_adjustments"][0]
+    final_pending = report["pending_adjustments"][0]
     assert event["scheduled_execution_date"] == "2021-03-01"
     assert event["actual_execution_date"] == "2021-03-02"
     assert event["execution_status"] == "completed"
-    assert pending["status"] == "completed"
+    assert pending["status"] == "pending"  # Immutable first-attempt evidence.
+    assert final_pending["status"] == "completed"
     assert pending["direction"] == direction
-    assert pending["completed_date"] == "2021-03-02"
-    assert pending["deferred_days"] == 1
+    assert final_pending["completed_date"] == "2021-03-02"
+    assert final_pending["deferred_days"] == 1
+    assert event["first_attempt_snapshot"]["execution_status"] in {"partially_completed", "deferred"}
+    assert event["completion_snapshot"]["execution_status"] == "completed"
     assert event["cash_breakdown"]["missing_entry_price_cash"] == 0
     assert event["reconciliation"]["verified"] is True
 
@@ -394,7 +398,8 @@ def test_multiple_frozen_assets_reconcile_without_cash_double_counting():
     event = report["monthly_allocations"][1]
     assert set(event["pending_instrument_ids"]) == set()  # Both completed on the recovery day.
     assert {row["instrument_id"] for row in event["deferred_adjustments"]} == {"510300.SH", "516160.SH"}
-    assert all(row["status"] == "completed" for row in event["deferred_adjustments"])
+    assert all(row["status"] == "pending" for row in event["deferred_adjustments"])
+    assert all(row["status"] == "completed" for row in report["pending_adjustments"])
     assert event["cash_breakdown"]["missing_entry_price_cash"] == 0
     assert event["reconciliation"]["verified"] is True
 
@@ -436,3 +441,77 @@ def test_etf_price_before_listing_date_fails_closed():
             RESEARCH, PRICES, MAPPINGS, ASSETS, CALENDAR, metadata, v1_report=V1,
             data_provider="synthetic_bad_listing",
         )
+
+
+def test_successful_sale_to_zero_is_a_completed_instrument():
+    report = _synthetic_rebalance(0.0, ())
+    event = report["monthly_allocations"][1]
+    assert event["execution_status"] == "completed"
+    assert event["terminal_status"] == "completed"
+    assert "510300.SH" in event["completed_instrument_ids"]
+
+
+def test_mixed_sale_and_frozen_asset_has_partial_first_attempt():
+    prices = deepcopy(PRICES)
+    prices["516160.SH"] = [row for row in prices["516160.SH"] if row.date != "2021-03-01"]
+    research = {
+        "period": {"start": "2021-02-18", "end": "2021-03-03"},
+        "monthly_allocations": [
+            {"date": "2021-02-19", "weights": {"H00300.CSI": 0.25, "H20771.CSI": 0.1, "CASH": 0.65}},
+            {"date": "2021-02-26", "weights": {"CASH": 1.0}},
+        ],
+    }
+    report = run_execution_backtest_v2(
+        research, prices, MAPPINGS, ASSETS, CALENDAR, METADATA, v1_report=V1,
+        data_provider="synthetic_mixed_completion",
+    )[0]
+    event = report["monthly_allocations"][1]
+    assert event["first_attempt_snapshot"]["execution_status"] == "partially_completed"
+    assert "510300.SH" in event["completed_instrument_ids"]
+    assert event["deferred_adjustments"][0]["instrument_id"] == "516160.SH"
+    assert event["completion_snapshot"]["execution_status"] == "completed"
+
+
+def test_superseded_parent_event_has_terminal_status():
+    report = _synthetic_rebalance(
+        0.0, ("2021-03-01", "2021-03-02"),
+        ({"date": "2021-03-01", "weights": {"H00300.CSI": 0.1, "CASH": 0.9}},),
+    )
+    assert report["monthly_allocations"][1]["terminal_status"] == "superseded"
+
+
+def test_three_artifacts_share_run_and_source_identity():
+    timeline = json.loads(report_io.TIMELINE.read_text(encoding="utf-8"))
+    comparison = json.loads(report_io.COMPARISON.read_text(encoding="utf-8"))
+    assert {REPORT["run_id"], timeline["run_id"], comparison["run_id"]} == {REPORT["run_id"]}
+    assert {
+        REPORT["input_source_manifest_hash"],
+        timeline["input_source_manifest_hash"],
+        comparison["input_source_manifest_hash"],
+    } == {REPORT["input_source_manifest_hash"]}
+
+
+def test_cross_validator_rejects_run_id_and_precise_date_grid_mutations():
+    values = {
+        report_io.REPORT.name: json.loads(report_io.REPORT.read_text(encoding="utf-8")),
+        report_io.TIMELINE.name: json.loads(report_io.TIMELINE.read_text(encoding="utf-8")),
+        report_io.COMPARISON.name: json.loads(report_io.COMPARISON.read_text(encoding="utf-8")),
+    }
+    broken = deepcopy(values)
+    broken[report_io.TIMELINE.name]["run_id"] = "different-run"
+    with pytest.raises(ValueError, match="run_id"):
+        report_io._cross_validate(broken)
+    broken = deepcopy(values)
+    broken[report_io.TIMELINE.name]["rows"].pop(0)
+    with pytest.raises(ValueError, match="complete master calendar"):
+        report_io._cross_validate(broken)
+    broken = deepcopy(values)
+    broken[report_io.REPORT.name]["daily_portfolio_states"][0]["date"] = "2021-01-15"
+    with pytest.raises(ValueError, match="master calendar"):
+        report_io._cross_validate(broken)
+
+
+def test_b1_golden_business_payload_remains_frozen():
+    freeze = REPORT["b1_golden_freeze"]
+    assert freeze["verified"] is True
+    assert freeze["actual_semantic_sha256"] == "612062e915811ce6588ba276f339d819d9fe3e164127247546e262f7984e2e55"
