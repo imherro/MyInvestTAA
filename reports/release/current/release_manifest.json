@@ -1,7 +1,7 @@
 {
   "available": true,
-  "release_id": "taa-20260713-2dbcdfca05da",
-  "commit_sha": "8a3fcda4146764ca58ea80c7cea4d3fc755f42c4",
+  "release_id": "taa-20260713-2cf7833b6b91",
+  "commit_sha": "020ade9a4f27e6b8c83713771e01b50216593220",
   "market_data_as_of": "2026-07-08",
   "decision_date": "2026-07-13",
   "generated_at": "2026-07-13T08:15:34+00:00",
@@ -206,8 +206,8 @@
     {
       "path": "ui_route_inventory.json",
       "role": "final UI route inventory",
-      "sha256": "7329427e40db5965e58d5746413565f1ab1ddf89b48dba7de10f54d799e0de71",
-      "semantic_hash": "8d069de5ffe3f6589e876823b32acc3b7b992c3dc2a9519d99bd11b9a75c2d56",
+      "sha256": "9bd58be2843723c1402ab3dc6b60a9f907f15afae961c422fddd52c4712813c8",
+      "semantic_hash": "0f04374e15665a3bc0501e785b8d2bf79ef42c52a16f0fcabc5a427f52e92f12",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": []
@@ -215,8 +215,8 @@
     {
       "path": "legacy_cleanup_report.json",
       "role": "legacy UI cleanup evidence",
-      "sha256": "220259378f1d51bdabe5f89a22cc02a4df3e0d46dd0541e87e54e6c33bd0c5cf",
-      "semantic_hash": "4cc4dcf749cee03e59b874d9578e095c1972dbf372d0777bc32171245fbd2ebc",
+      "sha256": "ebe618cfe56801980884ed1fc89e794e4e450d31391c444ad732605fb751fb4e",
+      "semantic_hash": "2ed31f9373b279b8effc9b2bc12e14205570660d8413bcdc2d0a7c1221c39b20",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -226,8 +226,8 @@
     {
       "path": "system_acceptance_report.json",
       "role": "system acceptance",
-      "sha256": "50107b39ef9249f9e36a1ffcf3de7557c7c3ad2086b4cdbcdd4627d3b51dcbe7",
-      "semantic_hash": "4ac834cd9152f906aca185520c31087c9f3abd8489b6f8ed32e69b5c67ea6de3",
+      "sha256": "22529c1e3e330f2d245a81573e14c3513aff4a2cb5f2aca5d5c400d9e0efced8",
+      "semantic_hash": "fc7f4cb747c90ff49f9e6e92a0db9015b12b8edbb92cac67e621815d9346f56c",
       "source_as_of": "2026-07-08",
       "classification": "rebuilt_artifact",
       "dependencies": [
@@ -340,16 +340,16 @@
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "2dbcdfca05da348d20cfd43b0334b970ed35525065a03fb47a451ee61777d070",
-    "first_candidate_raw_hash": "d2e7c87b418af57551ecabf33d2726369f0327dde2f2d1c3e48df3453216c1b7",
-    "second_candidate_raw_hash": "d2e7c87b418af57551ecabf33d2726369f0327dde2f2d1c3e48df3453216c1b7",
-    "first_candidate_semantic_hash": "813168f0db855dc47439cf1133a854f4efe9f5f7866789bb0f16bd0bd54d7ddd",
-    "second_candidate_semantic_hash": "813168f0db855dc47439cf1133a854f4efe9f5f7866789bb0f16bd0bd54d7ddd",
+    "input_fingerprint": "2cf7833b6b914f41ee6a4603da3caf541aa7e23a27881911530324826e761eb0",
+    "first_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
+    "second_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
+    "first_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
+    "second_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
     "artifact_hash_differences": []
   },
-  "acceptance_report_hash": "50107b39ef9249f9e36a1ffcf3de7557c7c3ad2086b4cdbcdd4627d3b51dcbe7",
-  "raw_release_hash": "83c4e4d87bea65d3dfc3649e99e7f5899c07338377bbf0205eca072b7d44620c",
-  "semantic_release_hash": "a332e708cd80924960b3652434915b711509179978e0b25d73dfac342176ef39",
+  "acceptance_report_hash": "22529c1e3e330f2d245a81573e14c3513aff4a2cb5f2aca5d5c400d9e0efced8",
+  "raw_release_hash": "3c41dd17d3cc586576a4257ad1d9e3708c1039ff4f5891daafff4ff2fbfab1b1",
+  "semantic_release_hash": "22103f0e7b3aaea74719f443e8d25beaab696ef331d928c98057913cc54d8e51",
   "production_boundary": {
     "verified": true,
     "v11_candidate": true,

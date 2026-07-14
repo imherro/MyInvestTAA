@@ -1,6 +1,6 @@
 {
   "available": true,
-  "release_id": "taa-20260713-2dbcdfca05da",
+  "release_id": "taa-20260713-2cf7833b6b91",
   "generated_at": "2026-07-13T08:15:34+00:00",
   "system_acceptance_passed": true,
   "project_completion_candidate": true,
@@ -86,11 +86,11 @@
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "2dbcdfca05da348d20cfd43b0334b970ed35525065a03fb47a451ee61777d070",
-    "first_candidate_raw_hash": "d2e7c87b418af57551ecabf33d2726369f0327dde2f2d1c3e48df3453216c1b7",
-    "second_candidate_raw_hash": "d2e7c87b418af57551ecabf33d2726369f0327dde2f2d1c3e48df3453216c1b7",
-    "first_candidate_semantic_hash": "813168f0db855dc47439cf1133a854f4efe9f5f7866789bb0f16bd0bd54d7ddd",
-    "second_candidate_semantic_hash": "813168f0db855dc47439cf1133a854f4efe9f5f7866789bb0f16bd0bd54d7ddd",
+    "input_fingerprint": "2cf7833b6b914f41ee6a4603da3caf541aa7e23a27881911530324826e761eb0",
+    "first_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
+    "second_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
+    "first_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
+    "second_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
     "artifact_hash_differences": []
   },
   "production_boundary": {
@@ -156,7 +156,7 @@
   },
   "ui_information_architecture": {
     "verified": true,
-    "route_scan_count": 26,
+    "route_scan_count": 27,
     "unclassified_routes": []
   },
   "legacy_cleanup": {
@@ -170,6 +170,7 @@
       "/benchmark-validation",
       "/diagnosis",
       "/execution-backtest",
+      "/execution-backtest-v2",
       "/final-strategy",
       "/production-readiness",
       "/research-backtest",
@@ -198,12 +199,12 @@
       "scripts/recover_execution_mapping_transaction.py",
       "scripts/recover_system_release.py"
     ],
-    "visible_link_count_before": 26,
+    "visible_link_count_before": 27,
     "visible_link_count_after": 5,
     "proof": {
       "route_scan": {
-        "scanned_count": 26,
-        "classified_count": 26,
+        "scanned_count": 27,
+        "classified_count": 27,
         "unclassified_routes": [],
         "verified": true
       },
@@ -220,13 +221,14 @@
         "verified": true
       },
       "test_dependency_scan": {
-        "retained_route_count": 21,
+        "retained_route_count": 22,
         "route_test_references": [
           "/adaptive-strategy",
           "/attribution",
           "/benchmark-validation",
           "/diagnosis",
           "/execution-backtest",
+          "/execution-backtest-v2",
           "/experiment",
           "/final-strategy",
           "/legacy-dashboard",
