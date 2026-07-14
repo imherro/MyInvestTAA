@@ -1,6 +1,6 @@
 {
   "available": true,
-  "release_id": "taa-20260713-7dd19b4d616b",
+  "release_id": "taa-20260713-2dbcdfca05da",
   "generated_at": "2026-07-13T08:15:34+00:00",
   "system_acceptance_passed": true,
   "project_completion_candidate": true,
@@ -9,6 +9,7 @@
     "strategy_integrity",
     "v11_snapshot_integrity",
     "execution_integrity",
+    "counterfactual_integrity",
     "mapping_governance_integrity",
     "shadow_integrity",
     "current_decision_integrity",
@@ -43,6 +44,17 @@
     ],
     "nonblocking_when_not_ready": true
   },
+  "counterfactual_integrity": {
+    "verified": true,
+    "status": "current",
+    "evidence_use": "current_analysis",
+    "release_scope": "committed_release",
+    "baseline_contract_verified": true,
+    "input_contract_verified": true,
+    "ready_for_manual_mapping_approval": false,
+    "production_actionable": false,
+    "errors": []
+  },
   "mapping_governance_integrity": {
     "verified": true,
     "errors": []
@@ -74,11 +86,11 @@
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "7dd19b4d616b49ea1a4f5fa522ba6dd732dd925fa5007613c187167e5d5d80a2",
-    "first_candidate_raw_hash": "f67df1ac85e412177767dea216d260b4835e25bffb3a2b80b87831041d61d802",
-    "second_candidate_raw_hash": "f67df1ac85e412177767dea216d260b4835e25bffb3a2b80b87831041d61d802",
-    "first_candidate_semantic_hash": "60ffb5ddf9edc84cd01e08ce7ed693948077e5e146b49d25f0f885b1e80e69ed",
-    "second_candidate_semantic_hash": "60ffb5ddf9edc84cd01e08ce7ed693948077e5e146b49d25f0f885b1e80e69ed",
+    "input_fingerprint": "2dbcdfca05da348d20cfd43b0334b970ed35525065a03fb47a451ee61777d070",
+    "first_candidate_raw_hash": "d2e7c87b418af57551ecabf33d2726369f0327dde2f2d1c3e48df3453216c1b7",
+    "second_candidate_raw_hash": "d2e7c87b418af57551ecabf33d2726369f0327dde2f2d1c3e48df3453216c1b7",
+    "first_candidate_semantic_hash": "813168f0db855dc47439cf1133a854f4efe9f5f7866789bb0f16bd0bd54d7ddd",
+    "second_candidate_semantic_hash": "813168f0db855dc47439cf1133a854f4efe9f5f7866789bb0f16bd0bd54d7ddd",
     "artifact_hash_differences": []
   },
   "production_boundary": {

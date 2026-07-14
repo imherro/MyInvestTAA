@@ -2,7 +2,7 @@
   "available": true,
   "status": "current",
   "evidence_use": "current_analysis",
-  "release_scope": "mutable_pre_release",
+  "release_scope": "committed_release",
   "data_provider": "tushare",
   "dataset_provenance": {
     "provenance_verified": true,
@@ -216,13 +216,13 @@
       },
       "proposal_report_code": {
         "path": "backtest/execution/proposal_report.py",
-        "sha256": "cc69a3a92b91084d6fca638e53a62e35c8dc03850d4443b72aba3c15942e1c71"
+        "sha256": "bdf77e11b106df6202830701d9708fdca03d871ccf997eb0c65be3d1fd3506d3"
       }
     },
     "proposal_overlay_semantic_hash": "49cb13c26e92e55d73c4aef374273a31ef6a74a8dd4c73a089632462f79913ad",
     "valid": true,
     "errors": [],
-    "contract_hash": "3f96b7f6465024dfa6617e39703ca1d6457e3eff7655c57695dee9a7f40ad7eb"
+    "contract_hash": "fcd210b30f7e9de9da1f6bb8a4566269e6eba93b86dabde27b3858f3b9c00e98"
   },
   "baseline": {
     "available": true,
@@ -19588,5 +19588,235 @@
       "max drawdown worsened more than 5%"
     ],
     "warning": "Counterfactual proposal only; asset_mapping.json has not been modified."
-  }
+  },
+  "baseline_contract_verification": {
+    "verified": true,
+    "status": "current",
+    "evidence_use": "current_analysis",
+    "errors": [],
+    "current_contract": {
+      "schema_version": "1.1",
+      "sources": {
+        "asset_mapping": {
+          "path": "data/universe/asset_mapping.json",
+          "sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8"
+        },
+        "decision_ledger": {
+          "path": "data/universe/execution_mapping_decision_ledger.json",
+          "sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b"
+        },
+        "approval_integrity_seal": {
+          "path": "reports/execution_mapping_approval_integrity_seal.json",
+          "sha256": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9"
+        },
+        "execution_backtest_report": {
+          "path": "reports/execution_backtest_report.json",
+          "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d"
+        }
+      },
+      "baseline_snapshot": {
+        "strategy": "EXECUTION_PROXY_MVP",
+        "data_provider": "tushare",
+        "period": {
+          "start": "2021-02-04",
+          "end": "2026-07-08"
+        },
+        "metrics": {
+          "annual_return": 0.057103,
+          "max_drawdown": -0.169053,
+          "sharpe": 0.544214,
+          "calmar": 0.337781
+        },
+        "mapping_summary": {
+          "mapping_summary_schema_version": "2.0",
+          "executable_research_asset_count": 9,
+          "non_executable_research_asset_count": 4,
+          "no_approved_proxy_asset_count": 3,
+          "low_quality_excluded_asset_count": 1,
+          "executable_research_asset_ids": [
+            "000688CNY01.CSI",
+            "931743CNY010.CSI",
+            "H00015.CSI",
+            "H00300.CSI",
+            "H00852.CSI",
+            "H00905.CSI",
+            "H00922.CSI",
+            "H20007.CSI",
+            "H20771.CSI"
+          ],
+          "non_executable_research_asset_ids": [
+            "931688CNY010.CSI",
+            "H00805.CSI",
+            "H20590.CSI",
+            "H21152.CSI"
+          ],
+          "no_approved_proxy_asset_ids": [
+            "931688CNY010.CSI",
+            "H20590.CSI",
+            "H21152.CSI"
+          ],
+          "low_quality_excluded_asset_ids": [
+            "H00805.CSI"
+          ],
+          "untradable_months": 66,
+          "untradable_month_ratio": 1.0,
+          "binary_any_gap_month_ratio": 1.0,
+          "mapping_weight_coverage": 0.693365,
+          "tradable_weight_coverage": 0.691469,
+          "tradable_weight_coverage_total_portfolio": 0.552652,
+          "coverage_contract": {
+            "schema_version": "2.0",
+            "metrics": [
+              {
+                "metric": "tradable_weight_coverage",
+                "numerator": "tradable_translated_weight",
+                "denominator": "non_cash_research_weight",
+                "numerator_weight_period_sum": 36.475,
+                "denominator_weight_period_sum": 52.75,
+                "formula": "tradable_translated_weight / non_cash_research_weight",
+                "unit": "fraction"
+              },
+              {
+                "metric": "tradable_weight_coverage_total_portfolio",
+                "numerator": "tradable_translated_weight",
+                "denominator": "total_research_portfolio_weight",
+                "numerator_weight_period_sum": 36.475,
+                "denominator_weight_period_sum": 66.0,
+                "formula": "tradable_translated_weight / total_research_portfolio_weight",
+                "unit": "fraction"
+              }
+            ]
+          },
+          "gap_metrics": {
+            "definition": "monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
+            "average_gap_weight": 0.246591,
+            "median_gap_weight": 0.25,
+            "max_gap_weight": 0.45,
+            "gap_month_ratio_gt_1pct": 1.0,
+            "gap_month_ratio_gt_5pct": 1.0,
+            "gap_month_ratio_gt_10pct": 0.757576,
+            "gap_reason_breakdown": {
+              "unmapped_cash": {
+                "average_weight": 0.087879,
+                "max_weight": 0.2,
+                "affected_months": 51,
+                "affected_month_ratio": 0.772727
+              },
+              "low_quality_proxy_cash": {
+                "average_weight": 0.157197,
+                "max_weight": 0.25,
+                "affected_months": 44,
+                "affected_month_ratio": 0.666667
+              },
+              "missing_price_cash": {
+                "average_weight": 0.0,
+                "max_weight": 0.0,
+                "affected_months": 0,
+                "affected_month_ratio": 0.0
+              },
+              "untradable_cash": {
+                "average_weight": 0.001515,
+                "max_weight": 0.1,
+                "affected_months": 1,
+                "affected_month_ratio": 0.015152
+              }
+            }
+          },
+          "mapping_count_scope": {
+            "count_scope": "research_assets_present_in_source_allocations",
+            "included_asset_ids": [
+              "000688CNY01.CSI",
+              "931688CNY010.CSI",
+              "931743CNY010.CSI",
+              "H00015.CSI",
+              "H00300.CSI",
+              "H00805.CSI",
+              "H00852.CSI",
+              "H00905.CSI",
+              "H00922.CSI",
+              "H20007.CSI",
+              "H20590.CSI",
+              "H20771.CSI",
+              "H21152.CSI"
+            ],
+            "included_asset_count": 13,
+            "mapping_quality_counts": {
+              "high": 4,
+              "medium": 5,
+              "low": 1,
+              "none": 3
+            }
+          }
+        },
+        "aggregate_cash_breakdown": {
+          "research_cash": 0.200758,
+          "unmapped_cash": 0.087879,
+          "low_quality_proxy_cash": 0.157197,
+          "missing_price_cash": 0.0,
+          "untradable_cash": 0.001515
+        }
+      },
+      "baseline_snapshot_hash": "699fd39e06e954c42c24757ace64fb51ae727c103a5255143aae8c2151a59de9",
+      "valid": true,
+      "errors": [],
+      "contract_hash": "80605a8f7e047e91a6d8ea91338a0386ca784453c0e2de57cfef6b66cad9256e"
+    }
+  },
+  "input_contract_verification": {
+    "verified": true,
+    "status": "current",
+    "evidence_use": "current_analysis",
+    "errors": [],
+    "current_contract": {
+      "schema_version": "1.0",
+      "required_sources": {
+        "execution_mapping_proposal": {
+          "path": "reports/execution_mapping_proposal.json",
+          "sha256": "6ad76e8d5bc0cfb9b1403f1e9543afbb26b7bff20892b66c2be514553d4b3d3e"
+        },
+        "research_backtest_report": {
+          "path": "reports/research_backtest_report.json",
+          "sha256": "5a5451972589dd787e28ed96cc582e860bb7e6caef6eee5bce3c47664e541e07"
+        },
+        "execution_price_dataset_manifest": {
+          "path": "reports/execution_price_dataset_manifest.json",
+          "sha256": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd"
+        },
+        "asset_mapping": {
+          "path": "data/universe/asset_mapping.json",
+          "sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8"
+        },
+        "decision_ledger": {
+          "path": "data/universe/execution_mapping_decision_ledger.json",
+          "sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b"
+        },
+        "approval_integrity_seal": {
+          "path": "reports/execution_mapping_approval_integrity_seal.json",
+          "sha256": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9"
+        },
+        "execution_backtest_report": {
+          "path": "reports/execution_backtest_report.json",
+          "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d"
+        },
+        "execution_engine_code": {
+          "path": "backtest/execution/engine.py",
+          "sha256": "d91bdff30585d1d040cbf97b9b2f60767dbe5bd4e3b1d773bdac5ac347e412eb"
+        },
+        "counterfactual_code": {
+          "path": "backtest/execution/counterfactual.py",
+          "sha256": "ebf130c1b6fd1eb33ae86ac25b308f5b51696a455e28a2030b03ba7328d3d61c"
+        },
+        "proposal_report_code": {
+          "path": "backtest/execution/proposal_report.py",
+          "sha256": "bdf77e11b106df6202830701d9708fdca03d871ccf997eb0c65be3d1fd3506d3"
+        }
+      },
+      "proposal_overlay_semantic_hash": "49cb13c26e92e55d73c4aef374273a31ef6a74a8dd4c73a089632462f79913ad",
+      "valid": true,
+      "errors": [],
+      "contract_hash": "fcd210b30f7e9de9da1f6bb8a4566269e6eba93b86dabde27b3858f3b9c00e98"
+    }
+  },
+  "validation_errors": [],
+  "production_actionable": false
 }
