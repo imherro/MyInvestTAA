@@ -2,6 +2,236 @@
   "available": true,
   "strategy": "RESEARCH_TAA_MVP",
   "universe_count": 13,
+  "universe_scope": {
+    "count_scope": "available_allocation_eligible_total_or_net_return_assets_after_readiness_validation",
+    "registered_asset_count": 32,
+    "registered_asset_ids": [
+      "000688CNY01.CSI",
+      "399606.SZ",
+      "801050.SI",
+      "801080.SI",
+      "801120.SI",
+      "801150.SI",
+      "801160.SI",
+      "801180.SI",
+      "801710.SI",
+      "801720.SI",
+      "801730.SI",
+      "801740.SI",
+      "801750.SI",
+      "801760.SI",
+      "801770.SI",
+      "801780.SI",
+      "801790.SI",
+      "801880.SI",
+      "801890.SI",
+      "801950.SI",
+      "931688CNY010.CSI",
+      "931743CNY010.CSI",
+      "H00015.CSI",
+      "H00300.CSI",
+      "H00805.CSI",
+      "H00852.CSI",
+      "H00905.CSI",
+      "H00922.CSI",
+      "H20007.CSI",
+      "H20590.CSI",
+      "H20771.CSI",
+      "H21152.CSI"
+    ],
+    "included_asset_count": 13,
+    "included_asset_ids": [
+      "000688CNY01.CSI",
+      "931688CNY010.CSI",
+      "931743CNY010.CSI",
+      "H00015.CSI",
+      "H00300.CSI",
+      "H00805.CSI",
+      "H00852.CSI",
+      "H00905.CSI",
+      "H00922.CSI",
+      "H20007.CSI",
+      "H20590.CSI",
+      "H20771.CSI",
+      "H21152.CSI"
+    ],
+    "excluded_asset_count": 19,
+    "excluded_assets": [
+      {
+        "asset_id": "399606.SZ",
+        "name": "创业板R",
+        "category": "broad_base",
+        "sleeve": "equity_core",
+        "return_basis": "total_return",
+        "eligible_for_allocation": false,
+        "reason": "readiness_blocked"
+      },
+      {
+        "asset_id": "801120.SI",
+        "name": "食品饮料",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801150.SI",
+        "name": "医药生物",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801080.SI",
+        "name": "电子",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801730.SI",
+        "name": "电力设备",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801750.SI",
+        "name": "计算机",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801770.SI",
+        "name": "通信",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801760.SI",
+        "name": "传媒",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801160.SI",
+        "name": "公用事业",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801050.SI",
+        "name": "有色金属",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801950.SI",
+        "name": "煤炭",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801780.SI",
+        "name": "银行",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801790.SI",
+        "name": "非银金融",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801180.SI",
+        "name": "房地产",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801880.SI",
+        "name": "汽车",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801740.SI",
+        "name": "国防军工",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801890.SI",
+        "name": "机械设备",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801710.SI",
+        "name": "建筑材料",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      },
+      {
+        "asset_id": "801720.SI",
+        "name": "建筑装饰",
+        "category": "industry",
+        "sleeve": "industry_monitor",
+        "return_basis": "price_index",
+        "eligible_for_allocation": false,
+        "reason": "not_eligible_for_allocation"
+      }
+    ],
+    "unavailable_asset_count": 0,
+    "unavailable_assets": []
+  },
   "period": {
     "start": "2021-01-14",
     "end": "2026-07-08"
@@ -8424,6 +8654,7 @@
       "category": "broad_base",
       "sleeve": "equity_core",
       "return_basis": "total_return",
+      "eligible_for_allocation": false,
       "reason": "readiness_blocked"
     },
     {
@@ -8432,6 +8663,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8440,6 +8672,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8448,6 +8681,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8456,6 +8690,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8464,6 +8699,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8472,6 +8708,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8480,6 +8717,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8488,6 +8726,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8496,6 +8735,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8504,6 +8744,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8512,6 +8753,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8520,6 +8762,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8528,6 +8771,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8536,6 +8780,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8544,6 +8789,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8552,6 +8798,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8560,6 +8807,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     },
     {
@@ -8568,6 +8816,7 @@
       "category": "industry",
       "sleeve": "industry_monitor",
       "return_basis": "price_index",
+      "eligible_for_allocation": false,
       "reason": "not_eligible_for_allocation"
     }
   ],

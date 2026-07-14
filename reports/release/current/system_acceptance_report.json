@@ -1,6 +1,6 @@
 {
   "available": true,
-  "release_id": "taa-20260713-fa0e743c3ace",
+  "release_id": "taa-20260713-3362be569b7f",
   "generated_at": "2026-07-13T08:15:34+00:00",
   "system_acceptance_passed": true,
   "project_completion_candidate": true,
@@ -74,11 +74,11 @@
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "fa0e743c3ace8f6e2414f9bf0e030e96489f50cc7e94bd59aaa4886c404a03df",
-    "first_candidate_raw_hash": "cd4b0c755f20d6c0aeab7199088603f0111a0797a4af5200607d5149391d2308",
-    "second_candidate_raw_hash": "cd4b0c755f20d6c0aeab7199088603f0111a0797a4af5200607d5149391d2308",
-    "first_candidate_semantic_hash": "a641c3ef7dd0f358f7afa1e952394c61678515858f45d91bf9ba52df636c32ac",
-    "second_candidate_semantic_hash": "a641c3ef7dd0f358f7afa1e952394c61678515858f45d91bf9ba52df636c32ac",
+    "input_fingerprint": "3362be569b7f4562d4cf36268aaf7cfcd864492ad31658e6352c48b70799f7e8",
+    "first_candidate_raw_hash": "7282e937cd99327ee6104fa261510ff4673fbf8648c8779120fd2ef11ddb6049",
+    "second_candidate_raw_hash": "7282e937cd99327ee6104fa261510ff4673fbf8648c8779120fd2ef11ddb6049",
+    "first_candidate_semantic_hash": "3a53d2325883d0c21bac4daf7c016693bb6f1ad177f9c63f0becaadcaa6bed02",
+    "second_candidate_semantic_hash": "3a53d2325883d0c21bac4daf7c016693bb6f1ad177f9c63f0becaadcaa6bed02",
     "artifact_hash_differences": []
   },
   "production_boundary": {
