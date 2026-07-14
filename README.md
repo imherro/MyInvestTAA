@@ -1,254 +1,10 @@
-# 本项目做战术资产配置（TAA）的通俗完整解释
+# MyInvestTAA
 
-## 一、一句话定义
+MyInvestTAA 是一个离线、只读的战术资产配置（TAA）研究与决策支持系统。它使用估值、景气、趋势、情绪和宏观证据研究资产权重，并验证研究指数配置映射到可交易 ETF 后的历史差异。
 
-战术资产配置（TAA，Tactical Asset Allocation）是在长期战略资产配置的基准仓位之上，根据市场短期估值、景气、情绪、趋势、宏观和政策变化，主动短期偏离各类资产权重，抓住阶段性行情、降低阶段性风险，赚短期市场错配的钱。
+系统不生成订单、股数、金额或目标价格，不连接自动实盘，也不把研究结果包装成确定性投资建议。
 
-它的持有周期通常是几周到 1-2 年，本质是“以长期配置为底座的灵活微调和波段操作”。
-
-## 二、用大白话理解
-
-如果战略资产配置（SAA）是在回答：
-
-“我长期应该把钱大致分到股票、债券、黄金、现金等资产上，各放多少？”
-
-那么战术资产配置（TAA）是在回答：
-
-“在长期比例不乱改的前提下，最近半年到一年，哪些资产更值得多配一点，哪些资产风险变大应该少配一点？”
-
-比如长期计划是：
-
-- 股票 50%
-- 债券 30%
-- 黄金 10%
-- 现金 10%
-
-但如果短期股票估值明显偏贵、情绪拥挤、趋势转弱，而债券收益率有吸引力，TAA 可能把股票临时降到 40%，债券提高到 40%。这不是推翻长期计划，而是在长期框架内做阶段性偏离。
-
-## 三、TAA 赚的是什么钱
-
-TAA 不是赚“每天猜涨跌”的钱，而是赚市场在中短期出现错配时的钱。
-
-常见错配包括：
-
-- 估值错配：某类资产短期太贵或太便宜。
-- 景气错配：基本面正在改善，但价格还没充分反映。
-- 情绪错配：市场过度恐慌或过度乐观。
-- 趋势错配：价格趋势已经发生变化，但配置还停留在旧判断里。
-- 宏观错配：利率、通胀、信用、汇率、政策环境变化后，不同资产的胜率和风险回报发生变化。
-
-TAA 的核心不是“预测得多准”，而是当多个证据同时指向某类资产胜率提高或风险变大时，把组合比例做出有纪律的调整。
-
-## 四、TAA 和 SAA 的区别
-
-战略资产配置（SAA）决定长期底仓，是组合的骨架。它更关注长期目标、风险承受能力、资金期限和资产长期收益特征。
-
-战术资产配置（TAA）决定短期偏离，是组合的方向盘。它更关注未来几周到 1-2 年内，资产之间的阶段性性价比和风险变化。
-
-可以简单理解为：
-
-- SAA 管“长期应该站在哪里”。
-- TAA 管“最近该往哪边挪一点”。
-- SAA 要稳定，不能频繁变化。
-- TAA 要灵活，但必须有规则，不能凭感觉追涨杀跌。
-
-## 五、本项目关注的资产层级
-
-本项目更适合做资产类别和 ETF 层面的配置，而不是做单只股票的短线交易。
-
-可覆盖的资产类别包括：
-
-- A 股宽基和行业主题资产
-- 港股、美股等权益资产
-- 债券和利率类资产
-- 黄金和大宗商品
-- 现金、货币基金或低风险替代资产
-- 其他可标准化跟踪的 ETF 或指数资产
-
-项目输出应尽量使用比例和权重表达，例如“超配 5%”“从 20% 调整到 25%”，而不是依赖具体金额、股数或短线交易指令。
-
-## 六、TAA 看哪些信号
-
-本项目可以把 TAA 信号分成五大类。
-
-### 1. 估值
-
-判断资产贵不贵。
-
-常见问题是：
-
-- 当前估值处在历史什么位置？
-- 估值是否已经透支了乐观预期？
-- 便宜是否有基本面恶化的原因？
-
-估值低通常意味着长期赔率变好，但不代表马上上涨；估值高通常意味着安全边际变薄，但不代表马上下跌。
-
-### 2. 景气
-
-判断基本面是在变好还是变差。
-
-常见问题是：
-
-- 盈利、收入、产量、需求是否改善？
-- 行业库存和价格周期是否好转？
-- 宏观增长、信用环境、政策环境是否支持？
-
-景气改善时，资产更容易走出持续行情；景气恶化时，即使估值便宜，也可能继续承压。
-
-### 3. 趋势
-
-判断市场价格本身是否已经确认方向。
-
-常见问题是：
-
-- 中期均线是否向上？
-- 近 3-12 个月相对强弱如何？
-- 上涨是否扩散，还是只靠少数资产支撑？
-
-趋势信号的作用是防止组合过早抄底，也防止明明趋势已经坏了却继续死扛。
-
-### 4. 情绪
-
-判断市场是过冷、正常还是过热。
-
-常见问题是：
-
-- 成交、换手、融资、资金流是否过热？
-- 市场是否普遍恐慌？
-- 热门资产是否过度拥挤？
-
-情绪信号适合用来识别极端位置：极度悲观可能提供机会，极度乐观可能意味着风险正在积累。
-
-### 5. 宏观和政策
-
-判断大环境是否支持某类资产。
-
-常见问题是：
-
-- 利率是在上行还是下行？
-- 通胀压力是在增强还是缓解？
-- 流动性是宽松还是收紧？
-- 汇率、信用、财政、产业政策是否改变资产定价环境？
-
-宏观信号不一定能精确择时，但会影响不同资产的大方向和风险预算。
-
-## 七、从信号到仓位怎么做
-
-TAA 不能只停留在观点上，最终要落到仓位比例。
-
-一个完整流程可以是：
-
-1. 先设定长期基准比例。
-2. 给每类资产建立估值、景气、趋势、情绪、宏观评分。
-3. 根据综合评分判断超配、标配、低配或回避。
-4. 设定每类资产允许偏离的上下限。
-5. 用风险控制规则限制单次调整幅度。
-6. 定期复盘信号是否变化。
-7. 只有当信号强度足够或风险触发时才调整。
-
-这样做的好处是：组合不是靠临时情绪变动，而是靠一套可复盘、可解释、可重复执行的规则运行。
-
-## 八、典型例子
-
-假设长期基准配置中，权益资产占 50%。
-
-如果出现以下情况：
-
-- 权益估值偏低
-- 政策环境边际改善
-- 盈利预期开始修复
-- 价格趋势从下跌转为震荡向上
-- 市场情绪仍然偏谨慎
-
-TAA 可能把权益资产从 50% 临时提高到 55%-60%。
-
-反过来，如果出现以下情况：
-
-- 权益估值偏高
-- 市场情绪过热
-- 趋势开始转弱
-- 利率上行压制风险资产
-- 信用或盈利环境恶化
-
-TAA 可能把权益资产从 50% 临时降低到 40%-45%，并把比例转向债券、现金、黄金或其他防御资产。
-
-## 九、TAA 不是什么
-
-本项目里的 TAA 不等于以下几件事：
-
-- 不是高频交易。
-- 不是每天预测涨跌。
-- 不是看到新闻就调仓。
-- 不是单只股票短炒。
-- 不是满仓和空仓之间来回切换。
-- 不是用主观感觉替代规则。
-- 不是推翻长期资产配置。
-
-TAA 的合理状态应该是：调整不频繁，但每次调整都有明确依据；动作不激进，但能在风险和机会变化时让组合更适应环境。
-
-## 十、TAA 的风险
-
-TAA 有价值，但也有明显风险：
-
-- 信号可能失效。
-- 判断可能太早或太晚。
-- 频繁调整会增加成本和错误。
-- 估值便宜可能是价值陷阱。
-- 趋势信号可能在震荡市反复打脸。
-- 宏观判断很难精确落到资产价格。
-
-所以本项目需要把风险控制放在和收益判断同等重要的位置。
-
-## 十一、项目应该如何控制风险
-
-本项目的 TAA 框架应至少包含这些约束：
-
-- 单类资产最大和最小配置比例。
-- 单次调整的最大幅度。
-- 调整前必须有多类信号共同支持。
-- 对极端拥挤或流动性差的资产设置限制。
-- 对数据缺失、指标异常、样本不足做明确标记。
-- 每次调整都保留原因，方便事后复盘。
-- 不把短期观点包装成确定性结论。
-
-风险控制的目标不是避免所有亏损，而是避免组合因为一次判断错误而受到不可接受的伤害。
-
-## 十二、项目最终要产出什么
-
-本项目的核心产出可以包括：
-
-- 资产池：哪些资产可以纳入 TAA 观察。
-- 信号表：每类资产的估值、景气、趋势、情绪、宏观状态。
-- 评分表：把分散信号转换成可比较的分数。
-- 配置表：长期基准比例、当前建议比例、偏离幅度。
-- 风险提示：哪些资产存在过热、流动性、回撤或数据质量问题。
-- 复盘记录：每次调整的依据和后续效果。
-
-最终目标不是给出一句“买什么”，而是形成一套能持续回答“现在各类资产应该配多少、为什么、风险在哪里”的系统。
-
-## 十三、一句话总结
-
-本项目做的 TAA，是在长期资产配置不失控的前提下，用估值、景气、趋势、情绪和宏观信号，对不同资产的比例做有纪律的阶段性调整。
-
-它既不是纯长期躺平，也不是短线追涨杀跌，而是介于两者之间的系统化资产配置方法：长期有底座，短期有弹性，调整有证据，风险有边界。
-
-## 十四、普通用户快速开始
-
-本系统是离线、只读的资产配置决策支持工具，不是自动交易系统。
-
-1. 打开 `http://localhost:8025/`，先确认系统发布状态和数据日期。
-2. 进入“当前配置决策”，阅读市场状态、V11、Research、Shadow 和执行限制。
-3. 需要理解正式候选模型时，再看“V11 模型配置”。
-4. 只有需要研究细节时进入“研究与执行验证”。
-5. 需要核查版本、来源哈希或限制时进入“系统与数据状态”。
-
-| 页面 | 面向对象 | 用途 | 是否交易指令 |
-| --- | --- | --- | --- |
-| 系统首页 | 所有用户 | 状态、摘要和下一步入口 | 否 |
-| 当前配置决策 | 所有用户 | 综合人工审核快照 | 否 |
-| V11 模型配置 | 所有用户 | 查看正式候选模型权重 | 否 |
-| 研究与执行验证 | 高级用户 | 查看研究和真实 ETF 执行差异 | 否 |
-| 系统与数据状态 | 维护者 | 验证数据、发布和已知限制 | 否 |
+## 普通用户怎么用
 
 启动 Web：
 
@@ -256,163 +12,72 @@ TAA 有价值，但也有明显风险：
 python backend/main.py
 ```
 
-## 十五、完整离线重建
+浏览器打开 `http://localhost:8025/`，按以下顺序阅读：
 
-所有时间参数都必须显式提供。正式重建命令只有这一条：
+1. **系统首页**：确认数据日期、发布状态和当前可用模块。
+2. **当前配置决策**：阅读市场状态、模型权重、Research、Shadow 和执行限制的综合快照。
+3. **V11 模型配置**：查看正式候选模型使用的比例权重及解释。
+4. **研究与执行验证**：理解研究指数结果与真实 ETF 可执行结果之间的差异。
+5. **系统与数据状态**：核查数据来源、哈希、已知限制和发布完整性。
 
-```powershell
-python scripts/build_system_release.py --market-data-as-of 2026-07-08 --decision-date 2026-07-13 --generated-at 2026-07-13T08:15:34+00:00 --provider local --output-dir reports/release
-```
+所有页面都是只读决策支持界面。`ready` 表示证据完整可供人工审核，不表示允许直接交易。
 
-验证当前发布：
+## TAA 是什么
+
+战略资产配置（SAA）回答“长期大致配置多少股票、债券、黄金和现金”；TAA 回答“在长期框架不失控的前提下，未来几周到一两年应该阶段性多配或少配哪些资产”。
+
+本项目的 TAA 原则是：
+
+- 长期配置有底座，短期调整有边界。
+- 仓位用比例表达，不输出金额和股数。
+- 多类证据共同支持后才调整，不追逐单条新闻。
+- 数据缺失、映射近似和样本不足必须明确披露。
+- 回测用于研究和比较，不等于未来收益承诺。
+
+## 当前执行版本
+
+| 版本 | 当前定位 | 是否正式门槛 | 是否继续扩展 |
+| --- | --- | --- | --- |
+| Execution V1 | 正式历史执行基线，只读维护 | 是 | 否 |
+| Execution V2 B1 | 零成本执行语义的核心候选 | 否 | 仅做核心稳定与迁移评审 |
+| Execution V2 B2 | 冻结的历史成本研究实验 | 否 | 否 |
+
+V2 B1 尚未替换 V1，B2 不进入 Current Decision、Web、正式发布或核心验收。详细状态见 [执行版本生命周期](docs/EXECUTION_VERSION_LIFECYCLE.md)。
+
+## 固定边界
+
+核心执行语义固定为：交易成本为零、滑点为零、现金收益为零、不借款、不使用 ETF 上市前收益、不用指数收益替代 ETF 收益。
+
+最低手续费、券商费率差异、市场冲击、复杂滑点、流动性模型、税费历史、成交量约束、真实成交模拟和自动实盘均不属于项目范围。完整清单见 [非目标](docs/NON_GOALS.md)。
+
+## 项目文档
+
+- [项目范围](docs/PROJECT_SCOPE.md)
+- [非目标](docs/NON_GOALS.md)
+- [Execution V2 语义](docs/EXECUTION_V2.md)
+- [执行版本生命周期](docs/EXECUTION_VERSION_LIFECYCLE.md)
+- [核心完成标准](docs/CORE_COMPLETION_CRITERIA.md)
+- [B2 冻结说明](docs/experiments/EXECUTION_COST_B2_FROZEN.md)
+- [系统架构](docs/ARCHITECTURE.md)
+- [数据合同](docs/DATA_CONTRACTS.md)
+- [数据来源](docs/DATA_SOURCES.md)
+- [操作手册](docs/OPERATIONS.md)
+- [已知限制](docs/LIMITATIONS.md)
+
+## 正式发布验证
+
+当前正式发布继续以 Execution V1 为执行依据。只读验证命令：
 
 ```powershell
 python scripts/verify_system_release.py
 ```
 
-## 十六、常见误解
-
-- V11 ready 只表示模型快照完整，不等于自动交易已授权。
-- Shadow 是研究配置映射到 ETF 后的实验快照，不是另一个正式组合。
-- Research Backtest 测试研究指数层配置，不是 ETF 实盘回测。
-- Shadow 的 40% 现金包含研究现金和无法可靠映射的 research-only 权重，不完全代表看空。
-- Execution Validation=false 表示真实 ETF 历史覆盖率未达门槛，不代表整个只读决策系统失效。
-- Current Decision ready 只表示证据完整、可供人工审核，不代表可以直接执行。
-
-更多说明见 `docs/ARCHITECTURE.md`、`docs/OFFLINE_BUILD.md`、`docs/OPERATIONS.md`、`docs/DATA_CONTRACTS.md` 和 `docs/LIMITATIONS.md`。
-
-当前版本使用 `data/sample/assets.json` 的样例资产和价格序列，不连接真实行情源，不执行任何交易。
-
-## 十五、Task-002 历史回撤与回测基础
-
-当前工程增加了历史回撤事件识别和样例回测基础：
-
-- `GET /api/drawdown/events/{asset_id}`：读取样例历史价格，返回历史回撤事件和当前压力分位。
-- `GET /api/backtest/sample`：返回红利低波 ETF 的样例权重回测结果。
-- Web 首页增加 `Drawdown History` 区块，展示历史事件数、最深回撤、当前压力分位和样例回测摘要。
-
-样例历史价格文件：
-
-```text
-data/sample/history/prices.json
-```
-
-当前历史压力分位仍是样例研究模型，不代表真实投资建议。后续应接入 Tushare/BaoStock 等真实历史数据，并使用完整历史事件分布校准。
-
-## 十六、Task-003 恢复概率与机会评分
-
-当前工程增加了恢复概率和机会评分：
-
-- `GET /api/recovery/{asset_id}`：按历史回撤事件计算恢复概率、中位恢复天数和底部后 1/2/3 年中位收益。
-- `GET /api/opportunity/ranking`：按 `50% Drawdown Pressure + 50% Recovery Probability` 输出机会排名。
-- Web 首页增加 `Recovery Analysis` 区块，展示压力、恢复概率、机会评分和 3 年中位收益。
-
-当前恢复统计只使用样例历史价格中底部日期之后的数据，避免把底部之前的信息混入未来收益统计。该模块仍是研究样例，不构成投资建议。
-
-## 十七、Task-004 资产锚 V2 与配置建议
-
-当前工程增加了资产锚 V2 和 TAA 配置建议：
-
-- `GET /api/anchor/profiles`：返回资产锚分项配置与综合 Anchor Score。
-- `GET /api/allocation/recommendation`：返回满足单资产上限、最低现金和权重归一约束的组合建议。
-- Opportunity Score V2 使用 `40% Drawdown Pressure + 30% Recovery Score + 30% Anchor Score`。
-- Recovery Summary 增加 `sample_confidence`，对小样本恢复概率做低/中/高置信度标记。
-- Web 首页增加 `Allocation Recommendation` 区块，展示机会分、建议权重和配置状态。
-
-当前配置建议仍是研究型输出，不是自动交易或下单指令。
-
-## 十八、Task-005 市场状态与风险预算
-
-当前工程增加了市场状态和风险预算层：
-
-- `GET /api/regime/current`：返回当前市场状态、置信度、权益风险上限和解释。
-- `GET /api/risk/budget`：根据市场状态返回权益上限、最低现金和单资产上限。
-- `GET /api/allocation/recommendation`：返回中增加 `market_regime`、`equity_limit`、`cash_weight`。
-- Opportunity Ranking 增加 `confidence_adjusted_score`，按样本置信度折减机会分。
-
-当前 Market Regime 使用规则模型，不使用 AI。风险预算仅用于约束研究型配置建议，不生成交易指令。
-
-## 十九、Task-006 动态 TAA 回测
-
-当前工程增加了动态 TAA 回测基础：
-
-- `GET /api/backtest/taa`：按样例历史价格逐期推进，月度调仓，输出组合净值、回撤曲线和绩效指标。
-- 回测流程按日期切片历史数据，在每个调仓点只使用当时及以前的数据计算 Regime、Opportunity 和 Allocation。
-- Web 首页增加 `TAA Backtest` 区块，展示年化收益、最大回撤、Sharpe、Calmar、换手和期末净值。
-
-当前回测仍基于样例月度数据，不能代表真实策略表现。后续需要接入真实历史行情并增加基准组合对照。
-
-## 二十、Task-007 基准比较与策略评估
-
-当前工程增加了 Benchmark Framework 和策略比较输出：
-
-- `GET /api/backtest/comparison`：返回 MyInvestTAA 与三类基准的绩效对比。
-- 基准包括沪深300 Buy & Hold、60/40 股债现金替代组合、等权 ETF 组合。
-- 输出指标包括年化收益、最大回撤、Sharpe、期末净值、超额收益、回撤改善和 Sharpe 差异。
-- Web 首页增加 `Strategy Comparison` 区块，用表格展示策略、年化收益、最大回撤、Sharpe、超额收益、回撤改善和期末净值。
-
-当前比较仍基于样例月度数据，且 TAA 与基准都未纳入交易成本、滑点、ETF 费率、税费和申赎限制。该模块用于验证框架和相对评估流程，不代表真实策略有效性结论。
-
-## 二十一、Task-008 真实数据接口与研究验证
-
-当前工程增加了真实数据接口预留和研究验证层：
-
-- `data/models.py`：新增统一 `PriceBar` 与 `AssetMetadata`，隔离外部数据源字段。
-- `data_provider/`：新增 `MarketDataProvider` 接口、`MockProvider`、`TushareProvider`、`BaoStockProvider`。
-- `MockProvider` 继续读取现有 `data/sample/` 样例 JSON，保证离线测试和本地演示稳定。
-- `TushareProvider` 预留 ETF 日线、指数日线和 ETF 列表接口，需要本地安装 `tushare` 并配置 `TUSHARE_TOKEN` 后使用。
-- TAA 回测新增 `transaction_cost` 和 `cash_return` 参数，支持调仓成本和现金收益假设。
-- Benchmark V2 新增 `SAA_CLASSIC`，使用 60% 股票、30% 国债 ETF、10% 黄金 ETF 的样例经典配置。
-- `GET /api/research/evaluation`：返回 1Y/3Y/5Y Rolling Evaluation，包括滚动胜率、平均 Alpha 和回撤改善概率。
-- `GET /research`：新增 Research Report 页面，展示策略表现、Benchmark 比较、Rolling 胜率和风险指标。
-
-当前真实数据 Provider 仍是接口预留，默认运行使用 `MockProvider` 和样例数据；Tushare/BaoStock 不会在测试中访问网络或要求凭证。后续需要接入完整真实历史行情、交易日历、真实债券/黄金/现金替代品和数据质量检查。
-
-## 二十二、Task-009 数据质量与收益归因
-
-当前工程增加了数据质量检查和第一版收益归因：
-
-- `engine/data_quality/`：新增 `DataQualityReport`、`validate_price_history()`、`build_quality_summary()`。
-- 数据质量检查覆盖日期排序、重复日期、非法价格、异常跳变和超预期日期缺口。
-- `GET /api/research/quality`：返回样例数据源、平均质量评分、问题数量和逐资产质量报告。
-- `GET /quality`：新增 Data Quality 页面，展示资产、评分、缺失天数、重复行、非法价格、异常跳变和警告。
-- `engine/attribution/`：新增 `AttributionReport` 与 `analyze_attribution()`。
-- TAA 回测状态增加 `signals`、`regime`、`selected_assets`、`reason`，用于解释每次调仓。
-- `GET /api/research/attribution`：返回 Drawdown、Recovery、Anchor、Regime、Allocation/Rebalance 的 Score Attribution。
-- `GET /attribution`：新增 Attribution 页面，展示第一版收益来源解释。
-
-当前 Attribution 是基于调仓评分和权重的解释型归因，不是严格绩效因子分解；数据质量检查默认按样例数据的稀疏日期提示问题。后续需要引入真实交易日历、停牌/成立日处理、复权校验和更严格的收益归因模型。
-
-## 二十三、Task-010 生产数据管道与真实市场验证入口
-
-当前工程增加了 SQLite 存储层和生产数据管道骨架：
-
-- `storage/`：新增 SQLite 建表、连接和仓储接口。
-- SQLite 表包括 `assets`、`prices`、`signals`、`backtest_results`。
-- `data_pipeline/`：新增 provider 构建、价格标准化、质量检查、数据库写入和 live backtest 报告流程。
-- `scripts/import_market_data.py`：支持命令行导入，例如：
+需要在明确授权的发布任务中完整离线重建时，使用唯一的参数化命令：
 
 ```powershell
-python scripts/import_market_data.py --provider mock --assets 510300,512890
+python scripts/build_system_release.py --market-data-as-of 2026-07-08 --decision-date 2026-07-13 --generated-at 2026-07-13T08:15:34+00:00 --provider local --output-dir reports/release
 ```
 
-- 数据流已形成：Provider -> PriceBar -> Quality Check -> SQLite -> Backtest。
-- `GET /api/research/live-backtest`：使用 MockProvider 导入内存 SQLite，再从数据库读取数据运行 TAA、Benchmark、Alpha 和 Attribution。
-- `GET /pipeline`：新增 Data Pipeline 页面，展示数据源、更新时间、质量评分、资产数量、价格行数和真实回测报告摘要。
+C0-A 只冻结范围和合同，不执行该重建命令，也不刷新正式发布。
 
-当前默认仍使用 MockProvider，TushareProvider 已支持接口但未默认联网导入；SQLite 默认可写入 `data/local/`，该目录不进入 Git。后续需要补齐真实交易日历、增量更新、失败重试、数据库迁移和真实 Tushare 全市场验证。
-
-## 二十四、Task-011 真实 A 股验证工作流
-
-当前工程增加了真实市场研究验证入口：
-
-- `data/universe/china_etf_universe.json`：新增 20 个 A 股 ETF 研究资产池，覆盖宽基、风格、行业、防御资产、黄金和国债。
-- `engine/calendar/`：新增 `is_trading_day()` 和 `previous_trading_day()`，用于后续数据质量和调仓日历。
-- SQLite 新增 `dataset_versions` 表，用于记录 `dataset_id`、source、created_at、start_date、end_date、asset_count、checksum。
-- `data_pipeline/research.py`：新增 `build_dataset_version()` 和 `build_real_performance_report()`。
-- `scripts/download_market_dataset.py`：支持按 provider/start/end/assets 下载并写入 SQLite。
-- `scripts/build_research_dataset.py`：支持生成并保存 dataset version。
-- `GET /api/research/real-performance`：返回真实研究报告结构，包括 Performance、Benchmark、Stability、Data 和 Attribution。
-- `GET /real-research`：新增 Real Market Research 页面，展示数据源、周期、ETF Universe、质量评分、Dataset Version、策略表现、Benchmark、Rolling Alpha 和 Win Rate。
-
-当前默认仍用 MockProvider 跑完整真实研究流程，以保证测试可重复；Tushare 路径和脚本参数已预留，但真实联网下载需要本地安装依赖并配置 `TUSHARE_TOKEN`。Task-011 的重点是把真实研究工作流打通，不代表已经完成真实 A 股十年有效性验证。
+只有通过单独的 V1/V2 最终迁移裁决后，V2 B1 才可能进入正式门槛；C0 核心整理本身不会自动完成该切换。

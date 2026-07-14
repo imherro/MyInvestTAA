@@ -1,64 +1,84 @@
-# Execution Engine V2
+# Execution V2
 
-## Status and boundary
+## 当前定位
 
-Execution Engine V2 is experimental validation only. It does not replace Execution V1, enter Current Decision, change mapping approvals, or participate in the formal release gate. It never produces orders, quantities, shares, amounts, or target prices.
+Execution V2 B1 是 `core_candidate`，采用固定的 `zero_cost_core_semantics`。它目前不替换 Execution V1，不进入 Current Decision，不参与正式 release gate，且 `production_actionable=false`。
 
-## B1 daily order
+Execution V2 B2 是 `frozen_archived_research_experiment`。它只保留历史代码和产物，不属于核心完成标准，也没有后续开发计划。详细归档合同见 `docs/experiments/EXECUTION_COST_B2_FROZEN.md`。
 
-Each master-calendar trading day is processed in this fixed order:
+## B1 固定语义
 
-1. Mark held ETFs to the current verified price. A missing held price retains the last verified valuation and records a stale valuation.
-2. Retry pending held-asset adjustments whose current price is available.
-3. Process a newly scheduled research signal. Signals are scheduled no earlier than the next local trading day.
-4. Record end-of-day NAV, actual weights, cash, stale assets, and pending adjustments.
+每个本地交易日按以下顺序处理：
 
-A new signal supersedes unresolved adjustments from an older signal. Superseded records remain in the audit history.
+1. 使用已验证价格更新已持有 ETF 的估值；缺价时保留最近有效估值并记录 stale 状态。
+2. 当前价格恢复时重试 pending 持仓调整。
+3. 处理当日计划执行的新研究信号；信号最早在下一个有效交易日执行。
+4. 记录日终 NAV、实际权重、现金、缺价资产和 pending 状态。
 
-## Requested, actual, and deferred state
+新信号可以 supersede 旧 pending，但旧记录必须保留在审计历史中。未持有 ETF 如果没有可用入场价格，其目标权重转为现金且不会在未来自动追单。
 
-Every signal event separates:
+核心执行假设不可配置：
 
-- `requested_target_weights`: translated research targets, including requested cash.
-- `executable_target_weights`: targets that can be traded on the scheduled date.
-- `actual_post_trade_weights`: actual ETF and cash weights after the partial or complete rebalance.
-- `deferred_adjustments`: held-asset target differences that cannot trade because the ETF price is missing.
-- `cash_breakdown`: research cash and target weights that genuinely remain cash because no executable entry exists.
-- `reconciliation`: requested, actual, cash, and deferred weight checks.
-- `first_attempt_snapshot`: immutable evidence from the scheduled execution date.
-- `completion_snapshot`: final evidence from the recovery date, when all pending adjustments complete.
-- `terminal_status`: `completed`, `superseded`, or `open` while an adjustment remains pending.
+- transaction cost = 0
+- slippage = 0
+- cash yield = 0
+- no borrowing
+- no ETF pre-listing return
+- no index-return substitution
 
-A frozen holding is never also counted as `missing_entry_price_cash`. Pending reductions, exits, or increases retry on the first verified-price day. An unheld ETF with no entry price remains cash and is not automatically chased later.
+报告中的成本和现金收益字段只是固定兼容声明，不是扩展入口。
 
-## Comparison views
+## 请求、实际和延期状态
 
-The V1/V2 report is neutral attribution and exposes three views:
+每个信号事件必须区分：
 
-- `legacy_as_reported`: each historical report on its original date grid.
-- `exact_shared_observation_dates`: both curves restricted to the identical date set, with equal observation counts and a date-set hash.
-- `master_calendar_aligned`: V2 master-calendar dates with V1 NAV carried forward for missing V1 observations. This is analysis-only and does not reconstruct V1 trading.
+- `requested_target_weights`
+- `executable_target_weights`
+- `actual_post_trade_weights`
+- `deferred_adjustments`
+- `cash_breakdown`
+- `reconciliation`
+- `first_attempt_snapshot`
+- `completion_snapshot`
+- `terminal_status`
 
-Date metrics include both observation-count annualization and elapsed-calendar-time annualization. Direct Sharpe comparisons use the exact shared date grid.
+冻结持仓不能同时计入 `missing_entry_price_cash`。请求、实际、现金和延期状态必须能够独立重算。
 
-## Output integrity
+## C0-A 合同基线
 
-The three V2 artifacts are written to a staging directory, re-read, and cross-validated. They share one deterministic `run_id` and `input_source_manifest_hash`. Validation proves that report daily states and curves equal the master-calendar grid, every timeline instrument covers every master date, and the comparison exact-date hash can be reproduced. The writer then records raw and semantic hashes in `reports/execution_v2_output_manifest.json` and commits the set with `reports/execution_v2_COMMITTED.json`. Promotion restores the previous valid set if any replacement fails.
+`backtest/execution/v2/contracts.py` 定义未来核心接口的冻结数据合同，但 C0-A 不接入现有运行路径，也不改变当前输出：
 
-The Web/API loader fails closed unless the marker, manifest, all artifact hashes, current input hashes, timeline summary, comparison equality, strategy ID, and experimental boundary all verify. Integrity failure returns a read-only unavailable response instead of partial data or an HTTP 500.
+- `SourceManifestEntry`
+- `ExecutionCoreInputs`
+- `ExecutionCoreConfig`
+- `ExecutionCoreResult`
+- `ExecutionVersionStatus`
 
-## B1 golden freeze
+来源清单由外围调用方预先计算并传入。核心只验证和携带内存数据，不读取 `ROOT`、不打开路径、不调用 loader。
 
-`reports/execution_v2_b1_golden.json` freezes the B1 periods, gross/net metrics, gross/net curves, coverage contract, and gap metrics as one semantic business payload. Domain-contract or audit-schema changes must reproduce the same payload hash before cost or cash-yield work can begin. Internal rebalance and pending paths use the dataclasses in `backtest/execution/v2/domain.py`; outward JSON remains explicit and stable.
+未来 C0-B 将拆分两个身份：
 
-## B2-1 transaction costs
+- `core_run_id`：只绑定核心输入、核心合同和核心代码，不绑定 V1。
+- `artifact_run_id`：绑定 core 结果、serializer schema、可选 V1 comparison 和输出文件集合。
 
-B2-1 is a separate experimental scenario layered on the verified B1 output set. It does not rewrite B1 artifacts or change the Web/API, Current Decision, mapping approvals, or formal release gate. Its commission and slippage rates are explicit research assumptions, not a broker fee schedule or observed market-impact evidence. ETF fund expenses remain embedded in adjusted market prices, taxes are explicitly configured, and cash yield is fixed at zero.
+兼容 JSON 顶层 `run_id` 将作为 `artifact_run_id` 的别名；C0-A 不修改现有 run ID 或产物。
 
-Costs are calculated only from executed pre-trade and post-trade notional differences. A deferred adjustment incurs no cost while pending and is charged only on its completed recovery date. Sales execute before buys; buy notional is proportionally reduced when transaction costs would otherwise require borrowing. The ledger records the parent event, optional pending-adjustment ID, instrument, direction, pre/requested/executed values, gross notional, cost components, policy hash, and mapping quality.
+## B1 完整性与 golden freeze
 
-The B2-1 report preserves B1's exact date grid and includes a daily accounting bridge, cumulative cost curve, instrument/year/mapping-quality attribution, observation-count and elapsed-calendar annualization, and turnover stated in initial-NAV units. Its deterministic run ID binds the B1 input and output identities, cost-policy hash, scenario, date grid, strategy, and all cost-engine source hashes. A separate staged output set and commit marker fail closed on source or artifact tampering.
+现有 B1 输出仍通过 staging、跨文件校验、manifest 和 committed marker fail closed。`reports/execution_v2_b1_golden.json` 是不可修改的业务行为基线。
 
-`backtest/execution/v2/domain.py` remains the frozen B1 contract because B1 binds that file into its source identity. `backtest/execution/v2/cost_domain.py` is the isolated B2 cost contract; the two modules must not cross-import their version-specific types. A B2 read first performs the complete current B1 output and source verification, then independently reconstructs B2 identity from current B1, policy, dates, and cost-engine files instead of trusting report-carried identity fields.
+C0-B 只有在以下内容保持一致时才允许重生成 B1：
 
-Within a day, every event recomputes its own pre-trade NAV. A pending completion therefore changes the NAV basis used by a later signal on the same day. Every ledger row records a contiguous sequence number, immediate pre/post cash, and event pre/post NAV; the validator independently rebuilds the cash chain, all attribution groups, daily accounting, cumulative costs, comparison metrics, manifest hashes, and current-source identity.
+- golden business hash
+- equity curve
+- periods
+- metrics
+- coverage contract
+- gap metrics
+- signal 和 pending 业务语义
+
+源码结构变化可以改变未来的 run identity、source manifest 和 output-set hash，但不能改变上述业务结果。
+
+## 非交易边界
+
+Execution V2 只用于决策支持和执行可用性验证。任何版本都不得输出订单、股数、金额、目标价格或自动实盘动作。
