@@ -1,6 +1,0 @@
-transaction_cost: 0.001
-slippage: 0.0005
-expense_ratio: 0.006
-cash_return: 0.015
-rebalance_frequency: monthly
-return_type: price

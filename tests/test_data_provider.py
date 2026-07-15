@@ -1,8 +1,5 @@
-import pytest
-
 from data.models import AssetMetadata, PriceBar
 from data_provider.baostock_provider import BaoStockProvider, _to_baostock_code
-from data_provider.mock_provider import MockProvider
 from data_provider.tushare_provider import (
     TushareProvider,
     _from_tushare_date,
@@ -42,47 +39,6 @@ def test_asset_metadata_as_dict_contains_source():
     metadata = AssetMetadata("A", "Asset A", "equity", source="unit")
 
     assert metadata.as_dict()["source"] == "unit"
-
-
-def test_mock_provider_status_is_available():
-    assert MockProvider().provider_status()["available"] is True
-
-
-def test_mock_provider_returns_metadata_list():
-    provider = MockProvider(assets=[{"id": "A", "name": "Asset A", "asset_class": "equity"}], histories={})
-
-    assets = provider.get_etf_list()
-
-    assert assets[0].asset_id == "A"
-
-
-def test_mock_provider_filters_price_history_by_date():
-    provider = MockProvider(
-        assets=[],
-        histories={
-            "A": [
-                {"date": "2024-01-01", "close": 1.0},
-                {"date": "2024-02-01", "close": 1.1},
-                {"date": "2024-03-01", "close": 1.2},
-            ]
-        },
-    )
-
-    bars = provider.get_price_history("A", start="2024-02-01", end="2024-02-01")
-
-    assert len(bars) == 1
-    assert bars[0].date == "2024-02-01"
-
-
-def test_mock_provider_index_history_aliases_price_history():
-    provider = MockProvider(assets=[], histories={"I": [{"date": "2024-01-01", "close": 1.0}]})
-
-    assert provider.get_index_history("I")[0].asset_id == "I"
-
-
-def test_mock_provider_rejects_missing_history():
-    with pytest.raises(ValueError):
-        MockProvider(assets=[], histories={}).get_price_history("UNKNOWN")
 
 
 def test_tushare_provider_status_without_token_is_unavailable(monkeypatch):

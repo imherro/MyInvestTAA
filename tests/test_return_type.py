@@ -1,7 +1,6 @@
 import pytest
 
 from data.models import PriceBar
-from data_provider.mock_provider import MockProvider
 from data_provider.tushare_provider import TushareProvider, _price_bars_from_frame
 
 
@@ -28,15 +27,6 @@ def test_price_bar_as_dict_includes_return_type():
     payload = PriceBar("A", "2024-01-01", 1.0, return_type="qfq").as_dict()
 
     assert payload["return_type"] == "qfq"
-
-
-def test_mock_provider_marks_return_type_on_bars():
-    provider = MockProvider(assets=[], histories={"A": [{"date": "2024-01-01", "close": 1.0}]}, return_type="qfq")
-
-    bar = provider.get_price_history("A")[0]
-
-    assert bar.return_type == "qfq"
-    assert bar.adjust_type == "qfq"
 
 
 def test_tushare_frame_parser_marks_return_type():
