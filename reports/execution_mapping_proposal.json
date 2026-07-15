@@ -1,9 +1,0 @@
-{
-  "available": true,
-  "source_report": "execution_proxy_research_report.json",
-  "status": "pending_manual_approval",
-  "proposals": [],
-  "warnings": [
-    "Proposal only. asset_mapping.json has not been modified."
-  ]
-}
