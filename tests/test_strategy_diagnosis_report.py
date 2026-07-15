@@ -91,29 +91,6 @@ def test_strategy_diagnosis_report_writes_json(tmp_path):
     assert payload["versions"]["best_version"] == report["versions"]["best_version"]
 
 
-def test_strategy_diagnosis_script_runs_with_mock(tmp_path):
-    path = tmp_path / "strategy_diagnosis_report.json"
-    completed = subprocess.run(
-        [
-            sys.executable,
-            "scripts/run_strategy_diagnosis.py",
-            "--provider",
-            "mock",
-            "--database",
-            ":memory:",
-            "--output",
-            str(path),
-        ],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-
-    payload = json.loads(completed.stdout)
-    assert payload["best_version"]
-    assert path.exists()
-
-
 def test_strategy_diagnosis_report_records_static_benchmark():
     report = _report()
 

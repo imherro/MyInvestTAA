@@ -13,7 +13,6 @@ from data.universe import universe_asset_ids
 from data_pipeline.full_validation import _research_assets
 from data_pipeline.importer import build_provider, import_market_data
 from data_pipeline.normalizer import price_bars_to_history
-from decision.v11_current.validation import canonical_state_hash
 from engine.adaptive import adaptive_weight_snapshot
 from engine.asset_repository import load_assets
 from engine.benchmark_validation import validate_benchmark_report
@@ -590,7 +589,6 @@ def _v11_current_state_source(backtest_result: dict) -> dict:
         },
         "warnings": [],
     }
-    source["source_state_hash"] = canonical_state_hash(source)
     return source
 
 

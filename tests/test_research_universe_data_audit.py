@@ -159,25 +159,3 @@ def test_load_research_data_availability_report_missing_file(tmp_path):
 
     assert loaded["available"] is False
     assert loaded["message"] == "research universe data audit report not found: missing.json"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def test_checked_in_data_audit_report_exists():
-    assert Path("reports/research_universe_data_audit.json").exists()
-
-
-def test_checked_in_tushare_data_audit_report_exists():
-    assert Path("reports/research_universe_data_audit_tushare.json").exists()

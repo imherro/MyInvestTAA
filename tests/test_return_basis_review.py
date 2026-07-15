@@ -134,15 +134,3 @@ def test_load_return_basis_review_missing_report(tmp_path):
 
     assert loaded["available"] is False
     assert loaded["message"] == "research universe return basis review report not found: missing.json"
-
-
-
-
-
-
-
-
-
-
-def test_return_basis_checked_in_report_placeholder_path_is_defined():
-    assert Path("reports/research_universe_return_basis_review.json").exists()

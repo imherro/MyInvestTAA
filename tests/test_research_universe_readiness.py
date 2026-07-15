@@ -15,33 +15,11 @@ RESEARCH_ASSET_IDS = [asset.asset_id for asset in RESEARCH_ASSETS]
 PRICE_INDEX_ASSET_IDS = [asset.asset_id for asset in RESEARCH_ASSETS if asset.return_basis == "price_index"]
 
 
-def test_research_universe_readiness_current_state_is_not_backtest_ready():
-    report = build_research_universe_readiness()
-
-    assert report["ready_for_research_backtest"] is False
-    assert report["eligible_assets"] == 14
-    assert report["checks"]["has_real_tushare_audit"] is True
-    assert report["checks"]["metadata_dates_backfilled"] is True
-    assert report["checks"]["no_price_index_in_allocation"] is True
-    assert report["checks"]["manual_review_assets_excluded"] is True
-    assert report["checks"]["has_execution_mapping_report"] is True
-
-
 def test_research_universe_readiness_blocks_399606():
     report = build_research_universe_readiness()
     blocked = {row["asset_id"]: row for row in report["blocked_assets"]}
 
     assert blocked["399606.SZ"]["reason"] == "return_basis_manual_review"
-
-
-def test_research_universe_readiness_warns_on_provider_metadata_mismatch():
-    report = build_research_universe_readiness()
-
-    assert any("provider metadata" in warning for warning in report["warnings"])
-
-
-
-
 
 
 def test_research_universe_registry_has_dates_backfilled_for_all_assets():

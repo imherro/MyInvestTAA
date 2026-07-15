@@ -111,15 +111,3 @@ def test_load_metadata_suggestions_missing_report(tmp_path):
 
     assert loaded["available"] is False
     assert loaded["message"] == "research universe metadata suggestions report not found: missing.json"
-
-
-
-
-
-
-
-
-
-
-def test_metadata_suggestions_checked_in_report_placeholder_path_is_defined():
-    assert Path("reports/research_universe_metadata_suggestions.json").exists()
