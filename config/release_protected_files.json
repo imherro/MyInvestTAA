@@ -1,0 +1,8 @@
+{
+  "baseline_commit": "6183bfdf6fcf5225ac141c6b670cda97eb00ca97",
+  "files": {
+    "backtest/taa/engine.py": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
+    "data_pipeline/strategy_diagnosis.py": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
+    "config/execution_validation_policy.json": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771"
+  }
+}

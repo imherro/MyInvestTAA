@@ -9,6 +9,7 @@ ALLOWED_RESEARCH_ROLES = {"research", "monitor"}
 ALLOWED_EXECUTION_ROLES = {"execution"}
 ALLOWED_DATA_APIS = {"index_daily", "sw_daily", "fund_daily", "fund_adj", "daily", "custom"}
 ALLOWED_MAPPING_QUALITIES = {"high", "medium", "low", "none"}
+ALLOWED_EXECUTION_APPROVALS = {"quality_policy", "human_approved", "research_only"}
 ALLOWED_RETURN_BASIS = {"total_return", "net_return", "price_index", "qfq", "hfq", "price"}
 
 
@@ -69,6 +70,15 @@ def validate_mappings(
             errors.append(f"{mapping.research_asset_id} mapping references unknown research asset")
         if mapping.mapping_quality not in ALLOWED_MAPPING_QUALITIES:
             errors.append(f"{mapping.research_asset_id} has invalid mapping_quality: {mapping.mapping_quality}")
+        if mapping.execution_approval not in ALLOWED_EXECUTION_APPROVALS:
+            errors.append(
+                f"{mapping.research_asset_id} has invalid execution_approval: "
+                f"{mapping.execution_approval}"
+            )
+        if mapping.execution_approval == "human_approved" and not mapping.primary_execution_proxy:
+            errors.append(
+                f"{mapping.research_asset_id} human-approved mapping must have a primary proxy"
+            )
         if mapping.mapping_quality == "none":
             if mapping.primary_execution_proxy is not None:
                 errors.append(f"{mapping.research_asset_id} mapping_quality=none must not have primary proxy")

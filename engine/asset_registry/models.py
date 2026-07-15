@@ -156,6 +156,7 @@ class AssetMapping:
     primary_execution_proxy: str | None
     execution_proxies: list[str]
     mapping_quality: str
+    execution_approval: str = "quality_policy"
     notes: str = ""
 
     REQUIRED_FIELDS = {
@@ -179,11 +180,12 @@ class AssetMapping:
             primary_execution_proxy=None if primary is None else str(primary),
             execution_proxies=[str(item) for item in proxies],
             mapping_quality=str(row["mapping_quality"]),
+            execution_approval=str(row.get("execution_approval") or "quality_policy"),
             notes=str(row.get("notes") or ""),
         )
 
     def as_dict(self) -> dict:
-        return {
+        result = {
             "research_asset_id": self.research_asset_id,
             "research_asset_name": self.research_asset_name,
             "primary_execution_proxy": self.primary_execution_proxy,
@@ -191,3 +193,6 @@ class AssetMapping:
             "mapping_quality": self.mapping_quality,
             "notes": self.notes,
         }
+        if self.execution_approval != "quality_policy":
+            result["execution_approval"] = self.execution_approval
+        return result

@@ -1,0 +1,10 @@
+{
+  "strategy_id": "V12_EXPANDED_UNIVERSE_CANDIDATE",
+  "status": "shadow_candidate",
+  "model_family": "research_taa",
+  "predecessor": "RESEARCH_TAA_MVP_13_ASSET_BASELINE",
+  "added_asset_id": "480092.CNI",
+  "expected_universe_count": 14,
+  "guidance_role": "execution_aware_shadow_only",
+  "production_actionable": false
+}

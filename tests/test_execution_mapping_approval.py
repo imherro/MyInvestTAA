@@ -200,22 +200,30 @@ def test_broader_proxy_exposure_is_disclosed():
     assert SEMANTIC["semantic_quality"] == "acceptable"
 
 
-def test_only_931743_is_approved_for_execution_validation():
+def test_user_authorized_mappings_are_approved_for_execution_validation():
     approved = [row for row in LEDGER["decisions"] if row["status"] == "approved_for_execution_validation"]
-    assert [row["research_asset_id"] for row in approved] == [TARGET_ASSET_ID]
-    assert approved[0]["production_approved"] is False
+    assert {row["research_asset_id"] for row in approved} == {
+        TARGET_ASSET_ID,
+        "931688CNY010.CSI",
+        "H00805.CSI",
+        "H20590.CSI",
+        "H21152.CSI",
+    }
+    assert all(row["production_approved"] is False for row in approved)
 
 
 @pytest.mark.parametrize("asset_id", ["931688CNY010.CSI", "H00805.CSI"])
-def test_research_only_decisions_are_frozen(asset_id):
+def test_approved_approximate_mappings_retain_execution_only_boundary(asset_id):
     row = next(item for item in LEDGER["decisions"] if item["research_asset_id"] == asset_id)
-    assert row["status"] == "research_only"
+    assert row["status"] == "approved_for_execution_validation"
+    assert row["production_approved"] is False
 
 
 @pytest.mark.parametrize("asset_id", ["H20590.CSI", "H21152.CSI"])
-def test_rejected_proxy_decisions_are_frozen(asset_id):
+def test_approved_direct_mappings_retain_execution_only_boundary(asset_id):
     row = next(item for item in LEDGER["decisions"] if item["research_asset_id"] == asset_id)
-    assert row["status"] == "rejected_proxy"
+    assert row["status"] == "approved_for_execution_validation"
+    assert row["production_approved"] is False
 
 
 def test_selective_package_is_931743_only():
@@ -293,7 +301,7 @@ def test_approval_package_api_existing():
 def test_decision_ledger_api_existing():
     response = CLIENT.get("/api/research/execution-mapping-decision-ledger")
     assert response.status_code == 200
-    assert response.json()["frozen_count"] == 4
+    assert response.json()["frozen_count"] == 0
 
 
 def test_approval_api_missing_report_does_not_500(monkeypatch):

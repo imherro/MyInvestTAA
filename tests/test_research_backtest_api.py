@@ -120,11 +120,11 @@ def test_homepage_links_to_research_backtest():
     assert "/research-backtest" in client.get("/research-validation").text
 
 
-def test_research_universe_links_to_research_backtest():
+def test_research_universe_links_to_research_validation_channel():
     response = client.get("/research-universe")
 
     assert response.status_code == 200
-    assert "/research-backtest" in response.text
+    assert "/research-validation" in response.text
 
 
 def test_research_backtest_api_does_not_require_tushare(monkeypatch):

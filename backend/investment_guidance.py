@@ -7,6 +7,7 @@ import json
 import math
 from typing import Any
 
+from backend.investment_chart import investment_chart_script
 from release.orchestrator import load_release_json
 
 
@@ -19,7 +20,6 @@ RELEASE_ARTIFACTS = (
     "execution_backtest_report.json",
 )
 UNAVAILABLE_MESSAGE = "当前正式投资指导不可用"
-BENCHMARK_REASON = "当前正式数据未包含 510500 基准"
 
 
 def build_investment_guidance(
@@ -57,11 +57,7 @@ def build_investment_guidance(
                 "period": deepcopy(execution["period"]),
                 "metrics": deepcopy(execution["metrics"]),
             },
-            "benchmark": {
-                "asset_id": "510500.SH",
-                "available": False,
-                "reason": BENCHMARK_REASON,
-            },
+            "benchmark": deepcopy(execution["benchmark"]),
             "allocation_chart": allocation_chart,
             "allocation_records": allocation_records,
             "recent_allocation_records": allocation_records[-12:],
@@ -84,6 +80,7 @@ def build_investment_guidance(
                 "gap_month_ratio_gt_10pct": gap_metrics[
                     "gap_month_ratio_gt_10pct"
                 ],
+                "gap_windows": deepcopy(mapping.get("gap_windows", {})),
             },
             "non_executable_assets": deepcopy(execution["non_executable_assets"]),
             "_decision_snapshot": deepcopy(decision),
@@ -176,8 +173,9 @@ def render_investment_guidance(
 
     <section>
       <h2>Execution V1 策略净值</h2>
-      <p class="subtle">正式执行验证净值原样展示，未改写或重新计算。</p>
-      <div class="chart-frame">{_equity_svg(points)}</div>
+      <p class="subtle">蓝线是 Execution V1；灰线是 510500.SH 南方中证500ETF 前复权基准。两者使用相同日期并从 1.0000 归一化，基准不参与策略计算。</p>
+      <div class="chart-frame equity-chart" data-equity-chart>{_equity_svg(points, benchmark["points"])}<div class="chart-tooltip" data-chart-tooltip hidden></div></div>
+      <script type="application/json" id="equity-chart-data">{_chart_json(points, benchmark["points"])}</script>
       <div class="grid-3 metric-grid">
         {_metric_card("周期", f'{period["start"]} 至 {period["end"]}')}
         {_metric_card("起始净值", _number(points[0]["value"]))}
@@ -186,9 +184,7 @@ def render_investment_guidance(
         {_metric_card("最大回撤", _percent(metrics["max_drawdown"]))}
         {_metric_card("Sharpe", _number(metrics["sharpe"]))}
       </div>
-      <div class="benchmark-unavailable" data-benchmark="510500.SH">
-        <strong>510500.SH 中证500ETF：</strong>{escape(benchmark["reason"])}。本页不读取 release 外价格，也不绘制替代曲线。
-      </div>
+      <div class="chart-legend"><span class="legend-item"><span class="legend-swatch strategy-swatch"></span>Execution V1</span><span class="legend-item"><span class="legend-swatch benchmark-swatch"></span>510500.SH 南方中证500ETF</span></div>
     </section>
 
     <section>
@@ -199,8 +195,8 @@ def render_investment_guidance(
     </section>
 
     <section>
-      <h2>Execution V1 映射后配置变更记录</h2>
-      <p>Execution V1只保存月度研究目标和映射后目标配置，没有成交级执行日期、实际成交权重或延期事件记录。</p>
+      <h2>Execution V1 月末目标配置快照</h2>
+      <p>每月第一个交易日识别新月份，使用上月最后交易日数据计算目标，并从下一可执行交易日开始作用。本表是月度目标快照，不是成交记录，也不表示自然月最后一天一定开市。</p>
       <h3>最近 12 期</h3>
       <div class="table-wrap"><table><thead>{_allocation_table_head()}</thead><tbody>{recent_rows}</tbody></table></div>
       <details><summary>查看完整 {len(records)} 期历史</summary><div class="table-wrap"><table><thead>{_allocation_table_head()}</thead><tbody>{all_rows}</tbody></table></div></details>
@@ -215,16 +211,19 @@ def render_investment_guidance(
         {_metric_card("平均缺口", _percent(validation["average_gap_weight"]))}
         {_metric_card("最大缺口", _percent(validation["max_gap_weight"]))}
         {_metric_card("缺口 >5% / >10%", f'{_percent(validation["gap_month_ratio_gt_5pct"])} / {_percent(validation["gap_month_ratio_gt_10pct"])}')}
+        {_metric_card("最近12个月缺口月份", _percent(validation["gap_windows"].get("recent_12_months", {}).get("binary_any_gap_month_ratio", 0)))}
+        {_metric_card("连续无缺口起点", validation["gap_windows"].get("continuous_gap_free_suffix", {}).get("start") or "尚无")}
       </div>
       <h3>全局 Execution Validation 原因</h3><ul>{reason_rows}</ul>
       <h3>当前不可执行研究资产</h3>
       <div class="table-wrap"><table><thead><tr><th>研究资产</th><th>映射质量</th><th>正式原因</th></tr></thead><tbody>{non_executable_rows}</tbody></table></div>
-      <p class="subtle">全局 gate 状态没有被复制成逐月执行事件。</p>
+      <p class="subtle">全历史 gate 仍包含 ETF 上市前月份；最近12个月缺口指标用于判断当前映射完整性，但不会覆盖或篡改全历史审计结果。</p>
     </section>
 
     {_legacy_audit_details(payload["_decision_snapshot"])}
   </main>
   <footer>Release {escape(str(payload["release_id"]))} · 用于人工判断 · 不会生成订单 · 非交易指令</footer>
+  {investment_chart_script()}
 </body>
 </html>"""
 
@@ -274,6 +273,7 @@ def _validate_release(
         "decision",
         "period",
         "metrics",
+        "benchmark",
     )
     for key in required_decision:
         if key not in decision:
@@ -289,6 +289,11 @@ def _validate_release(
         if not isinstance(point, dict) or set(point) != {"date", "value"}:
             raise ValueError("execution equity curve schema mismatch")
         _finite_number(point["value"])
+    benchmark = execution["benchmark"]
+    if benchmark.get("available") is not True or benchmark.get("asset_id") != "510500.SH":
+        raise ValueError("510500 benchmark is unavailable")
+    if benchmark.get("points") is None or len(benchmark["points"]) != len(points):
+        raise ValueError("510500 benchmark does not align with execution curve")
 
     current_validation = decision["execution_validation"]
     execution_decision = execution["decision"]
@@ -313,6 +318,7 @@ def _allocation_records(execution: dict[str, Any]) -> list[dict[str, Any]]:
         raise ValueError("allocation dates do not align")
 
     records: list[dict[str, Any]] = []
+    execution_dates = [row["date"] for row in execution["equity_curve"]]
     for row in mapped:
         date = row["date"]
         weights = row["weights"]
@@ -324,6 +330,13 @@ def _allocation_records(execution: dict[str, Any]) -> list[dict[str, Any]]:
         records.append(
             {
                 "allocation_date": date,
+                "signal_observation_date": date,
+                "target_allocation_date": date,
+                "next_execution_date": next(
+                    (candidate for candidate in execution_dates if candidate > date),
+                    None,
+                ),
+                "record_type": "monthly_target_snapshot",
                 "research_target_weights": deepcopy(research_by_date[date]["weights"]),
                 "mapped_target_weights": deepcopy(weights),
                 "mapped_target_cash_weight": deepcopy(weights.get("CASH", 0.0)),
@@ -366,11 +379,12 @@ def _allocation_chart(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def _equity_svg(points: list[dict[str, Any]]) -> str:
+def _equity_svg(points: list[dict[str, Any]], benchmark_points: list[dict[str, Any]]) -> str:
     width, height = 960.0, 280.0
     left, right, top, bottom = 58.0, 18.0, 18.0, 40.0
     values = [float(point["value"]) for point in points]
-    low, high = min(values), max(values)
+    benchmark_values = [float(point["value"]) for point in benchmark_points]
+    low, high = min(values + benchmark_values), max(values + benchmark_values)
     span = high - low or 1.0
     plot_width = width - left - right
     plot_height = height - top - bottom
@@ -383,12 +397,26 @@ def _equity_svg(points: list[dict[str, Any]]) -> str:
         for index, value in enumerate(values)
     ]
     polyline = " ".join(f"{x:.2f},{y:.2f}" for x, y in coordinates)
+    benchmark_coordinates = [
+        (
+            left + plot_width * index / denominator,
+            top + plot_height * (high - value) / span,
+        )
+        for index, value in enumerate(benchmark_values)
+    ]
+    benchmark_polyline = " ".join(
+        f"{x:.2f},{y:.2f}" for x, y in benchmark_coordinates
+    )
     return (
         f'<svg viewBox="0 0 {int(width)} {int(height)}" role="img" '
         'aria-label="Execution V1 策略净值图">'
         f'<line x1="{left}" y1="{top}" x2="{left}" y2="{height-bottom}" class="axis"/>'
         f'<line x1="{left}" y1="{height-bottom}" x2="{width-right}" y2="{height-bottom}" class="axis"/>'
+        f'<polyline data-series="510500.SH" points="{benchmark_polyline}" class="benchmark-line"/>'
         f'<polyline data-series="execution-v1" points="{polyline}" class="equity-line"/>'
+        f'<line data-crosshair x1="0" y1="{top}" x2="0" y2="{height-bottom}" class="crosshair" hidden/>'
+        '<circle data-strategy-dot r="4" class="strategy-dot" hidden/>'
+        '<circle data-benchmark-dot r="4" class="benchmark-dot" hidden/>'
         f'<text x="{left}" y="{height-12}" class="chart-label">{escape(str(points[0]["date"]))}</text>'
         f'<text x="{width-right}" y="{height-12}" text-anchor="end" '
         f'class="chart-label">{escape(str(points[-1]["date"]))}</text>'
@@ -450,7 +478,7 @@ def _allocation_svg(chart: dict[str, Any]) -> str:
 
 def _allocation_table_head() -> str:
     return (
-        "<tr><th>配置日期</th><th>研究目标权重</th><th>映射后目标权重</th>"
+        "<tr><th>月末观察/目标日</th><th>下一执行交易日</th><th>研究目标权重</th><th>映射后目标权重</th>"
         "<th>映射后现金</th><th>现金拆分</th></tr>"
     )
 
@@ -459,12 +487,21 @@ def _allocation_record_row(record: dict[str, Any]) -> str:
     return (
         "<tr>"
         f'<td>{escape(str(record["allocation_date"]))}</td>'
+        f'<td>{escape(str(record["next_execution_date"] or "尚无"))}</td>'
         f'<td>{_weight_list(record["research_target_weights"])}</td>'
         f'<td>{_weight_list(record["mapped_target_weights"])}</td>'
         f'<td>{_percent(record["mapped_target_cash_weight"])}</td>'
         f'<td>{_weight_list(record["cash_breakdown"])}</td>'
         "</tr>"
     )
+
+
+def _chart_json(points: list[dict[str, Any]], benchmark: list[dict[str, Any]]) -> str:
+    return json.dumps(
+        {"strategy": points, "benchmark": benchmark},
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).replace("<", "\\u003c")
 
 
 def _legacy_audit_details(decision: dict[str, Any]) -> str:
@@ -542,7 +579,7 @@ def _legacy_audit_details(decision: dict[str, Any]) -> str:
         ("V11 Snapshot Integrity", production.get("allocation_integrity", {})),
         ("Research Allocation", decision.get("research_allocation", {})),
         ("Execution-Aware Shadow Allocation", decision.get("execution_shadow", {})),
-        ("Why 40% Cash?", {"cash_explanation": decision.get("cash_explanation")}),
+        ("现金权重构成", {"cash_explanation": decision.get("cash_explanation")}),
         ("Execution Validation Status", decision.get("execution_validation", {})),
         ("Execution Gate Policy", decision.get("execution_validation", {}).get("gate_policy", {})),
         ("Current Constraints", decision.get("risk_summary", {}).get("key_risks", [])),
@@ -655,10 +692,19 @@ def _guidance_css() -> str:
       .chart-frame svg { display:block; width:100%; height:auto; min-height:210px; }
       .axis { stroke:#78838c; stroke-width:1; }
       .equity-line { fill:none; stroke:var(--blue); stroke-width:3; vector-effect:non-scaling-stroke; }
+      .benchmark-line { fill:none; stroke:#8a949d; stroke-width:2; stroke-dasharray:7 5; vector-effect:non-scaling-stroke; }
+      .equity-chart { position:relative; touch-action:none; }
+      .crosshair { stroke:#303942; stroke-width:1; stroke-dasharray:3 3; vector-effect:non-scaling-stroke; }
+      .strategy-dot { fill:var(--blue); stroke:#fff; stroke-width:2; }
+      .benchmark-dot { fill:#69747d; stroke:#fff; stroke-width:2; }
+      .chart-tooltip { position:absolute; top:12px; width:180px; transform:translateX(-50%); padding:9px 10px; border:1px solid #c7cfd6; background:rgba(255,255,255,.96); box-shadow:0 4px 12px rgba(0,0,0,.12); pointer-events:none; font-size:12px; }
+      .chart-tooltip strong,.chart-tooltip span { display:block; }
       .chart-label { fill:#5b6874; font-size:12px; }
       .chart-legend { display:flex; flex-wrap:wrap; gap:7px 14px; margin-top:10px; }
       .legend-item { display:inline-flex; align-items:center; gap:5px; font-size:13px; }
       .legend-swatch { width:12px; height:12px; display:inline-block; }
+      .strategy-swatch { background:var(--blue); }
+      .benchmark-swatch { background:#8a949d; }
       .audit-grid { margin-top:14px; }
       .audit-grid td { overflow-wrap:anywhere; word-break:break-word; }
       @media (max-width:560px) {

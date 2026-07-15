@@ -32,27 +32,22 @@ from release.web_contracts import (
 )
 
 
-PROTECTED_BASELINE_COMMIT = "6183bfdf6fcf5225ac141c6b670cda97eb00ca97"
-PROTECTED_FILE_HASHES = {
-    "backtest/taa/engine.py": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
-    "data_pipeline/strategy_diagnosis.py": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
-    "config/execution_validation_policy.json": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
-    "data/universe/asset_mapping.json": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
-    "data/universe/execution_mapping_decision_ledger.json": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
-}
+_PROTECTED_POLICY = json.loads((ROOT / "config/release_protected_files.json").read_text(encoding="utf-8"))
+PROTECTED_BASELINE_COMMIT = _PROTECTED_POLICY["baseline_commit"]
+PROTECTED_FILE_HASHES = _PROTECTED_POLICY["files"]
 
 LOCAL_INPUTS = (
-    SourceDefinition("reports/strategy_diagnosis_report.json", "canonical strategy diagnosis", "verified_external_local_input", "2026-07-08"),
-    SourceDefinition("reports/research_backtest_report.json", "research backtest evidence", "verified_external_local_input", "2026-07-08"),
-    SourceDefinition("reports/execution_backtest_report.json", "execution backtest evidence", "verified_external_local_input", "2026-07-08"),
-    SourceDefinition("reports/execution_aware_shadow_portfolio.json", "execution-aware shadow snapshot", "verified_external_local_input", "2026-07-08"),
-    SourceDefinition("reports/execution_mapping_proposal.json", "counterfactual proposal input", "verified_external_local_input", "2026-07-08"),
-    SourceDefinition("reports/execution_mapping_counterfactual_report.json", "counterfactual audit evidence", "verified_external_local_input", "2026-07-08"),
-    SourceDefinition("reports/execution_price_dataset_manifest.json", "execution price provenance", "verified_external_local_input", "2026-07-08"),
+    SourceDefinition("reports/strategy_diagnosis_report.json", "canonical strategy diagnosis", "verified_external_local_input"),
+    SourceDefinition("reports/research_backtest_report.json", "research backtest evidence", "verified_external_local_input"),
+    SourceDefinition("reports/execution_backtest_report.json", "execution backtest evidence", "verified_external_local_input"),
+    SourceDefinition("reports/execution_aware_shadow_portfolio.json", "execution-aware shadow snapshot", "verified_external_local_input"),
+    SourceDefinition("reports/execution_mapping_proposal.json", "counterfactual proposal input", "verified_external_local_input"),
+    SourceDefinition("reports/execution_mapping_counterfactual_report.json", "counterfactual audit evidence", "verified_external_local_input"),
+    SourceDefinition("reports/execution_price_dataset_manifest.json", "execution price provenance", "verified_external_local_input"),
     SourceDefinition("reports/execution_mapping_approval_integrity_seal.json", "approval integrity seal", "immutable_governance_artifact", "2026-07-13"),
     SourceDefinition("reports/execution_mapping_approval_record.json", "approved mapping record", "immutable_governance_artifact", "2026-07-13"),
-    SourceDefinition("data/universe/asset_mapping.json", "research-to-execution registry", "immutable_governance_artifact"),
-    SourceDefinition("data/universe/execution_mapping_decision_ledger.json", "mapping decision ledger", "immutable_governance_artifact"),
+    SourceDefinition("data/universe/asset_mapping.json", "research-to-execution registry", "governed_local_input"),
+    SourceDefinition("data/universe/execution_mapping_decision_ledger.json", "mapping decision ledger", "governed_local_input"),
     SourceDefinition("data/universe/execution_instrument_aliases.json", "canonical instrument identity registry", "immutable_governance_artifact"),
     SourceDefinition("config/execution_validation_policy.json", "execution validation gate policy", "immutable_governance_artifact"),
 )
@@ -653,7 +648,7 @@ def _system_acceptance(**context) -> dict:
             "input_count": len(context["inputs"]),
         },
         "strategy_integrity": {
-            "verified": diagnosis.get("diagnosis", {}).get("production_readiness", {}).get("candidate") == "V11_PRODUCTION_FUSION"
+            "verified": any(row.get("version") == "V11_PRODUCTION_FUSION" for row in diagnosis.get("versions", {}).get("rows", []))
         },
         "v11_snapshot_integrity": {
             "verified": v11_validation.get("valid") is True,

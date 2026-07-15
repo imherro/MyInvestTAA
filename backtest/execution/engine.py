@@ -39,7 +39,7 @@ def run_execution_backtest(research_report, execution_price_data, mappings, exec
     non_executable=[r for r in mapping_rows if not r["executable"]]
     no_proxy=[r for r in non_executable if r.get("mapping_quality")=="none"]
     low_quality=[r for r in non_executable if r.get("mapping_quality")=="low"]
-    report={"available":True,"strategy":cfg.strategy,"data_provider":data_provider,"source_research_strategy":research_report.get("strategy"),"period":{"start":dates[0],"end":dates[-1]},"metrics":execution_metrics,"equity_curve":curve,"monthly_allocations":translated,"source_research_allocations":allocations,"research_full_period_metrics":research_report.get("metrics",{}),"research_overlap_metrics":research_metrics,"execution_gap":{**gap,"cash_drag_gap":round(_cash_drag(translated)-_cash_drag(allocations),6)},"mapping_summary":summary,"aggregate_cash_breakdown":_aggregate_cash_breakdown(translated),"non_executable_assets":non_executable,"unmapped_assets":no_proxy,"low_quality_proxy_assets":low_quality,"warnings":["Execution backtest uses ETF proxy qfq prices and only covers tradable ETF periods.","This execution backtest is an ETF proxy validation, not a production trading instruction."]}
+    report={"available":True,"strategy":cfg.strategy,"data_provider":data_provider,"source_research_strategy":research_report.get("strategy"),"period":{"start":dates[0],"end":dates[-1]},"metrics":execution_metrics,"equity_curve":curve,"benchmark":_benchmark_curve("510500.SH","南方中证500ETF",dates,date_maps),"monthly_allocations":translated,"source_research_allocations":allocations,"research_full_period_metrics":research_report.get("metrics",{}),"research_overlap_metrics":research_metrics,"execution_gap":{**gap,"cash_drag_gap":round(_cash_drag(translated)-_cash_drag(allocations),6)},"mapping_summary":summary,"aggregate_cash_breakdown":_aggregate_cash_breakdown(translated),"non_executable_assets":non_executable,"unmapped_assets":no_proxy,"low_quality_proxy_assets":low_quality,"warnings":["Execution backtest uses ETF proxy qfq prices and only covers tradable ETF periods.","This execution backtest is an ETF proxy validation, not a production trading instruction."]}
     if data_provider == "mock": report["warnings"].append("This is a mock execution report. It validates mechanics only and is not real ETF execution evidence.")
     elif data_provider == "tushare": report["warnings"].append("This report uses Tushare ETF qfq price data.")
     report["decision"]=_decision(report,cfg); return report
@@ -48,6 +48,12 @@ def _normalize(rows):
     if not rows or rows[0]["value"]<=0:return []
     base=rows[0]["value"]; return [{"date":r["date"],"value":r["value"]/base} for r in rows]
 def _cash_drag(rows): return sum(float(r.get("weights",{}).get("CASH",0)) for r in rows)/len(rows) if rows else 0
+def _benchmark_curve(asset_id,name,dates,date_maps):
+    values=date_maps.get(asset_id,{})
+    usable=[date for date in dates if date in values and values[date]>0]
+    if not usable:return {"asset_id":asset_id,"name":name,"available":False,"reason":"benchmark price history is unavailable"}
+    base=values[usable[0]]
+    return {"asset_id":asset_id,"name":name,"available":True,"return_basis":"qfq","period":{"start":usable[0],"end":usable[-1]},"points":[{"date":date,"value":round(values[date]/base,8)} for date in usable]}
 def _summary(rows,allocations,translated=None):
     mapped=[r for r in rows if r["executable"]]; total=sum(sum(v for k,v in a.get("weights",{}).items() if k!="CASH") for a in allocations); covered=sum(sum(a.get("weights",{}).get(r["research_asset_id"],0) for r in mapped) for a in allocations)
     executable_ids=sorted(r["research_asset_id"] for r in rows if r["executable"])
@@ -109,6 +115,12 @@ def _summary(rows,allocations,translated=None):
             "gap_month_ratio_gt_10pct":round(sum(value>.10 for value in gap_weights)/len(gap_weights),6) if gap_weights else 0.0,
             "gap_reason_breakdown":reason_breakdown,
         },
+        "gap_windows":{
+            "full_history":_gap_window(translated),
+            "recent_24_months":_gap_window(translated[-24:]),
+            "recent_12_months":_gap_window(translated[-12:]),
+            "continuous_gap_free_suffix":_gap_free_suffix(translated),
+        },
         "mapping_count_scope":{
             "count_scope":"research_assets_present_in_source_allocations",
             "included_asset_ids":sorted(row["research_asset_id"] for row in rows),
@@ -116,6 +128,16 @@ def _summary(rows,allocations,translated=None):
             "mapping_quality_counts":quality_counts,
         },
     }
+def _gap_weight(row):
+    return sum(float(row.get("cash_breakdown",{}).get(key,0)) for key in ("unmapped_cash","low_quality_proxy_cash","missing_price_cash","untradable_cash"))
+def _gap_window(rows):
+    gaps=[_gap_weight(row) for row in rows]
+    return {"start":rows[0]["date"] if rows else None,"end":rows[-1]["date"] if rows else None,"allocation_count":len(rows),"binary_any_gap_month_ratio":round(sum(value>1e-10 for value in gaps)/len(gaps),6) if gaps else 0.0,"average_gap_weight":round(sum(gaps)/len(gaps),6) if gaps else 0.0,"max_gap_weight":round(max(gaps),6) if gaps else 0.0}
+def _gap_free_suffix(rows):
+    start=len(rows)
+    while start>0 and _gap_weight(rows[start-1])<=1e-10:start-=1
+    suffix=rows[start:]
+    return {"start":suffix[0]["date"] if suffix else None,"end":suffix[-1]["date"] if suffix else None,"allocation_count":len(suffix)}
 def _aggregate_cash_breakdown(translated):
     keys=("research_cash","unmapped_cash","low_quality_proxy_cash","missing_price_cash","untradable_cash")
     count=len(translated)

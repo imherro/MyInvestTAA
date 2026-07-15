@@ -237,13 +237,20 @@ def _production_candidate(
     snapshot_present: bool,
 ) -> dict:
     readiness = diagnosis.get("diagnosis", {}).get("production_readiness", {})
+    v11_readiness = next(
+        (
+            row
+            for row in readiness.get("rows", [])
+            if row.get("version") == "V11_PRODUCTION_FUSION"
+        ),
+        {},
+    )
     exposure = diagnosis.get("diagnosis", {}).get("exposure_analysis", {})
     source_as_of = diagnosis.get("dataset", {}).get("period", {}).get("end")
-    strategy = readiness.get("candidate")
+    strategy = "V11_PRODUCTION_FUSION"
     metadata_available = bool(
         diagnosis.get("available")
-        and strategy == "V11_PRODUCTION_FUSION"
-        and readiness.get("status")
+        and v11_readiness
     )
     integrity = allocation_snapshot.get("source_integrity", {})
     expected_payload_hash = integrity.get("snapshot_payload_hash")
@@ -273,7 +280,7 @@ def _production_candidate(
         and not allocation_snapshot.get("shadow_source")
         and snapshot_valid_or_missing
     )
-    unchanged = bool(boundary_verified and readiness.get("candidate") == strategy)
+    unchanged = bool(boundary_verified and strategy == "V11_PRODUCTION_FUSION")
     return {
         "strategy": strategy or "V11_PRODUCTION_FUSION",
         "available": metadata_available,
@@ -305,10 +312,15 @@ def _production_candidate(
         if exposure.get("version") == "v11"
         else {},
         "production_readiness": {
-            "candidate": readiness.get("candidate"),
-            "status": readiness.get("status"),
-            "confidence": readiness.get("confidence"),
-            "checks": readiness.get("checks", {}),
+            "candidate": strategy,
+            "status": "ready" if v11_readiness.get("ready") else "not_ready",
+            "confidence": (
+                round(float(v11_readiness.get("production_score_v3", 0)) / 100, 4)
+                if v11_readiness
+                else None
+            ),
+            "checks": v11_readiness.get("checks", {}),
+            "diagnosis_top_candidate": readiness.get("candidate"),
         },
         "source": "reports/strategy_diagnosis_report.json:diagnosis.production_readiness",
         "source_as_of": source_as_of,
@@ -416,6 +428,7 @@ def _execution_validation(report: dict, gate_policy: dict, policy_source: dict) 
         "binary_any_gap_month_ratio": mapping.get("binary_any_gap_month_ratio"),
         "coverage_contract": mapping.get("coverage_contract", {}),
         "gap_metrics": mapping.get("gap_metrics", {}),
+        "gap_windows": mapping.get("gap_windows", {}),
         "mapping_count_scope": mapping.get("mapping_count_scope", {}),
         "gate_policy": {
             **{field: gate_policy.get(field) for field in policy_fields},

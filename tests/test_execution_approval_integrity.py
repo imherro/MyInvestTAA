@@ -61,6 +61,8 @@ VALID_INTEGRITY = {
         "current_mapping_hash",
         "current_ledger_hash",
         "target_mapping_row_hash",
+        "approved_mapping_row_hashes",
+        "approved_mappings",
         "approved_asset",
         "approved_proxy",
         "approved_mapping_quality",
@@ -404,15 +406,17 @@ def test_current_approved_mapping_remains_unchanged(field, expected):
 @pytest.mark.parametrize(
     ("asset_id", "status"),
     [
-        ("931688CNY010.CSI", "research_only"),
-        ("H00805.CSI", "research_only"),
-        ("H20590.CSI", "rejected_proxy"),
-        ("H21152.CSI", "rejected_proxy"),
+        ("931688CNY010.CSI", "588200.SH"),
+        ("H00805.CSI", "512400.SH"),
+        ("H20590.CSI", "562500.SH"),
+        ("H21152.CSI", "159992.SZ"),
     ],
 )
-def test_frozen_ledger_decisions_remain_unchanged(asset_id, status):
+def test_user_authorized_ledger_decisions_are_sealed(asset_id, status):
     row = next(item for item in LEDGER["decisions"] if item["research_asset_id"] == asset_id)
-    assert row["status"] == status
+    assert row["status"] == "approved_for_execution_validation"
+    assert row["proposed_proxy"] == status
+    assert row["production_approved"] is False
 
 
 @pytest.mark.parametrize(
@@ -447,10 +451,11 @@ def test_current_shadow_integrity_and_weights_remain_stable():
         "510500.SH": 0.25,
         "512760.SH": 0.1,
         "588000.SH": 0.25,
-        "CASH": 0.4,
+        "588200.SH": 0.1,
+        "CASH": 0.3,
     }
-    assert hashlib.sha256(ASSET_MAPPING_FILE.read_bytes()).hexdigest() == RECORD[
-        "mapping_after_hash"
+    assert hashlib.sha256(ASSET_MAPPING_FILE.read_bytes()).hexdigest() == SEAL[
+        "current_mapping_hash"
     ]
 
 

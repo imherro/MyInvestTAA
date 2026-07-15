@@ -19,6 +19,7 @@ from backtest.execution.data_loader import (
 from backtest.execution.engine import run_execution_backtest
 from backtest.execution.mapping_improvement import build_mapping_improvement_report, write_mapping_improvement_report
 from backtest.execution.mapping_application import load_mapping_approval_record, validate_approval_record
+from backtest.execution.approval_integrity import load_approval_integrity_seal
 from backtest.execution.approval_package import load_mapping_decision_ledger
 from backtest.execution.report import write_execution_backtest_report
 from backtest.research.report import load_research_backtest_report
@@ -64,20 +65,9 @@ def main() -> None:
         if approval_record.get("available")
         else {"approval_record_verified": False, "errors": ["approval record missing"]}
     )
+    approval_seal = load_approval_integrity_seal()
     report["mapping_registry_version"] = hashlib.sha256(ASSET_MAPPING_FILE.read_bytes()).hexdigest()
-    report["approved_mapping_records"] = (
-        [
-            {
-                "research_asset_id": approval_record["research_asset_id"],
-                "approved_proxy": approval_record["approved_proxy"],
-                "approved_mapping_quality": approval_record["approved_mapping_quality"],
-                "approval_record": "execution_mapping_approval_record.json",
-                "production_approved": False,
-            }
-        ]
-        if approval_status["approval_record_verified"]
-        else []
-    )
+    report["approved_mapping_records"] = approval_seal.get("approved_mappings", [])
     report["approval_record_verification"] = approval_status
     report["asset_registry_validation"] = build_research_universe_audit()
     write_execution_backtest_report(report)

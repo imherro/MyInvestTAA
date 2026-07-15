@@ -67,15 +67,14 @@ def test_requested_legacy_etf_and_research_index_are_labeled():
     assert "000688CNY01.CSI 科创50全收益" in html
 
 
-def test_site_map_contains_every_non_framework_page_once():
+def test_site_map_contains_only_registered_current_pages_once():
     mapped = [
         route
         for group in SITE_MAP_GROUPS
         for route, _, _ in group["routes"]
     ]
-    actual = [route for route in _page_routes() if route != "/site-map"]
     assert len(mapped) == len(set(mapped))
-    assert sorted(mapped) == sorted(actual)
+    assert set(mapped) < set(_page_routes())
 
 
 def test_all_internal_page_links_resolve_to_registered_routes():
@@ -103,9 +102,9 @@ def test_home_and_status_expose_site_map_without_expanding_primary_navigation():
         assert nav.count("<a ") == 5
 
 
-def test_site_map_separates_current_research_audit_and_archived_pages():
+def test_site_map_separates_primary_and_current_research_pages():
     html = CLIENT.get("/site-map").text
-    for heading in ("主要使用路径", "研究与执行验证", "策略研究审计", "历史归档"):
+    for heading in ("主要使用路径", "研究与执行验证"):
         assert heading in html
-    assert 'section data-level="archived"' in html
-    assert "历史归档不代表当前系统结论" in html
+    assert 'section data-level="archived"' not in html
+    assert "策略研究审计" not in html

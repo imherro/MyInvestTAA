@@ -43,7 +43,7 @@ SOURCE = DIAGNOSIS["diagnosis"]["v11_current_state_source"]
 SNAPSHOT = load_v11_current_allocation()
 
 
-def _minimal_diagnosis(source: dict | None = None, *, end: str = "2026-07-08") -> dict:
+def _minimal_diagnosis(source: dict | None = None, *, end: str = "2026-07-14") -> dict:
     return {
         "dataset": {"period": {"start": "2016-01-01", "end": end}},
         "diagnosis": {
@@ -57,8 +57,8 @@ def _build_from_source(
     mutate=None,
     *,
     recompute_hash: bool = True,
-    market_data_as_of: str = "2026-07-08",
-    dataset_end: str = "2026-07-08",
+    market_data_as_of: str = "2026-07-14",
+    dataset_end: str = "2026-07-14",
 ) -> dict:
     source = copy.deepcopy(SOURCE)
     if mutate:
@@ -321,7 +321,7 @@ def test_noncanonical_v11_assumptions_fail_closed(tmp_path, field, value, expect
         (lambda source: source.update(state_date="2026-07-09"), "2026-07-08", "after market data cutoff"),
         (lambda source: source["period"].update(end="2026-07-07"), "2026-07-08", "must equal result period end"),
         (lambda source: source["period"].update(start="bad-date"), "2026-07-08", "valid ISO date"),
-        (lambda source: source["period"].update(start="2026-07-09"), "2026-07-08", "must not be after end"),
+        (lambda source: source["period"].update(start="2026-07-15"), "2026-07-14", "must not be after end"),
         (lambda source: None, "bad-date", "market_data_as_of must be a valid ISO date"),
     ],
 )
@@ -488,7 +488,7 @@ def test_current_decision_comparison_remains_explanatory_only():
 def test_v11_api_reads_the_local_snapshot():
     value = CLIENT.get("/api/decision/v11-current-allocation").json()
     assert value["available"] is True
-    assert value["source_state_date"] == "2026-07-08"
+    assert value["source_state_date"] == "2026-07-14"
     assert value["production_actionable"] is False
     assert value["trading_instruction"] is False
 
@@ -505,7 +505,7 @@ def test_v11_api_returns_unavailable_without_500(monkeypatch):
 
 def test_current_decision_tracks_v11_allocation_freshness():
     value = CLIENT.get("/api/decision/current-market").json()
-    assert value["production_candidate"]["allocation_source_as_of"] == "2026-07-08"
+    assert value["production_candidate"]["allocation_source_as_of"] == "2026-07-14"
     assert not any(
         "V11 current allocation" in error
         for error in value["data_freshness"]["temporal_errors"]
@@ -847,10 +847,11 @@ def test_current_comparison_uses_canonical_instrument_ids():
     assert comparison["identifier_normalization_verified"] is True
     assert comparison["unresolved_v11_ids"] == []
     assert comparison["unresolved_shadow_ids"] == []
-    assert comparison["weight_differences"]["510500.SH"] == pytest.approx(-0.199619)
-    assert comparison["weight_differences"]["512760.SH"] == pytest.approx(-0.064859)
-    assert comparison["weight_differences"]["588000.SH"] == pytest.approx(-0.221097)
-    assert comparison["weight_differences"]["CASH"] == pytest.approx(-0.200002)
+    assert comparison["weight_differences"]["510500.SH"] == pytest.approx(-0.214442)
+    assert comparison["weight_differences"]["512760.SH"] == pytest.approx(-0.08507)
+    assert comparison["weight_differences"]["588000.SH"] == pytest.approx(-0.225706)
+    assert comparison["weight_differences"]["588200.SH"] == pytest.approx(-0.1)
+    assert comparison["weight_differences"]["CASH"] == pytest.approx(0.07)
     assert "510500" not in comparison["weight_differences"]
     assert "512760" not in comparison["weight_differences"]
     assert "588000" not in comparison["weight_differences"]

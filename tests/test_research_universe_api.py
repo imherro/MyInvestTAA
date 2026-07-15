@@ -39,7 +39,8 @@ def test_research_universe_api_returns_execution_proxy_mappings():
 
     mappings = {mapping["research_asset_id"]: mapping for mapping in response.json()["mappings"]}
     assert mappings["H00300.CSI"]["primary_execution_proxy"] == "510300.SH"
-    assert mappings["H21152.CSI"]["mapping_quality"] == "none"
+    assert mappings["H21152.CSI"]["primary_execution_proxy"] == "159992.SZ"
+    assert mappings["H21152.CSI"]["mapping_quality"] == "high"
 
 
 def test_research_universe_audit_api_returns_counts_and_warnings():
@@ -48,7 +49,7 @@ def test_research_universe_audit_api_returns_counts_and_warnings():
     assert response.status_code == 200
     audit = response.json()["audit"]
     assert audit["research_asset_count"] == 33
-    assert audit["execution_asset_count"] == 14
+    assert audit["execution_asset_count"] == 17
     assert audit["return_basis_counts"]["price_index"] == 18
     assert any("price_index" in warning for warning in audit["warnings"])
     assert audit["errors"] == []

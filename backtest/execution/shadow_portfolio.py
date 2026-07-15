@@ -93,7 +93,12 @@ def build_execution_aware_shadow_portfolio(
         decision_status = decision.get("status")
         proxy = mapping.primary_execution_proxy if mapping else None
         quality = mapping.mapping_quality if mapping else "none"
-        cash_reason = _cash_reason(decision_status, quality, proxy)
+        execution_approval = (
+            mapping.execution_approval if mapping else "research_only"
+        )
+        cash_reason = _cash_reason(
+            decision_status, quality, proxy, execution_approval
+        )
         if not cash_reason:
             price_status = _latest_price_as_of(
                 execution_prices.get(proxy, []), data_as_of
@@ -116,6 +121,7 @@ def build_execution_aware_shadow_portfolio(
                 "research_weight": round(weight, 10),
                 "destination": destination,
                 "mapping_quality": quality,
+                "execution_approval": execution_approval,
                 "decision_status": decision_status,
                 "reason": reason,
                 "production_approved": False,
@@ -170,14 +176,17 @@ def build_execution_aware_shadow_portfolio(
         "price_as_of_by_proxy": dict(sorted(price_as_of_by_proxy.items())),
         "approved_mapping_records": [
             {
-                "research_asset_id": approval_record.get("research_asset_id"),
-                "approved_proxy": approval_record.get("approved_proxy"),
-                "approved_mapping_quality": approval_record.get(
-                    "approved_mapping_quality"
-                ),
-                "approval_record": "execution_mapping_approval_record.json",
+                "research_asset_id": row.get("research_asset_id"),
+                "approved_proxy": row.get("proposed_proxy"),
+                "approved_mapping_quality": by_mapping[
+                    row.get("research_asset_id")
+                ].mapping_quality,
+                "approval_record": row.get("approval_record"),
                 "production_approved": False,
             }
+            for row in decision_ledger.get("decisions", [])
+            if row.get("status") == "approved_for_execution_validation"
+            and row.get("research_asset_id") in by_mapping
         ],
         "frozen_research_only_assets": sorted(
             row["research_asset_id"]
@@ -197,16 +206,16 @@ def build_execution_aware_shadow_portfolio(
     }
 
 
-def _cash_reason(decision_status, quality, proxy):
-    if decision_status == "research_only":
+def _cash_reason(decision_status, quality, proxy, execution_approval="quality_policy"):
+    if decision_status == "research_only" or execution_approval == "research_only":
         return "research_only_cash"
-    if decision_status == "rejected_proxy":
+    if decision_status == "rejected_proxy" and execution_approval != "human_approved":
         return "rejected_proxy_cash"
-    if quality == "low":
+    if quality == "low" and execution_approval != "human_approved":
         return "low_quality_proxy_cash"
     if not proxy or quality == "none":
         return "unmapped_cash"
-    if quality not in {"high", APPROVED_MAPPING_QUALITY}:
+    if quality not in {"high", APPROVED_MAPPING_QUALITY} and execution_approval != "human_approved":
         return "unmapped_cash"
     return None
 

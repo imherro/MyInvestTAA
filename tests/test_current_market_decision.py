@@ -28,7 +28,7 @@ from decision.current_market.source_policy import (
 
 CLIENT = TestClient(app)
 SOURCES = load_current_market_sources()
-REPORT = build_current_market_decision(as_of="2026-07-08", sources=SOURCES)
+REPORT = build_current_market_decision(as_of="2026-07-14", sources=SOURCES)
 
 
 @pytest.mark.parametrize(
@@ -221,32 +221,30 @@ def test_research_and_shadow_weights_are_exact():
         "510500.SH": 0.25,
         "512760.SH": 0.1,
         "588000.SH": 0.25,
-        "CASH": 0.4,
+        "588200.SH": 0.1,
+        "CASH": 0.3,
     }
 
 
-def test_cash_explanation_names_both_components_and_computing_power():
+def test_cash_explanation_reconciles_current_research_cash():
     explanation = REPORT["cash_explanation"]
-    assert "40%" in explanation
     assert "30%" in explanation
-    assert "10%" in explanation
-    assert "931688CNY010.CSI" in explanation
-    assert "without an approved execution ETF" in explanation
+    assert "research strategy cash" in explanation
 
 
 def test_execution_gate_failure_is_preserved():
     validation = REPORT["execution_validation"]
     assert validation["ready"] is False
-    assert validation["tradable_weight_coverage"] == pytest.approx(0.691469)
-    assert validation["untradable_month_ratio"] == pytest.approx(1.0)
+    assert validation["tradable_weight_coverage"] == pytest.approx(0.786044)
+    assert validation["untradable_month_ratio"] == pytest.approx(0.727273)
     assert validation["gate_policy"]["tradable_weight_coverage_min"] == pytest.approx(0.7)
     assert len(validation["gate_policy"]["policy_hash"]) == 64
 
 
 def test_risk_summary_respects_shadow_constraints():
     risk = REPORT["risk_summary"]
-    assert risk["equity_weight"] == pytest.approx(0.6)
-    assert risk["cash_weight"] == pytest.approx(0.4)
+    assert risk["equity_weight"] == pytest.approx(0.7)
+    assert risk["cash_weight"] == pytest.approx(0.3)
     assert risk["single_etf_limit"] == pytest.approx(0.35)
     assert risk["constraint_violations"] == []
 
@@ -254,7 +252,7 @@ def test_risk_summary_respects_shadow_constraints():
 def test_stale_market_snapshot_is_historical_only():
     sources = copy.deepcopy(SOURCES)
     sources["diagnosis"]["dataset"]["period"]["end"] = "2026-06-01"
-    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    report = build_current_market_decision(as_of="2026-07-14", sources=sources)
     assert report["status"] == "stale"
     assert report["ready_for_user_review"] is False
     assert report["production_actionable"] is False
@@ -264,7 +262,7 @@ def test_stale_market_snapshot_is_historical_only():
 def test_missing_market_state_makes_report_unavailable():
     sources = copy.deepcopy(SOURCES)
     sources["diagnosis"] = {"available": False}
-    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    report = build_current_market_decision(as_of="2026-07-14", sources=sources)
     assert report["available"] is False
     assert report["status"] in {"stale", "unavailable"}
     assert report["production_actionable"] is False
@@ -276,7 +274,7 @@ def test_price_verification_failure_blocks_review():
         "provenance_verified": False,
         "errors": ["price file sha256 mismatch: 510500.SH"],
     }
-    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    report = build_current_market_decision(as_of="2026-07-14", sources=sources)
     assert report["ready_for_user_review"] is False
     assert "510500.SH" in " ".join(report["data_freshness"]["errors"])
 
@@ -317,8 +315,8 @@ def test_monthly_research_allocation_is_not_daily_stale():
 
 def test_etf_freshness_uses_actual_price_dates():
     checks = REPORT["data_freshness"]["etf_prices"]["checks"]
-    assert set(checks) == {"510500.SH", "512760.SH", "588000.SH"}
-    assert all(row["source_as_of"] == "2026-07-08" for row in checks.values())
+    assert set(checks) == {"510500.SH", "512760.SH", "588000.SH", "588200.SH"}
+    assert all(row["source_as_of"] == "2026-07-14" for row in checks.values())
     assert REPORT["data_freshness"]["etf_prices"]["actual_files_verified"] is True
 
 
@@ -447,7 +445,7 @@ def test_current_decision_api_never_calls_tushare(monkeypatch):
         "V11 Production Candidate",
         "Research Allocation",
         "Execution-Aware Shadow Allocation",
-        "Why 40% Cash?",
+            "现金权重构成",
         "Execution Validation Status",
         "Current Constraints",
         "Data Freshness",
@@ -605,7 +603,7 @@ def test_loader_custom_path_skips_live_hash_verification_by_default(tmp_path):
 def test_execution_report_missing_blocks_user_review():
     sources = copy.deepcopy(SOURCES)
     sources["execution"] = {"available": False}
-    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    report = build_current_market_decision(as_of="2026-07-14", sources=sources)
     assert report["execution_validation"]["available"] is False
     assert report["ready_for_user_review"] is False
     assert report["status"] == "unavailable"
@@ -616,7 +614,7 @@ def test_execution_report_missing_blocks_user_review():
 def test_execution_metric_missing_blocks_user_review(field):
     sources = copy.deepcopy(SOURCES)
     sources["execution"]["metrics"].pop(field)
-    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    report = build_current_market_decision(as_of="2026-07-14", sources=sources)
     assert report["execution_validation"]["metrics_available"] is False
     assert report["ready_for_user_review"] is False
 
@@ -625,7 +623,7 @@ def test_execution_metric_missing_blocks_user_review(field):
 def test_execution_mapping_metric_missing_blocks_user_review(field):
     sources = copy.deepcopy(SOURCES)
     sources["execution"]["mapping_summary"].pop(field)
-    report = build_current_market_decision(as_of="2026-07-08", sources=sources)
+    report = build_current_market_decision(as_of="2026-07-14", sources=sources)
     assert report["execution_validation"]["metrics_available"] is False
     assert report["ready_for_user_review"] is False
 
@@ -639,13 +637,13 @@ def test_execution_not_ready_still_permits_user_review_when_evidence_exists():
 
 def test_current_snapshot_has_distinct_market_and_governance_dates():
     assert REPORT["decision_date"] == "2026-07-13"
-    assert REPORT["market_data_as_of"] == "2026-07-08"
+    assert REPORT["market_data_as_of"] == "2026-07-14"
     assert REPORT["governance_state_as_of"] == "2026-07-13"
     assert REPORT["snapshot_mode"] == "current_decision_with_lagged_market_data"
 
 
-def test_current_mode_permits_later_governance_state():
-    assert REPORT["governance_state_as_of"] > REPORT["market_data_as_of"]
+def test_current_mode_permits_independent_governance_state():
+    assert REPORT["governance_state_as_of"] != REPORT["market_data_as_of"]
     assert REPORT["data_freshness"]["temporal_status"] == "pass"
     assert REPORT["ready_for_user_review"] is True
 
@@ -811,11 +809,11 @@ def test_cash_component_mismatch_blocks_review():
 
 def test_current_cash_components_reconcile_exactly():
     assert REPORT["cash_reconciliation"] == {
-        "total_cash_weight": 0.4,
-        "component_weight_sum": 0.4,
+        "total_cash_weight": 0.3,
+        "component_weight_sum": 0.3,
         "reconciled": True,
     }
-    assert sum(row["weight"] for row in REPORT["cash_explanation_components"]) == pytest.approx(0.4)
+    assert sum(row["weight"] for row in REPORT["cash_explanation_components"]) == pytest.approx(0.3)
 
 
 def test_rebalance_estimate_is_explicitly_unconfirmed():
@@ -866,8 +864,8 @@ def test_generated_timestamp_is_explicit_utc():
 
 def test_api_exposes_temporal_and_gate_contract():
     value = CLIENT.get("/api/decision/current-market").json()
-    assert value["decision_date"] == "2026-07-13"
-    assert value["market_data_as_of"] == "2026-07-08"
+    assert value["decision_date"] == "2026-07-15"
+    assert value["market_data_as_of"] == "2026-07-14"
     assert value["governance_state_as_of"] == "2026-07-13"
     assert value["execution_validation"]["gate_policy"]["policy_hash"]
 
@@ -898,7 +896,7 @@ def test_fixed_page_explains_lagged_market_data():
 def _build_with_execution_value(section: str, field: str, value) -> dict:
     sources = copy.deepcopy(SOURCES)
     sources["execution"].setdefault(section, {})[field] = value
-    return build_current_market_decision(as_of="2026-07-08", sources=sources)
+    return build_current_market_decision(as_of="2026-07-14", sources=sources)
 
 
 @pytest.mark.parametrize(
@@ -970,7 +968,7 @@ def test_execution_ratio_metrics_must_be_bounded(field, value):
     [
         ("start", None, "execution period start is required"),
         ("end", None, "execution period end is required"),
-        ("start", "2026-07-09", "execution period start must not be after end"),
+        ("start", "2026-07-15", "execution period start must not be after end"),
     ],
 )
 def test_execution_period_semantics_fail_closed(field, value, expected_error):
@@ -1100,11 +1098,12 @@ def test_current_report_business_result_is_unchanged_after_semantic_hardening():
         "510500.SH": 0.25,
         "512760.SH": 0.1,
         "588000.SH": 0.25,
-        "CASH": 0.4,
+        "588200.SH": 0.1,
+        "CASH": 0.3,
     }
     assert REPORT["execution_validation"]["ready"] is False
-    assert REPORT["execution_validation"]["tradable_weight_coverage"] == pytest.approx(0.691469)
-    assert REPORT["execution_validation"]["untradable_month_ratio"] == 1.0
+    assert REPORT["execution_validation"]["tradable_weight_coverage"] == pytest.approx(0.786044)
+    assert REPORT["execution_validation"]["untradable_month_ratio"] == pytest.approx(0.727273)
 
 
 def test_unavailable_web_page_never_claims_ready(monkeypatch):

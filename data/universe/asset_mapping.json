@@ -82,18 +82,20 @@
   {
     "research_asset_id": "H21152.CSI",
     "research_asset_name": "CS创新药全收益",
-    "primary_execution_proxy": null,
-    "execution_proxies": [],
-    "mapping_quality": "none",
-    "notes": "未确认明确 ETF 代理，不硬凑映射"
+    "primary_execution_proxy": "159992.SZ",
+    "execution_proxies": ["159992.SZ"],
+    "mapping_quality": "high",
+    "execution_approval": "human_approved",
+    "notes": "银华创新药ETF跟踪中证创新药产业价格指数931152，与H21152全收益指数属于同一指数体系；用户明确批准用于执行验证和Shadow，不代表生产授权"
   },
   {
     "research_asset_id": "H20590.CSI",
     "research_asset_name": "机器人全收益",
-    "primary_execution_proxy": null,
-    "execution_proxies": [],
-    "mapping_quality": "none",
-    "notes": "未确认明确 ETF 代理，不硬凑映射"
+    "primary_execution_proxy": "562500.SH",
+    "execution_proxies": ["562500.SH"],
+    "mapping_quality": "high",
+    "execution_approval": "human_approved",
+    "notes": "华夏机器人ETF跟踪中证机器人价格指数H30590，与H20590全收益指数属于同一指数体系；用户明确批准用于执行验证和Shadow，不代表生产授权"
   },
   {
     "research_asset_id": "H20771.CSI",
@@ -106,10 +108,11 @@
   {
     "research_asset_id": "931688CNY010.CSI",
     "research_asset_name": "中证算力全收益",
-    "primary_execution_proxy": null,
-    "execution_proxies": [],
-    "mapping_quality": "none",
-    "notes": "未确认明确 ETF 代理，不硬凑映射"
+    "primary_execution_proxy": "588200.SH",
+    "execution_proxies": ["588200.SH"],
+    "mapping_quality": "low",
+    "execution_approval": "human_approved",
+    "notes": "用户明确批准的近似执行代理；嘉实科创芯片ETF不直接跟踪中证算力，产业链覆盖存在偏差，仅用于执行验证和Shadow，不代表生产授权"
   },
   {
     "research_asset_id": "H00805.CSI",
@@ -117,7 +120,8 @@
     "primary_execution_proxy": "512400.SH",
     "execution_proxies": ["512400.SH"],
     "mapping_quality": "low",
-    "notes": "有色金属 ETF 只能近似资源周期，不能作为生产自动执行工具"
+    "execution_approval": "human_approved",
+    "notes": "用户明确批准的近似执行代理；有色金属ETF仅覆盖A股资源的一部分，缺少煤炭、能源等暴露，仅用于执行验证和Shadow，不代表生产授权"
   },
   {
     "research_asset_id": "801120.SI",

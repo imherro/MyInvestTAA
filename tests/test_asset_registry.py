@@ -349,7 +349,7 @@ def test_audit_counts_registry_sections():
     audit = build_research_universe_audit()
 
     assert audit["research_asset_count"] == 33
-    assert audit["execution_asset_count"] == 14
+    assert audit["execution_asset_count"] == 17
     assert audit["mapping_count"] == 33
 
 
@@ -364,15 +364,20 @@ def test_audit_counts_data_apis():
 
     assert audit["data_api_counts"]["index_daily"] == 15
     assert audit["data_api_counts"]["sw_daily"] == 18
-    assert audit["data_api_counts"]["fund_daily"] == 14
+    assert audit["data_api_counts"]["fund_daily"] == 17
 
 
 def test_audit_counts_mapping_quality():
     audit = build_research_universe_audit()
 
-    assert audit["mapping_quality_counts"]["none"] == 21
+    assert audit["mapping_quality_counts"] == {
+        "high": 8,
+        "medium": 5,
+        "low": 2,
+        "none": 18,
+    }
     assert audit["mapping_quality_counts"]["medium"] == 5
-    assert audit["mapping_quality_counts"]["low"] == 1
+    assert audit["mapping_quality_counts"]["low"] == 2
 
 
 def test_audit_warns_on_price_index_assets():
@@ -381,10 +386,11 @@ def test_audit_warns_on_price_index_assets():
     assert any("801780.SI 银行 uses price_index" in warning for warning in audit["warnings"])
 
 
-def test_audit_warns_on_missing_execution_proxy():
+def test_direct_innovation_drug_proxy_is_registered():
     audit = build_research_universe_audit()
 
-    assert any("H21152.CSI has no execution proxy" in warning for warning in audit["warnings"])
+    assert not any("H21152.CSI has no execution proxy" in warning for warning in audit["warnings"])
+    assert mappings_by_research_asset()["H21152.CSI"].primary_execution_proxy == "159992.SZ"
 
 
 def test_audit_has_no_errors_for_checked_in_registry():

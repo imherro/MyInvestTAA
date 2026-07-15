@@ -10,7 +10,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -24,7 +24,21 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
+    "verified": true
+  },
+  {
+    "instrument_id": "159992.SZ",
+    "name": "银华中证创新药产业ETF",
+    "listing_date": "2020-04-10",
+    "investable_start_date": "2020-04-10",
+    "investable_start_rule": "verified_listing_date_only_b1_no_liquidity_threshold",
+    "price_return_basis": "qfq_market_price",
+    "fund_expense_treatment": "embedded_in_price",
+    "management_fee_rate": null,
+    "custodian_fee_rate": null,
+    "metadata_source": "tushare.fund_basic",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -38,7 +52,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -52,7 +66,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -66,7 +80,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -80,7 +94,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -94,7 +108,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -108,7 +122,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -122,7 +136,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -136,7 +150,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -150,7 +164,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -164,7 +178,7 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -178,7 +192,21 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
+    "verified": true
+  },
+  {
+    "instrument_id": "562500.SH",
+    "name": "华夏中证机器人ETF",
+    "listing_date": "2021-12-29",
+    "investable_start_date": "2021-12-29",
+    "investable_start_rule": "verified_listing_date_only_b1_no_liquidity_threshold",
+    "price_return_basis": "qfq_market_price",
+    "fund_expense_treatment": "embedded_in_price",
+    "management_fee_rate": null,
+    "custodian_fee_rate": null,
+    "metadata_source": "tushare.fund_basic",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   },
   {
@@ -192,7 +220,21 @@
     "management_fee_rate": null,
     "custodian_fee_rate": null,
     "metadata_source": "tushare.fund_basic",
-    "metadata_as_of": "2026-07-14",
+    "metadata_as_of": "2026-07-15",
+    "verified": true
+  },
+  {
+    "instrument_id": "588200.SH",
+    "name": "嘉实上证科创板芯片ETF",
+    "listing_date": "2022-10-26",
+    "investable_start_date": "2022-10-26",
+    "investable_start_rule": "verified_listing_date_only_b1_no_liquidity_threshold",
+    "price_return_basis": "qfq_market_price",
+    "fund_expense_treatment": "embedded_in_price",
+    "management_fee_rate": null,
+    "custodian_fee_rate": null,
+    "metadata_source": "tushare.fund_basic",
+    "metadata_as_of": "2026-07-15",
     "verified": true
   }
 ]

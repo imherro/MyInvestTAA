@@ -88,7 +88,7 @@ report = {
         "mapping_update_applied": bool(approved),
         "production_approved": False,
         "reasons": [
-            "The single human-approved mapping is applied for execution validation and shadow use only."
+            "Human-authorized mappings are applied for execution validation and Shadow use only; semantic quality remains independently disclosed."
         ],
     },
 }

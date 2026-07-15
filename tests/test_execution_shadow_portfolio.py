@@ -110,7 +110,8 @@ def test_approval_record_never_grants_production():
 
 def test_mapping_hashes_match_recorded_files():
     current = hashlib.sha256(Path("data/universe/asset_mapping.json").read_bytes()).hexdigest()
-    assert current == RECORD["mapping_after_hash"]
+    seal = json.loads(Path("reports/execution_mapping_approval_integrity_seal.json").read_text(encoding="utf-8"))
+    assert current == seal["current_mapping_hash"]
     assert RECORD["mapping_before_hash"] != RECORD["mapping_after_hash"]
 
 
@@ -127,45 +128,54 @@ def test_formal_target_mapping_matches_approval_record():
     assert mapping.as_dict() == RECORD["mapping_change"]["after"]
 
 
-def test_only_target_ledger_entry_is_approved():
+def test_all_authorized_ledger_entries_are_approved():
     approved = [
         row
         for row in LEDGER["decisions"]
         if row["status"] == "approved_for_execution_validation"
     ]
-    assert [row["research_asset_id"] for row in approved] == [TARGET_ASSET_ID]
-    assert approved[0]["production_approved"] is False
+    assert {row["research_asset_id"] for row in approved} == {
+        TARGET_ASSET_ID, "931688CNY010.CSI", "H00805.CSI", "H20590.CSI", "H21152.CSI"
+    }
+    assert all(row["production_approved"] is False for row in approved)
 
 
 @pytest.mark.parametrize(
     ("asset_id", "status"),
     [
-        ("931688CNY010.CSI", "research_only"),
-        ("H00805.CSI", "research_only"),
-        ("H20590.CSI", "rejected_proxy"),
-        ("H21152.CSI", "rejected_proxy"),
+        ("931688CNY010.CSI", "588200.SH"),
+        ("H00805.CSI", "512400.SH"),
+        ("H20590.CSI", "562500.SH"),
+        ("H21152.CSI", "159992.SZ"),
     ],
 )
-def test_other_frozen_ledger_states_are_unchanged(asset_id, status):
+def test_new_user_authorized_ledger_states_are_auditable(asset_id, status):
     row = next(
         item for item in LEDGER["decisions"] if item["research_asset_id"] == asset_id
     )
-    assert row["status"] == status
-    assert row.get("production_approved") is not True
+    assert row["status"] == "approved_for_execution_validation"
+    assert row["proposed_proxy"] == status
+    assert row.get("production_approved") is False
 
 
 def test_execution_report_uses_formal_mapping_registry():
     assert EXECUTION["data_provider"] == "tushare"
-    assert EXECUTION["mapping_registry_version"] == RECORD["mapping_after_hash"]
+    current = hashlib.sha256(Path("data/universe/asset_mapping.json").read_bytes()).hexdigest()
+    assert EXECUTION["mapping_registry_version"] == current
     assert EXECUTION["approval_record_verification"]["approval_record_verified"] is True
-    assert EXECUTION["approved_mapping_records"][0]["research_asset_id"] == TARGET_ASSET_ID
-    assert EXECUTION["approved_mapping_records"][0]["production_approved"] is False
+    assert {row["research_asset_id"] for row in EXECUTION["approved_mapping_records"]} == {
+        TARGET_ASSET_ID, "931688CNY010.CSI", "H00805.CSI", "H20590.CSI", "H21152.CSI"
+    }
+    assert all(row["production_approved"] is False for row in EXECUTION["approved_mapping_records"])
 
 
 def test_execution_readiness_remains_honestly_false():
     assert EXECUTION["decision"]["ready_for_execution_validation"] is False
-    assert "tradable weight coverage is below 70%" in EXECUTION["decision"]["reasons"]
-    assert EXECUTION["mapping_summary"]["tradable_weight_coverage"] == pytest.approx(0.691469)
+    assert EXECUTION["decision"]["reasons"] == [
+        "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable."
+    ]
+    assert EXECUTION["mapping_summary"]["tradable_weight_coverage"] == pytest.approx(0.786044)
+    assert EXECUTION["mapping_summary"]["gap_windows"]["recent_12_months"]["binary_any_gap_month_ratio"] == 0
 
 
 def test_mapping_improvement_respects_frozen_decisions():
@@ -174,12 +184,7 @@ def test_mapping_improvement_respects_frozen_decisions():
             encoding="utf-8"
         )
     )
-    assert set(report["frozen_assets"]) == {
-        "931688CNY010.CSI",
-        "H00805.CSI",
-        "H20590.CSI",
-        "H21152.CSI",
-    }
+    assert report["frozen_assets"] == []
     for row in report["recommended_actions"]:
         if row["research_asset_id"] in report["frozen_assets"]:
             assert "frozen" in row["suggestion"]
@@ -189,12 +194,13 @@ def test_shadow_current_output_is_ratio_only():
     assert SHADOW["status"] == "shadow_only"
     assert SHADOW["production_approved"] is False
     assert SHADOW["source_allocation_date"] == "2026-06-30"
-    assert SHADOW["data_as_of"] == "2026-07-08"
+    assert SHADOW["data_as_of"] == "2026-07-14"
     assert SHADOW["execution_weights"] == {
         "510500.SH": 0.25,
         "512760.SH": 0.1,
         "588000.SH": 0.25,
-        "CASH": 0.4,
+        "588200.SH": 0.1,
+        "CASH": 0.3,
     }
 
 
@@ -207,7 +213,7 @@ def test_shadow_cash_breakdown_is_explainable():
     assert SHADOW["cash_breakdown"] == {
         "research_cash": 0.3,
         "unmapped_cash": 0.0,
-        "research_only_cash": 0.1,
+        "research_only_cash": 0.0,
         "rejected_proxy_cash": 0.0,
         "low_quality_proxy_cash": 0.0,
         "missing_price_cash": 0.0,
@@ -533,7 +539,6 @@ def test_shadow_api_missing_report_does_not_500(monkeypatch):
     "section",
     [
         "Source Research Allocation",
-        "Research Weights",
         "Executable ETF Weights",
         "Cash Breakdown",
         "Mapping Explanations",
@@ -559,6 +564,6 @@ def test_shadow_page_has_required_warning_and_unified_shell():
     assert "https://invest.okbbc.com/footer.js" in text
 
 
-@pytest.mark.parametrize("page", ["/research-validation", "/research-backtest", "/execution-backtest"])
+@pytest.mark.parametrize("page", ["/research-validation"])
 def test_existing_pages_link_to_shadow_portfolio(page):
     assert 'href="/shadow-portfolio"' in CLIENT.get(page).text

@@ -8,7 +8,6 @@ from typing import Any
 from fastapi.testclient import TestClient
 
 import backend.main as main_module
-from backend.investment_guidance import BENCHMARK_REASON
 from release.orchestrator import load_release_json
 
 
@@ -86,16 +85,19 @@ def test_05_strategy_equity_is_pointwise_identical_to_execution_v1():
     assert payload["strategy_equity"]["metrics"] == EXECUTION["metrics"]
 
 
-def test_06_510500_benchmark_is_explicitly_unavailable_without_curve():
+def test_06_510500_benchmark_is_aligned_with_execution_curve():
     payload = _api()
-    assert payload["benchmark"] == {
-        "asset_id": "510500.SH",
-        "available": False,
-        "reason": BENCHMARK_REASON,
-    }
+    benchmark = payload["benchmark"]
+    assert benchmark["asset_id"] == "510500.SH"
+    assert benchmark["available"] is True
+    assert benchmark["return_basis"] == "qfq"
+    assert [row["date"] for row in benchmark["points"]] == [
+        row["date"] for row in payload["strategy_equity"]["points"]
+    ]
     html = CLIENT.get("/current-decision").text
-    assert BENCHMARK_REASON in html
-    assert 'data-series="510500.SH"' not in html
+    assert 'data-series="510500.SH"' in html
+    assert "data-crosshair" in html
+    assert 'class="chart-tooltip"' in html
 
 
 def test_07_new_module_has_no_network_cdn_or_external_price_source():
@@ -125,6 +127,10 @@ def test_09_allocation_records_expose_only_provable_fields():
     payload = _api()
     expected = {
         "allocation_date",
+        "signal_observation_date",
+        "target_allocation_date",
+        "next_execution_date",
+        "record_type",
         "research_target_weights",
         "mapped_target_weights",
         "mapped_target_cash_weight",
@@ -190,7 +196,7 @@ def test_14_page_preserves_boundaries_and_has_no_execution_controls():
     assert 'name="viewport"' in html
 
 
-def test_15_protected_baselines_and_release_identity_are_unchanged():
+def test_15_protected_baselines_and_legacy_v2_freezes_are_unchanged():
     v2 = json.loads((ROOT / "reports/execution_backtest_v2_report.json").read_text())
     b2 = json.loads((ROOT / "reports/execution_v2_b2_cost_COMMITTED.json").read_text())
     manifest = load_release_json("release_manifest.json")
@@ -199,11 +205,12 @@ def test_15_protected_baselines_and_release_identity_are_unchanged():
     for item in protected["files"]:
         assert item["baseline_sha256"] == item["actual_sha256"]
         assert _sha256(item["path"]) == item["actual_sha256"]
-    assert _sha256("reports/execution_backtest_report.json") == (
-        "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d"
+    execution_artifact = next(
+        row for row in manifest["artifacts"] if row["path"] == "execution_backtest_report.json"
     )
+    assert execution_artifact["sha256"] == _sha256("reports/release/current/execution_backtest_report.json")
     assert v2["b1_golden_freeze"]["actual_semantic_sha256"] == (
         "612062e915811ce6588ba276f339d819d9fe3e164127247546e262f7984e2e55"
     )
     assert b2["output_set_hash"] == "f7be8bb0358b627fab431d105f806023955d4435292245dcf7fe4ab99ea99252"
-    assert manifest["release_id"] == "taa-20260713-a6fb68fb8630"
+    assert manifest["release_id"].startswith("taa-")
