@@ -1,12 +1,14 @@
 {
   "data_provider": "tushare",
   "return_basis": "qfq",
-  "generated_at": "2026-07-15T04:33:29+00:00",
-  "start": "2016-01-01",
+  "generated_at": "2026-07-15T08:27:15+00:00",
+  "start": "2011-01-01",
   "end": "2026-07-15",
-  "asset_count": 17,
-  "available_assets": 17,
-  "row_count": 30395,
+  "mapping_count": 14,
+  "unique_asset_count": 13,
+  "asset_count": 13,
+  "available_assets": 13,
+  "row_count": 22486,
   "errors": {},
   "warning": "ETF cache uses actual ETF trading dates only; no index/ETF history stitching or pre-inception filling."
 }
