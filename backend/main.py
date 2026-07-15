@@ -57,6 +57,11 @@ from decision.current_market.instrument_ids import (
     resolve_canonical_instrument_id,
 )
 from decision.current_market.explain import decision_headline
+from backend.investment_guidance import (
+    build_investment_guidance,
+    investment_guidance_api,
+    render_investment_guidance,
+)
 from release.orchestrator import load_committed_counterfactual_report, load_release_json
 from release.web_contracts import primary_navigation_html
 from storage import MarketDataRepository, connect_database
@@ -3320,47 +3325,18 @@ def v11_current_allocation_page() -> str:
 
 @app.get("/current-decision", response_class=HTMLResponse)
 def current_decision_page() -> str:
-    report = load_release_json("current_market_decision.json")
-    market_rows = "\n".join(_mapping_rows(report.get("market_state", {}), empty="Current market state report not generated yet"))
-    risk_rows = "\n".join(_mapping_rows(report.get("risk_summary", {}), empty="No risk summary recorded"))
-    v11_rows = "\n".join(_mapping_rows(report.get("production_candidate", {}), empty="No V11 candidate snapshot recorded"))
-    v11_allocation_rows = "\n".join(_mapping_rows(report.get("production_candidate", {}).get("allocation", {}), empty="No V11 current allocation available"))
-    v11_equity_cash_rows = "\n".join(_mapping_rows({key: report.get("production_candidate", {}).get(key) for key in ("equity_weight", "cash_weight")}, empty="No V11 equity or cash weights available"))
-    v11_selected_rows = "\n".join(_message_rows(report.get("production_candidate", {}).get("selected_assets", []), empty="No V11 selected assets available"))
-    v11_difference_rows = "\n".join(_mapping_rows(report.get("comparison", {}).get("weight_differences", {}), empty="No V11 and Shadow weight differences available"))
-    v11_integrity_rows = "\n".join(_mapping_rows(report.get("production_candidate", {}).get("allocation_integrity", {}), empty="No V11 snapshot integrity available"))
-    identifier_namespace_rows = "\n".join(_mapping_rows({"identifier_namespace": report.get("comparison", {}).get("identifier_namespace")}, empty="No instrument identifier namespace recorded"))
-    identifier_status_rows = "\n".join(_mapping_rows({key: report.get("comparison", {}).get(key) for key in ("identifier_normalization_verified", "identifier_errors")}, empty="No instrument identifier normalization result recorded"))
-    canonical_v11_rows = "\n".join(_mapping_rows(report.get("comparison", {}).get("v11_canonical_weights", {}), empty="No canonical V11 weights available"))
-    unresolved_identifier_rows = "\n".join(_mapping_rows({"unresolved_v11_ids": report.get("comparison", {}).get("unresolved_v11_ids", []), "unresolved_shadow_ids": report.get("comparison", {}).get("unresolved_shadow_ids", [])}, empty="No unresolved instrument identifiers"))
-    research_rows = "\n".join(_mapping_rows(report.get("research_allocation", {}), empty="No research allocation recorded"))
-    shadow_rows = "\n".join(_mapping_rows(report.get("execution_shadow", {}), empty="No execution-aware shadow allocation recorded"))
-    validation_rows = "\n".join(_mapping_rows(report.get("execution_validation", {}), empty="No execution validation status recorded"))
-    freshness_rows = "\n".join(_mapping_rows(report.get("data_freshness", {}), empty="No freshness checks recorded"))
-    provenance_rows = "\n".join(_mapping_rows(report.get("source_manifest", {}), empty="No source provenance recorded"))
-    source_status_rows = "\n".join(_mapping_rows(report.get("source_hash_verification", {}), empty="No required source verification recorded"))
-    gate_policy_rows = "\n".join(_mapping_rows(report.get("execution_validation", {}).get("gate_policy", {}), empty="No execution gate policy recorded"))
-    v11_availability_rows = "\n".join(_mapping_rows({key: report.get("production_candidate", {}).get(key) for key in ("candidate_metadata_available", "current_allocation_available", "boundary_verified", "unchanged")}, empty="No V11 boundary status recorded"))
-    decision_date_rows = "\n".join(_mapping_rows({key: report.get(key) for key in ("decision_date", "generated_at")}, empty="No decision date recorded"))
-    market_date_rows = "\n".join(_mapping_rows({"market_data_as_of": report.get("market_data_as_of")}, empty="No market data cutoff recorded"))
-    governance_date_rows = "\n".join(_mapping_rows({"governance_state_as_of": report.get("governance_state_as_of")}, empty="No governance state date recorded"))
-    snapshot_mode_rows = "\n".join(_mapping_rows({"snapshot_mode": report.get("snapshot_mode")}, empty="No snapshot mode recorded"))
-    summary = report.get("decision_summary", {})
-    summary_headline = escape(
-        decision_headline(
-            status=str(report.get("status", "unavailable")),
-            ready_for_user_review=report.get("ready_for_user_review") is True,
-        )
+    return render_investment_guidance(
+        build_investment_guidance(load_release_json),
+        product_css=_product_css(),
+        primary_navigation=_primary_navigation(),
     )
-    executable_rows = "\n".join(_message_rows(summary.get("what_is_executable", []), empty="No ETF allocation is production executable"))
-    research_only_rows = "\n".join(_message_rows(summary.get("what_is_not_executable", []), empty="No research-only assets recorded"))
-    blocking_rows = "\n".join(_message_rows(summary.get("blocking_conditions", []), empty="No data-integrity blockers; execution validation gates still apply"))
-    constraint_rows = "\n".join(_message_rows(report.get("risk_summary", {}).get("key_risks", []), empty="No current constraints recorded"))
-    status_rows = "\n".join(_mapping_rows({key: report.get(key) for key in ("available", "status", "ready_for_user_review", "production_actionable")}, empty="Current decision report not generated yet"))
-    cash_text = escape(str(report.get("cash_explanation", "Cash explanation unavailable")))
-    decision_date = escape(str(report.get("decision_date", "unavailable")))
-    market_data_as_of = escape(str(report.get("market_data_as_of", "unavailable")))
-    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Current Market Decision</title><style>{_report_page_css()}</style></head><body><header><h1>Current Market Decision</h1><p>Decision prepared on {decision_date} using market data through {market_data_as_of}. This page does not create orders or replace V11.</p><p><a href="/">Dashboard</a> · <a href="/v11-current-allocation">V11 Current Allocation</a> · <a href="/research-backtest">Research Backtest</a> · <a href="/execution-backtest">Execution Backtest</a> · <a href="/shadow-portfolio">Shadow Portfolio</a></p></header><main><section><h2>Decision Status</h2><table><tbody>{status_rows}</tbody></table></section><section><h2>Decision Summary</h2><p>{summary_headline}</p></section><section><h2>Decision Date</h2><table><tbody>{decision_date_rows}</tbody></table></section><section><h2>Market Data Through</h2><table><tbody>{market_date_rows}</tbody></table></section><section><h2>Governance State Date</h2><table><tbody>{governance_date_rows}</tbody></table></section><section><h2>Snapshot Mode</h2><table><tbody>{snapshot_mode_rows}</tbody></table></section><section><h2>Current Market State</h2><table><tbody>{market_rows}</tbody></table></section><section><h2>Risk Level</h2><table><tbody>{risk_rows}</tbody></table></section><section><h2>V11 Production Candidate</h2><table><tbody>{v11_rows}</tbody></table></section><section><h2>V11 Metadata Available</h2><table><tbody>{v11_availability_rows}</tbody></table></section><section><h2>V11 Current Allocation Available</h2><table><tbody>{v11_availability_rows}</tbody></table></section><section><h2>V11 Current Allocation</h2><table><tbody>{v11_allocation_rows}</tbody></table></section><section><h2>V11 Equity and Cash</h2><table><tbody>{v11_equity_cash_rows}</tbody></table></section><section><h2>V11 Selected Assets</h2><table><tbody>{v11_selected_rows}</tbody></table></section><section><h2>Instrument Identifier Namespace</h2><table><tbody>{identifier_namespace_rows}</tbody></table></section><section><h2>Identifier Normalization Status</h2><table><tbody>{identifier_status_rows}</tbody></table></section><section><h2>Canonical V11 Weights</h2><table><tbody>{canonical_v11_rows}</tbody></table></section><section><h2>Unresolved Instrument IDs</h2><table><tbody>{unresolved_identifier_rows}</tbody></table></section><section><h2>V11 vs Shadow Weight Differences</h2><table><tbody>{v11_difference_rows}</tbody></table></section><section><h2>V11 Snapshot Integrity</h2><table><tbody>{v11_integrity_rows}</tbody></table></section><section><h2>Research Allocation</h2><table><tbody>{research_rows}</tbody></table></section><section><h2>Execution-Aware Shadow Allocation</h2><table><tbody>{shadow_rows}</tbody></table></section><section><h2>Why 40% Cash?</h2><p>{cash_text}</p></section><section><h2>Execution Validation Status</h2><table><tbody>{validation_rows}</tbody></table></section><section><h2>Execution Gate Policy</h2><table><tbody>{gate_policy_rows}</tbody></table></section><section><h2>Current Constraints</h2><table><tbody>{constraint_rows}</tbody></table></section><section><h2>Data Freshness</h2><table><tbody>{freshness_rows}</tbody></table></section><section><h2>Required Source Status</h2><table><tbody>{source_status_rows}</tbody></table></section><section><h2>Source Provenance</h2><table><tbody>{provenance_rows}</tbody></table></section><section><h2>What Is Executable</h2><p>These are eligible ETF proxy weights in a shadow snapshot only; they are not orders.</p><table><tbody>{executable_rows}</tbody></table></section><section><h2>What Is Research-Only</h2><table><tbody>{research_only_rows}</tbody></table></section><section><h2>Blocking Conditions</h2><table><tbody>{blocking_rows}</tbody></table></section><section><h2>V11 vs Shadow Boundary</h2><p>V11 remains unchanged. The Research allocation and Execution-Aware Shadow are shown side by side only; no merged portfolio is created and Shadow cannot substitute for an unavailable V11 allocation.</p></section></main>{_unified_shell_scripts()}</body></html>"""
+
+
+@app.get("/api/investment-guidance")
+def get_investment_guidance() -> dict:
+    return investment_guidance_api(build_investment_guidance(load_release_json))
+
+
 
 
 def _shadow_mapping_rows(rows: list[dict]) -> list[str]:
