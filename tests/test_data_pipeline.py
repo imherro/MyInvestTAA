@@ -5,7 +5,7 @@ import sys
 import pytest
 
 from data.models import AssetMetadata, PriceBar
-from data_pipeline.importer import _select_assets, build_provider, import_market_data, run_live_backtest_report
+from data_pipeline.importer import _select_assets, build_provider, import_market_data
 from data_pipeline.normalizer import price_bars_to_history, stored_prices_to_history
 from data_pipeline.scheduler import run_import_job
 from data_provider.mock_provider import MockProvider
@@ -69,42 +69,6 @@ def test_run_import_job_returns_summary():
 
     assert result["provider"] == "mock"
     assert result["imported_assets"] == 1
-
-
-def test_run_live_backtest_report_returns_sections():
-    repository = MarketDataRepository(connect_database(":memory:"))
-
-    report = run_live_backtest_report(repository, provider_name="mock", asset_ids=["510300", "512890", "511010", "518880"])
-
-    assert {"quality", "backtest", "benchmark", "attribution"} <= set(report)
-
-
-def test_run_live_backtest_report_saves_backtest_result():
-    repository = MarketDataRepository(connect_database(":memory:"))
-
-    run_live_backtest_report(repository, provider_name="mock", asset_ids=["510300", "512890", "511010", "518880"])
-
-    assert repository.list_backtest_results()
-
-
-def test_run_live_backtest_report_respects_date_window():
-    repository = MarketDataRepository(connect_database(":memory:"))
-
-    report = run_live_backtest_report(
-        repository,
-        provider_name="mock",
-        asset_ids=["510300", "512890", "511010", "518880"],
-        start="2024-01-01",
-        end="2024-12-31",
-    )
-    histories = repository.get_all_price_histories()
-
-    assert report["price_rows"] == sum(len(history) for history in histories.values())
-    assert all(
-        "2024-01-01" <= row["date"] <= "2024-12-31"
-        for history in histories.values()
-        for row in history
-    )
 
 
 def test_import_market_data_script_runs_with_mock(tmp_path):

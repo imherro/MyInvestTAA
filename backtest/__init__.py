@@ -1,2 +1,1 @@
-"""Backtest foundation for MyInvestTAA."""
-
+"""Shared data contracts retained for CURRENT_TAA input preparation."""

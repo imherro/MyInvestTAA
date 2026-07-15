@@ -2,15 +2,11 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from backtest.benchmark import compare_strategies
-from backtest.taa import run_taa_backtest
 from data.models import AssetMetadata, PriceBar
 from data_pipeline.normalizer import price_bars_to_history
 from data_provider import BaoStockProvider, MockProvider, TushareProvider
-from engine.asset_repository import load_assets
-from engine.attribution import analyze_attribution
 from engine.data_quality import build_quality_summary
-from storage import MarketDataRepository, StoredBacktestResult
+from storage import MarketDataRepository
 
 
 def build_provider(provider_name: str, return_type: str = "price"):
@@ -64,47 +60,6 @@ def import_market_data(
         "imported_prices": imported_prices,
         "quality": quality,
         "updated_at": datetime.now(UTC).isoformat(timespec="seconds"),
-    }
-
-
-def run_live_backtest_report(
-    repository: MarketDataRepository,
-    provider_name: str = "mock",
-    asset_ids: list[str] | None = None,
-    start: str | None = None,
-    end: str | None = None,
-    return_type: str = "price",
-) -> dict:
-    if asset_ids is None:
-        asset_ids = [asset["id"] for asset in load_assets()]
-    provider = build_provider(provider_name, return_type=return_type)
-    import_summary = import_market_data(provider, repository, asset_ids, start=start, end=end)
-    histories = repository.get_all_price_histories()
-    assets = [
-        asset for asset in load_assets()
-        if asset["id"] in histories
-    ]
-    quality = build_quality_summary(histories)
-    backtest = run_taa_backtest(assets=assets, price_history=histories)
-    comparison = compare_strategies(assets=assets, price_history=histories)
-    attribution = analyze_attribution(backtest)
-    repository.save_backtest_result(
-        StoredBacktestResult(
-            strategy=backtest["strategy"],
-            period=f'{backtest["period"]["start"]}:{backtest["period"]["end"]}',
-            metrics=backtest["metrics"],
-        )
-    )
-    return {
-        "data_source": provider.name,
-        "updated_at": import_summary["updated_at"],
-        "asset_count": import_summary["imported_assets"],
-        "price_rows": import_summary["imported_prices"],
-        "quality": quality,
-        "backtest": backtest,
-        "benchmark": comparison,
-        "alpha": comparison["alpha"],
-        "attribution": attribution,
     }
 
 
