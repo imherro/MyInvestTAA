@@ -1,5 +1,10 @@
 [
   {
+    "date": "2015-12-31",
+    "close": 1000.0,
+    "return_basis": "total_return"
+  },
+  {
     "date": "2016-01-04",
     "close": 927.7825,
     "return_basis": "total_return"
@@ -12757,6 +12762,26 @@
   {
     "date": "2026-07-08",
     "close": 5762.3908,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-09",
+    "close": 6279.309,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-10",
+    "close": 5885.9804,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-13",
+    "close": 5624.4988,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-14",
+    "close": 5687.7831,
     "return_basis": "total_return"
   }
 ]

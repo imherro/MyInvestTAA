@@ -10723,5 +10723,25 @@
     "date": "2026-07-08",
     "close": 1.75,
     "return_basis": "qfq"
+  },
+  {
+    "date": "2026-07-09",
+    "close": 1.745,
+    "return_basis": "qfq"
+  },
+  {
+    "date": "2026-07-10",
+    "close": 1.756,
+    "return_basis": "qfq"
+  },
+  {
+    "date": "2026-07-13",
+    "close": 1.679,
+    "return_basis": "qfq"
+  },
+  {
+    "date": "2026-07-14",
+    "close": 1.774,
+    "return_basis": "qfq"
   }
 ]

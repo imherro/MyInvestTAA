@@ -1,5 +1,6080 @@
 [
   {
+    "date": "2010-12-31",
+    "close": 1000.0,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-04",
+    "close": 1017.276,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-05",
+    "close": 1028.829,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-06",
+    "close": 1026.651,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-07",
+    "close": 1017.222,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-10",
+    "close": 992.817,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-11",
+    "close": 980.269,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-12",
+    "close": 991.029,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-13",
+    "close": 992.877,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-14",
+    "close": 971.595,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-17",
+    "close": 926.61,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-18",
+    "close": 937.903,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-19",
+    "close": 962.08,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-20",
+    "close": 929.468,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-21",
+    "close": 938.323,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-24",
+    "close": 914.595,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-25",
+    "close": 895.571,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-26",
+    "close": 928.312,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-27",
+    "close": 952.06,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-28",
+    "close": 962.715,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-01-31",
+    "close": 971.555,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-01",
+    "close": 971.754,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-09",
+    "close": 972.418,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-10",
+    "close": 1001.276,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-11",
+    "close": 1018.829,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-14",
+    "close": 1026.344,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-15",
+    "close": 1020.59,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-16",
+    "close": 1041.674,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-17",
+    "close": 1060.592,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-18",
+    "close": 1038.441,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-21",
+    "close": 1061.543,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-22",
+    "close": 1032.296,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-23",
+    "close": 1050.221,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-24",
+    "close": 1052.67,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-25",
+    "close": 1051.578,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-02-28",
+    "close": 1065.655,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-01",
+    "close": 1054.261,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-02",
+    "close": 1039.242,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-03",
+    "close": 1016.579,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-04",
+    "close": 1026.572,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-07",
+    "close": 1040.453,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-08",
+    "close": 1044.681,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-09",
+    "close": 1065.117,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-10",
+    "close": 1061.154,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-11",
+    "close": 1064.917,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-14",
+    "close": 1070.088,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-15",
+    "close": 1049.789,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-16",
+    "close": 1057.555,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-17",
+    "close": 1035.623,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-18",
+    "close": 1037.168,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-21",
+    "close": 1031.199,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-22",
+    "close": 1030.099,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-23",
+    "close": 1045.391,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-24",
+    "close": 1046.22,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-25",
+    "close": 1056.007,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-28",
+    "close": 1043.548,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-29",
+    "close": 1015.176,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-30",
+    "close": 996.458,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-03-31",
+    "close": 996.612,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-01",
+    "close": 1006.515,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-06",
+    "close": 1002.829,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-07",
+    "close": 1011.454,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-08",
+    "close": 1022.02,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-11",
+    "close": 1011.855,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-12",
+    "close": 1008.614,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-13",
+    "close": 1022.485,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-14",
+    "close": 1014.139,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-15",
+    "close": 1010.293,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-18",
+    "close": 1003.142,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-19",
+    "close": 986.066,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-20",
+    "close": 1008.864,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-21",
+    "close": 1021.796,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-22",
+    "close": 1024.327,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-25",
+    "close": 1001.504,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-26",
+    "close": 978.887,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-27",
+    "close": 967.42,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-28",
+    "close": 932.497,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-04-29",
+    "close": 948.569,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-03",
+    "close": 963.23,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-04",
+    "close": 941.58,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-05",
+    "close": 940.353,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-06",
+    "close": 941.105,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-09",
+    "close": 957.701,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-10",
+    "close": 960.907,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-11",
+    "close": 962.15,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-12",
+    "close": 940.294,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-13",
+    "close": 961.306,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-16",
+    "close": 959.933,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-17",
+    "close": 959.176,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-18",
+    "close": 963.234,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-19",
+    "close": 963.27,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-20",
+    "close": 951.677,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-23",
+    "close": 910.084,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-24",
+    "close": 909.585,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-25",
+    "close": 901.117,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-26",
+    "close": 893.586,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-27",
+    "close": 876.922,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-30",
+    "close": 870.092,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-05-31",
+    "close": 889.906,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-01",
+    "close": 893.814,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-02",
+    "close": 881.682,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-03",
+    "close": 895.382,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-07",
+    "close": 907.339,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-08",
+    "close": 908.91,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-09",
+    "close": 887.999,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-10",
+    "close": 889.954,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-13",
+    "close": 892.952,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-14",
+    "close": 906.004,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-15",
+    "close": 897.912,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-16",
+    "close": 877.664,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-17",
+    "close": 868.057,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-20",
+    "close": 853.155,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-21",
+    "close": 868.131,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-22",
+    "close": 865.871,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-23",
+    "close": 884.142,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-24",
+    "close": 901.99,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-27",
+    "close": 914.05,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-28",
+    "close": 916.825,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-29",
+    "close": 905.794,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-06-30",
+    "close": 919.279,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-01",
+    "close": 917.907,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-04",
+    "close": 934.884,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-05",
+    "close": 943.396,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-06",
+    "close": 945.307,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-07",
+    "close": 948.365,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-08",
+    "close": 950.022,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-11",
+    "close": 958.718,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-12",
+    "close": 945.163,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-13",
+    "close": 961.113,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-14",
+    "close": 977.508,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-15",
+    "close": 987.427,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-18",
+    "close": 991.896,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-19",
+    "close": 977.575,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-20",
+    "close": 972.263,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-21",
+    "close": 959.653,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-22",
+    "close": 962.83,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-25",
+    "close": 924.563,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-26",
+    "close": 926.297,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-27",
+    "close": 949.083,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-28",
+    "close": 957.391,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-07-29",
+    "close": 939.671,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-01",
+    "close": 946.496,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-02",
+    "close": 944.074,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-03",
+    "close": 944.886,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-04",
+    "close": 949.912,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-05",
+    "close": 939.725,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-08",
+    "close": 912.936,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-09",
+    "close": 908.692,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-10",
+    "close": 925.665,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-11",
+    "close": 937.928,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-12",
+    "close": 950.81,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-15",
+    "close": 957.387,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-16",
+    "close": 947.315,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-17",
+    "close": 939.061,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-18",
+    "close": 921.833,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-19",
+    "close": 914.324,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-22",
+    "close": 905.464,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-23",
+    "close": 920.212,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-24",
+    "close": 923.224,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-25",
+    "close": 937.095,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-26",
+    "close": 942.033,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-29",
+    "close": 938.229,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-30",
+    "close": 932.241,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-08-31",
+    "close": 921.403,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-01",
+    "close": 914.504,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-02",
+    "close": 901.849,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-05",
+    "close": 877.052,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-06",
+    "close": 864.864,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-07",
+    "close": 884.454,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-08",
+    "close": 878.542,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-09",
+    "close": 867.416,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-13",
+    "close": 847.224,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-14",
+    "close": 856.073,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-15",
+    "close": 861.302,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-16",
+    "close": 859.677,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-19",
+    "close": 844.416,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-20",
+    "close": 844.373,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-21",
+    "close": 869.524,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-22",
+    "close": 838.781,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-23",
+    "close": 826.022,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-26",
+    "close": 811.406,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-27",
+    "close": 814.311,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-28",
+    "close": 803.145,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-29",
+    "close": 786.594,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-09-30",
+    "close": 785.592,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-10",
+    "close": 781.435,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-11",
+    "close": 774.542,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-12",
+    "close": 800.942,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-13",
+    "close": 810.17,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-14",
+    "close": 795.594,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-17",
+    "close": 797.953,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-18",
+    "close": 773.824,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-19",
+    "close": 764.393,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-20",
+    "close": 738.206,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-21",
+    "close": 724.941,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-24",
+    "close": 741.584,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-25",
+    "close": 761.293,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-26",
+    "close": 769.45,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-27",
+    "close": 765.236,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-28",
+    "close": 784.165,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-10-31",
+    "close": 794.981,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-01",
+    "close": 797.485,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-02",
+    "close": 816.55,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-03",
+    "close": 817.894,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-04",
+    "close": 819.828,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-07",
+    "close": 813.343,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-08",
+    "close": 803.691,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-09",
+    "close": 822.691,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-10",
+    "close": 821.578,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-11",
+    "close": 819.029,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-14",
+    "close": 838.919,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-15",
+    "close": 843.53,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-16",
+    "close": 821.588,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-17",
+    "close": 820.625,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-18",
+    "close": 792.725,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-21",
+    "close": 788.36,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-22",
+    "close": 788.289,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-23",
+    "close": 785.737,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-24",
+    "close": 783.877,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-25",
+    "close": 776.15,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-28",
+    "close": 781.121,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-29",
+    "close": 796.178,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-11-30",
+    "close": 758.986,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-01",
+    "close": 770.025,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-02",
+    "close": 748.847,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-05",
+    "close": 722.918,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-06",
+    "close": 725.637,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-07",
+    "close": 727.512,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-08",
+    "close": 727.022,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-09",
+    "close": 717.969,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-12",
+    "close": 706.13,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-13",
+    "close": 685.145,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-14",
+    "close": 677.28,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-15",
+    "close": 661.681,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-16",
+    "close": 682.179,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-19",
+    "close": 678.874,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-20",
+    "close": 675.004,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-21",
+    "close": 656.528,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-22",
+    "close": 647.248,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-23",
+    "close": 652.01,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-26",
+    "close": 649.062,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-27",
+    "close": 630.362,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-28",
+    "close": 619.906,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-29",
+    "close": 625.239,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2011-12-30",
+    "close": 635.243,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-04",
+    "close": 621.317,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-05",
+    "close": 591.794,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-06",
+    "close": 592.395,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-09",
+    "close": 619.06,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-10",
+    "close": 645.138,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-11",
+    "close": 648.714,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-12",
+    "close": 640.379,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-13",
+    "close": 611.971,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-16",
+    "close": 587.451,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-17",
+    "close": 620.174,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-18",
+    "close": 600.219,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-19",
+    "close": 613.397,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-20",
+    "close": 625.424,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-30",
+    "close": 617.845,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-01-31",
+    "close": 621.38,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-01",
+    "close": 621.015,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-02",
+    "close": 634.381,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-03",
+    "close": 646.859,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-06",
+    "close": 653.455,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-07",
+    "close": 640.608,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-08",
+    "close": 655.403,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-09",
+    "close": 664.607,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-10",
+    "close": 667.098,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-13",
+    "close": 675.176,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-14",
+    "close": 676.119,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-15",
+    "close": 685.91,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-16",
+    "close": 686.347,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-17",
+    "close": 682.859,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-20",
+    "close": 686.259,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-21",
+    "close": 699.195,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-22",
+    "close": 715.151,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-23",
+    "close": 716.359,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-24",
+    "close": 723.277,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-27",
+    "close": 720.582,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-28",
+    "close": 710.916,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-02-29",
+    "close": 695.729,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-01",
+    "close": 701.193,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-02",
+    "close": 714.652,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-05",
+    "close": 720.22,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-06",
+    "close": 710.032,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-07",
+    "close": 709.953,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-08",
+    "close": 719.538,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-09",
+    "close": 733.624,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-12",
+    "close": 736.151,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-13",
+    "close": 740.768,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-14",
+    "close": 707.462,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-15",
+    "close": 704.708,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-16",
+    "close": 716.09,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-19",
+    "close": 722.399,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-20",
+    "close": 700.023,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-21",
+    "close": 698.386,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-22",
+    "close": 694.536,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-23",
+    "close": 683.432,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-26",
+    "close": 680.223,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-27",
+    "close": 676.773,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-28",
+    "close": 650.59,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-29",
+    "close": 644.5,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-03-30",
+    "close": 644.505,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-05",
+    "close": 664.257,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-06",
+    "close": 660.915,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-09",
+    "close": 654.126,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-10",
+    "close": 660.32,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-11",
+    "close": 658.796,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-12",
+    "close": 670.248,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-13",
+    "close": 675.899,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-16",
+    "close": 673.644,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-17",
+    "close": 664.792,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-18",
+    "close": 685.261,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-19",
+    "close": 684.079,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-20",
+    "close": 689.93,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-23",
+    "close": 674.748,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-24",
+    "close": 666.779,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-25",
+    "close": 673.812,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-26",
+    "close": 666.912,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-04-27",
+    "close": 665.409,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-02",
+    "close": 675.874,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-03",
+    "close": 684.76,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-04",
+    "close": 696.864,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-07",
+    "close": 706.538,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-08",
+    "close": 702.263,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-09",
+    "close": 687.302,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-10",
+    "close": 690.294,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-11",
+    "close": 683.976,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-14",
+    "close": 683.344,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-15",
+    "close": 680.646,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-16",
+    "close": 668.899,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-17",
+    "close": 674.545,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-18",
+    "close": 661.02,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-21",
+    "close": 658.434,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-22",
+    "close": 667.383,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-23",
+    "close": 660.258,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-24",
+    "close": 659.43,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-25",
+    "close": 649.003,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-28",
+    "close": 655.671,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-29",
+    "close": 666.004,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-30",
+    "close": 668.298,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-05-31",
+    "close": 671.607,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-01",
+    "close": 667.156,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-04",
+    "close": 640.833,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-05",
+    "close": 638.648,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-06",
+    "close": 637.44,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-07",
+    "close": 633.874,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-08",
+    "close": 630.328,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-11",
+    "close": 642.292,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-12",
+    "close": 636.175,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-13",
+    "close": 647.085,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-14",
+    "close": 642.575,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-15",
+    "close": 646.384,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-18",
+    "close": 654.661,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-19",
+    "close": 648.593,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-20",
+    "close": 652.225,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-21",
+    "close": 641.88,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-25",
+    "close": 615.956,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-26",
+    "close": 609.74,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-27",
+    "close": 604.052,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-28",
+    "close": 593.943,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-06-29",
+    "close": 599.107,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-02",
+    "close": 603.571,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-03",
+    "close": 599.599,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-04",
+    "close": 594.505,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-05",
+    "close": 577.892,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-06",
+    "close": 582.898,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-09",
+    "close": 566.488,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-10",
+    "close": 566.206,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-11",
+    "close": 572.633,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-12",
+    "close": 583.854,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-13",
+    "close": 575.792,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-16",
+    "close": 548.141,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-17",
+    "close": 558.485,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-18",
+    "close": 565.294,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-19",
+    "close": 571.491,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-20",
+    "close": 566.235,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-23",
+    "close": 564.775,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-24",
+    "close": 566.862,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-25",
+    "close": 562.275,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-26",
+    "close": 564.926,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-27",
+    "close": 565.67,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-30",
+    "close": 552.35,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-07-31",
+    "close": 543.027,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-01",
+    "close": 553.362,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-02",
+    "close": 545.91,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-03",
+    "close": 556.626,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-06",
+    "close": 577.786,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-07",
+    "close": 579.019,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-08",
+    "close": 578.028,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-09",
+    "close": 587.737,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-10",
+    "close": 584.513,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-13",
+    "close": 568.555,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-14",
+    "close": 573.816,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-15",
+    "close": 566.071,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-16",
+    "close": 561.452,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-17",
+    "close": 565.466,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-20",
+    "close": 569.061,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-21",
+    "close": 577.959,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-22",
+    "close": 572.198,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-23",
+    "close": 579.407,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-24",
+    "close": 566.049,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-27",
+    "close": 547.521,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-28",
+    "close": 552.989,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-29",
+    "close": 558.351,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-30",
+    "close": 553.668,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-08-31",
+    "close": 552.985,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-03",
+    "close": 563.426,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-04",
+    "close": 557.326,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-05",
+    "close": 568.852,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-06",
+    "close": 575.508,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-07",
+    "close": 595.121,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-10",
+    "close": 603.957,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-11",
+    "close": 600.932,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-12",
+    "close": 605.525,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-13",
+    "close": 591.589,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-14",
+    "close": 588.685,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-17",
+    "close": 570.933,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-18",
+    "close": 567.707,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-19",
+    "close": 576.045,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-20",
+    "close": 556.884,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-21",
+    "close": 552.785,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-24",
+    "close": 554.971,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-25",
+    "close": 550.082,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-26",
+    "close": 536.51,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-27",
+    "close": 548.855,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-09-28",
+    "close": 558.33,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-08",
+    "close": 555.313,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-09",
+    "close": 572.301,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-10",
+    "close": 581.049,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-11",
+    "close": 571.947,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-12",
+    "close": 568.482,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-15",
+    "close": 564.432,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-16",
+    "close": 564.431,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-17",
+    "close": 565.007,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-18",
+    "close": 574.029,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-19",
+    "close": 575.654,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-22",
+    "close": 580.717,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-23",
+    "close": 576.412,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-24",
+    "close": 574.892,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-25",
+    "close": 569.282,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-26",
+    "close": 556.809,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-29",
+    "close": 557.987,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-30",
+    "close": 555.156,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-10-31",
+    "close": 553.4,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-01",
+    "close": 562.443,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-02",
+    "close": 562.93,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-05",
+    "close": 562.521,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-06",
+    "close": 556.746,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-07",
+    "close": 552.703,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-08",
+    "close": 537.321,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-09",
+    "close": 536.041,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-12",
+    "close": 539.485,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-13",
+    "close": 528.983,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-14",
+    "close": 527.878,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-15",
+    "close": 516.095,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-16",
+    "close": 511.743,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-19",
+    "close": 509.131,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-20",
+    "close": 508.665,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-21",
+    "close": 515.365,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-22",
+    "close": 509.327,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-23",
+    "close": 509.18,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-26",
+    "close": 501.536,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-27",
+    "close": 484.733,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-28",
+    "close": 475.988,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-29",
+    "close": 471.487,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-11-30",
+    "close": 476.597,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-03",
+    "close": 460.767,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-04",
+    "close": 466.194,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-05",
+    "close": 486.685,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-06",
+    "close": 485.581,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-07",
+    "close": 499.587,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-10",
+    "close": 512.723,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-11",
+    "close": 513.459,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-12",
+    "close": 510.583,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-13",
+    "close": 502.324,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-14",
+    "close": 524.696,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-17",
+    "close": 530.189,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-18",
+    "close": 530.179,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-19",
+    "close": 534.447,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-20",
+    "close": 531.381,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-21",
+    "close": 530.008,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-24",
+    "close": 537.515,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-25",
+    "close": 550.437,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-26",
+    "close": 557.33,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-27",
+    "close": 549.943,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-28",
+    "close": 557.524,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2012-12-31",
+    "close": 563.316,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-04",
+    "close": 558.097,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-07",
+    "close": 566.111,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-08",
+    "close": 579.417,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-09",
+    "close": 582.944,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-10",
+    "close": 584.249,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-11",
+    "close": 569.654,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-14",
+    "close": 591.97,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-15",
+    "close": 606.148,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-16",
+    "close": 608.779,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-17",
+    "close": 602.717,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-18",
+    "close": 625.205,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-21",
+    "close": 628.735,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-22",
+    "close": 614.204,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-23",
+    "close": 618.429,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-24",
+    "close": 594.282,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-25",
+    "close": 594.467,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-28",
+    "close": 611.013,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-29",
+    "close": 618.96,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-30",
+    "close": 620.826,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-01-31",
+    "close": 614.885,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-01",
+    "close": 630.445,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-04",
+    "close": 629.94,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-05",
+    "close": 634.883,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-06",
+    "close": 638.697,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-07",
+    "close": 644.438,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-08",
+    "close": 653.262,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-18",
+    "close": 651.684,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-19",
+    "close": 642.885,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-20",
+    "close": 653.257,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-21",
+    "close": 632.212,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-22",
+    "close": 627.944,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-25",
+    "close": 637.781,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-26",
+    "close": 639.359,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-27",
+    "close": 642.899,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-02-28",
+    "close": 651.979,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-01",
+    "close": 659.031,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-04",
+    "close": 629.29,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-05",
+    "close": 643.446,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-06",
+    "close": 653.028,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-07",
+    "close": 640.526,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-08",
+    "close": 634.293,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-11",
+    "close": 635.528,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-12",
+    "close": 621.191,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-13",
+    "close": 618.07,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-14",
+    "close": 618.489,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-15",
+    "close": 625.697,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-18",
+    "close": 613.439,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-19",
+    "close": 608.781,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-20",
+    "close": 628.01,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-21",
+    "close": 635.56,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-22",
+    "close": 633.477,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-25",
+    "close": 628.248,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-26",
+    "close": 620.69,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-27",
+    "close": 624.872,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-28",
+    "close": 608.266,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-03-29",
+    "close": 609.187,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-01",
+    "close": 606.069,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-02",
+    "close": 587.969,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-03",
+    "close": 579.332,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-08",
+    "close": 582.732,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-09",
+    "close": 591.043,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-10",
+    "close": 591.898,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-11",
+    "close": 590.677,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-12",
+    "close": 584.861,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-15",
+    "close": 574.378,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-16",
+    "close": 580.938,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-17",
+    "close": 583.123,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-18",
+    "close": 583.233,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-19",
+    "close": 599.134,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-22",
+    "close": 607.449,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-23",
+    "close": 590.525,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-24",
+    "close": 616.193,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-25",
+    "close": 609.25,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-04-26",
+    "close": 596.891,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-02",
+    "close": 600.731,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-03",
+    "close": 612.951,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-06",
+    "close": 633.718,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-07",
+    "close": 632.765,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-08",
+    "close": 646.596,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-09",
+    "close": 662.276,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-10",
+    "close": 662.522,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-13",
+    "close": 662.109,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-14",
+    "close": 654.443,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-15",
+    "close": 668.39,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-16",
+    "close": 672.853,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-17",
+    "close": 684.183,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-20",
+    "close": 708.222,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-21",
+    "close": 712.515,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-22",
+    "close": 699.454,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-23",
+    "close": 701.275,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-24",
+    "close": 718.976,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-27",
+    "close": 729.624,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-28",
+    "close": 711.563,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-29",
+    "close": 718.392,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-30",
+    "close": 726.508,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-05-31",
+    "close": 719.889,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-03",
+    "close": 709.38,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-04",
+    "close": 688.833,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-05",
+    "close": 695.697,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-06",
+    "close": 687.009,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-07",
+    "close": 679.979,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-13",
+    "close": 659.506,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-14",
+    "close": 682.776,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-17",
+    "close": 685.457,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-18",
+    "close": 689.646,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-19",
+    "close": 691.876,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-20",
+    "close": 661.97,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-21",
+    "close": 664.981,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-24",
+    "close": 626.462,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-25",
+    "close": 632.849,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-26",
+    "close": 654.84,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-27",
+    "close": 643.952,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-06-28",
+    "close": 644.184,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-01",
+    "close": 668.154,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-02",
+    "close": 684.857,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-03",
+    "close": 690.18,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-04",
+    "close": 689.502,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-05",
+    "close": 673.294,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-08",
+    "close": 642.214,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-09",
+    "close": 645.735,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-10",
+    "close": 667.306,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-11",
+    "close": 682.546,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-12",
+    "close": 687.715,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-15",
+    "close": 717.105,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-16",
+    "close": 728.446,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-17",
+    "close": 717.39,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-18",
+    "close": 725.616,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-19",
+    "close": 724.012,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-22",
+    "close": 743.166,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-23",
+    "close": 758.058,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-24",
+    "close": 760.105,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-25",
+    "close": 730.714,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-26",
+    "close": 733.078,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-29",
+    "close": 711.78,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-30",
+    "close": 708.098,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-07-31",
+    "close": 708.653,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-01",
+    "close": 747.468,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-02",
+    "close": 753.159,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-05",
+    "close": 768.279,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-06",
+    "close": 772.414,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-07",
+    "close": 757.376,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-08",
+    "close": 756.632,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-09",
+    "close": 756.073,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-12",
+    "close": 771.087,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-13",
+    "close": 783.225,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-14",
+    "close": 788.141,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-15",
+    "close": 773.756,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-16",
+    "close": 752.956,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-19",
+    "close": 777.869,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-20",
+    "close": 779.016,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-21",
+    "close": 783.798,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-22",
+    "close": 790.411,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-23",
+    "close": 784.128,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-26",
+    "close": 790.825,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-27",
+    "close": 792.841,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-28",
+    "close": 772.92,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-29",
+    "close": 770.854,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-08-30",
+    "close": 753.737,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-02",
+    "close": 763.722,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-03",
+    "close": 776.384,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-04",
+    "close": 775.994,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-05",
+    "close": 780.624,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-06",
+    "close": 781.779,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-09",
+    "close": 786.296,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-10",
+    "close": 789.726,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-11",
+    "close": 785.003,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-12",
+    "close": 777.111,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-13",
+    "close": 776.955,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-16",
+    "close": 778.16,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-17",
+    "close": 767.767,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-18",
+    "close": 770.004,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-23",
+    "close": 789.629,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-24",
+    "close": 794.802,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-25",
+    "close": 794.036,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-26",
+    "close": 781.098,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-27",
+    "close": 777.572,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-09-30",
+    "close": 784.455,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-08",
+    "close": 805.687,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-09",
+    "close": 816.9,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-10",
+    "close": 816.673,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-11",
+    "close": 831.864,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-14",
+    "close": 834.494,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-15",
+    "close": 831.287,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-16",
+    "close": 799.857,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-17",
+    "close": 797.51,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-18",
+    "close": 801.999,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-21",
+    "close": 826.093,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-22",
+    "close": 808.64,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-23",
+    "close": 782.279,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-24",
+    "close": 779.537,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-25",
+    "close": 765.02,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-28",
+    "close": 759.768,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-29",
+    "close": 745.025,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-30",
+    "close": 760.903,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-10-31",
+    "close": 747.056,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-01",
+    "close": 740.112,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-04",
+    "close": 744.023,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-05",
+    "close": 751.338,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-06",
+    "close": 742.203,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-07",
+    "close": 732.055,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-08",
+    "close": 717.511,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-11",
+    "close": 731.294,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-12",
+    "close": 738.792,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-13",
+    "close": 719.834,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-14",
+    "close": 730.093,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-15",
+    "close": 746.979,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-18",
+    "close": 764.613,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-19",
+    "close": 767.915,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-20",
+    "close": 773.599,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-21",
+    "close": 774.099,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-22",
+    "close": 767.202,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-25",
+    "close": 773.838,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-26",
+    "close": 782.122,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-27",
+    "close": 795.16,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-28",
+    "close": 806.926,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-11-29",
+    "close": 822.134,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-02",
+    "close": 772.777,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-03",
+    "close": 788.09,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-04",
+    "close": 790.048,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-05",
+    "close": 788.525,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-06",
+    "close": 788.261,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-09",
+    "close": 799.66,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-10",
+    "close": 800.168,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-11",
+    "close": 797.254,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-12",
+    "close": 805.897,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-13",
+    "close": 822.735,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-16",
+    "close": 810.85,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-17",
+    "close": 805.33,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-18",
+    "close": 803.584,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-19",
+    "close": 794.56,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-20",
+    "close": 787.709,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-23",
+    "close": 786.754,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-24",
+    "close": 806.094,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-25",
+    "close": 825.028,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-26",
+    "close": 817.786,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-27",
+    "close": 841.72,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-30",
+    "close": 866.359,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2013-12-31",
+    "close": 857.579,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-02",
+    "close": 866.286,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-03",
+    "close": 862.811,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-06",
+    "close": 842.636,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-07",
+    "close": 855.616,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-08",
+    "close": 866.312,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-09",
+    "close": 851.759,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-10",
+    "close": 836.851,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-13",
+    "close": 847.989,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-14",
+    "close": 887.229,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-15",
+    "close": 895.568,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-16",
+    "close": 894.818,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-17",
+    "close": 890.996,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-20",
+    "close": 881.708,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-21",
+    "close": 908.267,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-22",
+    "close": 926.604,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-23",
+    "close": 940.423,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-24",
+    "close": 943.503,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-27",
+    "close": 947.561,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-28",
+    "close": 954.799,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-29",
+    "close": 972.623,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-01-30",
+    "close": 955.39,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-07",
+    "close": 989.33,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-10",
+    "close": 1024.605,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-11",
+    "close": 1025.225,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-12",
+    "close": 1030.973,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-13",
+    "close": 1001.686,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-14",
+    "close": 1040.998,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-17",
+    "close": 1069.608,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-18",
+    "close": 1059.625,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-19",
+    "close": 1053.459,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-20",
+    "close": 1038.305,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-21",
+    "close": 1036.649,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-24",
+    "close": 1031.563,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-25",
+    "close": 993.298,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-26",
+    "close": 998.218,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-27",
+    "close": 982.102,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-02-28",
+    "close": 1003.015,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-03",
+    "close": 1023.854,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-04",
+    "close": 1017.047,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-05",
+    "close": 1020.265,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-06",
+    "close": 1013.178,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-07",
+    "close": 1015.872,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-10",
+    "close": 963.176,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-11",
+    "close": 946.695,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-12",
+    "close": 944.291,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-13",
+    "close": 968.666,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-14",
+    "close": 969.498,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-17",
+    "close": 1004.753,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-18",
+    "close": 1007.057,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-19",
+    "close": 998.283,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-20",
+    "close": 964.559,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-21",
+    "close": 971.08,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-24",
+    "close": 958.979,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-25",
+    "close": 960.114,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-26",
+    "close": 970.693,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-27",
+    "close": 936.777,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-28",
+    "close": 917.412,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-03-31",
+    "close": 907.262,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-01",
+    "close": 925.171,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-02",
+    "close": 913.658,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-03",
+    "close": 912.874,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-04",
+    "close": 927.083,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-08",
+    "close": 942.164,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-09",
+    "close": 958.424,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-10",
+    "close": 964.897,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-11",
+    "close": 952.905,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-14",
+    "close": 963.941,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-15",
+    "close": 958.244,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-16",
+    "close": 950.38,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-17",
+    "close": 953.977,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-18",
+    "close": 961.852,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-21",
+    "close": 944.171,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-22",
+    "close": 929.435,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-23",
+    "close": 923.658,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-24",
+    "close": 913.205,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-25",
+    "close": 905.013,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-28",
+    "close": 873.966,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-29",
+    "close": 880.854,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-04-30",
+    "close": 886.192,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-05",
+    "close": 887.602,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-06",
+    "close": 897.845,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-07",
+    "close": 875.384,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-08",
+    "close": 874.985,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-09",
+    "close": 857.313,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-12",
+    "close": 875.818,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-13",
+    "close": 878.958,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-14",
+    "close": 878.718,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-15",
+    "close": 861.026,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-16",
+    "close": 849.575,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-19",
+    "close": 842.739,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-20",
+    "close": 854.127,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-21",
+    "close": 862.256,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-22",
+    "close": 864.05,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-23",
+    "close": 881.679,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-26",
+    "close": 903.706,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-27",
+    "close": 897.349,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-28",
+    "close": 914.312,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-29",
+    "close": 890.538,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-05-30",
+    "close": 889.824,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-03",
+    "close": 882.912,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-04",
+    "close": 869.168,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-05",
+    "close": 886.62,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-06",
+    "close": 895.45,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-09",
+    "close": 889.878,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-10",
+    "close": 909.186,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-11",
+    "close": 926.961,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-12",
+    "close": 921.279,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-13",
+    "close": 934.258,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-16",
+    "close": 944.099,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-17",
+    "close": 944.558,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-18",
+    "close": 931.776,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-19",
+    "close": 899.261,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-20",
+    "close": 917.323,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-23",
+    "close": 930.35,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-24",
+    "close": 945.424,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-25",
+    "close": 941.513,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-26",
+    "close": 966.417,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-27",
+    "close": 965.363,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-06-30",
+    "close": 974.677,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-01",
+    "close": 985.009,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-02",
+    "close": 991.357,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-03",
+    "close": 995.885,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-04",
+    "close": 1010.577,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-07",
+    "close": 1009.529,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-08",
+    "close": 1014.56,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-09",
+    "close": 985.566,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-10",
+    "close": 983.698,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-11",
+    "close": 992.257,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-14",
+    "close": 1010.996,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-15",
+    "close": 995.206,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-16",
+    "close": 975.631,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-17",
+    "close": 963.441,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-18",
+    "close": 956.155,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-21",
+    "close": 950.631,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-22",
+    "close": 976.66,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-23",
+    "close": 957.315,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-24",
+    "close": 945.838,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-25",
+    "close": 954.912,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-28",
+    "close": 969.758,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-29",
+    "close": 984.317,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-30",
+    "close": 993.907,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-07-31",
+    "close": 999.514,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-01",
+    "close": 980.685,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-04",
+    "close": 993.66,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-05",
+    "close": 1009.3,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-06",
+    "close": 1012.465,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-07",
+    "close": 998.895,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-08",
+    "close": 1008.68,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-11",
+    "close": 1022.632,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-12",
+    "close": 1027.792,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-13",
+    "close": 1021.8,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-14",
+    "close": 1026.732,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-15",
+    "close": 1040.721,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-18",
+    "close": 1058.877,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-19",
+    "close": 1066.647,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-20",
+    "close": 1065.526,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-21",
+    "close": 1084.33,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-22",
+    "close": 1099.031,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-25",
+    "close": 1080.762,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-26",
+    "close": 1058.85,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-27",
+    "close": 1062.707,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-28",
+    "close": 1048.085,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-08-29",
+    "close": 1063.805,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-01",
+    "close": 1087.213,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-02",
+    "close": 1101.736,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-03",
+    "close": 1114.089,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-04",
+    "close": 1116.685,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-05",
+    "close": 1129.491,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-09",
+    "close": 1132.748,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-10",
+    "close": 1141.67,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-11",
+    "close": 1147.624,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-12",
+    "close": 1163.191,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-15",
+    "close": 1178.545,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-16",
+    "close": 1126.439,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-17",
+    "close": 1137.302,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-18",
+    "close": 1141.786,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-19",
+    "close": 1145.527,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-22",
+    "close": 1130.255,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-23",
+    "close": 1150.075,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-24",
+    "close": 1170.387,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-25",
+    "close": 1171.484,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-26",
+    "close": 1184.488,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-29",
+    "close": 1192.686,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-09-30",
+    "close": 1198.18,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-08",
+    "close": 1213.626,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-09",
+    "close": 1209.358,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-10",
+    "close": 1197.433,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-13",
+    "close": 1192.45,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-14",
+    "close": 1185.858,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-15",
+    "close": 1182.09,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-16",
+    "close": 1159.865,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-17",
+    "close": 1154.069,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-20",
+    "close": 1169.065,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-21",
+    "close": 1156.085,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-22",
+    "close": 1138.112,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-23",
+    "close": 1126.561,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-24",
+    "close": 1128.944,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-27",
+    "close": 1141.043,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-28",
+    "close": 1169.31,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-29",
+    "close": 1177.852,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-30",
+    "close": 1173.039,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-10-31",
+    "close": 1168.833,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-03",
+    "close": 1199.879,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-04",
+    "close": 1194.552,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-05",
+    "close": 1186.601,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-06",
+    "close": 1207.075,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-07",
+    "close": 1187.974,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-10",
+    "close": 1182.457,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-11",
+    "close": 1154.66,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-12",
+    "close": 1173.325,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-13",
+    "close": 1144.286,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-14",
+    "close": 1144.239,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-17",
+    "close": 1161.577,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-18",
+    "close": 1159.743,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-19",
+    "close": 1173.839,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-20",
+    "close": 1170.265,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-21",
+    "close": 1180.357,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-24",
+    "close": 1191.92,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-25",
+    "close": 1232.06,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-26",
+    "close": 1246.143,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-27",
+    "close": 1271.928,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-11-28",
+    "close": 1267.208,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-01",
+    "close": 1253.208,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-02",
+    "close": 1259.709,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-03",
+    "close": 1262.133,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-04",
+    "close": 1271.841,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-05",
+    "close": 1233.928,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-08",
+    "close": 1240.156,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-09",
+    "close": 1185.838,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-10",
+    "close": 1228.69,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-11",
+    "close": 1251.612,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-12",
+    "close": 1269.942,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-15",
+    "close": 1287.135,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-16",
+    "close": 1286.768,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-17",
+    "close": 1299.766,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-18",
+    "close": 1283.802,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-19",
+    "close": 1250.563,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-22",
+    "close": 1197.945,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-23",
+    "close": 1184.635,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-24",
+    "close": 1196.186,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-25",
+    "close": 1213.183,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-26",
+    "close": 1212.998,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-29",
+    "close": 1176.377,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-30",
+    "close": 1140.476,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2014-12-31",
+    "close": 1149.612,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-05",
+    "close": 1157.588,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-06",
+    "close": 1191.882,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-07",
+    "close": 1180.783,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-08",
+    "close": 1179.581,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-09",
+    "close": 1170.14,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-12",
+    "close": 1161.855,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-13",
+    "close": 1198.347,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-14",
+    "close": 1195.949,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-15",
+    "close": 1195.334,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-16",
+    "close": 1212.462,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-19",
+    "close": 1184.334,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-20",
+    "close": 1239.268,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-21",
+    "close": 1259.425,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-22",
+    "close": 1272.85,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-23",
+    "close": 1257.692,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-26",
+    "close": 1278.274,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-27",
+    "close": 1274.409,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-28",
+    "close": 1275.57,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-29",
+    "close": 1279.822,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-01-30",
+    "close": 1267.052,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-02",
+    "close": 1250.03,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-03",
+    "close": 1277.31,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-04",
+    "close": 1288.012,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-05",
+    "close": 1289.314,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-06",
+    "close": 1260.983,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-09",
+    "close": 1237.719,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-10",
+    "close": 1256.3093,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-11",
+    "close": 1263.2309,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-12",
+    "close": 1275.1378,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-13",
+    "close": 1292.0577,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-16",
+    "close": 1321.3347,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-17",
+    "close": 1319.8196,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-25",
+    "close": 1334.3818,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-26",
+    "close": 1338.2497,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-02-27",
+    "close": 1368.9929,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-02",
+    "close": 1392.9552,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-03",
+    "close": 1368.9902,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-04",
+    "close": 1395.9928,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-05",
+    "close": 1407.8571,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-06",
+    "close": 1386.9592,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-09",
+    "close": 1447.5701,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-10",
+    "close": 1455.8543,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-11",
+    "close": 1440.0622,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-12",
+    "close": 1433.1183,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-13",
+    "close": 1447.7432,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-16",
+    "close": 1490.1931,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-17",
+    "close": 1504.7539,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-18",
+    "close": 1539.8197,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-19",
+    "close": 1554.3605,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-20",
+    "close": 1560.0264,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-23",
+    "close": 1601.5967,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-24",
+    "close": 1682.2673,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-25",
+    "close": 1726.9312,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-26",
+    "close": 1680.7102,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-27",
+    "close": 1689.0146,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-30",
+    "close": 1689.9856,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-03-31",
+    "close": 1700.2216,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-01",
+    "close": 1744.8664,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-02",
+    "close": 1783.5188,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-03",
+    "close": 1802.4723,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-07",
+    "close": 1827.0658,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-08",
+    "close": 1794.1713,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-09",
+    "close": 1759.764,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-10",
+    "close": 1805.0203,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-13",
+    "close": 1842.4432,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-14",
+    "close": 1838.6256,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-15",
+    "close": 1790.0488,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-16",
+    "close": 1797.3281,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-17",
+    "close": 1794.1833,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-20",
+    "close": 1754.1917,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-21",
+    "close": 1803.5372,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-22",
+    "close": 1850.9681,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-23",
+    "close": 1892.9195,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-24",
+    "close": 1900.7574,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-27",
+    "close": 1898.225,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-28",
+    "close": 1821.8512,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-29",
+    "close": 1870.7176,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-04-30",
+    "close": 1866.8458,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-04",
+    "close": 1913.5907,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-05",
+    "close": 1922.1501,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-06",
+    "close": 1952.1035,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-07",
+    "close": 1842.9897,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-08",
+    "close": 1942.6351,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-11",
+    "close": 2056.8485,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-12",
+    "close": 2084.0105,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-13",
+    "close": 2074.3968,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-14",
+    "close": 2128.5874,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-15",
+    "close": 2085.2255,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-18",
+    "close": 2129.3703,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-19",
+    "close": 2242.6425,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-20",
+    "close": 2331.2336,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-21",
+    "close": 2447.1313,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-22",
+    "close": 2445.0628,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-25",
+    "close": 2471.5789,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-26",
+    "close": 2577.6035,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-27",
+    "close": 2645.9459,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-28",
+    "close": 2501.1485,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-05-29",
+    "close": 2573.1306,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-01",
+    "close": 2749.9627,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-02",
+    "close": 2933.7347,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-03",
+    "close": 2971.6731,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-04",
+    "close": 2918.9179,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-05",
+    "close": 2898.2607,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-08",
+    "close": 2749.3504,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-09",
+    "close": 2793.4015,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-10",
+    "close": 2882.8891,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-11",
+    "close": 2898.2124,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-12",
+    "close": 2922.7886,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-15",
+    "close": 2846.2412,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-16",
+    "close": 2727.625,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-17",
+    "close": 2780.6269,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-18",
+    "close": 2673.3584,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-19",
+    "close": 2494.3073,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-23",
+    "close": 2517.2469,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-24",
+    "close": 2566.2811,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-25",
+    "close": 2479.8161,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-26",
+    "close": 2256.4881,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-29",
+    "close": 2070.2779,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-06-30",
+    "close": 2184.981,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-01",
+    "close": 2069.6219,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-02",
+    "close": 1923.5142,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-03",
+    "close": 1834.545,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-06",
+    "close": 1795.828,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-07",
+    "close": 1674.1505,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-08",
+    "close": 1634.2374,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-09",
+    "close": 1721.1579,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-10",
+    "close": 1819.4477,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-13",
+    "close": 1944.0303,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-14",
+    "close": 1990.4283,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-15",
+    "close": 1865.0794,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-16",
+    "close": 1893.8613,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-17",
+    "close": 2019.3993,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-20",
+    "close": 2041.1639,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-21",
+    "close": 2095.5243,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-22",
+    "close": 2117.8414,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-23",
+    "close": 2165.0193,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-24",
+    "close": 2104.9929,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-27",
+    "close": 1932.5308,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-28",
+    "close": 1867.2576,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-29",
+    "close": 1975.6006,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-30",
+    "close": 1897.0466,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-07-31",
+    "close": 1899.1001,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-03",
+    "close": 1793.7762,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-04",
+    "close": 1928.0378,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-05",
+    "close": 1913.8979,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-06",
+    "close": 1916.0706,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-07",
+    "close": 2004.7655,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-10",
+    "close": 2104.6237,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-11",
+    "close": 2089.9102,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-12",
+    "close": 2075.6366,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-13",
+    "close": 2119.5048,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-14",
+    "close": 2119.8348,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-17",
+    "close": 2117.9978,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-18",
+    "close": 1991.5989,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-19",
+    "close": 2050.2228,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-20",
+    "close": 1960.5633,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-21",
+    "close": 1849.059,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-24",
+    "close": 1694.8178,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-25",
+    "close": 1556.2983,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-26",
+    "close": 1471.3314,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-27",
+    "close": 1530.2871,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-28",
+    "close": 1633.6928,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-08-31",
+    "close": 1585.2821,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-01",
+    "close": 1477.0687,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-02",
+    "close": 1446.237,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-07",
+    "close": 1459.3899,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-08",
+    "close": 1533.8619,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-09",
+    "close": 1599.813,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-10",
+    "close": 1563.6835,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-11",
+    "close": 1584.6471,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-14",
+    "close": 1475.8783,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-15",
+    "close": 1383.3876,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-16",
+    "close": 1483.1899,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-17",
+    "close": 1468.2797,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-18",
+    "close": 1491.9328,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-21",
+    "close": 1555.1523,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-22",
+    "close": 1558.8623,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-23",
+    "close": 1539.5774,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-24",
+    "close": 1569.4624,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-25",
+    "close": 1487.9171,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-28",
+    "close": 1533.3765,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-29",
+    "close": 1499.502,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-09-30",
+    "close": 1498.9234,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-08",
+    "close": 1572.5467,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-09",
+    "close": 1636.9928,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-12",
+    "close": 1703.9964,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-13",
+    "close": 1720.4732,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-14",
+    "close": 1705.4823,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-15",
+    "close": 1771.4355,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-16",
+    "close": 1790.039,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-19",
+    "close": 1769.764,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-20",
+    "close": 1824.1308,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-21",
+    "close": 1696.5986,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-22",
+    "close": 1762.9,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-23",
+    "close": 1843.943,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-26",
+    "close": 1912.2687,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-27",
+    "close": 1921.657,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-28",
+    "close": 1914.617,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-29",
+    "close": 1902.5158,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-10-30",
+    "close": 1873.7278,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-02",
+    "close": 1811.9413,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-03",
+    "close": 1801.1551,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-04",
+    "close": 1916.7725,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-05",
+    "close": 1906.5678,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-06",
+    "close": 1973.4992,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-09",
+    "close": 2000.8465,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-10",
+    "close": 1995.2,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-11",
+    "close": 2030.3537,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-12",
+    "close": 1990.1164,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-13",
+    "close": 1943.1083,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-16",
+    "close": 2067.171,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-17",
+    "close": 2009.8551,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-18",
+    "close": 1965.1977,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-19",
+    "close": 2031.7825,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-20",
+    "close": 2051.0284,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-23",
+    "close": 2020.0185,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-24",
+    "close": 2030.5895,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-25",
+    "close": 2063.0695,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-26",
+    "close": 2013.7249,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-27",
+    "close": 1851.2151,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-11-30",
+    "close": 1843.1261,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-01",
+    "close": 1838.8123,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-02",
+    "close": 1829.2037,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-03",
+    "close": 1885.9275,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-04",
+    "close": 1864.8139,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-07",
+    "close": 1877.6979,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-08",
+    "close": 1836.0402,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-09",
+    "close": 1808.4386,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-10",
+    "close": 1808.0978,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-11",
+    "close": 1813.8607,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-14",
+    "close": 1852.5771,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-15",
+    "close": 1881.6312,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-16",
+    "close": 1888.1466,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-17",
+    "close": 1958.4355,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-18",
+    "close": 1940.0619,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-21",
+    "close": 1946.24,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-22",
+    "close": 1959.517,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-23",
+    "close": 1921.8728,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-24",
+    "close": 1928.5472,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-25",
+    "close": 1935.4471,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-28",
+    "close": 1906.5376,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-29",
+    "close": 1929.747,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-30",
+    "close": 1982.7167,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2015-12-31",
+    "close": 1944.3778,
+    "return_basis": "total_return"
+  },
+  {
     "date": "2016-01-04",
     "close": 1780.6132,
     "return_basis": "total_return"
@@ -12757,6 +18832,26 @@
   {
     "date": "2026-07-08",
     "close": 2269.342,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-09",
+    "close": 2321.316,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-10",
+    "close": 2319.8866,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-13",
+    "close": 2185.6604,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-14",
+    "close": 2199.8963,
     "return_basis": "total_return"
   }
 ]

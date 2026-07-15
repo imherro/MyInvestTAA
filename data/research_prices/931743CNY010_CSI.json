@@ -9108,5 +9108,25 @@
     "date": "2026-07-08",
     "close": 12232.1248,
     "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-09",
+    "close": 13431.8598,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-10",
+    "close": 12513.6145,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-13",
+    "close": 11912.3815,
+    "return_basis": "total_return"
+  },
+  {
+    "date": "2026-07-14",
+    "close": 11879.5954,
+    "return_basis": "total_return"
   }
 ]

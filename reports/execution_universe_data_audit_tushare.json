@@ -1,10 +1,10 @@
 {
   "provider": "tushare",
-  "generated_at": "2026-07-13T03:47:31+00:00",
-  "start": "2016-01-01",
-  "end": "2026-07-08",
-  "checked_assets": 13,
-  "available_assets": 13,
+  "generated_at": "2026-07-15T03:20:30+00:00",
+  "start": null,
+  "end": "2026-07-14",
+  "checked_assets": 14,
+  "available_assets": 14,
   "unavailable_assets": 0,
   "rows": [
     {
@@ -16,9 +16,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 2552,
-      "first_date": "2016-01-04",
-      "last_date": "2026-07-08",
+      "row_count": 3433,
+      "first_date": "2012-05-28",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -31,9 +31,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 2552,
-      "first_date": "2016-01-04",
-      "last_date": "2026-07-08",
+      "row_count": 3236,
+      "first_date": "2013-03-15",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -46,9 +46,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 2348,
+      "row_count": 2352,
       "first_date": "2016-11-04",
-      "last_date": "2026-07-08",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -61,9 +61,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 2551,
-      "first_date": "2016-01-04",
-      "last_date": "2026-07-08",
+      "row_count": 3541,
+      "first_date": "2011-12-09",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -76,9 +76,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 1368,
+      "row_count": 1372,
       "first_date": "2020-11-16",
-      "last_date": "2026-07-08",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -91,9 +91,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 1458,
+      "row_count": 1462,
       "first_date": "2020-07-03",
-      "last_date": "2026-07-08",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -106,9 +106,24 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 1580,
+      "row_count": 1584,
       "first_date": "2019-12-27",
-      "last_date": "2026-07-08",
+      "last_date": "2026-07-14",
+      "error": null,
+      "warnings": []
+    },
+    {
+      "asset_id": "159201.SZ",
+      "name": "华夏国证自由现金流ETF",
+      "data_api": "fund_daily",
+      "return_basis": "qfq",
+      "provider_return_types": [
+        "qfq"
+      ],
+      "available": true,
+      "row_count": 335,
+      "first_date": "2025-02-27",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -121,9 +136,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 1715,
+      "row_count": 1719,
       "first_date": "2019-06-12",
-      "last_date": "2026-07-08",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -136,9 +151,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 1311,
+      "row_count": 1315,
       "first_date": "2021-02-04",
-      "last_date": "2026-07-08",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -151,9 +166,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 2145,
+      "row_count": 2149,
       "first_date": "2017-09-01",
-      "last_date": "2026-07-08",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -166,9 +181,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 1808,
+      "row_count": 1812,
       "first_date": "2019-01-18",
-      "last_date": "2026-07-08",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -181,9 +196,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 2552,
-      "first_date": "2016-01-04",
-      "last_date": "2026-07-08",
+      "row_count": 3150,
+      "first_date": "2013-07-29",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     },
@@ -196,9 +211,9 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 2552,
-      "first_date": "2016-01-04",
-      "last_date": "2026-07-08",
+      "row_count": 3232,
+      "first_date": "2013-03-25",
+      "last_date": "2026-07-14",
       "error": null,
       "warnings": []
     }
