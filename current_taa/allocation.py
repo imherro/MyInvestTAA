@@ -81,7 +81,12 @@ def build_current_allocation(
 ) -> dict:
     latest = research["monthly_allocations"][-1]
     mapped = map_index_weights(
-        latest["weights"], assets, mappings, etf_prices, research["period"]["end"]
+        latest["weights"],
+        assets,
+        mappings,
+        etf_prices,
+        research["period"]["end"],
+        require_exact_date=True,
     )
     asset_by_id = {asset["asset_id"]: asset for asset in assets}
     index_targets = [

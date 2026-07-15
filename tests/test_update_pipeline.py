@@ -50,3 +50,14 @@ def test_manifest_contains_version_but_no_governance_state(tmp_path):
     manifest = reports["manifest.json"]
     assert manifest["implementation_version"]
     assert not ({"approval", "gate", "promotion", "protected_hash"} & set(manifest))
+
+
+def test_shadow_start_resolution_failure_clears_old_success_reports(tmp_path):
+    target = tmp_path / "current"
+    run_current_pipeline(root=ROOT, shadow_start_date="2026-07-14", output_dir=target)
+    (target / "manifest.json").write_text("not-json", encoding="utf-8")
+    with pytest.raises(Exception):
+        run_current_pipeline(root=ROOT, output_dir=target)
+    assert [path.name for path in target.iterdir()] == ["data_status.json"]
+    failure = json.loads((target / "data_status.json").read_text(encoding="utf-8"))
+    assert failure["current"] is False

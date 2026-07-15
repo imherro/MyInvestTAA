@@ -37,8 +37,9 @@ def run_current_pipeline(
 ) -> dict:
     project_root = Path(root or ROOT)
     target = Path(output_dir or project_root / "reports" / "current")
-    resolved_start = _resolve_shadow_start_date(target, shadow_start_date)
+    resolved_start = shadow_start_date
     try:
+        resolved_start = _resolve_shadow_start_date(target, shadow_start_date)
         reports = _build_reports(project_root, resolved_start)
         _publish_report_set(target, reports)
         return reports
@@ -160,6 +161,7 @@ def _resolve_shadow_start_date(target: Path, requested: str | None) -> str:
 def _publish_report_set(target: Path, reports: dict[str, dict]) -> None:
     if set(reports) != REPORT_NAMES:
         raise ValueError("successful current report set must contain exactly five reports")
+    target.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix="current-stage-", dir=target.parent))
     try:
         for name, value in reports.items():
@@ -173,6 +175,7 @@ def _publish_report_set(target: Path, reports: dict[str, dict]) -> None:
 
 
 def _publish_failure(target: Path, failure: dict) -> None:
+    target.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix="current-failed-", dir=target.parent))
     try:
         (stage / "data_status.json").write_text(

@@ -64,7 +64,16 @@ def asset_file_name(asset_id: str) -> str:
 def compute_score(rows: list[dict], signal_date: str, cfg: ModelConfig | None = None) -> dict | None:
     config = cfg or ModelConfig()
     history = [row for row in rows if row["date"] <= signal_date]
-    if len(history) <= config.lookback_12m or history[-1]["date"] != signal_date:
+    if (
+        history
+        and history[-1]["date"] != signal_date
+        and len(history) >= config.lookback_12m
+        and rows[0]["date"] <= signal_date <= rows[-1]["date"]
+    ):
+        raise ValueError(f"research asset is missing signal-date price on {signal_date}")
+    if len(history) <= config.lookback_12m:
+        return None
+    if history[-1]["date"] != signal_date:
         return None
     current = history[-1]["close"]
     price_6m = history[-1 - config.lookback_6m]["close"]
@@ -167,8 +176,11 @@ def run_research(assets: list[dict], prices: dict[str, list[dict]], trade_dates:
                 continue
             previous = price_maps[asset_id].get(previous_date)
             current = price_maps[asset_id].get(date)
-            if previous and current:
-                daily_return += weight * (current / previous - 1.0)
+            if previous is None or current is None:
+                raise ValueError(
+                    f"held research asset {asset_id} is missing price for {previous_date} or {date}"
+                )
+            daily_return += weight * (current / previous - 1.0)
         equity_curve.append({"date": date, "value": round(equity_curve[-1]["value"] * (1.0 + daily_return), 8)})
 
     if not allocations or not equity_curve:

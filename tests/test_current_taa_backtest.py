@@ -1,5 +1,7 @@
 from datetime import date, timedelta
 
+import pytest
+
 from current_taa.model import run_research
 
 
@@ -62,3 +64,12 @@ def test_report_uses_current_product_name():
     report = run_research(_assets(5), _prices(dates, 5), dates)
     assert report["model"] == "CURRENT_TAA"
     assert report["model_description"] == "趋势/回撤型多资产 TAA"
+
+
+def test_held_asset_missing_daily_price_fails_instead_of_zero_filling():
+    dates = _dates(320)
+    prices = _prices(dates, 5)
+    missing_date = dates[280]
+    prices["A4"] = [row for row in prices["A4"] if row["date"] != missing_date]
+    with pytest.raises(ValueError, match="held research asset A4 is missing price"):
+        run_research(_assets(5), prices, dates)

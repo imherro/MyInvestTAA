@@ -44,3 +44,10 @@ def test_current_allocation_contains_names_and_no_trade_fields():
     assert report["index_target_weights"][0]["name"] == "资产A"
     assert report["etf_target_weights"][0]["etf_name"] == "ETF一号"
     assert report["trading_instruction"] is False
+
+
+def test_current_allocation_rejects_stale_etf_price():
+    research = {"model": "CURRENT_TAA", "period": {"end": "2026-01-02"}, "monthly_allocations": [{"signal_date": "2025-12-31", "effective_date": "2026-01-02", "weights": {"A": 1.0}}]}
+    report = build_current_allocation(research, ASSETS, MAPPINGS, {"E1": [{"date": "2025-12-31", "close": 1.0}]})
+    assert report["cash_weight"] == 1.0
+    assert "2026-01-02没有有效前复权价格" in report["cash_reasons"][0]["reason"]

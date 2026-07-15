@@ -42,6 +42,14 @@ def test_score_requires_a_price_on_signal_date():
     assert compute_score(rows, (date.fromisoformat(rows[-1]["date"]) + timedelta(days=1)).isoformat()) is None
 
 
+def test_score_fails_when_signal_date_is_missing_inside_coverage():
+    rows = _rows(260)
+    missing_date = rows[252]["date"]
+    rows = [row for row in rows if row["date"] != missing_date]
+    with pytest.raises(ValueError, match="missing signal-date price"):
+        compute_score(rows, missing_date)
+
+
 def test_model_weights_are_fixed_by_contract():
     config = ModelConfig()
     assert (config.momentum_6m_weight, config.momentum_12m_weight, config.drawdown_resilience_weight) == (0.4, 0.3, 0.3)
