@@ -1,6 +1,6 @@
 {
   "available": true,
-  "strategy": "RESEARCH_TAA_MVP",
+  "strategy": "V12_EXPANDED_UNIVERSE_CANDIDATE",
   "universe_count": 14,
   "universe_scope": {
     "count_scope": "available_allocation_eligible_total_or_net_return_assets_after_readiness_validation",

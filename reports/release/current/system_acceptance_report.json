@@ -1,7 +1,7 @@
 {
   "available": true,
-  "release_id": "taa-20260713-a6fb68fb8630",
-  "generated_at": "2026-07-13T08:15:34+00:00",
+  "release_id": "taa-20260715-3d50b8afb77b",
+  "generated_at": "2026-07-15T05:16:30Z",
   "system_acceptance_passed": true,
   "project_completion_candidate": true,
   "required_gates": [
@@ -39,7 +39,6 @@
     "verified": true,
     "execution_validation_ready": false,
     "reasons": [
-      "tradable weight coverage is below 70%",
       "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable."
     ],
     "nonblocking_when_not_ready": true
@@ -69,9 +68,9 @@
     "staged_v11_dependency": {
       "verified": true,
       "artifact_path": "v11_current_allocation.json",
-      "staged_v11_hash": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
-      "current_decision_v11_hash": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
-      "payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464",
+      "staged_v11_hash": "33e6d9a42fc60fd33e973aa9d47064b6ee58b09f52ff397208f081a61416e288",
+      "current_decision_v11_hash": "33e6d9a42fc60fd33e973aa9d47064b6ee58b09f52ff397208f081a61416e288",
+      "payload_hash": "09ffe66204c160c1afa01bc119fdaee1129b29e3f50ab17a9e50d63653ade4e8",
       "root_v11_excluded": true
     }
   },
@@ -81,16 +80,16 @@
   },
   "temporal_integrity": {
     "verified": true,
-    "market_data_as_of": "2026-07-08",
-    "decision_date": "2026-07-13"
+    "market_data_as_of": "2026-07-14",
+    "decision_date": "2026-07-15"
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "a6fb68fb8630201c69ffd2db6558977a74b8c1ef12bd0e65eb1c4ab804bcf8e9",
-    "first_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
-    "second_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
-    "first_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
-    "second_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
+    "input_fingerprint": "3d50b8afb77b6475645c7c88bc1715f559265e5787784cdae04bdde67b34a46e",
+    "first_candidate_raw_hash": "8c7b073d9b6b408178056536d5688b7237e022241a255c5e2d367e147c4f48a2",
+    "second_candidate_raw_hash": "8c7b073d9b6b408178056536d5688b7237e022241a255c5e2d367e147c4f48a2",
+    "first_candidate_semantic_hash": "e80006ac8efb744d70843624aa7e7c7473e77aa1fd3442f68c0998a453fe3a2c",
+    "second_candidate_semantic_hash": "e80006ac8efb744d70843624aa7e7c7473e77aa1fd3442f68c0998a453fe3a2c",
     "artifact_hash_differences": []
   },
   "production_boundary": {
@@ -156,7 +155,7 @@
   },
   "ui_information_architecture": {
     "verified": true,
-    "route_scan_count": 27,
+    "route_scan_count": 28,
     "unclassified_routes": []
   },
   "legacy_cleanup": {
@@ -178,6 +177,7 @@
       "/risk-exposure",
       "/selection-research",
       "/shadow-portfolio",
+      "/site-map",
       "/strategy-governance",
       "/strategy-promotion"
     ],
@@ -199,12 +199,12 @@
       "scripts/recover_execution_mapping_transaction.py",
       "scripts/recover_system_release.py"
     ],
-    "visible_link_count_before": 27,
+    "visible_link_count_before": 28,
     "visible_link_count_after": 5,
     "proof": {
       "route_scan": {
-        "scanned_count": 27,
-        "classified_count": 27,
+        "scanned_count": 28,
+        "classified_count": 28,
         "unclassified_routes": [],
         "verified": true
       },
@@ -221,14 +221,13 @@
         "verified": true
       },
       "test_dependency_scan": {
-        "retained_route_count": 22,
+        "retained_route_count": 23,
         "route_test_references": [
           "/adaptive-strategy",
           "/attribution",
           "/benchmark-validation",
           "/diagnosis",
           "/execution-backtest",
-          "/execution-backtest-v2",
           "/experiment",
           "/final-strategy",
           "/legacy-dashboard",
@@ -242,11 +241,14 @@
           "/risk-exposure",
           "/selection-research",
           "/shadow-portfolio",
+          "/site-map",
           "/strategy-governance",
           "/strategy-promotion",
           "/validation"
         ],
-        "explicit_reason_routes": [],
+        "explicit_reason_routes": [
+          "/execution-backtest-v2"
+        ],
         "missing_test_or_reason": [],
         "verified": true
       },
@@ -290,18 +292,6 @@
         "path": "config/execution_validation_policy.json",
         "baseline_sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
         "actual_sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
-        "verified": true
-      },
-      {
-        "path": "data/universe/asset_mapping.json",
-        "baseline_sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
-        "actual_sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
-        "verified": true
-      },
-      {
-        "path": "data/universe/execution_mapping_decision_ledger.json",
-        "baseline_sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
-        "actual_sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
         "verified": true
       }
     ],

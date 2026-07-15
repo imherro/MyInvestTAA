@@ -3,10 +3,10 @@
   "status": "user_review_ready",
   "ready_for_user_review": true,
   "production_actionable": false,
-  "as_of": "2026-07-08",
-  "decision_date": "2026-07-13",
-  "generated_at": "2026-07-13T08:15:34+00:00",
-  "market_data_as_of": "2026-07-08",
+  "as_of": "2026-07-14",
+  "decision_date": "2026-07-15",
+  "generated_at": "2026-07-15T05:16:30Z",
+  "market_data_as_of": "2026-07-14",
   "governance_state_as_of": "2026-07-13",
   "snapshot_mode": "current_decision_with_lagged_market_data",
   "market_state": {
@@ -14,19 +14,17 @@
     "regime": "bull_caution",
     "risk_level": "high_mixed_trend",
     "trend_state": "mixed",
-    "trend_score": 48.65,
+    "trend_score": 50.67,
     "confidence": 0.4,
     "evidence": [
       "momentum positive",
       "volatility contained",
-      "bull base equity 90%",
+      "neutral base equity 70%",
       "high volatility without strong trend gets a light trim",
-      "drawdown within normal range",
-      "breadth weak only penalized when trend is not supportive",
-      "monthly exposure smoothing"
+      "drawdown within normal range"
     ],
     "source": "reports/strategy_diagnosis_report.json:diagnosis.regime_v3",
-    "source_as_of": "2026-07-08"
+    "source_as_of": "2026-07-14"
   },
   "production_candidate": {
     "strategy": "V11_PRODUCTION_FUSION",
@@ -42,54 +40,57 @@
     "snapshot_valid_or_missing": true,
     "unchanged": true,
     "allocation": {
-      "512170": 0.017583,
-      "588000": 0.028903,
-      "510300": 0.056186,
-      "512010": 0.023362,
-      "515100": 0.063996,
-      "515080": 0.056401,
-      "512800": 0.050339,
-      "510500": 0.050381,
-      "511010": 0.179755,
-      "512100": 0.028858,
-      "512890": 0.060385,
-      "512880": 0.020349,
-      "515790": 0.008848,
-      "512760": 0.035141,
-      "159915": 0.03117,
-      "518880": 0.042364,
-      "512660": 0.014053,
-      "512690": 0.013259,
-      "CASH": 0.199998,
-      "512400": 0.009356,
-      "516160": 0.009313
+      "512800": 0.032454,
+      "512400": 0.01607,
+      "512690": 0.011547,
+      "159201": 0.023801,
+      "512660": 0.011861,
+      "512890": 0.027902,
+      "588000": 0.024294,
+      "516160": 0.002903,
+      "512100": 0.011053,
+      "512760": 0.01493,
+      "CASH": 0.37,
+      "512170": 0.018474,
+      "515080": 0.040835,
+      "510300": 0.051585,
+      "515790": 0.008681,
+      "510500": 0.035558,
+      "512010": 0.025949,
+      "518880": 0.05097,
+      "515100": 0.035554,
+      "511010": 0.133762,
+      "512880": 0.018755,
+      "159915": 0.033062
     },
     "allocation_percent": {
-      "512170": 1.7583,
-      "588000": 2.8903,
-      "510300": 5.6186,
-      "512010": 2.3362,
-      "515100": 6.3996,
-      "515080": 5.6401,
-      "512800": 5.0339,
-      "510500": 5.0381,
-      "511010": 17.9755,
-      "512100": 2.8858,
-      "512890": 6.0385,
-      "512880": 2.0349,
-      "515790": 0.8848,
-      "512760": 3.5141,
-      "159915": 3.117,
-      "518880": 4.2364,
-      "512660": 1.4053,
-      "512690": 1.3259,
-      "CASH": 19.9998,
-      "512400": 0.9356,
-      "516160": 0.9313
+      "512800": 3.2454,
+      "512400": 1.607,
+      "512690": 1.1547,
+      "159201": 2.3801,
+      "512660": 1.1861,
+      "512890": 2.7902,
+      "588000": 2.4294,
+      "516160": 0.2903,
+      "512100": 1.1053,
+      "512760": 1.493,
+      "CASH": 37.0,
+      "512170": 1.8474,
+      "515080": 4.0835,
+      "510300": 5.1585,
+      "515790": 0.8681,
+      "510500": 3.5558,
+      "512010": 2.5949,
+      "518880": 5.097,
+      "515100": 3.5554,
+      "511010": 13.3762,
+      "512880": 1.8755,
+      "159915": 3.3062
     },
-    "equity_weight": 0.800002,
-    "cash_weight": 0.199998,
+    "equity_weight": 0.63,
+    "cash_weight": 0.37,
     "selected_assets": [
+      "159201",
       "159915",
       "510300",
       "510500",
@@ -113,85 +114,85 @@
     ],
     "production_actionable": false,
     "risk_controls": {
-      "date": "2026-07-08",
-      "regime": "bull",
-      "equity_target": 80.0,
-      "raw_equity_target": 72.9,
-      "confidence": 0.75,
+      "date": "2026-07-14",
+      "regime": "neutral",
+      "equity_target": 63.0,
+      "raw_equity_target": 63.0,
+      "confidence": 0.78,
       "reason": [
-        "bull base equity 90%",
+        "neutral base equity 70%",
         "high volatility without strong trend gets a light trim",
-        "drawdown within normal range",
-        "breadth weak only penalized when trend is not supportive",
-        "monthly exposure smoothing"
+        "drawdown within normal range"
       ],
-      "volatility": 15.3745,
-      "trend_score": 48.65,
-      "drawdown": -6.0688,
-      "breadth": 0.3,
-      "previous_equity_target": 90.0,
+      "volatility": 15.2725,
+      "trend_score": 50.67,
+      "drawdown": -7.5522,
+      "breadth": 0.4286,
+      "previous_equity_target": 70.0,
       "monthly_max_change": 10.0,
       "volatility_control": {
         "volatility_state": "high_mixed_trend",
         "action": "trim_exposure",
         "multiplier": 0.9,
-        "current_volatility": 15.3745,
+        "current_volatility": 15.2725,
         "target_volatility": 15.0,
-        "trend_score": 48.65,
+        "trend_score": 50.67,
         "reason": "high volatility without strong trend gets a light trim"
       },
       "drawdown_control": {
         "drawdown_state": "normal_drawdown",
         "multiplier": 1.0,
-        "drawdown": -6.0688,
-        "previous_drawdown": -3.2408,
+        "drawdown": -7.5522,
+        "previous_drawdown": -5.3439,
         "recovering": false,
         "reason": "drawdown within normal range"
       }
     },
     "production_readiness": {
       "candidate": "V11_PRODUCTION_FUSION",
-      "status": "ready",
-      "confidence": 0.6147,
+      "status": "not_ready",
+      "confidence": 0.5022,
       "checks": {
-        "absolute_performance": true,
-        "walk_forward_win_rate": true,
-        "worst_window": true,
+        "absolute_performance": false,
+        "walk_forward_win_rate": false,
+        "worst_window": false,
         "stress_no_failure": true,
-        "robustness_pass": true
-      }
+        "robustness_pass": false
+      },
+      "diagnosis_top_candidate": "V7_STOCK_BREADTH_SELECTION"
     },
     "source": "reports/strategy_diagnosis_report.json:diagnosis.production_readiness",
-    "source_as_of": "2026-07-08",
+    "source_as_of": "2026-07-14",
     "allocation_source": "reports/v11_current_allocation.json",
-    "allocation_source_as_of": "2026-07-08",
+    "allocation_source_as_of": "2026-07-14",
     "allocation_integrity": {
       "diagnosis_report_path": "reports/strategy_diagnosis_report.json",
-      "diagnosis_report_hash": "1f96ff6b6c27da8516168729a12607971225cad4478f6e010f921c64b91bebbd",
-      "source_state_hash": "40870370e69cbb9fec9549b548eeb44eab5c14f0eff0244ce4ec49bab62d64c2",
+      "diagnosis_report_hash": "423152dababf9d73ec70ba4c1676ad5715eecd775f71b52479a09d2a5e478109",
+      "source_state_hash": "cea4566dce9e3c17cd1a77d5e93df7564482fed467e64a0975f0804e090c8192",
       "taa_engine_path": "backtest/taa/engine.py",
       "taa_engine_hash": "021f4ca11c9d7558e9b77424dff62919ec4890fcdf42b3cdbda9eac5380f2704",
       "strategy_diagnosis_code_path": "data_pipeline/strategy_diagnosis.py",
       "strategy_diagnosis_code_hash": "527ce8b117103b4c4192aeb57755dc2ca27cfc5ce13b4a0b4ef801fcf3444ed2",
-      "snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464",
+      "snapshot_payload_hash": "09ffe66204c160c1afa01bc119fdaee1129b29e3f50ab17a9e50d63653ade4e8",
       "verified": true,
       "semantic_verified": true,
       "errors": [],
-      "actual_snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464"
+      "actual_snapshot_payload_hash": "09ffe66204c160c1afa01bc119fdaee1129b29e3f50ab17a9e50d63653ade4e8"
     },
     "release_artifact_dependency": "v11_current_allocation.json",
     "message": null
   },
   "research_allocation": {
     "available": true,
-    "strategy": "RESEARCH_TAA_MVP",
-    "universe_count": 13,
+    "strategy": "V12_EXPANDED_UNIVERSE_CANDIDATE",
+    "universe_count": 14,
     "universe_scope": {
       "count_scope": "available_allocation_eligible_total_or_net_return_assets_after_readiness_validation",
-      "registered_asset_count": 32,
+      "registered_asset_count": 33,
       "registered_asset_ids": [
         "000688CNY01.CSI",
         "399606.SZ",
+        "480092.CNI",
         "801050.SI",
         "801080.SI",
         "801120.SI",
@@ -223,9 +224,10 @@
         "H20771.CSI",
         "H21152.CSI"
       ],
-      "included_asset_count": 13,
+      "included_asset_count": 14,
       "included_asset_ids": [
         "000688CNY01.CSI",
+        "480092.CNI",
         "931688CNY010.CSI",
         "931743CNY010.CSI",
         "H00015.CSI",
@@ -426,23 +428,24 @@
     },
     "status": "research_only",
     "source": "reports/research_backtest_report.json:monthly_allocations",
-    "source_as_of": "2026-07-08"
+    "source_as_of": "2026-07-14"
   },
   "execution_shadow": {
     "available": true,
     "status": "shadow_only",
     "production_approved": false,
-    "data_as_of": "2026-07-08",
+    "data_as_of": "2026-07-14",
     "etf_weights": {
       "510500.SH": 0.25,
       "512760.SH": 0.1,
       "588000.SH": 0.25,
-      "CASH": 0.4
+      "588200.SH": 0.1,
+      "CASH": 0.3
     },
     "cash_breakdown": {
       "research_cash": 0.3,
       "unmapped_cash": 0.0,
-      "research_only_cash": 0.1,
+      "research_only_cash": 0.0,
       "rejected_proxy_cash": 0.0,
       "low_quality_proxy_cash": 0.0,
       "missing_price_cash": 0.0
@@ -453,6 +456,7 @@
         "research_weight": 0.1,
         "destination": "512760.SH",
         "mapping_quality": "medium",
+        "execution_approval": "quality_policy",
         "decision_status": "approved_for_execution_validation",
         "reason": "approved_or_registered_execution_mapping",
         "production_approved": false
@@ -460,10 +464,11 @@
       {
         "research_asset_id": "931688CNY010.CSI",
         "research_weight": 0.1,
-        "destination": "CASH",
-        "mapping_quality": "none",
-        "decision_status": "research_only",
-        "reason": "research_only_cash",
+        "destination": "588200.SH",
+        "mapping_quality": "low",
+        "execution_approval": "human_approved",
+        "decision_status": "approved_for_execution_validation",
+        "reason": "approved_or_registered_execution_mapping",
         "production_approved": false
       },
       {
@@ -471,6 +476,7 @@
         "research_weight": 0.25,
         "destination": "588000.SH",
         "mapping_quality": "high",
+        "execution_approval": "quality_policy",
         "decision_status": null,
         "reason": "approved_or_registered_execution_mapping",
         "production_approved": false
@@ -480,6 +486,7 @@
         "research_weight": 0.25,
         "destination": "510500.SH",
         "mapping_quality": "high",
+        "execution_approval": "quality_policy",
         "decision_status": null,
         "reason": "approved_or_registered_execution_mapping",
         "production_approved": false
@@ -497,12 +504,12 @@
       "violations": []
     },
     "snapshot_integrity": {
-      "research_report_hash": "5a5451972589dd787e28ed96cc582e860bb7e6caef6eee5bce3c47664e541e07",
-      "mapping_registry_hash": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
-      "decision_ledger_hash": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+      "research_report_hash": "4bebbed92c14a97f33f08637f4198f01622901c0d22a60d617b37068cc1ea905",
+      "mapping_registry_hash": "f23e301d9c9c3bac8562c6fb37fc7662d20a86336d72bd637541c20ea05a2b56",
+      "decision_ledger_hash": "7bf2d3b692f0b58d551e5e0c2d9c3777fd854c02ad355723d9cb87301fdb9647",
       "approval_record_hash": "a859269a8f944f011b90660c8b52c7b5f9e86959bed0dd8334ff10d876ad0f7e",
-      "approval_seal_hash": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9",
-      "price_manifest_hash": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd",
+      "approval_seal_hash": "57e3693f27cdbeb02cc70196456ff1e9c121df5b62f6b4c2a15ab9e85fbc450a",
+      "price_manifest_hash": "3f189f3b3eea8e97388018ea511e36f0e5bde94205f807f3ab207494beedfb9f",
       "verified": true,
       "errors": []
     },
@@ -516,46 +523,44 @@
     },
     "price_as_of_by_proxy": {
       "510500.SH": {
-        "requested_as_of": "2026-07-08",
-        "actual_price_date": "2026-07-08",
+        "requested_as_of": "2026-07-14",
+        "actual_price_date": "2026-07-14",
         "staleness_calendar_days": 0,
         "usable": true
       },
       "512760.SH": {
-        "requested_as_of": "2026-07-08",
-        "actual_price_date": "2026-07-08",
+        "requested_as_of": "2026-07-14",
+        "actual_price_date": "2026-07-14",
         "staleness_calendar_days": 0,
         "usable": true
       },
       "588000.SH": {
-        "requested_as_of": "2026-07-08",
-        "actual_price_date": "2026-07-08",
+        "requested_as_of": "2026-07-14",
+        "actual_price_date": "2026-07-14",
+        "staleness_calendar_days": 0,
+        "usable": true
+      },
+      "588200.SH": {
+        "requested_as_of": "2026-07-14",
+        "actual_price_date": "2026-07-14",
         "staleness_calendar_days": 0,
         "usable": true
       }
     },
     "source": "reports/execution_aware_shadow_portfolio.json",
-    "source_as_of": "2026-07-08"
+    "source_as_of": "2026-07-14"
   },
   "execution_validation": {
     "available": true,
     "ready": false,
     "reasons": [
-      "tradable weight coverage is below 70%",
       "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable."
     ],
     "reason_details": [
       {
-        "code": "TRADABLE_COVERAGE_BELOW_MIN",
-        "metric": "tradable_weight_coverage",
-        "actual": 0.691469,
-        "threshold": 0.7,
-        "message": "tradable weight coverage is below 70%"
-      },
-      {
         "code": "ANY_GAP_MONTH_RATIO_ABOVE_MAX",
         "metric": "untradable_month_ratio",
-        "actual": 1.0,
+        "actual": 0.727273,
         "threshold": 0.2,
         "message": "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable.",
         "semantic_alias": "binary_any_gap_month_ratio"
@@ -565,13 +570,13 @@
     "evidence_complete": true,
     "policy_schema_verified": true,
     "semantic_errors": [],
-    "annual_return": 0.057103,
-    "max_drawdown": -0.169053,
-    "sharpe": 0.544214,
-    "tradable_weight_coverage": 0.691469,
-    "tradable_weight_coverage_total_portfolio": 0.552652,
-    "untradable_month_ratio": 1.0,
-    "binary_any_gap_month_ratio": 1.0,
+    "annual_return": 0.254306,
+    "max_drawdown": -0.114321,
+    "sharpe": 1.269116,
+    "tradable_weight_coverage": 0.786044,
+    "tradable_weight_coverage_total_portfolio": 0.644318,
+    "untradable_month_ratio": 0.727273,
+    "binary_any_gap_month_ratio": 0.727273,
     "coverage_contract": {
       "schema_version": "2.0",
       "metrics": [
@@ -579,8 +584,8 @@
           "metric": "tradable_weight_coverage",
           "numerator": "tradable_translated_weight",
           "denominator": "non_cash_research_weight",
-          "numerator_weight_period_sum": 36.475,
-          "denominator_weight_period_sum": 52.75,
+          "numerator_weight_period_sum": 42.525,
+          "denominator_weight_period_sum": 54.1,
           "formula": "tradable_translated_weight / non_cash_research_weight",
           "unit": "fraction"
         },
@@ -588,7 +593,7 @@
           "metric": "tradable_weight_coverage_total_portfolio",
           "numerator": "tradable_translated_weight",
           "denominator": "total_research_portfolio_weight",
-          "numerator_weight_period_sum": 36.475,
+          "numerator_weight_period_sum": 42.525,
           "denominator_weight_period_sum": 66.0,
           "formula": "tradable_translated_weight / total_research_portfolio_weight",
           "unit": "fraction"
@@ -597,24 +602,24 @@
     },
     "gap_metrics": {
       "definition": "monthly weight routed to cash because it is unmapped, low quality, missing a price, or otherwise untradable",
-      "average_gap_weight": 0.246591,
-      "median_gap_weight": 0.25,
+      "average_gap_weight": 0.175379,
+      "median_gap_weight": 0.225,
       "max_gap_weight": 0.45,
-      "gap_month_ratio_gt_1pct": 1.0,
-      "gap_month_ratio_gt_5pct": 1.0,
-      "gap_month_ratio_gt_10pct": 0.757576,
+      "gap_month_ratio_gt_1pct": 0.727273,
+      "gap_month_ratio_gt_5pct": 0.727273,
+      "gap_month_ratio_gt_10pct": 0.727273,
       "gap_reason_breakdown": {
         "unmapped_cash": {
-          "average_weight": 0.087879,
-          "max_weight": 0.2,
-          "affected_months": 51,
-          "affected_month_ratio": 0.772727
+          "average_weight": 0.0,
+          "max_weight": 0.0,
+          "affected_months": 0,
+          "affected_month_ratio": 0.0
         },
         "low_quality_proxy_cash": {
-          "average_weight": 0.157197,
-          "max_weight": 0.25,
-          "affected_months": 44,
-          "affected_month_ratio": 0.666667
+          "average_weight": 0.001515,
+          "max_weight": 0.1,
+          "affected_months": 1,
+          "affected_month_ratio": 0.015152
         },
         "missing_price_cash": {
           "average_weight": 0.0,
@@ -623,17 +628,49 @@
           "affected_month_ratio": 0.0
         },
         "untradable_cash": {
-          "average_weight": 0.001515,
-          "max_weight": 0.1,
-          "affected_months": 1,
-          "affected_month_ratio": 0.015152
+          "average_weight": 0.173864,
+          "max_weight": 0.45,
+          "affected_months": 48,
+          "affected_month_ratio": 0.727273
         }
+      }
+    },
+    "gap_windows": {
+      "full_history": {
+        "start": "2021-01-29",
+        "end": "2026-06-30",
+        "allocation_count": 66,
+        "binary_any_gap_month_ratio": 0.727273,
+        "average_gap_weight": 0.175379,
+        "max_gap_weight": 0.45
+      },
+      "recent_24_months": {
+        "start": "2024-07-31",
+        "end": "2026-06-30",
+        "allocation_count": 24,
+        "binary_any_gap_month_ratio": 0.291667,
+        "average_gap_weight": 0.06875,
+        "max_gap_weight": 0.25
+      },
+      "recent_12_months": {
+        "start": "2025-07-31",
+        "end": "2026-06-30",
+        "allocation_count": 12,
+        "binary_any_gap_month_ratio": 0.0,
+        "average_gap_weight": 0.0,
+        "max_gap_weight": 0.0
+      },
+      "continuous_gap_free_suffix": {
+        "start": "2025-02-28",
+        "end": "2026-06-30",
+        "allocation_count": 17
       }
     },
     "mapping_count_scope": {
       "count_scope": "research_assets_present_in_source_allocations",
       "included_asset_ids": [
         "000688CNY01.CSI",
+        "480092.CNI",
         "931688CNY010.CSI",
         "931743CNY010.CSI",
         "H00015.CSI",
@@ -647,12 +684,12 @@
         "H20771.CSI",
         "H21152.CSI"
       ],
-      "included_asset_count": 13,
+      "included_asset_count": 14,
       "mapping_quality_counts": {
-        "high": 4,
+        "high": 7,
         "medium": 5,
-        "low": 1,
-        "none": 3
+        "low": 2,
+        "none": 0
       }
     },
     "gate_policy": {
@@ -668,10 +705,10 @@
       "available": true,
       "policy_schema_verified": true,
       "policy_hash_verified": true,
-      "execution_engine_source_hash": "d91bdff30585d1d040cbf97b9b2f60767dbe5bd4e3b1d773bdac5ac347e412eb"
+      "execution_engine_source_hash": "f34106f6db94613e83487572723491ce9f6beed6f6c470c238897bf605ffd29d"
     },
     "source": "reports/execution_backtest_report.json",
-    "source_as_of": "2026-07-08",
+    "source_as_of": "2026-07-14",
     "message": null
   },
   "comparison": {
@@ -680,108 +717,115 @@
     "identifier_normalization_verified": true,
     "v11_allocation_available": true,
     "v11_original_weights": {
-      "512170": 0.017583,
-      "588000": 0.028903,
-      "510300": 0.056186,
-      "512010": 0.023362,
-      "515100": 0.063996,
-      "515080": 0.056401,
-      "512800": 0.050339,
-      "510500": 0.050381,
-      "511010": 0.179755,
-      "512100": 0.028858,
-      "512890": 0.060385,
-      "512880": 0.020349,
-      "515790": 0.008848,
-      "512760": 0.035141,
-      "159915": 0.03117,
-      "518880": 0.042364,
-      "512660": 0.014053,
-      "512690": 0.013259,
-      "CASH": 0.199998,
-      "512400": 0.009356,
-      "516160": 0.009313
+      "512800": 0.032454,
+      "512400": 0.01607,
+      "512690": 0.011547,
+      "159201": 0.023801,
+      "512660": 0.011861,
+      "512890": 0.027902,
+      "588000": 0.024294,
+      "516160": 0.002903,
+      "512100": 0.011053,
+      "512760": 0.01493,
+      "CASH": 0.37,
+      "512170": 0.018474,
+      "515080": 0.040835,
+      "510300": 0.051585,
+      "515790": 0.008681,
+      "510500": 0.035558,
+      "512010": 0.025949,
+      "518880": 0.05097,
+      "515100": 0.035554,
+      "511010": 0.133762,
+      "512880": 0.018755,
+      "159915": 0.033062
     },
     "v11_canonical_weights": {
-      "512170.SH": 0.017583,
-      "588000.SH": 0.028903,
-      "510300.SH": 0.056186,
-      "512010.SH": 0.023362,
-      "515100.SH": 0.063996,
-      "515080.SH": 0.056401,
-      "512800.SH": 0.050339,
-      "510500.SH": 0.050381,
-      "511010.SH": 0.179755,
-      "512100.SH": 0.028858,
-      "512890.SH": 0.060385,
-      "512880.SH": 0.020349,
-      "515790.SH": 0.008848,
-      "512760.SH": 0.035141,
-      "159915.SZ": 0.03117,
-      "518880.SH": 0.042364,
-      "512660.SH": 0.014053,
-      "512690.SH": 0.013259,
-      "CASH": 0.199998,
-      "512400.SH": 0.009356,
-      "516160.SH": 0.009313
+      "512800.SH": 0.032454,
+      "512400.SH": 0.01607,
+      "512690.SH": 0.011547,
+      "159201.SZ": 0.023801,
+      "512660.SH": 0.011861,
+      "512890.SH": 0.027902,
+      "588000.SH": 0.024294,
+      "516160.SH": 0.002903,
+      "512100.SH": 0.011053,
+      "512760.SH": 0.01493,
+      "CASH": 0.37,
+      "512170.SH": 0.018474,
+      "515080.SH": 0.040835,
+      "510300.SH": 0.051585,
+      "515790.SH": 0.008681,
+      "510500.SH": 0.035558,
+      "512010.SH": 0.025949,
+      "518880.SH": 0.05097,
+      "515100.SH": 0.035554,
+      "511010.SH": 0.133762,
+      "512880.SH": 0.018755,
+      "159915.SZ": 0.033062
     },
     "shadow_canonical_weights": {
       "510500.SH": 0.25,
       "512760.SH": 0.1,
       "588000.SH": 0.25,
-      "CASH": 0.4
+      "588200.SH": 0.1,
+      "CASH": 0.3
     },
     "weight_differences": {
-      "159915.SZ": 0.03117,
-      "510300.SH": 0.056186,
-      "510500.SH": -0.199619,
-      "511010.SH": 0.179755,
-      "512010.SH": 0.023362,
-      "512100.SH": 0.028858,
-      "512170.SH": 0.017583,
-      "512400.SH": 0.009356,
-      "512660.SH": 0.014053,
-      "512690.SH": 0.013259,
-      "512760.SH": -0.064859,
-      "512800.SH": 0.050339,
-      "512880.SH": 0.020349,
-      "512890.SH": 0.060385,
-      "515080.SH": 0.056401,
-      "515100.SH": 0.063996,
-      "515790.SH": 0.008848,
-      "516160.SH": 0.009313,
-      "518880.SH": 0.042364,
-      "588000.SH": -0.221097,
-      "CASH": -0.200002
+      "159201.SZ": 0.023801,
+      "159915.SZ": 0.033062,
+      "510300.SH": 0.051585,
+      "510500.SH": -0.214442,
+      "511010.SH": 0.133762,
+      "512010.SH": 0.025949,
+      "512100.SH": 0.011053,
+      "512170.SH": 0.018474,
+      "512400.SH": 0.01607,
+      "512660.SH": 0.011861,
+      "512690.SH": 0.011547,
+      "512760.SH": -0.08507,
+      "512800.SH": 0.032454,
+      "512880.SH": 0.018755,
+      "512890.SH": 0.027902,
+      "515080.SH": 0.040835,
+      "515100.SH": 0.035554,
+      "515790.SH": 0.008681,
+      "516160.SH": 0.002903,
+      "518880.SH": 0.05097,
+      "588000.SH": -0.225706,
+      "588200.SH": -0.1,
+      "CASH": 0.07
     },
     "normalization_map": {
       "v11": {
-        "512170": "512170.SH",
-        "588000": "588000.SH",
-        "510300": "510300.SH",
-        "512010": "512010.SH",
-        "515100": "515100.SH",
-        "515080": "515080.SH",
         "512800": "512800.SH",
-        "510500": "510500.SH",
-        "511010": "511010.SH",
-        "512100": "512100.SH",
-        "512890": "512890.SH",
-        "512880": "512880.SH",
-        "515790": "515790.SH",
-        "512760": "512760.SH",
-        "159915": "159915.SZ",
-        "518880": "518880.SH",
-        "512660": "512660.SH",
-        "512690": "512690.SH",
-        "CASH": "CASH",
         "512400": "512400.SH",
-        "516160": "516160.SH"
+        "512690": "512690.SH",
+        "159201": "159201.SZ",
+        "512660": "512660.SH",
+        "512890": "512890.SH",
+        "588000": "588000.SH",
+        "516160": "516160.SH",
+        "512100": "512100.SH",
+        "512760": "512760.SH",
+        "CASH": "CASH",
+        "512170": "512170.SH",
+        "515080": "515080.SH",
+        "510300": "510300.SH",
+        "515790": "515790.SH",
+        "510500": "510500.SH",
+        "512010": "512010.SH",
+        "518880": "518880.SH",
+        "515100": "515100.SH",
+        "511010": "511010.SH",
+        "512880": "512880.SH",
+        "159915": "159915.SZ"
       },
       "shadow": {
         "510500.SH": "510500.SH",
         "512760.SH": "512760.SH",
         "588000.SH": "588000.SH",
+        "588200.SH": "588200.SH",
         "CASH": "CASH"
       }
     },
@@ -794,7 +838,8 @@
         "510500.SH": 0.25,
         "512760.SH": 0.1,
         "588000.SH": 0.25,
-        "CASH": 0.4
+        "588200.SH": 0.1,
+        "CASH": 0.3
       },
       "automatic_selection": false
     },
@@ -802,19 +847,17 @@
     "merged_portfolio_created": false
   },
   "risk_summary": {
-    "equity_weight": 0.6,
-    "cash_weight": 0.4,
+    "equity_weight": 0.7,
+    "cash_weight": 0.3,
     "single_etf_limit": 0.35,
     "constraint_violations": [],
     "key_risks": [
       "Market risk state: high_mixed_trend",
-      "tradable weight coverage is below 70%",
       "Months containing any execution-weight gap exceed 20%; this does not mean the whole portfolio was untradable.",
-      "At least one research-only asset has no approved execution ETF.",
       "At least one execution proxy is medium quality and broader than its research index."
     ]
   },
-  "cash_explanation": "The 40% Shadow cash weight is not a single timing call: 30% from research strategy cash; 10% from research-only assets without an approved execution ETF (931688CNY010.CSI).",
+  "cash_explanation": "The 30% Shadow cash weight is not a single timing call: 30% from research strategy cash.",
   "cash_explanation_components": [
     {
       "category": "research_cash",
@@ -832,14 +875,8 @@
     },
     {
       "category": "research_only_cash",
-      "weight": 0.1,
-      "assets": [
-        {
-          "research_asset_id": "931688CNY010.CSI",
-          "weight": 0.1,
-          "reason": "research_only_cash"
-        }
-      ],
+      "weight": 0.0,
+      "assets": [],
       "explanation": "research-only assets without an approved execution ETF"
     },
     {
@@ -862,8 +899,8 @@
     }
   ],
   "cash_reconciliation": {
-    "total_cash_weight": 0.4,
-    "component_weight_sum": 0.4,
+    "total_cash_weight": 0.3,
+    "component_weight_sum": 0.3,
     "reconciled": true
   },
   "decision_summary": {
@@ -872,26 +909,25 @@
     "what_is_executable": [
       "510500.SH: 25%",
       "512760.SH: 10%",
-      "588000.SH: 25%"
+      "588000.SH: 25%",
+      "588200.SH: 10%"
     ],
-    "what_is_not_executable": [
-      "931688CNY010.CSI: research_only_cash"
-    ],
+    "what_is_not_executable": [],
     "user_interpretation": [
       "Market regime is bull_caution.",
-      "The 40% Shadow cash weight is not a single timing call: 30% from research strategy cash; 10% from research-only assets without an approved execution ETF (931688CNY010.CSI).",
+      "The 30% Shadow cash weight is not a single timing call: 30% from research strategy cash.",
       "V11 remains unchanged; Research and Shadow do not replace it."
     ],
     "blocking_conditions": []
   },
   "data_freshness": {
     "status": "pass",
-    "market_data_as_of": "2026-07-08",
-    "decision_date": "2026-07-13",
+    "market_data_as_of": "2026-07-14",
+    "decision_date": "2026-07-15",
     "governance_state_as_of": "2026-07-13",
     "snapshot_mode": "current_decision_with_lagged_market_data",
     "market_data": {
-      "source_as_of": "2026-07-08",
+      "source_as_of": "2026-07-14",
       "age_calendar_days": 0,
       "limit_calendar_days": 7,
       "stale": false,
@@ -901,25 +937,32 @@
       "stale": false,
       "checks": {
         "510500.SH": {
-          "source_as_of": "2026-07-08",
+          "source_as_of": "2026-07-14",
           "age_calendar_days": 0,
           "limit_calendar_days": 5,
           "stale": false,
           "message": "ETF price 510500.SH freshness is within 5 calendar days"
         },
         "512760.SH": {
-          "source_as_of": "2026-07-08",
+          "source_as_of": "2026-07-14",
           "age_calendar_days": 0,
           "limit_calendar_days": 5,
           "stale": false,
           "message": "ETF price 512760.SH freshness is within 5 calendar days"
         },
         "588000.SH": {
-          "source_as_of": "2026-07-08",
+          "source_as_of": "2026-07-14",
           "age_calendar_days": 0,
           "limit_calendar_days": 5,
           "stale": false,
           "message": "ETF price 588000.SH freshness is within 5 calendar days"
+        },
+        "588200.SH": {
+          "source_as_of": "2026-07-14",
+          "age_calendar_days": 0,
+          "limit_calendar_days": 5,
+          "stale": false,
+          "message": "ETF price 588200.SH freshness is within 5 calendar days"
         }
       },
       "actual_files_verified": true,
@@ -945,52 +988,52 @@
     "market_and_v11": {
       "source": "market_and_v11",
       "path": "reports/strategy_diagnosis_report.json",
-      "sha256": "1f96ff6b6c27da8516168729a12607971225cad4478f6e010f921c64b91bebbd",
+      "sha256": "423152dababf9d73ec70ba4c1676ad5715eecd775f71b52479a09d2a5e478109",
       "available": true,
-      "source_as_of": "2026-07-08",
+      "source_as_of": "2026-07-14",
       "required": true,
       "temporal_role": "market_data"
     },
     "research_allocation": {
       "source": "research_allocation",
       "path": "reports/research_backtest_report.json",
-      "sha256": "5a5451972589dd787e28ed96cc582e860bb7e6caef6eee5bce3c47664e541e07",
+      "sha256": "4bebbed92c14a97f33f08637f4198f01622901c0d22a60d617b37068cc1ea905",
       "available": true,
-      "source_as_of": "2026-07-08",
+      "source_as_of": "2026-07-14",
       "required": true,
       "temporal_role": "market_data"
     },
     "execution_validation": {
       "source": "execution_validation",
       "path": "reports/execution_backtest_report.json",
-      "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
+      "sha256": "2b8dae18bca2d169b23aeb3a9f36cb845317a65f527f3d0ca2eafa91f3e5a9e0",
       "available": true,
-      "source_as_of": "2026-07-08",
+      "source_as_of": "2026-07-14",
       "required": true,
       "temporal_role": "market_data"
     },
     "execution_shadow": {
       "source": "execution_shadow",
       "path": "reports/execution_aware_shadow_portfolio.json",
-      "sha256": "e07070629d66d1e0f09be007f512dfca09d8688acfd952193bbac1d45beb54ab",
+      "sha256": "f7949188f3ff1a8620b51e4dd058bc2bea26a8d9ff8ccba744e3f4391b75be1e",
       "available": true,
-      "source_as_of": "2026-07-08",
+      "source_as_of": "2026-07-14",
       "required": true,
       "temporal_role": "market_data"
     },
     "execution_price_manifest": {
       "source": "execution_price_manifest",
       "path": "reports/execution_price_dataset_manifest.json",
-      "sha256": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd",
+      "sha256": "3f189f3b3eea8e97388018ea511e36f0e5bde94205f807f3ab207494beedfb9f",
       "available": true,
-      "source_as_of": "2026-07-08",
+      "source_as_of": "2026-07-15",
       "required": true,
       "temporal_role": "market_data"
     },
     "approval_integrity": {
       "source": "approval_integrity",
       "path": "reports/execution_mapping_approval_integrity_seal.json",
-      "sha256": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9",
+      "sha256": "57e3693f27cdbeb02cc70196456ff1e9c121df5b62f6b4c2a15ab9e85fbc450a",
       "available": true,
       "source_as_of": "2026-07-13",
       "required": true,
@@ -999,7 +1042,7 @@
     "decision_ledger": {
       "source": "decision_ledger",
       "path": "data/universe/execution_mapping_decision_ledger.json",
-      "sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+      "sha256": "7bf2d3b692f0b58d551e5e0c2d9c3777fd854c02ad355723d9cb87301fdb9647",
       "available": true,
       "source_as_of": "2026-07-13",
       "required": true,
@@ -1008,7 +1051,7 @@
     "asset_mapping": {
       "source": "asset_mapping",
       "path": "data/universe/asset_mapping.json",
-      "sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
+      "sha256": "f23e301d9c9c3bac8562c6fb37fc7662d20a86336d72bd637541c20ea05a2b56",
       "available": true,
       "source_as_of": "2026-07-13",
       "required": true,
@@ -1026,7 +1069,7 @@
     "execution_instrument_aliases": {
       "source": "execution_instrument_aliases",
       "path": "data/universe/execution_instrument_aliases.json",
-      "sha256": "48ddcd85742c6ce476b4e3a525be071a3e0f1e23dac850d42fcedfbb30d56938",
+      "sha256": "78c262f26843f8339b269b86a7381d9de54f15736b0f61a5ff887a6c795820aa",
       "available": true,
       "source_as_of": null,
       "required": true,
@@ -1035,9 +1078,9 @@
     "v11_current_allocation": {
       "source": "v11_current_allocation",
       "path": "reports/v11_current_allocation.json",
-      "sha256": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
+      "sha256": "33e6d9a42fc60fd33e973aa9d47064b6ee58b09f52ff397208f081a61416e288",
       "available": true,
-      "source_as_of": "2026-07-08",
+      "source_as_of": "2026-07-14",
       "required": false,
       "temporal_role": "market_data",
       "release_artifact_path": "v11_current_allocation.json"
@@ -1058,8 +1101,8 @@
   "release_dependencies": {
     "v11_current_allocation": {
       "path": "v11_current_allocation.json",
-      "sha256": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
-      "snapshot_payload_hash": "529be53afd65739795ad977b40cce9973bcd7481fc19daaadfa4f23f701d6464",
+      "sha256": "33e6d9a42fc60fd33e973aa9d47064b6ee58b09f52ff397208f081a61416e288",
+      "snapshot_payload_hash": "09ffe66204c160c1afa01bc119fdaee1129b29e3f50ab17a9e50d63653ade4e8",
       "declared": true
     }
   }

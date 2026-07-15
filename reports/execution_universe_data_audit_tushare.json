@@ -1,10 +1,10 @@
 {
   "provider": "tushare",
-  "generated_at": "2026-07-15T03:20:30+00:00",
-  "start": null,
-  "end": "2026-07-14",
-  "checked_assets": 14,
-  "available_assets": 14,
+  "generated_at": "2026-07-15T04:34:41+00:00",
+  "start": "2016-01-01",
+  "end": "2026-07-15",
+  "checked_assets": 17,
+  "available_assets": 17,
   "unavailable_assets": 0,
   "rows": [
     {
@@ -16,8 +16,8 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 3433,
-      "first_date": "2012-05-28",
+      "row_count": 2556,
+      "first_date": "2016-01-04",
       "last_date": "2026-07-14",
       "error": null,
       "warnings": []
@@ -31,8 +31,8 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 3236,
-      "first_date": "2013-03-15",
+      "row_count": 2556,
+      "first_date": "2016-01-04",
       "last_date": "2026-07-14",
       "error": null,
       "warnings": []
@@ -61,8 +61,8 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 3541,
-      "first_date": "2011-12-09",
+      "row_count": 2555,
+      "first_date": "2016-01-04",
       "last_date": "2026-07-14",
       "error": null,
       "warnings": []
@@ -143,6 +143,51 @@
       "warnings": []
     },
     {
+      "asset_id": "588200.SH",
+      "name": "嘉实科创芯片ETF",
+      "data_api": "fund_daily",
+      "return_basis": "qfq",
+      "provider_return_types": [
+        "qfq"
+      ],
+      "available": true,
+      "row_count": 901,
+      "first_date": "2022-10-26",
+      "last_date": "2026-07-14",
+      "error": null,
+      "warnings": []
+    },
+    {
+      "asset_id": "562500.SH",
+      "name": "华夏中证机器人ETF",
+      "data_api": "fund_daily",
+      "return_basis": "qfq",
+      "provider_return_types": [
+        "qfq"
+      ],
+      "available": true,
+      "row_count": 1098,
+      "first_date": "2021-12-29",
+      "last_date": "2026-07-14",
+      "error": null,
+      "warnings": []
+    },
+    {
+      "asset_id": "159992.SZ",
+      "name": "银华创新药ETF",
+      "data_api": "fund_daily",
+      "return_basis": "qfq",
+      "provider_return_types": [
+        "qfq"
+      ],
+      "available": true,
+      "row_count": 1517,
+      "first_date": "2020-04-10",
+      "last_date": "2026-07-14",
+      "error": null,
+      "warnings": []
+    },
+    {
       "asset_id": "516160.SH",
       "name": "新能源ETF",
       "data_api": "fund_daily",
@@ -196,8 +241,8 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 3150,
-      "first_date": "2013-07-29",
+      "row_count": 2556,
+      "first_date": "2016-01-04",
       "last_date": "2026-07-14",
       "error": null,
       "warnings": []
@@ -211,8 +256,8 @@
         "qfq"
       ],
       "available": true,
-      "row_count": 3232,
-      "first_date": "2013-03-25",
+      "row_count": 2556,
+      "first_date": "2016-01-04",
       "last_date": "2026-07-14",
       "error": null,
       "warnings": []

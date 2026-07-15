@@ -2,7 +2,7 @@
   "available": true,
   "verified": true,
   "primary_navigation_count": 5,
-  "actual_route_count": 27,
+  "actual_route_count": 28,
   "unclassified_routes": [],
   "routes": [
     {
@@ -360,6 +360,23 @@
       ],
       "action": "hide",
       "reason": "实验性 Shadow 快照"
+    },
+    {
+      "route": "/site-map",
+      "title": "Site Map",
+      "current_user_value": "advanced",
+      "linked_from_global_navigation": false,
+      "backend_dependency": [
+        "backend/main.py"
+      ],
+      "report_dependency": [
+        "formal report loader"
+      ],
+      "test_dependency": [
+        "tests/test_system_release.py"
+      ],
+      "action": "hide",
+      "reason": "全部 Web 页面和层级关系"
     },
     {
       "route": "/strategy-governance",

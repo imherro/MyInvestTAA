@@ -1,81 +1,81 @@
 {
   "available": true,
-  "release_id": "taa-20260713-a6fb68fb8630",
-  "commit_sha": "7433fb59131a1ee3153fdf2c42eebc1d21bec98b",
-  "market_data_as_of": "2026-07-08",
-  "decision_date": "2026-07-13",
-  "generated_at": "2026-07-13T08:15:34+00:00",
+  "release_id": "taa-20260715-3d50b8afb77b",
+  "commit_sha": "87ae1edd4abfe92fef00844de1c3edc91894abfb",
+  "market_data_as_of": "2026-07-14",
+  "decision_date": "2026-07-15",
+  "generated_at": "2026-07-15T05:16:30Z",
   "build_mode": "offline_local",
   "network_accessed": false,
   "inputs": [
     {
       "path": "reports/strategy_diagnosis_report.json",
       "role": "canonical strategy diagnosis",
-      "sha256": "1f96ff6b6c27da8516168729a12607971225cad4478f6e010f921c64b91bebbd",
-      "semantic_hash": "e4c915c838557073d1a1275d7e42036cf8664f19b962b46d9fc734187cf9afc5",
-      "source_as_of": "2026-07-08",
+      "sha256": "423152dababf9d73ec70ba4c1676ad5715eecd775f71b52479a09d2a5e478109",
+      "semantic_hash": "3cea0d0b8addfec6136090e4d0cf7d319e9f8488a70d3fe8481c8b2f27deb8b9",
+      "source_as_of": null,
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "reports/research_backtest_report.json",
       "role": "research backtest evidence",
-      "sha256": "5a5451972589dd787e28ed96cc582e860bb7e6caef6eee5bce3c47664e541e07",
-      "semantic_hash": "a8e54d79fca845421b401586e4b17a2009cfb1ffe16fa34aa5df6150affb217c",
-      "source_as_of": "2026-07-08",
+      "sha256": "4bebbed92c14a97f33f08637f4198f01622901c0d22a60d617b37068cc1ea905",
+      "semantic_hash": "78e31075236ccec5e588fe86c45733640ac2021bccebb94ab09922ea87c6a72b",
+      "source_as_of": null,
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "reports/execution_backtest_report.json",
       "role": "execution backtest evidence",
-      "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
-      "semantic_hash": "b96d503ce286edf1987ad14e4a1b203ce06316e7bc6ce53ca9ca39c3fc7cfc6d",
-      "source_as_of": "2026-07-08",
+      "sha256": "2b8dae18bca2d169b23aeb3a9f36cb845317a65f527f3d0ca2eafa91f3e5a9e0",
+      "semantic_hash": "cd97bbbf89554971cb4c46461e92b721d88b11541ff1a2edb847354971c3bde3",
+      "source_as_of": null,
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "reports/execution_aware_shadow_portfolio.json",
       "role": "execution-aware shadow snapshot",
-      "sha256": "e07070629d66d1e0f09be007f512dfca09d8688acfd952193bbac1d45beb54ab",
-      "semantic_hash": "922e4a4f3d12016fd76c4192d0ac32cc23f687626c1b17c74ed000f3040a7d4b",
-      "source_as_of": "2026-07-08",
+      "sha256": "f7949188f3ff1a8620b51e4dd058bc2bea26a8d9ff8ccba744e3f4391b75be1e",
+      "semantic_hash": "766f77e144b95c0abe48e15b46c71da3c99d40b32913c3e36648c7c2e08cfa7e",
+      "source_as_of": null,
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "reports/execution_mapping_proposal.json",
       "role": "counterfactual proposal input",
-      "sha256": "6ad76e8d5bc0cfb9b1403f1e9543afbb26b7bff20892b66c2be514553d4b3d3e",
-      "semantic_hash": "3093e87e9a52c75a673e0de6cc6f526b69ab1652461679b614358aa01bf9956c",
-      "source_as_of": "2026-07-08",
+      "sha256": "2511de323f55811101c359f2a63bc1c850f70cbd4f75ad20eebd036be18be96f",
+      "semantic_hash": "4d4546e1c30c48b825c1e6d439c1a5b2d4c7c1cac83e928707f598af5c375c3b",
+      "source_as_of": null,
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "reports/execution_mapping_counterfactual_report.json",
       "role": "counterfactual audit evidence",
-      "sha256": "3c6d63b414f566b761d49fa721bb9ae116584de0911feabebd91cbe9f5ac557f",
-      "semantic_hash": "d318d76e8162f59316ec6d0760fdac58613f7aa46c54a71215857f08bbeb2f40",
-      "source_as_of": "2026-07-08",
+      "sha256": "e07995c4d3ff1c11e04c05d24b5d4dc8e47b04a0ce35f62354ff793c6d0c7400",
+      "semantic_hash": "dc05eef1371b5cfd1530a40517a35c94c8e3d7fc74d0732c9a4c440e6c8321da",
+      "source_as_of": null,
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "reports/execution_price_dataset_manifest.json",
       "role": "execution price provenance",
-      "sha256": "7fbed46db6ab6757054225e5602ba10489034f97ede0170c6b506e8ef99985fd",
-      "semantic_hash": "d265f2b9505d4d7acdc8baabe0657791e788e42b1625bd568e22e7e582468573",
-      "source_as_of": "2026-07-08",
+      "sha256": "3f189f3b3eea8e97388018ea511e36f0e5bde94205f807f3ab207494beedfb9f",
+      "semantic_hash": "ed1a0c6fc1afa1c0b006c0d45d2c304b394de0d31a50dfde5573d5c861d53f7a",
+      "source_as_of": null,
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "reports/execution_mapping_approval_integrity_seal.json",
       "role": "approval integrity seal",
-      "sha256": "0ced49ab5f1c56c6aa59ab4b526dd9280dfcb1672b8bbadbc01dbf7c572d29b9",
-      "semantic_hash": "08c359e12d050e5d8223d05e6b104084dfd6be1980f6f050890bed576fb41346",
+      "sha256": "57e3693f27cdbeb02cc70196456ff1e9c121df5b62f6b4c2a15ab9e85fbc450a",
+      "semantic_hash": "dda444a69d8adbbf97d58c68c81e7656720f3b8ab53661fdb660c7bdfc2d25fc",
       "source_as_of": "2026-07-13",
       "classification": "immutable_governance_artifact",
       "dependencies": []
@@ -92,26 +92,26 @@
     {
       "path": "data/universe/asset_mapping.json",
       "role": "research-to-execution registry",
-      "sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
-      "semantic_hash": "e7a88995edfb34adfdfd38ee242c0f8799e2309229be6db5a4a29af63f41af0f",
+      "sha256": "f23e301d9c9c3bac8562c6fb37fc7662d20a86336d72bd637541c20ea05a2b56",
+      "semantic_hash": "8a447a8b4fce7b43fa5f3fa3e1a63dc20485fe7bfb0c475f2a1517aaf3a3b57b",
       "source_as_of": null,
-      "classification": "immutable_governance_artifact",
+      "classification": "governed_local_input",
       "dependencies": []
     },
     {
       "path": "data/universe/execution_mapping_decision_ledger.json",
       "role": "mapping decision ledger",
-      "sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
-      "semantic_hash": "f551de8f6e36f99dc44d9f1603e0102f5143fb4d8ca14b3f73803ffb7fb9a1de",
+      "sha256": "7bf2d3b692f0b58d551e5e0c2d9c3777fd854c02ad355723d9cb87301fdb9647",
+      "semantic_hash": "72c9ff24ff6ce2678af9a534403b73dded065128ec1ebe1bc64e6e8bb9723afe",
       "source_as_of": null,
-      "classification": "immutable_governance_artifact",
+      "classification": "governed_local_input",
       "dependencies": []
     },
     {
       "path": "data/universe/execution_instrument_aliases.json",
       "role": "canonical instrument identity registry",
-      "sha256": "48ddcd85742c6ce476b4e3a525be071a3e0f1e23dac850d42fcedfbb30d56938",
-      "semantic_hash": "ee94e9c10036ecff6d94cd4e3dfd48ecfc51dc763180f87f1540714631821906",
+      "sha256": "78c262f26843f8339b269b86a7381d9de54f15736b0f61a5ff887a6c795820aa",
+      "semantic_hash": "285f7dddbc24a0f41656efc44ed3abaa8243cce1443f74b74a413c06a355ed93",
       "source_as_of": null,
       "classification": "immutable_governance_artifact",
       "dependencies": []
@@ -130,27 +130,27 @@
     {
       "path": "strategy_diagnosis_report.json",
       "role": "strategy diagnosis snapshot",
-      "sha256": "1f96ff6b6c27da8516168729a12607971225cad4478f6e010f921c64b91bebbd",
-      "semantic_hash": "e4c915c838557073d1a1275d7e42036cf8664f19b962b46d9fc734187cf9afc5",
-      "source_as_of": "2026-07-08",
+      "sha256": "423152dababf9d73ec70ba4c1676ad5715eecd775f71b52479a09d2a5e478109",
+      "semantic_hash": "3cea0d0b8addfec6136090e4d0cf7d319e9f8488a70d3fe8481c8b2f27deb8b9",
+      "source_as_of": "2026-07-14",
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "research_backtest_report.json",
       "role": "research validation snapshot",
-      "sha256": "5a5451972589dd787e28ed96cc582e860bb7e6caef6eee5bce3c47664e541e07",
-      "semantic_hash": "a8e54d79fca845421b401586e4b17a2009cfb1ffe16fa34aa5df6150affb217c",
-      "source_as_of": "2026-07-08",
+      "sha256": "4bebbed92c14a97f33f08637f4198f01622901c0d22a60d617b37068cc1ea905",
+      "semantic_hash": "78e31075236ccec5e588fe86c45733640ac2021bccebb94ab09922ea87c6a72b",
+      "source_as_of": "2026-07-14",
       "classification": "verified_external_local_input",
       "dependencies": []
     },
     {
       "path": "execution_backtest_report.json",
       "role": "execution validation snapshot",
-      "sha256": "3e99e333c70ff12ed43914ddb8ae17a27c85dca6e7fa8eaf2744f31a872b952d",
-      "semantic_hash": "b96d503ce286edf1987ad14e4a1b203ce06316e7bc6ce53ca9ca39c3fc7cfc6d",
-      "source_as_of": "2026-07-08",
+      "sha256": "2b8dae18bca2d169b23aeb3a9f36cb845317a65f527f3d0ca2eafa91f3e5a9e0",
+      "semantic_hash": "cd97bbbf89554971cb4c46461e92b721d88b11541ff1a2edb847354971c3bde3",
+      "source_as_of": "2026-07-14",
       "classification": "verified_external_local_input",
       "dependencies": [
         "research_backtest_report.json"
@@ -159,9 +159,9 @@
     {
       "path": "execution_aware_shadow_portfolio.json",
       "role": "shadow portfolio snapshot",
-      "sha256": "e07070629d66d1e0f09be007f512dfca09d8688acfd952193bbac1d45beb54ab",
-      "semantic_hash": "922e4a4f3d12016fd76c4192d0ac32cc23f687626c1b17c74ed000f3040a7d4b",
-      "source_as_of": "2026-07-08",
+      "sha256": "f7949188f3ff1a8620b51e4dd058bc2bea26a8d9ff8ccba744e3f4391b75be1e",
+      "semantic_hash": "766f77e144b95c0abe48e15b46c71da3c99d40b32913c3e36648c7c2e08cfa7e",
+      "source_as_of": "2026-07-14",
       "classification": "verified_external_local_input",
       "dependencies": [
         "research_backtest_report.json",
@@ -171,9 +171,9 @@
     {
       "path": "execution_mapping_counterfactual_report.json",
       "role": "counterfactual mapping audit",
-      "sha256": "34ab971620fa91b253a2f8be294b1bf5d53b1cdde0fdef8e9c5f57958fdf3b71",
-      "semantic_hash": "6e778c662c703d0640e1ad66763dd534d2c395703de5187fa2cfe0df4b652f8e",
-      "source_as_of": "2026-07-08",
+      "sha256": "5788fe131d873754adc18164417f9c3f4e8943de9a20c41277a5d4c676f6ecdc",
+      "semantic_hash": "2cfcff59e9e355db60495943b6488a78495022dd304646abd83accd6ecad6d79",
+      "source_as_of": "2026-07-14",
       "classification": "verified_external_local_input",
       "dependencies": [
         "research_backtest_report.json",
@@ -183,9 +183,9 @@
     {
       "path": "v11_current_allocation.json",
       "role": "V11 current allocation",
-      "sha256": "de767104f9a7e9f3deae16d6867bcd5eaf890b093ff0ee97ea64ae9f906a373d",
-      "semantic_hash": "796782686ad0ee5f8092a3eb15ff7e325b723b5cff0fc5edb342fd698a6bde2b",
-      "source_as_of": "2026-07-08",
+      "sha256": "33e6d9a42fc60fd33e973aa9d47064b6ee58b09f52ff397208f081a61416e288",
+      "semantic_hash": "d35faad32884e426e252cba6cf9d86c291f5e46fbf8b6596573adcfba06bf9e1",
+      "source_as_of": "2026-07-14",
       "classification": "rebuilt_artifact",
       "dependencies": [
         "strategy_diagnosis_report.json"
@@ -194,9 +194,9 @@
     {
       "path": "current_market_decision.json",
       "role": "current market decision",
-      "sha256": "1561c40c9c6f5ef6cec2dea39beaed2bc847a60eb37503c48451ed42a33d03a4",
-      "semantic_hash": "16ae528f9853ee84ad20e41121288b8da70018898ab1396a9a139102114a2079",
-      "source_as_of": "2026-07-08",
+      "sha256": "05ddd2b5c271d4d8f1ab638d8279129b8a90fcac28e7b0892d7fb9ba5997e84b",
+      "semantic_hash": "e0d889226dc3be95a68a88c8b352c0b5bc3509908fd998f6c9d97d608cda0c25",
+      "source_as_of": "2026-07-14",
       "classification": "rebuilt_artifact",
       "dependencies": [
         "v11_current_allocation.json",
@@ -206,18 +206,18 @@
     {
       "path": "ui_route_inventory.json",
       "role": "final UI route inventory",
-      "sha256": "9bd58be2843723c1402ab3dc6b60a9f907f15afae961c422fddd52c4712813c8",
-      "semantic_hash": "0f04374e15665a3bc0501e785b8d2bf79ef42c52a16f0fcabc5a427f52e92f12",
-      "source_as_of": "2026-07-08",
+      "sha256": "083f7c26d6611ab8ac19cfef1d7bbb7f09395987c722ca77b471adfae60a04cb",
+      "semantic_hash": "d51efec9b780413068abb72db08c076b4d36ed3c65749f5d8a71c656a63e1f60",
+      "source_as_of": "2026-07-14",
       "classification": "rebuilt_artifact",
       "dependencies": []
     },
     {
       "path": "legacy_cleanup_report.json",
       "role": "legacy UI cleanup evidence",
-      "sha256": "ebe618cfe56801980884ed1fc89e794e4e450d31391c444ad732605fb751fb4e",
-      "semantic_hash": "2ed31f9373b279b8effc9b2bc12e14205570660d8413bcdc2d0a7c1221c39b20",
-      "source_as_of": "2026-07-08",
+      "sha256": "26e9e7ee2cd9aeb1c0964ae4212fbf43834948d2b236f981931be83eb026f57b",
+      "semantic_hash": "fdf11e70ce01c0432359db243891f6d0b869e7738aeba8b0b298dcae00d3f7f0",
+      "source_as_of": "2026-07-14",
       "classification": "rebuilt_artifact",
       "dependencies": [
         "ui_route_inventory.json"
@@ -226,9 +226,9 @@
     {
       "path": "system_acceptance_report.json",
       "role": "system acceptance",
-      "sha256": "339b91fa963f70bc1c1cfcfa3b24c51f189b071859d68c87385fa4f09ecdf588",
-      "semantic_hash": "affc6fc41b156d6c54189dcc1d12c7681f9672e144616aee2dde2e3703204f3d",
-      "source_as_of": "2026-07-08",
+      "sha256": "f86d0fb453af132e710a2045012b19df6dbcbd8d27a08516e8507ef6c0871262",
+      "semantic_hash": "0f7529fc8cdeb8943d6d6dd471fb12e11ee12ffacdc98a02f8be460768be1be8",
+      "source_as_of": "2026-07-14",
       "classification": "rebuilt_artifact",
       "dependencies": [
         "current_market_decision.json"
@@ -322,34 +322,22 @@
         "baseline_sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
         "actual_sha256": "e7e30a5633c781b8a7541fa3518fbd7d4b3cf89188c1d0a530d626c695071771",
         "verified": true
-      },
-      {
-        "path": "data/universe/asset_mapping.json",
-        "baseline_sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
-        "actual_sha256": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
-        "verified": true
-      },
-      {
-        "path": "data/universe/execution_mapping_decision_ledger.json",
-        "baseline_sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
-        "actual_sha256": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
-        "verified": true
       }
     ],
     "errors": []
   },
   "reproducibility": {
     "verified": true,
-    "input_fingerprint": "a6fb68fb8630201c69ffd2db6558977a74b8c1ef12bd0e65eb1c4ab804bcf8e9",
-    "first_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
-    "second_candidate_raw_hash": "6f1369d2f59f1fa30b0347d30def1610426e0d2eda5495486f736fb1a7438abb",
-    "first_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
-    "second_candidate_semantic_hash": "eb038242245d9723f58ac32d2e36561ed7aa00fb57f1caada5de24bec325056d",
+    "input_fingerprint": "3d50b8afb77b6475645c7c88bc1715f559265e5787784cdae04bdde67b34a46e",
+    "first_candidate_raw_hash": "8c7b073d9b6b408178056536d5688b7237e022241a255c5e2d367e147c4f48a2",
+    "second_candidate_raw_hash": "8c7b073d9b6b408178056536d5688b7237e022241a255c5e2d367e147c4f48a2",
+    "first_candidate_semantic_hash": "e80006ac8efb744d70843624aa7e7c7473e77aa1fd3442f68c0998a453fe3a2c",
+    "second_candidate_semantic_hash": "e80006ac8efb744d70843624aa7e7c7473e77aa1fd3442f68c0998a453fe3a2c",
     "artifact_hash_differences": []
   },
-  "acceptance_report_hash": "339b91fa963f70bc1c1cfcfa3b24c51f189b071859d68c87385fa4f09ecdf588",
-  "raw_release_hash": "293bd8391930f2f08b6ab6bd6e3e9c1bd5def21b46fdaa4329f3b742915e85c6",
-  "semantic_release_hash": "4be14e4cb5117b64054e762959775af8753b71589c348c03fcab8017dc849c9e",
+  "acceptance_report_hash": "f86d0fb453af132e710a2045012b19df6dbcbd8d27a08516e8507ef6c0871262",
+  "raw_release_hash": "3ed62234f4d6bc9edce1fe27ed7e654fd6ff5cf2de9c8b225cc06a4404f5e52e",
+  "semantic_release_hash": "046267e54330b976dd4a79fba85877086ee9e0ef230b81041c90e7c49bca543e",
   "production_boundary": {
     "verified": true,
     "v11_candidate": true,

@@ -3,9 +3,58 @@
   "verification_status": "verified",
   "approval_package_hash": "ea976b824f41450436e04b43e373a4b8ad83287cacc54277c3b1c85aea339b94",
   "approval_record_hash": "a859269a8f944f011b90660c8b52c7b5f9e86959bed0dd8334ff10d876ad0f7e",
-  "current_mapping_hash": "8b9ee650f036bfd675a1cf19548b62293efd0d282e9013c705f1e42e3525cfb8",
-  "current_ledger_hash": "8da78db353ffc958d92cd4f81a545566c244bafd3600bd7f6141f5971108a33b",
+  "current_mapping_hash": "f23e301d9c9c3bac8562c6fb37fc7662d20a86336d72bd637541c20ea05a2b56",
+  "current_ledger_hash": "7bf2d3b692f0b58d551e5e0c2d9c3777fd854c02ad355723d9cb87301fdb9647",
   "target_mapping_row_hash": "3ddaa7b810e970bfa31d9642a873de4377582fd5ad9795daf95af45a59371210",
+  "approved_mapping_row_hashes": {
+    "931688CNY010.CSI": "240cd21a52a374a8184ae273e478053b246f526f5a06c4b5766e9a4b2d7a9664",
+    "931743CNY010.CSI": "17f63d6a44eaede27f5604e26546aeccc8f469930c363eb4e7e763a3d4d0bdbf",
+    "H00805.CSI": "aca8e3174e2d4cb738d0794d901d049d3040ca58cba2709c7debe77e58351375",
+    "H20590.CSI": "8a61b6be69d7ab1bfe7e2feb3fba2f0a4a3aeff1dabbd76900cc95dc368215c8",
+    "H21152.CSI": "b78e73d233a3bd32e9ca771e349a206f259d04c95ad8c28d62180c6f4ae877f1"
+  },
+  "approved_mappings": [
+    {
+      "research_asset_id": "931688CNY010.CSI",
+      "approved_proxy": "588200.SH",
+      "mapping_quality": "low",
+      "execution_approval": "human_approved",
+      "decision_source_report": "user_instruction_2026-07-15",
+      "production_approved": false
+    },
+    {
+      "research_asset_id": "931743CNY010.CSI",
+      "approved_proxy": "512760.SH",
+      "mapping_quality": "medium",
+      "execution_approval": "quality_policy",
+      "decision_source_report": "execution_mapping_review_report.json",
+      "production_approved": false
+    },
+    {
+      "research_asset_id": "H00805.CSI",
+      "approved_proxy": "512400.SH",
+      "mapping_quality": "low",
+      "execution_approval": "human_approved",
+      "decision_source_report": "user_instruction_2026-07-15",
+      "production_approved": false
+    },
+    {
+      "research_asset_id": "H20590.CSI",
+      "approved_proxy": "562500.SH",
+      "mapping_quality": "high",
+      "execution_approval": "human_approved",
+      "decision_source_report": "user_instruction_2026-07-15",
+      "production_approved": false
+    },
+    {
+      "research_asset_id": "H21152.CSI",
+      "approved_proxy": "159992.SZ",
+      "mapping_quality": "high",
+      "execution_approval": "human_approved",
+      "decision_source_report": "user_instruction_2026-07-15",
+      "production_approved": false
+    }
+  ],
   "approved_asset": "931743CNY010.CSI",
   "approved_proxy": "512760.SH",
   "approved_mapping_quality": "medium",

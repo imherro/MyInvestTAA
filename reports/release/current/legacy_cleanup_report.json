@@ -17,6 +17,7 @@
     "/risk-exposure",
     "/selection-research",
     "/shadow-portfolio",
+    "/site-map",
     "/strategy-governance",
     "/strategy-promotion"
   ],
@@ -38,12 +39,12 @@
     "scripts/recover_execution_mapping_transaction.py",
     "scripts/recover_system_release.py"
   ],
-  "visible_link_count_before": 27,
+  "visible_link_count_before": 28,
   "visible_link_count_after": 5,
   "proof": {
     "route_scan": {
-      "scanned_count": 27,
-      "classified_count": 27,
+      "scanned_count": 28,
+      "classified_count": 28,
       "unclassified_routes": [],
       "verified": true
     },
@@ -60,14 +61,13 @@
       "verified": true
     },
     "test_dependency_scan": {
-      "retained_route_count": 22,
+      "retained_route_count": 23,
       "route_test_references": [
         "/adaptive-strategy",
         "/attribution",
         "/benchmark-validation",
         "/diagnosis",
         "/execution-backtest",
-        "/execution-backtest-v2",
         "/experiment",
         "/final-strategy",
         "/legacy-dashboard",
@@ -81,11 +81,14 @@
         "/risk-exposure",
         "/selection-research",
         "/shadow-portfolio",
+        "/site-map",
         "/strategy-governance",
         "/strategy-promotion",
         "/validation"
       ],
-      "explicit_reason_routes": [],
+      "explicit_reason_routes": [
+        "/execution-backtest-v2"
+      ],
       "missing_test_or_reason": [],
       "verified": true
     },
