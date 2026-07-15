@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 
-from data.models import AssetMetadata, PriceBar
+from data.models import PriceBar
 
 
 class TushareProvider:
@@ -47,58 +47,6 @@ class TushareProvider:
             end_date=_to_tushare_date(end),
         )
         return _price_bars_from_frame(index_id, frame, self.return_type)
-
-    def get_sw_index_history(
-        self,
-        sw_index_id: str,
-        start: str | None = None,
-        end: str | None = None,
-    ) -> list[PriceBar]:
-        pro = self._client()
-        frame = pro.sw_daily(
-            ts_code=sw_index_id,
-            start_date=_to_tushare_date(start),
-            end_date=_to_tushare_date(end),
-        )
-        return _price_bars_from_frame(sw_index_id, frame, "price")
-
-    def get_stock_price_history(
-        self,
-        stock_id: str,
-        start: str | None = None,
-        end: str | None = None,
-    ) -> list[PriceBar]:
-        pro = self._client()
-        frame = pro.daily(
-            ts_code=_to_ts_code(stock_id),
-            start_date=_to_tushare_date(start),
-            end_date=_to_tushare_date(end),
-        )
-        return _price_bars_from_frame(stock_id, frame, "price")
-
-    def get_etf_list(self) -> list[AssetMetadata]:
-        pro = self._client()
-        frame = pro.fund_basic(market="E")
-        rows = frame.to_dict("records") if hasattr(frame, "to_dict") else []
-        return [
-            AssetMetadata(
-                asset_id=str(row.get("ts_code")),
-                name=str(row.get("name") or row.get("fund_name") or row.get("ts_code")),
-                asset_class="etf",
-                market="CN",
-                source=self.name,
-            )
-            for row in rows
-        ]
-
-    def provider_status(self) -> dict:
-        return {
-            "name": self.name,
-            "available": bool(self.token),
-            "mode": "live_adapter",
-            "return_type": self.return_type,
-            "requires": ["tushare", "TUSHARE_TOKEN"],
-        }
 
     def _client(self):
         if not self.token:

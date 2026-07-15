@@ -1,7 +1,7 @@
 import pytest
 
 from data.models import PriceBar
-from data_provider.tushare_provider import TushareProvider, _price_bars_from_frame
+from data_provider.tushare_provider import _price_bars_from_frame
 
 
 class _Frame:
@@ -81,9 +81,3 @@ def test_tushare_frame_parser_requires_adjustment_factor_for_total_return():
 
     with pytest.raises(RuntimeError, match="fund_adj"):
         _price_bars_from_frame("510300", frame, return_type="total_return", adjustment_frame=_Frame([]))
-
-
-def test_tushare_status_reports_return_type(monkeypatch):
-    monkeypatch.setenv("TUSHARE_TOKEN", "token")
-
-    assert TushareProvider(return_type="hfq").provider_status()["return_type"] == "hfq"
