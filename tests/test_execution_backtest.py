@@ -41,7 +41,7 @@ def test_execution_coverage_contract_names_both_denominators():
 def test_mapping_summary_v2_separates_non_executable_reasons():
  summary=REPORT['mapping_summary']
  assert summary['mapping_summary_schema_version']=='2.0'
- assert (summary['executable_research_asset_count'],summary['non_executable_research_asset_count'],summary['no_approved_proxy_asset_count'],summary['low_quality_excluded_asset_count'])==(9,4,3,1)
+ assert (summary['executable_research_asset_count'],summary['non_executable_research_asset_count'],summary['no_approved_proxy_asset_count'],summary['low_quality_excluded_asset_count'])==(10,4,3,1)
  assert summary['low_quality_excluded_asset_ids']==['H00805.CSI']
  assert 'H00805.CSI' not in summary['no_approved_proxy_asset_ids']
  assert set(summary['no_approved_proxy_asset_ids'])|set(summary['low_quality_excluded_asset_ids'])==set(summary['non_executable_research_asset_ids'])
@@ -64,8 +64,8 @@ def test_execution_gap_metrics_preserve_binary_gate_and_add_severity():
 def test_execution_mapping_counts_have_explicit_scope():
  scope=REPORT['mapping_summary']['mapping_count_scope']
  assert scope['count_scope']=='research_assets_present_in_source_allocations'
- assert scope['included_asset_count']==len(scope['included_asset_ids'])==13
- assert sum(scope['mapping_quality_counts'].values())==13
+ assert scope['included_asset_count']==len(scope['included_asset_ids'])==14
+ assert sum(scope['mapping_quality_counts'].values())==14
 def test_execution_report_write_and_load(tmp_path):
  path=tmp_path/'execution.json'; write_execution_backtest_report(REPORT,path); assert load_execution_backtest_report(path)['available'] is True
 def test_execution_report_missing_file(tmp_path): assert load_execution_backtest_report(tmp_path/'missing.json')['available'] is False

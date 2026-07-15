@@ -19,7 +19,7 @@ def test_research_universe_readiness_current_state_is_not_backtest_ready():
     report = build_research_universe_readiness()
 
     assert report["ready_for_research_backtest"] is False
-    assert report["eligible_assets"] == 13
+    assert report["eligible_assets"] == 14
     assert report["checks"]["has_real_tushare_audit"] is True
     assert report["checks"]["metadata_dates_backfilled"] is True
     assert report["checks"]["no_price_index_in_allocation"] is True
@@ -45,7 +45,7 @@ def test_research_universe_readiness_api_returns_report():
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["eligible_assets"] == 13
+    assert payload["eligible_assets"] == 14
     assert payload["ready_for_research_backtest"] is False
 
 

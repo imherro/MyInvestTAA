@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import os
 from datetime import datetime, timezone
@@ -15,10 +16,16 @@ EXECUTION_UNIVERSE = ROOT / "data" / "universe" / "china_execution_universe.json
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Sync verified Execution V2 calendar and ETF metadata.")
+    parser.add_argument("--end", required=True, help="Latest complete market date in YYYY-MM-DD format.")
+    args = parser.parse_args()
+    end_date = args.end.replace("-", "")
+    if len(end_date) != 8 or not end_date.isdigit():
+        raise SystemExit("--end must use YYYY-MM-DD format")
     token = _token()
     client = ts.pro_api(token)
     calendar = client.trade_cal(
-        exchange="SSE", start_date="20110101", end_date="20260708", is_open="1"
+        exchange="SSE", start_date="20110101", end_date=end_date, is_open="1"
     ).sort_values("cal_date")
     funds = client.fund_basic(market="E")
     universe = json.loads(EXECUTION_UNIVERSE.read_text(encoding="utf-8"))
@@ -33,7 +40,7 @@ def main() -> None:
         "schema_version": "1.0",
         "exchange": "SSE",
         "source": "tushare.trade_cal",
-        "source_query": {"exchange": "SSE", "is_open": "1", "start_date": "20110101", "end_date": "20260708"},
+        "source_query": {"exchange": "SSE", "is_open": "1", "start_date": "20110101", "end_date": end_date},
         "generated_at": generated_at,
         "verified": True,
         "dates": [str(value) for value in calendar["cal_date"]],
@@ -55,7 +62,7 @@ def main() -> None:
                 "management_fee_rate": None,
                 "custodian_fee_rate": None,
                 "metadata_source": "tushare.fund_basic",
-                "metadata_as_of": "2026-07-08",
+                "metadata_as_of": args.end,
                 "verified": True,
             }
         )

@@ -32,8 +32,8 @@ def test_data_availability_audit_counts_mock_assets():
     report = build_research_data_availability_audit(build_research_universe_mock_provider())
 
     assert report["provider"] == "mock"
-    assert report["checked_assets"] == 32
-    assert report["available_assets"] == 32
+    assert report["checked_assets"] == 33
+    assert report["available_assets"] == 33
     assert report["unavailable_assets"] == 0
     assert report["errors"] == []
 
@@ -41,8 +41,8 @@ def test_data_availability_audit_counts_mock_assets():
 def test_data_availability_audit_records_data_api_counts():
     report = build_research_data_availability_audit(build_research_universe_mock_provider())
 
-    assert report["data_api_counts"] == {"index_daily": 14, "sw_daily": 18}
-    assert report["available_by_data_api"]["index_daily"] == {"available": 14, "unavailable": 0}
+    assert report["data_api_counts"] == {"index_daily": 15, "sw_daily": 18}
+    assert report["available_by_data_api"]["index_daily"] == {"available": 15, "unavailable": 0}
     assert report["available_by_data_api"]["sw_daily"] == {"available": 18, "unavailable": 0}
 
 

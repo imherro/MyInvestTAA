@@ -56,6 +56,7 @@ from backend.investment_guidance import (
     render_investment_guidance,
 )
 from backend.site_map import router as site_map_router
+from backend.research_backtest_presentation import render_research_comparison_section
 from backend.web_presentation import enhance_page_html
 from release.orchestrator import load_committed_counterfactual_report, load_release_json
 from release.web_contracts import primary_navigation_html
@@ -3012,11 +3013,11 @@ def _parameter_sensitivity_rows(rows: list[dict]) -> list[str]:
 @app.get("/research-backtest", response_class=HTMLResponse)
 def research_backtest_page() -> str:
     report = load_research_backtest_report()
+    comparison_section = render_research_comparison_section()
     summary_rows = "\n".join(_research_backtest_summary_rows(report))
     metric_rows = "\n".join(_research_backtest_metric_rows(report))
     excluded_rows = "\n".join(_research_backtest_asset_rows(report.get("excluded_assets", []), empty="No excluded assets recorded"))
     unavailable_rows = "\n".join(_research_backtest_asset_rows(report.get("unavailable_assets", []), empty="No unavailable assets recorded"))
-    equity_rows = "\n".join(_research_backtest_equity_rows(report))
     allocation_rows = "\n".join(_research_backtest_allocation_rows(report))
     warning_rows = "\n".join(_message_rows(report.get("warnings", []), empty="No research backtest warnings"))
     benchmark_rows = "\n".join(_research_backtest_benchmark_rows(report))
@@ -3097,13 +3098,7 @@ def research_backtest_page() -> str:
             <tbody>{unavailable_rows}</tbody>
           </table>
         </section>
-        <section>
-          <h2>Equity Curve</h2>
-          <table>
-            <thead><tr><th>Date</th><th>Value</th></tr></thead>
-            <tbody>{equity_rows}</tbody>
-          </table>
-        </section>
+        {comparison_section}
         <section>
           <h2>Monthly Allocations</h2>
           <table>

@@ -340,31 +340,31 @@ def test_total_return_assets_exclude_manual_review_from_allocation():
     eligible_assets = [asset for asset in total_return_assets if asset.eligible_for_allocation]
     manual_review_assets = [asset for asset in total_return_assets if not asset.eligible_for_allocation]
 
-    assert len(total_return_assets) == 14
-    assert len(eligible_assets) == 13
+    assert len(total_return_assets) == 15
+    assert len(eligible_assets) == 14
     assert [asset.asset_id for asset in manual_review_assets] == ["399606.SZ"]
 
 
 def test_audit_counts_registry_sections():
     audit = build_research_universe_audit()
 
-    assert audit["research_asset_count"] == 32
-    assert audit["execution_asset_count"] == 13
-    assert audit["mapping_count"] == 32
+    assert audit["research_asset_count"] == 33
+    assert audit["execution_asset_count"] == 14
+    assert audit["mapping_count"] == 33
 
 
 def test_audit_counts_return_basis():
     audit = build_research_universe_audit()
 
-    assert audit["return_basis_counts"] == {"price_index": 18, "total_return": 14}
+    assert audit["return_basis_counts"] == {"price_index": 18, "total_return": 15}
 
 
 def test_audit_counts_data_apis():
     audit = build_research_universe_audit()
 
-    assert audit["data_api_counts"]["index_daily"] == 14
+    assert audit["data_api_counts"]["index_daily"] == 15
     assert audit["data_api_counts"]["sw_daily"] == 18
-    assert audit["data_api_counts"]["fund_daily"] == 13
+    assert audit["data_api_counts"]["fund_daily"] == 14
 
 
 def test_audit_counts_mapping_quality():

@@ -34,8 +34,8 @@ def _row_ids(rows: list[dict]) -> set[str]:
 def test_return_basis_review_counts_mock_report_categories():
     review = build_return_basis_review(_mock_audit_report())
 
-    assert len(review["registered_total_return_available"]) == 14
-    assert len(review["basis_confirmed_total_return"]) == 14
+    assert len(review["registered_total_return_available"]) == 15
+    assert len(review["basis_confirmed_total_return"]) == 15
     assert len(review["provider_metadata_mismatch"]) == 0
     assert len(review["needs_manual_review"]) == 1
     assert len(review["unavailable_total_return"]) == 0

@@ -18,7 +18,7 @@ PRICE_INDEX_IDS = [asset.asset_id for asset in RESEARCH_ASSETS if asset.return_b
 
 
 def test_research_backtest_universe_has_expected_count():
-    assert len(BACKTEST_ASSETS) == 13
+    assert len(BACKTEST_ASSETS) == 14
 
 
 def test_research_backtest_universe_excludes_399606():
@@ -58,7 +58,7 @@ def test_validate_research_backtest_inputs_accepts_current_dataset():
     result = validate_research_backtest_inputs(BACKTEST_ASSETS, price_data)
 
     assert result["valid"] is True
-    assert len(result["valid_assets"]) == 13
+    assert len(result["valid_assets"]) == 14
 
 
 def test_validate_research_backtest_inputs_records_missing_price_data():

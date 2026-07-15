@@ -105,6 +105,21 @@
     "notes": "中证红利收益指数；数据起点待后续审计确认"
   },
   {
+    "asset_id": "480092.CNI",
+    "name": "国证自由现金流指数R",
+    "instrument_type": "index",
+    "role": "research",
+    "category": "factor",
+    "sleeve": "equity_style",
+    "provider": "tushare",
+    "data_api": "index_daily",
+    "return_basis": "total_return",
+    "data_start_date": "2012-12-31",
+    "investable_start_date": "2012-12-31",
+    "eligible_for_allocation": true,
+    "notes": "国证自由现金流指数收益版本；用于研究评分与配置，不代表ETF成立前可交易收益"
+  },
+  {
     "asset_id": "H20007.CSI",
     "name": "芯片产业全收益",
     "instrument_type": "index",

@@ -7,6 +7,7 @@
   {"id": "512890", "name": "红利低波ETF", "asset_class": "equity", "category": "style", "style": "dividend_low_vol", "start_date": "2018-12-19", "end_date": null},
   {"id": "515100", "name": "红利ETF", "asset_class": "equity", "category": "style", "style": "dividend", "start_date": "2019-11-28", "end_date": null},
   {"id": "515080", "name": "中证红利ETF", "asset_class": "equity", "category": "style", "style": "dividend", "start_date": "2020-01-20", "end_date": null},
+  {"id": "159201", "name": "华夏国证自由现金流ETF", "asset_class": "equity", "category": "style", "style": "free_cash_flow", "start_date": "2025-02-27", "end_date": null},
   {"id": "512760", "name": "半导体ETF", "asset_class": "equity", "category": "sector", "style": "semiconductor", "start_date": "2019-05-16", "end_date": null},
   {"id": "515790", "name": "光伏ETF", "asset_class": "equity", "category": "sector", "style": "new_energy", "start_date": "2020-12-07", "end_date": null},
   {"id": "516160", "name": "新能源ETF", "asset_class": "equity", "category": "sector", "style": "new_energy", "start_date": "2021-01-22", "end_date": null},

@@ -47,8 +47,8 @@ def test_research_universe_audit_api_returns_counts_and_warnings():
 
     assert response.status_code == 200
     audit = response.json()["audit"]
-    assert audit["research_asset_count"] == 32
-    assert audit["execution_asset_count"] == 13
+    assert audit["research_asset_count"] == 33
+    assert audit["execution_asset_count"] == 14
     assert audit["return_basis_counts"]["price_index"] == 18
     assert any("price_index" in warning for warning in audit["warnings"])
     assert audit["errors"] == []

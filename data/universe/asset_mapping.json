@@ -56,6 +56,14 @@
     "notes": "中证红利 ETF 代理，需后续验证跟踪误差"
   },
   {
+    "research_asset_id": "480092.CNI",
+    "research_asset_name": "国证自由现金流指数R",
+    "primary_execution_proxy": "159201.SZ",
+    "execution_proxies": ["159201.SZ"],
+    "mapping_quality": "high",
+    "notes": "同一国证自由现金流指数体系的直接跟踪ETF；ETF费用与跟踪误差在执行回测中单独体现"
+  },
+  {
     "research_asset_id": "H20007.CSI",
     "research_asset_name": "芯片产业全收益",
     "primary_execution_proxy": "512760.SH",

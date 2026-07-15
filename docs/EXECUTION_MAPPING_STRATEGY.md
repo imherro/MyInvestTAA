@@ -4,13 +4,13 @@ Status basis: local reports through 2026-07-08. This document describes research
 
 ## Current Coverage
 
-The research universe contains 32 assets. Thirteen total-return research indices are currently eligible for allocation, while the 18 Shenwan price indices and `399606.SZ` remain monitoring-only.
+The research universe contains 33 assets. Fourteen total-return research indices are currently eligible for allocation, while the 18 Shenwan price indices and `399606.SZ` remain monitoring-only.
 
-Among the 13 allocation-eligible total-return indices:
+Among the 14 allocation-eligible total-return indices:
 
 | Mapping state | Count | Research assets |
 | --- | ---: | --- |
-| High-quality ETF proxy | 4 | `H00300.CSI`, `H00905.CSI`, `H00852.CSI`, `000688CNY01.CSI` |
+| High-quality ETF proxy | 5 | `H00300.CSI`, `H00905.CSI`, `H00852.CSI`, `000688CNY01.CSI`, `480092.CNI` |
 | Medium-quality ETF proxy | 5 | `H00015.CSI`, `H00922.CSI`, `H20007.CSI`, `931743CNY010.CSI`, `H20771.CSI` |
 | Low-quality proxy, excluded from execution | 1 | `H00805.CSI` |
 | No approved proxy | 3 | `H21152.CSI`, `H20590.CSI`, `931688CNY010.CSI` |

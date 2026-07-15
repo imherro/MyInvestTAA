@@ -7,6 +7,7 @@
     {"legacy_asset_id": "512010", "canonical_instrument_id": "512010.SH", "instrument_type": "etf", "source": "local execution instrument registry"},
     {"legacy_asset_id": "515100", "canonical_instrument_id": "515100.SH", "instrument_type": "etf", "source": "local execution instrument registry"},
     {"legacy_asset_id": "515080", "canonical_instrument_id": "515080.SH", "instrument_type": "etf", "source": "local execution instrument registry"},
+    {"legacy_asset_id": "159201", "canonical_instrument_id": "159201.SZ", "instrument_type": "etf", "source": "local execution instrument registry"},
     {"legacy_asset_id": "512800", "canonical_instrument_id": "512800.SH", "instrument_type": "etf", "source": "local execution instrument registry"},
     {"legacy_asset_id": "510500", "canonical_instrument_id": "510500.SH", "instrument_type": "etf", "source": "local execution instrument registry"},
     {"legacy_asset_id": "511010", "canonical_instrument_id": "511010.SH", "instrument_type": "etf", "source": "local execution instrument registry"},

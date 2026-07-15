@@ -130,7 +130,7 @@ def test_v2_emits_no_trade_instruction_fields():
 def test_source_manifest_hashes_all_local_inputs_and_price_files():
     manifest = REPORT["source_manifest"]
     price_paths = [key for key in manifest if key.startswith("data/execution_prices/")]
-    assert len(price_paths) == len(ASSETS) == 13
+    assert len(price_paths) == len(ASSETS) == 14
     assert all(len(row["sha256"]) == 64 for row in manifest.values())
     assert all(manifest[path]["declared_hash_matches"] is True for path in price_paths)
 
@@ -185,7 +185,7 @@ def test_missing_unheld_entry_price_routes_target_to_cash():
 def test_metadata_and_calendar_are_verified_local_inputs():
     assert CALENDAR["verified"] is True
     assert CALENDAR["dates"] == sorted(set(CALENDAR["dates"]))
-    assert len(METADATA) == 13
+    assert len(METADATA) == 14
     assert all(row["verified"] is True and row["investable_start_date"] for row in METADATA.values())
 
 

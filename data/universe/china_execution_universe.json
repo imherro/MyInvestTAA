@@ -105,6 +105,21 @@
     "notes": "执行代理，不能用于ETF成立日前回测"
   },
   {
+    "asset_id": "159201.SZ",
+    "name": "华夏国证自由现金流ETF",
+    "instrument_type": "etf",
+    "role": "execution",
+    "provider": "tushare",
+    "data_api": "fund_daily",
+    "return_basis": "qfq",
+    "data_start_date": "2025-02-27",
+    "investable_start_date": "2025-02-27",
+    "management_fee": null,
+    "tracking_error": null,
+    "liquidity_score": null,
+    "notes": "直接跟踪国证自由现金流指数；仅使用上市后的前复权ETF行情验证执行差异"
+  },
+  {
     "asset_id": "512760.SH",
     "name": "半导体ETF",
     "instrument_type": "etf",
