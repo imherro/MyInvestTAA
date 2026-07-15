@@ -14,6 +14,7 @@ PRIMARY_NAVIGATION = (
 )
 
 ADVANCED_ROUTES = {
+    "/site-map": "全部 Web 页面和层级关系",
     "/research-backtest": "研究资产层历史验证",
     "/execution-backtest": "真实 ETF 执行验证",
     "/execution-backtest-v2": "实验性动态可投资时间线",

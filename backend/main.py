@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from html import escape
-from functools import lru_cache
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -51,17 +49,14 @@ from engine.recovery import analyze_recovery_events
 from engine.regime import detect_market_regime
 from engine.risk import build_risk_budget
 from engine.taa_score import build_taa_ranking
-from data.universe.loader import load_china_etf_universe
-from decision.current_market.instrument_ids import (
-    load_execution_instrument_aliases,
-    resolve_canonical_instrument_id,
-)
 from decision.current_market.explain import decision_headline
 from backend.investment_guidance import (
     build_investment_guidance,
     investment_guidance_api,
     render_investment_guidance,
 )
+from backend.site_map import router as site_map_router
+from backend.web_presentation import enhance_page_html
 from release.orchestrator import load_committed_counterfactual_report, load_release_json
 from release.web_contracts import primary_navigation_html
 from storage import MarketDataRepository, connect_database
@@ -76,6 +71,7 @@ app = FastAPI(
     description="Tactical Asset Allocation MVP with drawdown and anchor scoring.",
     version="0.1.0",
 )
+app.include_router(site_map_router)
 
 
 def _unified_shell_scripts() -> str:
@@ -95,30 +91,6 @@ def _inject_unified_shell(html: str) -> str:
     if "</body>" in html:
         return html.replace("</body>", f"{scripts}</body>", 1)
     return f"{html}{scripts}"
-
-
-@lru_cache(maxsize=1)
-def _execution_instrument_names() -> dict[str, str]:
-    names = {asset.asset_id: asset.name for asset in load_execution_universe()}
-    aliases = load_execution_instrument_aliases()
-    if aliases.get("verified"):
-        for asset in load_china_etf_universe():
-            canonical = resolve_canonical_instrument_id(asset["id"], aliases)
-            if canonical:
-                names.setdefault(canonical, asset["name"])
-    return names
-
-
-def _label_execution_instruments(html: str) -> str:
-    for asset_id, asset_name in _execution_instrument_names().items():
-        code = re.escape(asset_id)
-        name = escape(asset_name)
-        html = re.sub(
-            rf"(?<![0-9A-Z]){code}(?![0-9A-Z])(?!\s+{re.escape(name)})",
-            f"{asset_id} {name}",
-            html,
-        )
-    return html
 
 
 def _apply_final_information_architecture(html: str, path: str) -> str:
@@ -185,10 +157,11 @@ async def add_unified_shell_to_html(request, call_next):
     html = _apply_final_information_architecture(
         body.decode(charset), request.url.path
     )
+    html = enhance_page_html(html, request.url.path)
     headers = dict(response.headers)
     headers.pop("content-length", None)
     return Response(
-        content=_inject_unified_shell(_label_execution_instruments(html)),
+        content=_inject_unified_shell(html),
         status_code=response.status_code,
         headers=headers,
         media_type=response.media_type,
@@ -606,7 +579,7 @@ def system_home() -> str:
       <section><h2>三种结果如何理解</h2><div class="grid-3"><div class="card"><span class="tag good">正式候选模型</span><h3>V11 模型配置</h3><p>当前离线模型权重。它是模型输出，但尚未授权自动交易。</p></div><div class="card"><span class="tag warn">研究结果</span><h3>Research 配置</h3><p>用于验证资产配置逻辑，不代表能买到完全相同的工具。</p></div><div class="card"><span class="tag blocked">实验性 Shadow</span><h3>Execution Shadow</h3><p>把研究权重映射为真实 ETF 和现金后的实验快照，不是生产组合。</p></div></div></section>
       <section><h2>当前限制</h2><ul><li>Execution Validation 尚未通过。</li><li>Shadow 中的 research-only 资产会转为现金，因此当前现金约 40%。</li><li>931743 使用主题接近但覆盖更宽的 medium-quality 半导体 ETF 代理。</li><li>市场和 ETF 数据是离线快照，不是实时行情。</li><li>所有结果只供人工审核。</li></ul><h3>主要阻塞或限制原因</h3><ul>{blocking_html}</ul></section>
       <section><h2>本系统不会做什么</h2><div class="grid-2"><ul><li>不会自动下单或计算买卖数量。</li><li>不会提供目标价格或任何买入、卖出操作按钮。</li><li>不会自动选择 V11 或 Shadow。</li></ul><ul><li>不会合并生成未经验证的新组合。</li><li>不会把研究回测直接当成实盘建议。</li><li>不会因历史收益较高而自动替换 V11。</li></ul></div></section>
-      <section><h2>高级入口</h2><div class="actions"><a class="button" href="/research-validation">研究与执行验证</a><a class="button" href="/system-status">系统与数据状态</a></div></section>
+      <section><h2>高级入口</h2><div class="actions"><a class="button" href="/research-validation">研究与执行验证</a><a class="button" href="/system-status">系统与数据状态</a><a class="button" href="/site-map">查看完整网站地图</a></div></section>
     </main><footer>数据截至 {escape(str(manifest.get('market_data_as_of','不可用')))} · Release {escape(str(manifest.get('release_id','不可用')))} · 非交易指令 · <a href="/system-status">查看文档清单</a></footer>{_unified_shell_scripts()}</body></html>"""
 
 
@@ -964,7 +937,7 @@ def system_status_page() -> str:
         ("Protected Files", protected.get("verified")),
     )
     status_html = "".join(f'<div class="card"><h3>{name}</h3><span class="tag {"good" if value else "blocked"}">{"已验证" if value else "尚未通过验证"}</span></div>' for name, value in sections)
-    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>系统与数据状态</title><style>{_product_css()}</style></head><body><header><h1>系统与数据状态</h1><p><strong>This system status page verifies a reproducible local decision-support release. It does not authorize automated trading.</strong></p>{_primary_navigation()}</header><main><section class="{'hero' if available else 'alert'}"><h2>{'系统验收已通过' if available else '系统验收不可用或未通过'}</h2><div class="grid-3"><div class="card"><h3>Release ID</h3><p>{escape(str(manifest.get('release_id','不可用')))}</p></div><div class="card"><h3>Build Mode</h3><p>{escape(str(manifest.get('build_mode','不可用')))}</p></div><div class="card"><h3>Commit SHA</h3><p>{escape(str(manifest.get('commit_sha','不可用')))}</p></div><div class="card"><h3>Market Data As-Of</h3><p>{escape(str(manifest.get('market_data_as_of','不可用')))}</p></div><div class="card"><h3>Decision Date</h3><p>{escape(str(manifest.get('decision_date','不可用')))}</p></div><div class="card"><h3>Production Boundary</h3><p>未授权自动交易</p></div></div></section><section><h2>验收项目</h2><div class="grid-3">{status_html}</div></section><section id="mapping-governance"><h2>已知非阻塞条件</h2><ul>{conditions}</ul></section><section><h2>阻塞错误</h2><ul>{errors}</ul></section><section><h2>文档入口</h2><div class="table-wrap"><table><thead><tr><th>文档</th><th>用途</th></tr></thead><tbody><tr><td>README.md</td><td>普通用户快速开始</td></tr><tr><td>docs/OFFLINE_BUILD.md</td><td>离线重建和验证</td></tr><tr><td>docs/OPERATIONS.md</td><td>恢复、清理和故障处理</td></tr><tr><td>docs/DATA_CONTRACTS.md</td><td>报告和字段契约</td></tr><tr><td>docs/LIMITATIONS.md</td><td>当前限制和非交易边界</td></tr></tbody></table></div><details><summary>技术审计信息</summary><p>Release manifest、acceptance report、来源哈希和受保护文件状态可通过只读 API 查看。</p><ul><li><a href="/api/system/release-manifest">Release Manifest API</a></li><li><a href="/api/system/acceptance">System Acceptance API</a></li><li><a href="/diagnosis">Strategy Diagnosis（高级审计）</a></li><li><a href="/production-readiness">Production Readiness（高级审计）</a></li></ul></details></section></main><footer>系统验收与数据审计入口 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
+    return f"""<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>系统与数据状态</title><style>{_product_css()}</style></head><body><header><h1>系统与数据状态</h1><p><strong>This system status page verifies a reproducible local decision-support release. It does not authorize automated trading.</strong></p>{_primary_navigation()}</header><main><section class="{'hero' if available else 'alert'}"><h2>{'系统验收已通过' if available else '系统验收不可用或未通过'}</h2><div class="grid-3"><div class="card"><h3>Release ID</h3><p>{escape(str(manifest.get('release_id','不可用')))}</p></div><div class="card"><h3>Build Mode</h3><p>{escape(str(manifest.get('build_mode','不可用')))}</p></div><div class="card"><h3>Commit SHA</h3><p>{escape(str(manifest.get('commit_sha','不可用')))}</p></div><div class="card"><h3>Market Data As-Of</h3><p>{escape(str(manifest.get('market_data_as_of','不可用')))}</p></div><div class="card"><h3>Decision Date</h3><p>{escape(str(manifest.get('decision_date','不可用')))}</p></div><div class="card"><h3>Production Boundary</h3><p>未授权自动交易</p></div></div></section><section><h2>验收项目</h2><div class="grid-3">{status_html}</div></section><section id="mapping-governance"><h2>已知非阻塞条件</h2><ul>{conditions}</ul></section><section><h2>阻塞错误</h2><ul>{errors}</ul></section><section><h2>页面与文档入口</h2><p><a class="button" href="/site-map">打开完整网站地图</a></p><div class="table-wrap"><table><thead><tr><th>文档</th><th>用途</th></tr></thead><tbody><tr><td>README.md</td><td>普通用户快速开始</td></tr><tr><td>docs/OFFLINE_BUILD.md</td><td>离线重建和验证</td></tr><tr><td>docs/OPERATIONS.md</td><td>恢复、清理和故障处理</td></tr><tr><td>docs/DATA_CONTRACTS.md</td><td>报告和字段契约</td></tr><tr><td>docs/LIMITATIONS.md</td><td>当前限制和非交易边界</td></tr></tbody></table></div><details><summary>技术审计信息</summary><p>Release manifest、acceptance report、来源哈希和受保护文件状态可通过只读 API 查看。</p><ul><li><a href="/api/system/release-manifest">Release Manifest API</a></li><li><a href="/api/system/acceptance">System Acceptance API</a></li><li><a href="/diagnosis">Strategy Diagnosis（高级审计）</a></li><li><a href="/production-readiness">Production Readiness（高级审计）</a></li></ul></details></section></main><footer>系统验收与数据审计入口 · 非交易指令</footer>{_unified_shell_scripts()}</body></html>"""
 
 
 @app.get("/research", response_class=HTMLResponse)
