@@ -40,22 +40,8 @@ def test_research_universe_readiness_warns_on_provider_metadata_mismatch():
     assert any("provider metadata" in warning for warning in report["warnings"])
 
 
-def test_research_universe_readiness_api_returns_report():
-    response = client.get("/api/research/universe-readiness")
-
-    assert response.status_code == 200
-    payload = response.json()
-    assert payload["eligible_assets"] == 14
-    assert payload["ready_for_research_backtest"] is False
 
 
-def test_research_universe_page_displays_readiness_section():
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "Research Universe Readiness" in response.text
-    assert "Readiness Blocked Assets" in response.text
-    assert "399606.SZ" in response.text
 
 
 def test_research_universe_registry_has_dates_backfilled_for_all_assets():

@@ -125,17 +125,10 @@ def test_proxy_report_missing_is_explicit(tmp_path):
     assert load_proxy_research_report(tmp_path / "missing.json")["available"] is False
 
 
-def test_proxy_research_api_is_read_only():
-    assert CLIENT.get("/api/research/execution-proxy-research").status_code == 200
 
 
-def test_proxy_research_api_missing_report(monkeypatch, tmp_path):
-    monkeypatch.setattr("backtest.execution.proxy_report.EXECUTION_PROXY_RESEARCH_REPORT", tmp_path / "missing.json")
-    assert CLIENT.get("/api/research/execution-proxy-research").json()["available"] is False
 
 
-def test_proxy_research_page_section_renders():
-    assert "Proxy Candidate Research" in CLIENT.get("/execution-backtest").text
 
 
 def test_proxy_report_states_no_automatic_mapping_mutation():

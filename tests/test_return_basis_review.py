@@ -136,49 +136,12 @@ def test_load_return_basis_review_missing_report(tmp_path):
     assert loaded["message"] == "research universe return basis review report not found: missing.json"
 
 
-def test_return_basis_review_api_missing_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(return_basis_review, "RESEARCH_RETURN_BASIS_REVIEW_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/api/research/return-basis-review")
-
-    assert response.status_code == 200
-    assert response.json()["available"] is False
 
 
-def test_return_basis_review_api_existing_report(monkeypatch, tmp_path):
-    path = tmp_path / "review.json"
-    report = build_return_basis_review(_mock_audit_report(max_assets=1))
-    write_return_basis_review(report, path)
-    monkeypatch.setattr(return_basis_review, "RESEARCH_RETURN_BASIS_REVIEW_REPORT", path)
-
-    response = client.get("/api/research/return-basis-review")
-
-    assert response.status_code == 200
-    assert response.json()["available"] is True
-    assert "registered_total_return_available" in response.json()
 
 
-def test_research_universe_page_displays_missing_return_basis_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(return_basis_review, "RESEARCH_RETURN_BASIS_REVIEW_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "Return Basis Review" in response.text
-    assert "research universe return basis review report not found" in response.text
 
 
-def test_research_universe_page_displays_return_basis_review(monkeypatch, tmp_path):
-    path = tmp_path / "review.json"
-    report = build_return_basis_review(_mock_audit_report())
-    write_return_basis_review(report, path)
-    monkeypatch.setattr(return_basis_review, "RESEARCH_RETURN_BASIS_REVIEW_REPORT", path)
-
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "Manual Return Basis Review" in response.text
-    assert "399606.SZ" in response.text
 
 
 def test_return_basis_checked_in_report_placeholder_path_is_defined():

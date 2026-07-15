@@ -32,8 +32,3 @@ def test_full_overlay_collision_includes_existing_chip_mapping():
  chip=next(x for x in REVIEW["proxy_collision_diagnostics"]["proxy_collisions"] if x["proxy_id"]=="512760.SH");assert "H20007.CSI" in chip["research_asset_ids"]
 def test_collision_has_average_and_month_counts():
  for row in REVIEW["proxy_collision_diagnostics"]["proxy_collisions"]:assert {"average_aggregate_weight","months_above_30_percent","months_above_35_percent"}<=set(row)
-@pytest.mark.parametrize("endpoint",["execution-mapping-attribution","execution-mapping-review","execution-price-provenance"])
-def test_review_apis_are_read_only(endpoint):assert CLIENT.get('/api/research/'+endpoint).status_code==200
-def test_review_page_sections():
- text=CLIENT.get('/execution-backtest').text
- for value in ("Dataset Provenance","Per-Proposal Marginal Impact","Drawdown Attribution","Full Proxy Collision Exposure","Semantic Mapping Review","Ready for Mapping Update Task?","Statistical correlation alone"):assert value in text

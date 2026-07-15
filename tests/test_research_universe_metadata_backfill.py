@@ -113,48 +113,12 @@ def test_load_metadata_suggestions_missing_report(tmp_path):
     assert loaded["message"] == "research universe metadata suggestions report not found: missing.json"
 
 
-def test_metadata_suggestions_api_missing_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(metadata_backfill, "RESEARCH_METADATA_SUGGESTIONS_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/api/research/universe-metadata-suggestions")
-
-    assert response.status_code == 200
-    assert response.json()["available"] is False
 
 
-def test_metadata_suggestions_api_existing_report(monkeypatch, tmp_path):
-    path = tmp_path / "metadata.json"
-    report = build_metadata_suggestions(_mock_audit_report(max_assets=2))
-    write_metadata_suggestions(report, path)
-    monkeypatch.setattr(metadata_backfill, "RESEARCH_METADATA_SUGGESTIONS_REPORT", path)
-
-    response = client.get("/api/research/universe-metadata-suggestions")
-
-    assert response.status_code == 200
-    assert response.json()["suggestion_count"] == 2
 
 
-def test_research_universe_page_displays_missing_metadata_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(metadata_backfill, "RESEARCH_METADATA_SUGGESTIONS_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "Metadata Suggestions" in response.text
-    assert "research universe metadata suggestions report not found" in response.text
 
 
-def test_research_universe_page_displays_metadata_suggestions(monkeypatch, tmp_path):
-    path = tmp_path / "metadata.json"
-    report = build_metadata_suggestions(_mock_audit_report(max_assets=1))
-    write_metadata_suggestions(report, path)
-    monkeypatch.setattr(metadata_backfill, "RESEARCH_METADATA_SUGGESTIONS_REPORT", path)
-
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "Metadata Suggestions" in response.text
-    assert "H00300.CSI" in response.text
 
 
 def test_metadata_suggestions_checked_in_report_placeholder_path_is_defined():

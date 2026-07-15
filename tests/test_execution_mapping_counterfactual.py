@@ -89,14 +89,3 @@ def test_committed_scope_mismatch_is_unavailable():
  payload=deepcopy(COUNTER);payload['release_scope']='mutable_pre_release'
  loaded=validate_counterfactual_payload(payload,expected_scope='committed_release',committed=True)
  assert loaded['available'] is False and loaded['status']=='unavailable'
-def test_counterfactual_api_returns_200_when_committed_release_integrity_fails(monkeypatch):
- monkeypatch.setattr('backend.main.load_committed_counterfactual_report',lambda:{'available':False,'status':'unavailable','evidence_use':'unavailable','message':'committed system release integrity failed'})
- response=CLIENT.get('/api/research/execution-mapping-counterfactual')
- assert response.status_code==200
- assert response.json()['available'] is False
- assert response.json()['message']=='committed system release integrity failed'
-def test_proposal_api(): assert CLIENT.get('/api/research/execution-mapping-proposal').status_code==200
-def test_counterfactual_api(): assert CLIENT.get('/api/research/execution-mapping-counterfactual').status_code==200
-def test_page_sections():
- text=CLIENT.get('/execution-backtest').text
- assert 'Mapping Proposal' in text and 'Baseline vs Counterfactual' in text

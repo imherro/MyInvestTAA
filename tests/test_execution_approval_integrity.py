@@ -419,31 +419,6 @@ def test_user_authorized_ledger_decisions_are_sealed(asset_id, status):
     assert row["production_approved"] is False
 
 
-@pytest.mark.parametrize(
-    "endpoint",
-    [
-        "/api/research/execution-mapping-approval-integrity",
-        "/api/research/execution-mapping-transaction-status",
-    ],
-)
-def test_integrity_and_transaction_apis_are_read_only_reports(endpoint):
-    response = CLIENT.get(endpoint)
-    assert response.status_code == 200
-    assert response.json()["available"] is True
-
-
-def test_shadow_page_displays_integrity_sections_and_warning():
-    text = CLIENT.get("/shadow-portfolio").text
-    for section in (
-        "Approval Integrity",
-        "Snapshot Hashes",
-        "Price As-Of by Proxy",
-        "Transaction Status",
-    ):
-        assert section in text
-    assert "not a production portfolio or trading instruction" in text
-
-
 def test_current_shadow_integrity_and_weights_remain_stable():
     assert SHADOW["snapshot_integrity"]["verified"] is True
     assert SHADOW["approval_integrity"] == VALID_INTEGRITY

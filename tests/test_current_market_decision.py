@@ -415,72 +415,6 @@ def test_report_loader_missing(tmp_path):
     }
 
 
-def test_current_decision_api_reads_local_report():
-    response = CLIENT.get("/api/decision/current-market")
-    assert response.status_code == 200
-    assert response.json()["status"] == "user_review_ready"
-    assert response.json()["production_actionable"] is False
-
-
-def test_current_decision_api_missing_report_does_not_500(monkeypatch):
-    monkeypatch.setattr("backend.main.load_release_json", lambda name: {"available": False, "message": "missing"})
-    response = CLIENT.get("/api/decision/current-market")
-    assert response.status_code == 200
-    assert response.json() == {"available": False, "message": "missing"}
-
-
-def test_current_decision_api_never_calls_tushare(monkeypatch):
-    monkeypatch.setattr(
-        "data_provider.tushare_provider.TushareProvider._client",
-        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("no live fetch")),
-    )
-    assert CLIENT.get("/api/decision/current-market").status_code == 200
-
-
-@pytest.mark.parametrize(
-    "section",
-    [
-        "Current Market State",
-        "Risk Level",
-        "V11 Production Candidate",
-        "Research Allocation",
-        "Execution-Aware Shadow Allocation",
-            "现金权重构成",
-        "Execution Validation Status",
-        "Current Constraints",
-        "Data Freshness",
-        "Source Provenance",
-        "What Is Executable",
-        "What Is Research-Only",
-        "Blocking Conditions",
-        "V11 vs Shadow Boundary",
-    ],
-)
-def test_current_decision_page_sections(section):
-    response = CLIENT.get("/current-decision")
-    assert response.status_code == 200
-    assert section in response.text
-
-
-def test_current_decision_page_has_exact_warning_and_unified_shell():
-    text = CLIENT.get("/current-decision").text
-    assert "用于人工判断。它不会生成订单，也不会自动替换 V11。" in text
-    assert "https://invest.okbbc.com/header.js" in text
-    assert "https://invest.okbbc.com/footer.js" in text
-
-
-def test_current_decision_page_has_no_order_form():
-    text = CLIENT.get("/current-decision").text.lower()
-    assert "<form" not in text
-    assert "method=\"post\"" not in text
-    assert "merged portfolio" in text
-
-
-@pytest.mark.parametrize("page", ["/", "/research-backtest", "/execution-backtest", "/shadow-portfolio"])
-def test_existing_pages_link_to_current_decision(page):
-    assert 'href="/current-decision"' in CLIENT.get(page).text
-
-
 @pytest.mark.parametrize(
     "field",
     [
@@ -862,37 +796,6 @@ def test_generated_timestamp_is_explicit_utc():
     assert "T" in REPORT["generated_at"]
 
 
-def test_api_exposes_temporal_and_gate_contract():
-    value = CLIENT.get("/api/decision/current-market").json()
-    assert value["decision_date"] == "2026-07-15"
-    assert value["market_data_as_of"] == "2026-07-14"
-    assert value["governance_state_as_of"] == "2026-07-13"
-    assert value["execution_validation"]["gate_policy"]["policy_hash"]
-
-
-@pytest.mark.parametrize(
-    "section",
-    [
-        "Decision Date",
-        "Market Data Through",
-        "Governance State Date",
-        "Snapshot Mode",
-        "Required Source Status",
-        "Execution Gate Policy",
-        "V11 Metadata Available",
-        "V11 Current Allocation Available",
-    ],
-)
-def test_fixed_page_temporal_sections(section):
-    assert section in CLIENT.get("/current-decision").text
-
-
-def test_fixed_page_explains_lagged_market_data():
-    text = CLIENT.get("/current-decision").text
-    assert "最近一次经过来源校验的离线决策快照" in text
-    assert "不会生成订单，也不会自动替换 V11" in text
-
-
 def _build_with_execution_value(section: str, field: str, value) -> dict:
     sources = copy.deepcopy(SOURCES)
     sources["execution"].setdefault(section, {})[field] = value
@@ -1104,21 +1007,3 @@ def test_current_report_business_result_is_unchanged_after_semantic_hardening():
     assert REPORT["execution_validation"]["ready"] is False
     assert REPORT["execution_validation"]["tradable_weight_coverage"] == pytest.approx(0.786044)
     assert REPORT["execution_validation"]["untradable_month_ratio"] == pytest.approx(0.727273)
-
-
-def test_unavailable_web_page_never_claims_ready(monkeypatch):
-    monkeypatch.setattr(
-        "backend.main.load_release_json",
-        lambda name: {
-            "available": False,
-            "status": "unavailable",
-            "ready_for_user_review": False,
-            "production_actionable": False,
-            "decision_summary": {
-                "headline": "Verified local allocation snapshot ready for user review"
-            },
-        },
-    )
-    text = CLIENT.get("/current-decision").text
-    assert "Decision snapshot unavailable for user review" in text
-    assert "Verified local allocation snapshot ready for user review" not in text

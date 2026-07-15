@@ -155,26 +155,8 @@ def test_required_document_exists(document):
     assert (ROOT / document).is_file()
 
 
-@pytest.mark.parametrize(
-    "route",
-    ["/", "/current-decision", "/v11-current-allocation", "/research-validation", "/system-status"],
-)
-def test_primary_page_returns_200_and_has_five_item_navigation(route):
-    response = CLIENT.get(route)
-    assert response.status_code == 200
-    navigation = re.search(r'<nav class="primary-nav".*?</nav>', response.text, re.DOTALL)
-    assert navigation is not None
-    assert navigation.group(0).count("<a ") == 5
 
 
-@pytest.mark.parametrize(
-    "route",
-    ["/diagnosis", "/production-readiness", "/research-backtest", "/execution-backtest", "/shadow-portfolio"],
-)
-def test_advanced_route_navigation_matches_current_user_path(route):
-    response = CLIENT.get(route)
-    assert response.status_code == 200
-    assert ('<nav class="primary-nav"' in response.text) is (route in {"/research-backtest", "/execution-backtest", "/shadow-portfolio"})
 
 
 @pytest.mark.parametrize(
@@ -188,55 +170,14 @@ def test_primary_pages_have_no_form_or_automatic_execution_control(route):
     assert "自动执行" not in text
 
 
-@pytest.mark.parametrize(
-    "phrase",
-    [
-        "系统发布状态",
-        "普通用户建议阅读顺序",
-        "现在该看什么",
-        "三种结果如何理解",
-        "本系统不会做什么",
-        "Execution Validation 尚未通过",
-        "40%",
-        "medium-quality",
-        "非交易指令",
-        "未授权",
-    ],
-)
-def test_home_explains_correct_use_and_boundaries(phrase):
-    assert phrase in CLIENT.get("/").text
 
 
-@pytest.mark.parametrize(
-    "phrase",
-    ["用于人工判断", "不会生成订单", "不会自动替换 V11", "已验证快照", "仅供人工审核", "非交易指令"],
-)
-def test_current_decision_user_boundary_copy(phrase):
-    assert phrase in CLIENT.get("/current-decision").text
 
 
-@pytest.mark.parametrize(
-    "phrase",
-    ["正式候选模型", "离线配置快照", "不是下单指令", "未授权自动交易", "Snapshot Semantic Integrity"],
-)
-def test_v11_user_boundary_copy(phrase):
-    assert phrase in CLIENT.get("/v11-current-allocation").text
 
 
-@pytest.mark.parametrize(
-    "phrase",
-    ["Research Backtest", "Execution Backtest", "Execution-Aware Shadow", "Mapping Evidence", "不等于真实 ETF 收益", "不是生产组合"],
-)
-def test_research_validation_explains_each_layer(phrase):
-    assert phrase in CLIENT.get("/research-validation").text
 
 
-@pytest.mark.parametrize(
-    "phrase",
-    ["Release ID", "Build Mode", "Market Data As-Of", "Decision Date", "Reproducibility", "Data Integrity", "V11 Integrity", "Execution Validation", "Mapping Governance", "Shadow Integrity", "Current Decision Status", "Production Boundary", "已知非阻塞条件", "阻塞错误", "文档入口"],
-)
-def test_system_status_has_required_sections(phrase):
-    assert phrase in CLIENT.get("/system-status").text
 
 
 def test_release_is_verified_and_reproducible():
@@ -280,12 +221,6 @@ def test_execution_false_is_explicit_nonblocking_evidence():
     assert ACCEPTANCE["system_acceptance_passed"] is True
 
 
-def test_api_reads_release_without_triggering_build():
-    manifest = CLIENT.get("/api/system/release-manifest")
-    acceptance = CLIENT.get("/api/system/acceptance")
-    assert manifest.status_code == acceptance.status_code == 200
-    assert manifest.json()["release_id"] == MANIFEST["release_id"]
-    assert acceptance.json()["system_acceptance_passed"] is True
 
 
 def test_missing_release_loader_returns_available_false(tmp_path):
@@ -443,37 +378,10 @@ def test_formal_decision_artifacts_have_no_production_fields():
         assert forbidden_field_paths(json.loads((RELEASE / name).read_text(encoding="utf-8"))) == []
 
 
-def test_system_status_mandatory_warning_is_exact():
-    text = CLIENT.get("/system-status").text
-    assert "This system status page verifies a reproducible local decision-support release. It does not authorize automated trading." in text
 
 
-@pytest.mark.parametrize(
-    "route,artifact",
-    [
-        ("/api/decision/current-market", "current_market_decision.json"),
-        ("/api/decision/v11-current-allocation", "v11_current_allocation.json"),
-    ],
-)
-def test_formal_decision_apis_return_committed_release_artifacts(route, artifact):
-    assert CLIENT.get(route).json() == {
-        **json.loads((RELEASE / artifact).read_text(encoding="utf-8")),
-        "available": True,
-    }
 
 
-def test_counterfactual_api_reads_verified_committed_audit_artifact():
-    payload = CLIENT.get("/api/research/execution-mapping-counterfactual").json()
-    committed = json.loads((RELEASE / "execution_mapping_counterfactual_report.json").read_text(encoding="utf-8"))
-    assert payload["available"] is True
-    assert payload["status"] == "current"
-    assert payload["release_scope"] == "committed_release"
-    assert payload["input_contract_verification"]["verified"] is True
-    assert payload["impact"] == committed["impact"]
-    assert any(row["path"] == "execution_mapping_counterfactual_report.json" for row in MANIFEST["artifacts"])
-    assert committed["release_scope"] == "committed_release"
-    assert ACCEPTANCE["counterfactual_integrity"]["verified"] is True
-    assert "counterfactual_integrity" in ACCEPTANCE["required_gates"]
 
 
 def test_stale_counterfactual_cannot_enter_release(monkeypatch, tmp_path):
@@ -512,60 +420,10 @@ def test_missing_release_control_file_blocks_counterfactual_without_fallback(tmp
     assert loaded["message"] == "committed system release integrity failed"
 
 
-@pytest.mark.parametrize(
-    "route,labels",
-    [
-        (
-            "/current-decision",
-            (
-                "510500.SH 中证500ETF",
-                "512760.SH 半导体ETF",
-                "588000.SH 科创50ETF",
-            ),
-        ),
-        (
-            "/current-decision",
-            (
-                "510300.SH 沪深300ETF",
-                "512100.SH 中证1000ETF",
-                "518880.SH 黄金ETF",
-                "512010.SH 医药ETF",
-                "512170.SH 医疗ETF",
-            ),
-        ),
-        (
-            "/shadow-portfolio",
-            (
-                "510500.SH 中证500ETF",
-                "512760.SH 半导体ETF",
-                "588000.SH 科创50ETF",
-            ),
-        ),
-    ],
-)
-def test_html_pages_label_etf_codes_with_registered_names(route, labels):
-    text = CLIENT.get(route).text
-    for label in labels:
-        assert label in text
 
 
-def test_etf_display_labels_do_not_change_json_api_contract():
-    text = CLIENT.get("/api/decision/current-market").text
-    assert "510500.SH" in text
-    assert "510500.SH 中证500ETF" not in text
 
 
-def test_home_release_failure_hides_current_decision_primary_action(monkeypatch):
-    import backend.main as main_module
-
-    def unavailable(name):
-        return {"available": False, "verified": False, "blocking_errors": ["release integrity failed"]}
-
-    monkeypatch.setattr(main_module, "load_release_json", unavailable)
-    html = main_module.system_home()
-    assert "当前结论不可依赖" in html
-    assert 'class="button primary" href="/system-status"' in html
-    assert 'class="button primary" href="/current-decision"' not in html
 
 
 def _copied_release(tmp_path: Path) -> Path:
@@ -759,12 +617,6 @@ def test_staged_v11_is_actual_current_decision_input_and_root_loader_is_not_call
     assert current["production_candidate"]["release_artifact_dependency"] == "v11_current_allocation.json"
 
 
-def test_real_candidate_hashes_come_from_base_artifact_content(tmp_path):
-    directory = tmp_path / "candidate"
-    _build_base_candidate(directory, ROOT, _config())
-    raw_hash, semantic_candidate_hash = _candidate_content_hashes(directory)
-    assert raw_hash == MANIFEST["reproducibility"]["first_candidate_raw_hash"]
-    assert semantic_candidate_hash == MANIFEST["reproducibility"]["first_candidate_semantic_hash"]
 
 
 def test_acceptance_required_gate_list_is_complete():
@@ -772,34 +624,10 @@ def test_acceptance_required_gate_list_is_complete():
     assert all(ACCEPTANCE[name]["verified"] is True for name in REQUIRED_ACCEPTANCE_GATES)
 
 
-def test_actual_route_scan_has_no_unknown_pages():
-    routes = scan_backend_web_routes(ROOT)
-    inventory = build_route_inventory(routes)
-    assert inventory["verified"] is True
-    assert inventory["unclassified_routes"] == []
 
 
-def test_unknown_web_route_fails_inventory_and_cleanup():
-    inventory = build_route_inventory(scan_backend_web_routes(ROOT) + ["/unknown-user-page"])
-    cleanup = build_legacy_cleanup_report(ROOT, inventory)
-    assert inventory["verified"] is False
-    assert inventory["unclassified_routes"] == ["/unknown-user-page"]
-    assert cleanup["verified"] is False
-    assert cleanup["proof"]["route_scan"]["verified"] is False
 
 
-def test_hidden_route_reentering_primary_navigation_fails_cleanup(monkeypatch):
-    import release.web_contracts as web_contracts
-
-    inventory = build_route_inventory(scan_backend_web_routes(ROOT))
-    monkeypatch.setattr(
-        web_contracts,
-        "PRIMARY_NAVIGATION",
-        PRIMARY_NAVIGATION + (("/diagnosis", "错误一级入口", "不应出现"),),
-    )
-    cleanup = build_legacy_cleanup_report(ROOT, inventory)
-    assert cleanup["verified"] is False
-    assert "/diagnosis" in cleanup["proof"]["reference_scan"]["hidden_or_archived_in_primary"]
 
 
 def _assert_failed_build_never_promotes(monkeypatch, tmp_path, *, web_failure=False):

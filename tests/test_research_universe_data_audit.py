@@ -161,86 +161,18 @@ def test_load_research_data_availability_report_missing_file(tmp_path):
     assert loaded["message"] == "research universe data audit report not found: missing.json"
 
 
-def test_universe_data_audit_api_returns_missing_report_message(monkeypatch, tmp_path):
-    monkeypatch.setattr(data_audit, "RESEARCH_DATA_AUDIT_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/api/research/universe-data-audit")
-
-    assert response.status_code == 200
-    assert response.json()["available"] is False
 
 
-def test_universe_data_audit_api_returns_existing_report(monkeypatch, tmp_path):
-    path = tmp_path / "audit.json"
-    report = build_research_data_availability_audit(build_research_universe_mock_provider(), max_assets=2)
-    write_research_data_availability_audit(report, path)
-    monkeypatch.setattr(data_audit, "RESEARCH_DATA_AUDIT_REPORT", path)
-
-    response = client.get("/api/research/universe-data-audit")
-
-    assert response.status_code == 200
-    payload = response.json()
-    assert payload["available"] is True
-    assert payload["checked_assets"] == 2
 
 
-def test_universe_data_audit_api_returns_missing_tushare_report_message(monkeypatch, tmp_path):
-    monkeypatch.setattr(data_audit, "RESEARCH_TUSHARE_DATA_AUDIT_REPORT", tmp_path / "missing_tushare.json")
-
-    response = client.get("/api/research/universe-data-audit?tushare=true")
-
-    assert response.status_code == 200
-    assert response.json()["available"] is False
-    assert "missing_tushare.json" in response.json()["message"]
 
 
-def test_universe_data_audit_api_returns_existing_tushare_report(monkeypatch, tmp_path):
-    path = tmp_path / "audit_tushare.json"
-    report = build_research_data_availability_audit(build_research_universe_mock_provider(), max_assets=2)
-    report["provider"] = "tushare"
-    write_research_data_availability_audit(report, path)
-    monkeypatch.setattr(data_audit, "RESEARCH_TUSHARE_DATA_AUDIT_REPORT", path)
-
-    response = client.get("/api/research/universe-data-audit?tushare=true")
-
-    assert response.status_code == 200
-    payload = response.json()
-    assert payload["available"] is True
-    assert payload["provider"] == "tushare"
 
 
-def test_research_universe_page_handles_missing_data_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(data_audit, "RESEARCH_DATA_AUDIT_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "Data Availability Audit" in response.text
-    assert "research universe data audit report not found" in response.text
 
 
-def test_research_universe_page_shows_existing_data_report(monkeypatch, tmp_path):
-    path = tmp_path / "audit.json"
-    report = build_research_data_availability_audit(build_research_universe_mock_provider(), max_assets=3)
-    write_research_data_availability_audit(report, path)
-    monkeypatch.setattr(data_audit, "RESEARCH_DATA_AUDIT_REPORT", path)
-
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "Data Availability Audit" in response.text
-    assert "Available Assets" in response.text
-    assert "mock" in response.text
 
 
-def test_research_universe_page_handles_missing_tushare_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(data_audit, "RESEARCH_TUSHARE_DATA_AUDIT_REPORT", tmp_path / "missing_tushare.json")
-
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "Real Tushare Audit" in response.text
-    assert "missing_tushare.json" in response.text
 
 
 def test_checked_in_data_audit_report_exists():

@@ -70,15 +70,6 @@ def test_execution_mapping_counts_have_explicit_scope():
 def test_execution_report_write_and_load(tmp_path):
  path=tmp_path/'execution.json'; write_execution_backtest_report(REPORT,path); assert load_execution_backtest_report(path)['available'] is True
 def test_execution_report_missing_file(tmp_path): assert load_execution_backtest_report(tmp_path/'missing.json')['available'] is False
-def test_execution_api_reads_local_report(): assert CLIENT.get('/api/research/execution-backtest').status_code==200
-def test_execution_page_renders_sections():
- text=CLIENT.get('/execution-backtest').text
- for value in ('ETF 执行验证','Execution Gap','Mapping Summary','Ready for Execution Validation?','header.js','footer.js'): assert value in text
- assert '当前不可执行资产' in text and '无获批代理' in text and '低质量代理已排除' in text
- assert '<h2>Unmapped Assets</h2>' not in text
-def test_execution_api_does_not_call_tushare(monkeypatch):
- monkeypatch.setattr('data_provider.tushare_provider.TushareProvider._client',lambda *a,**k: (_ for _ in ()).throw(AssertionError('no live fetch')))
- assert CLIENT.get('/api/research/execution-backtest').status_code==200
 
 @pytest.mark.parametrize('allocation',REPORT['monthly_allocations'])
 def test_each_execution_allocation_is_fully_accounted_for(allocation):

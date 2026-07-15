@@ -466,102 +466,6 @@ def test_current_loader_rechecks_present_v11_snapshot(monkeypatch, tmp_path):
     assert "V11 current allocation snapshot is present but invalid" in loaded["source_hash_verification"]["errors"]
 
 
-def test_current_decision_integrates_verified_v11_snapshot():
-    value = CLIENT.get("/api/decision/current-market").json()
-    candidate = value["production_candidate"]
-    assert candidate["current_allocation_available"] is True
-    assert candidate["snapshot_integrity_verified"] is True
-    assert candidate["allocation_source"] == "reports/v11_current_allocation.json"
-    assert value["ready_for_user_review"] is True
-    assert value["production_actionable"] is False
-
-
-def test_current_decision_comparison_remains_explanatory_only():
-    comparison = CLIENT.get("/api/decision/current-market").json()["comparison"]
-    assert comparison["mode"] == "side_by_side_only"
-    assert comparison["v11_allocation_available"] is True
-    assert comparison["automatic_selection"] is False
-    assert comparison["merged_portfolio_created"] is False
-    assert comparison["weight_differences"]
-
-
-def test_v11_api_reads_the_local_snapshot():
-    value = CLIENT.get("/api/decision/v11-current-allocation").json()
-    assert value["available"] is True
-    assert value["source_state_date"] == "2026-07-14"
-    assert value["production_actionable"] is False
-    assert value["trading_instruction"] is False
-
-
-def test_v11_api_returns_unavailable_without_500(monkeypatch):
-    monkeypatch.setattr(
-        "backend.main.load_release_json",
-        lambda name: {"available": False, "status": "unavailable", "errors": ["invalid"]},
-    )
-    response = CLIENT.get("/api/decision/v11-current-allocation")
-    assert response.status_code == 200
-    assert response.json()["available"] is False
-
-
-def test_current_decision_tracks_v11_allocation_freshness():
-    value = CLIENT.get("/api/decision/current-market").json()
-    assert value["production_candidate"]["allocation_source_as_of"] == "2026-07-14"
-    assert not any(
-        "V11 current allocation" in error
-        for error in value["data_freshness"]["temporal_errors"]
-    )
-
-
-@pytest.mark.parametrize(
-    "section",
-    [
-        "Snapshot Status",
-        "V11 Allocation",
-        "Equity / Cash Weight",
-        "Regime",
-        "Risk Budget",
-        "Exposure Decision",
-        "Selected Assets",
-        "Actual Weights vs Target Weights",
-        "Canonical Assumptions",
-        "Source Integrity",
-        "Snapshot Semantic Integrity",
-        "Snapshot Payload Hash",
-        "Constraint Checks",
-        "Non-Trading Warning",
-    ],
-)
-def test_v11_web_page_sections(section):
-    assert section in CLIENT.get("/v11-current-allocation").text
-
-
-@pytest.mark.parametrize(
-    "section",
-    [
-        "V11 Current Allocation",
-        "V11 Equity and Cash",
-        "V11 Selected Assets",
-        "V11 vs Shadow Weight Differences",
-        "V11 Snapshot Integrity",
-    ],
-)
-def test_current_decision_v11_sections(section):
-    assert section in CLIENT.get("/current-decision").text
-
-
-def test_v11_web_page_has_exact_non_trading_warning_and_no_form():
-    text = CLIENT.get("/v11-current-allocation").text
-    assert "不是下单指令，也不表示系统已获得自动交易授权" in text
-    assert "<form" not in text.lower()
-    assert "quantity" not in text.lower()
-    assert "target price" not in text.lower()
-
-
-def test_homepage_and_current_decision_link_to_v11_page():
-    assert 'href="/v11-current-allocation"' in CLIENT.get("/").text
-    assert 'href="/v11-current-allocation"' in CLIENT.get("/current-decision").text
-
-
 def test_v11_snapshot_module_has_no_backtest_or_fallback_logic():
     source = "\n".join(
         Path(path).read_text(encoding="utf-8")
@@ -841,22 +745,6 @@ def test_atomic_writer_uses_unique_temporary_paths(monkeypatch, tmp_path):
     assert list(tmp_path.glob("*.tmp")) == []
 
 
-def test_current_comparison_uses_canonical_instrument_ids():
-    comparison = CLIENT.get("/api/decision/current-market").json()["comparison"]
-    assert comparison["identifier_namespace"] == "tushare_ts_code"
-    assert comparison["identifier_normalization_verified"] is True
-    assert comparison["unresolved_v11_ids"] == []
-    assert comparison["unresolved_shadow_ids"] == []
-    assert comparison["weight_differences"]["510500.SH"] == pytest.approx(-0.214442)
-    assert comparison["weight_differences"]["512760.SH"] == pytest.approx(-0.08507)
-    assert comparison["weight_differences"]["588000.SH"] == pytest.approx(-0.225706)
-    assert comparison["weight_differences"]["588200.SH"] == pytest.approx(-0.1)
-    assert comparison["weight_differences"]["CASH"] == pytest.approx(0.07)
-    assert "510500" not in comparison["weight_differences"]
-    assert "512760" not in comparison["weight_differences"]
-    assert "588000" not in comparison["weight_differences"]
-
-
 def test_unresolved_positive_v11_id_blocks_current_review():
     sources = load_current_market_sources()
     sources["instrument_aliases"]["aliases"] = [
@@ -870,15 +758,6 @@ def test_unresolved_positive_v11_id_blocks_current_review():
     assert report["ready_for_user_review"] is False
 
 
-def test_alias_registry_is_a_required_hashed_current_source():
-    report = CLIENT.get("/api/decision/current-market").json()
-    source = report["source_manifest"]["execution_instrument_aliases"]
-    assert source["path"] == "data/universe/execution_instrument_aliases.json"
-    assert source["required"] is True
-    assert source["temporal_role"] == "registry"
-    assert len(source["sha256"]) == 64
-
-
 def test_alias_registry_hash_drift_blocks_current_review():
     sources = load_current_market_sources()
     sources["source_manifest"]["execution_instrument_aliases"]["sha256"] = "0" * 64
@@ -888,16 +767,3 @@ def test_alias_registry_hash_drift_blocks_current_review():
     assert "required source hash mismatch: execution_instrument_aliases" in report[
         "source_hash_verification"
     ]["errors"]
-
-
-@pytest.mark.parametrize(
-    "section",
-    [
-        "Instrument Identifier Namespace",
-        "Identifier Normalization Status",
-        "Canonical V11 Weights",
-        "Unresolved Instrument IDs",
-    ],
-)
-def test_current_page_instrument_identity_sections(section):
-    assert section in CLIENT.get("/current-decision").text

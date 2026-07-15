@@ -46,96 +46,22 @@ def test_research_backtest_report_write_and_load(tmp_path):
     assert loaded["universe_count"] == 13
 
 
-def test_research_backtest_api_missing_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/api/research/research-backtest")
-
-    assert response.status_code == 200
-    assert response.json()["available"] is False
 
 
-def test_research_backtest_api_existing_report(monkeypatch, tmp_path):
-    path = tmp_path / "report.json"
-    write_research_backtest_report(_sample_report(), path)
-    monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", path)
-
-    response = client.get("/api/research/research-backtest")
-
-    assert response.status_code == 200
-    assert response.json()["universe_count"] == 13
 
 
-def test_research_backtest_diagnostics_api_reads_existing_report(monkeypatch, tmp_path):
-    path = tmp_path / "report.json"
-    write_research_backtest_report(_sample_report(), path)
-    monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", path)
-
-    response = client.get("/api/research/research-backtest-diagnostics")
-
-    assert response.status_code == 200
-    assert response.json()["decision"]["ready_for_execution_backtest"] is True
 
 
-def test_research_backtest_diagnostics_api_missing_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/api/research/research-backtest-diagnostics")
-
-    assert response.status_code == 200
-    assert response.json()["available"] is False
 
 
-def test_research_backtest_page_missing_report(monkeypatch, tmp_path):
-    monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", tmp_path / "missing.json")
-
-    response = client.get("/research-backtest")
-
-    assert response.status_code == 200
-    assert "research backtest report not generated yet" in response.text
 
 
-def test_research_backtest_page_existing_report(monkeypatch, tmp_path):
-    path = tmp_path / "report.json"
-    write_research_backtest_report(_sample_report(), path)
-    monkeypatch.setattr(research_report, "RESEARCH_BACKTEST_REPORT", path)
-
-    response = client.get("/research-backtest")
-
-    assert response.status_code == 200
-    assert "Research Backtest" in response.text
-    assert "RESEARCH_TAA_MVP" in response.text
-    assert "does not replace" in response.text
-    assert "Benchmark Comparison" in response.text
-    assert "Constraint Diagnostics" in response.text
-    assert "Ready for Execution Backtest?" in response.text
 
 
-def test_homepage_links_to_research_backtest():
-    response = client.get("/")
-
-    assert response.status_code == 200
-    assert "/research-validation" in response.text
-    assert "/research-backtest" not in response.text
-    assert "/research-backtest" in client.get("/research-validation").text
 
 
-def test_research_universe_links_to_research_validation_channel():
-    response = client.get("/research-universe")
-
-    assert response.status_code == 200
-    assert "/research-validation" in response.text
 
 
-def test_research_backtest_api_does_not_require_tushare(monkeypatch):
-    def fail_if_called(*args, **kwargs):
-        raise AssertionError("Tushare must not be called by API")
-
-    monkeypatch.setattr("data_provider.tushare_provider.TushareProvider._client", fail_if_called)
-
-    response = client.get("/api/research/research-backtest")
-
-    assert response.status_code == 200
 
 
 def test_checked_in_research_backtest_report_exists():

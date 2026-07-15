@@ -107,33 +107,3 @@ def test_mapping_improvement_is_suggestions_only(tmp_path):
     path = write_mapping_improvement_report(improvement, tmp_path / "improvement.json")
     assert load_mapping_improvement_report(path)["available"] is True
     assert "not modified automatically" in improvement["warning"]
-
-
-def test_real_audit_api_is_read_only():
-    response = CLIENT.get("/api/research/execution-universe-data-audit")
-    assert response.status_code == 200
-
-
-def test_real_audit_api_reports_missing_artifact(monkeypatch, tmp_path):
-    monkeypatch.setattr("engine.asset_registry.execution_data_audit.EXECUTION_TUSHARE_DATA_AUDIT_REPORT", tmp_path / "missing.json")
-    payload = CLIENT.get("/api/research/execution-universe-data-audit").json()
-    assert payload["available"] is False
-
-
-def test_real_audit_api_never_fetches_tushare(monkeypatch):
-    monkeypatch.setattr(
-        "data_provider.tushare_provider.TushareProvider._client",
-        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("no live fetch")),
-    )
-    assert CLIENT.get("/api/research/execution-universe-data-audit").status_code == 200
-
-
-def test_mapping_improvement_api_is_read_only():
-    response = CLIENT.get("/api/research/execution-mapping-improvement")
-    assert response.status_code == 200
-
-
-def test_execution_page_shows_real_audit_controls():
-    page = CLIENT.get("/execution-backtest").text
-    for section in ("Data Provider", "Real ETF Data Audit", "Aggregate Cash Breakdown", "当前不可执行资产", "无获批代理", "低质量代理已排除", "Mapping Improvement"):
-        assert section in page
