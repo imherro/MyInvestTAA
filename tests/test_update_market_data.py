@@ -12,8 +12,11 @@ from scripts.update_market_data import (
 
 
 class FakeSource:
-    def __init__(self, fail_asset: str | None = None) -> None:
+    def __init__(
+        self, fail_asset: str | None = None, invalid_close: float | None = None
+    ) -> None:
         self.fail_asset = fail_asset
+        self.invalid_close = invalid_close
 
     def get_research_history(self, asset_id: str, start: str, end: str) -> list[PriceBar]:
         return self._history(asset_id, start, end)
@@ -27,7 +30,12 @@ class FakeSource:
     def _history(self, asset_id: str, start: str, end: str) -> list[PriceBar]:
         if asset_id == self.fail_asset:
             raise RuntimeError(f"failed {asset_id}")
-        return [PriceBar(asset_id, start, 1.0), PriceBar(asset_id, end, 1.1)]
+        close = (
+            self.invalid_close
+            if asset_id == "INDEX.B" and self.invalid_close is not None
+            else 1.1
+        )
+        return [PriceBar(asset_id, start, 1.0), PriceBar(asset_id, end, close)]
 
 
 def _prepare_root(tmp_path: Path) -> Path:
@@ -162,6 +170,30 @@ def test_current_failure_restores_previous_data_and_reports(tmp_path):
     for directory in ("research_prices", "execution_prices", "market"):
         assert (root / "data" / directory / "old.json").read_text(encoding="utf-8") == "old"
     assert (root / "reports" / "current" / "manifest.json").read_text(encoding="utf-8") == "old"
+
+
+@pytest.mark.parametrize("invalid_close", [float("nan"), float("inf"), float("-inf")])
+def test_non_finite_price_keeps_previous_state_and_cleans_staging(
+    tmp_path, invalid_close
+):
+    root = _prepare_root(tmp_path)
+    calls = []
+
+    with pytest.raises(ValueError, match="INDEX.B"):
+        update_market_data(
+            root=root,
+            start="2026-01-02",
+            end="2026-01-05",
+            source=FakeSource(invalid_close=invalid_close),
+            current_runner=lambda: calls.append(True),
+        )
+
+    assert calls == []
+    for directory in ("research_prices", "execution_prices", "market"):
+        assert (root / "data" / directory / "old.json").read_text(encoding="utf-8") == "old"
+    assert (root / "reports" / "current" / "manifest.json").read_text(encoding="utf-8") == "old"
+    assert not list((root / "data").glob("market-stage-*"))
+    assert not list((root / "reports").glob("current-backup-*"))
 
 
 def test_update_script_has_no_legacy_data_stack_imports():

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import shutil
 import subprocess
@@ -239,12 +240,16 @@ def _price_rows(
         raise ValueError(f"{asset_id} returned duplicate price dates")
     if dates[0] < start or dates[-1] > end:
         raise ValueError(f"{asset_id} returned prices outside the requested range")
-    if any(bar.asset_id != asset_id or float(bar.close) <= 0 for bar in rows):
-        raise ValueError(f"{asset_id} returned invalid prices")
-    return [
-        {"date": bar.date, "close": float(bar.close), "return_basis": return_basis}
-        for bar in rows
-    ]
+    result = []
+    for bar in rows:
+        try:
+            close = float(bar.close)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"{asset_id} returned an invalid price on {bar.date}") from exc
+        if bar.asset_id != asset_id or not math.isfinite(close) or close <= 0:
+            raise ValueError(f"{asset_id} returned an invalid price on {bar.date}")
+        result.append({"date": bar.date, "close": close, "return_basis": return_basis})
+    return result
 
 
 def _validate_trade_dates(values: list[str], start: str, end: str) -> list[str]:
@@ -338,7 +343,8 @@ def _load_json(path: Path):
 
 def _write_json(path: Path, value: object) -> None:
     path.write_text(
-        json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
+        encoding="utf-8",
     )
 
 
