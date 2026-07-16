@@ -1,0 +1,61 @@
+{
+  "analysis_status": "blocked",
+  "asset": {
+    "asset_key": "chinext_total_return",
+    "display_name": "创业板全收益指数",
+    "official_code": "399606",
+    "provider_code": "399606.SZ",
+    "risk_family": "growth_technology",
+    "tier": "A"
+  },
+  "blockers": [
+    "local research cache is missing",
+    "total-return basis is reference_only",
+    "provider mapping is unverified",
+    "contract research_status is blocked"
+  ],
+  "limitations": [
+    "This report diagnoses reliability; it does not rank thresholds.",
+    "No pass, elimination, or minimum-sample threshold is predefined.",
+    "The fifteen threshold evaluations within one event are highly dependent.",
+    "Small-sample Brier scores and calibration gaps can be extremely unstable.",
+    "Open not-reached events remain right-censored.",
+    "Recovery diagnostics exclude samples censored before a horizon and therefore have complete-case bias; they are not IPCW estimates.",
+    "Forward-return diagnostics use only complete test windows.",
+    "Changing training statistics can reflect sample growth rather than structural failure.",
+    "Assets are not pooled.",
+    "No parameter selection, positions, trade instructions, or strategy returns are produced."
+  ],
+  "methodology_version": "1.0",
+  "period": null,
+  "report_type": "asset_drawdown_walk_forward_diagnostics",
+  "schema_version": "1.0",
+  "source_cohort_index_path": "reports/strategy_research/drawdown_threshold_cohorts/index.json",
+  "source_cohort_index_sha256": "8c82b4126277895ca8e45b9407f46682d0e4f61314da589c44bc30b7c4772b71",
+  "source_cohort_report_path": "reports\\strategy_research\\drawdown_threshold_cohorts/chinext_total_return.json",
+  "source_cohort_report_sha256": "064069a3e1d8c4c8b6dda5e3a3f046652f5f918e320eb47074c8b7fe430498f8",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_event_report_path": "reports\\strategy_research\\drawdown_events/chinext_total_return.json",
+  "source_event_report_sha256": "4b217fb07ff8f561a19052b8eb233b9cbbc243e9d99e9488ad331b882639fad3",
+  "source_ledger_index_path": "reports/strategy_research/drawdown_walk_forward_evidence/index.json",
+  "source_ledger_index_sha256": "8514ebc1179ac266b83bdcfc3cfa70159848f4124a90a53ec04223182d0015d2",
+  "source_ledger_report_path": "reports\\strategy_research\\drawdown_walk_forward_evidence/chinext_total_return.json",
+  "source_ledger_report_sha256": "25b39bc79e1ad510312eded9a2d99d44b799ef83e0434340016618413fc28afe",
+  "source_outcome_index_path": "reports/strategy_research/drawdown_outcomes/index.json",
+  "source_outcome_index_sha256": "aa66133bcea7ba784ea3fb149279a99790bf882acd399be872a7b3d949874600",
+  "source_outcome_report_path": "reports\\strategy_research\\drawdown_outcomes/chinext_total_return.json",
+  "source_outcome_report_sha256": "b852c2ff76cf707a3b57401328e2b3ae5c3c0a13bee9067184aaa4294de7d0d3",
+  "source_statistics_index_path": "reports/strategy_research/drawdown_threshold_statistics/index.json",
+  "source_statistics_index_sha256": "332095866c4082d645e32a5858018ac488ec9fe23788f6ad8dc9f2193d942445",
+  "source_statistics_report_path": "reports\\strategy_research\\drawdown_threshold_statistics/chinext_total_return.json",
+  "source_statistics_report_sha256": "48d00b28ff33e8fedbe6df583eebf20aaf492fa40a485bd242cfc1a7a7d10a88",
+  "summary": {
+    "event_evaluation_count": 0,
+    "threshold_group_count": 0,
+    "total_reached_evaluations": 0
+  },
+  "threshold_diagnostics": [],
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}
