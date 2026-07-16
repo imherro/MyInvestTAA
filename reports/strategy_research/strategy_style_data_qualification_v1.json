@@ -1,0 +1,264 @@
+{
+  "as_of_date": "2026-07-15",
+  "assets": [
+    {
+      "asset_id": "CN2296.CNI",
+      "blockers": [],
+      "calendar_coverage": {
+        "actual_price_session_count": 3284,
+        "calendar_first_date": "2013-01-04",
+        "calendar_last_date": "2026-07-15",
+        "exact_calendar_match": true,
+        "expected_open_session_count": 3284,
+        "extra_price_dates": [],
+        "missing_open_dates": []
+      },
+      "checks": {
+        "configured_identity_valid": true,
+        "duplicate_date_count_zero": true,
+        "ends_at_latest_open_session": true,
+        "exact_sse_calendar_match": true,
+        "expected_metadata_match": true,
+        "index_basic_required_fields_complete": true,
+        "index_basic_single_row": true,
+        "return_basis_valid": true,
+        "sorted_unique_dates": true,
+        "valid_close_values": true
+      },
+      "display_name": "创成长R",
+      "first_date": "2013-01-04",
+      "index_basic": {
+        "base_date": "20121231",
+        "category": "风格指数",
+        "fullname": "创业板动量成长全收益指数",
+        "list_date": "20190123",
+        "market": "CNI",
+        "name": "创成长R",
+        "ts_code": "CN2296.CNI"
+      },
+      "last_date": "2026-07-15",
+      "official_code": "CN2296",
+      "price_file": "data/strategy_style_research/prices/CN2296_CNI.json",
+      "price_file_sha256": "32394557c7bc23193fe7a7ef8f45ec96033235fbc19d560eee6c76eb3455de81",
+      "qualified": true,
+      "research_order": 1,
+      "row_count": 3284,
+      "style_family": "growth",
+      "warnings": []
+    },
+    {
+      "asset_id": "CN2371.CNI",
+      "blockers": [],
+      "calendar_coverage": {
+        "actual_price_session_count": 5713,
+        "calendar_first_date": "2002-12-31",
+        "calendar_last_date": "2026-07-15",
+        "exact_calendar_match": true,
+        "expected_open_session_count": 5713,
+        "extra_price_dates": [],
+        "missing_open_dates": []
+      },
+      "checks": {
+        "configured_identity_valid": true,
+        "duplicate_date_count_zero": true,
+        "ends_at_latest_open_session": true,
+        "exact_sse_calendar_match": true,
+        "expected_metadata_match": true,
+        "index_basic_required_fields_complete": true,
+        "index_basic_single_row": true,
+        "return_basis_valid": true,
+        "sorted_unique_dates": true,
+        "valid_close_values": true
+      },
+      "display_name": "国证价值R",
+      "first_date": "2002-12-31",
+      "index_basic": {
+        "base_date": "20021231",
+        "category": "风格指数",
+        "fullname": "国证1000价值全收益指数",
+        "list_date": "20100104",
+        "market": "CNI",
+        "name": "国证价值R",
+        "ts_code": "CN2371.CNI"
+      },
+      "last_date": "2026-07-15",
+      "official_code": "CN2371",
+      "price_file": "data/strategy_style_research/prices/CN2371_CNI.json",
+      "price_file_sha256": "79c55517498330ffc69b6d5f6334cb387071310e5b47b0008ce078a030eda405",
+      "qualified": true,
+      "research_order": 2,
+      "row_count": 5713,
+      "style_family": "value",
+      "warnings": []
+    },
+    {
+      "asset_id": "H00015.CSI",
+      "blockers": [],
+      "calendar_coverage": {
+        "actual_price_session_count": 5229,
+        "calendar_first_date": "2004-12-31",
+        "calendar_last_date": "2026-07-15",
+        "exact_calendar_match": true,
+        "expected_open_session_count": 5229,
+        "extra_price_dates": [],
+        "missing_open_dates": []
+      },
+      "checks": {
+        "configured_identity_valid": true,
+        "duplicate_date_count_zero": true,
+        "ends_at_latest_open_session": true,
+        "exact_sse_calendar_match": true,
+        "expected_metadata_match": true,
+        "index_basic_required_fields_complete": true,
+        "index_basic_single_row": true,
+        "return_basis_valid": true,
+        "sorted_unique_dates": true,
+        "valid_close_values": true
+      },
+      "display_name": "红利收益",
+      "first_date": "2004-12-31",
+      "index_basic": {
+        "base_date": "20041231",
+        "category": "策略指数",
+        "fullname": "上证红利全收益指数",
+        "list_date": "20050104",
+        "market": "CSI",
+        "name": "红利收益",
+        "ts_code": "H00015.CSI"
+      },
+      "last_date": "2026-07-15",
+      "official_code": "H00015",
+      "price_file": "data/strategy_style_research/prices/H00015_CSI.json",
+      "price_file_sha256": "45574e3b4cdf6e8d6c8036a9ebd5315054cb3cb84632ed509eda45084ec0cb59",
+      "qualified": true,
+      "research_order": 3,
+      "row_count": 5229,
+      "style_family": "dividend",
+      "warnings": []
+    },
+    {
+      "asset_id": "H00922.CSI",
+      "blockers": [],
+      "calendar_coverage": {
+        "actual_price_session_count": 5229,
+        "calendar_first_date": "2004-12-31",
+        "calendar_last_date": "2026-07-15",
+        "exact_calendar_match": true,
+        "expected_open_session_count": 5229,
+        "extra_price_dates": [],
+        "missing_open_dates": []
+      },
+      "checks": {
+        "configured_identity_valid": true,
+        "duplicate_date_count_zero": true,
+        "ends_at_latest_open_session": true,
+        "exact_sse_calendar_match": true,
+        "expected_metadata_match": true,
+        "index_basic_required_fields_complete": true,
+        "index_basic_single_row": true,
+        "return_basis_valid": true,
+        "sorted_unique_dates": true,
+        "valid_close_values": true
+      },
+      "display_name": "中红收益",
+      "first_date": "2004-12-31",
+      "index_basic": {
+        "base_date": "20041231",
+        "category": "策略指数",
+        "fullname": "中证红利全收益指数",
+        "list_date": "20080526",
+        "market": "CSI",
+        "name": "中红收益",
+        "ts_code": "H00922.CSI"
+      },
+      "last_date": "2026-07-15",
+      "official_code": "H00922",
+      "price_file": "data/strategy_style_research/prices/H00922_CSI.json",
+      "price_file_sha256": "8e1cf067b54c08fc8ba17155f93a22cb69fe225477ea781684f3da13ce6a49b4",
+      "qualified": true,
+      "research_order": 4,
+      "row_count": 5229,
+      "style_family": "dividend",
+      "warnings": []
+    },
+    {
+      "asset_id": "480092.CNI",
+      "blockers": [],
+      "calendar_coverage": {
+        "actual_price_session_count": 3285,
+        "calendar_first_date": "2012-12-31",
+        "calendar_last_date": "2026-07-15",
+        "exact_calendar_match": true,
+        "expected_open_session_count": 3285,
+        "extra_price_dates": [],
+        "missing_open_dates": []
+      },
+      "checks": {
+        "configured_identity_valid": true,
+        "duplicate_date_count_zero": true,
+        "ends_at_latest_open_session": true,
+        "exact_sse_calendar_match": true,
+        "expected_metadata_match": true,
+        "index_basic_required_fields_complete": true,
+        "index_basic_single_row": true,
+        "return_basis_valid": true,
+        "sorted_unique_dates": true,
+        "valid_close_values": true
+      },
+      "display_name": "国证自由现金流指数R",
+      "first_date": "2012-12-31",
+      "index_basic": {
+        "base_date": "20121231",
+        "category": "策略指数",
+        "fullname": "国证自由现金流全收益指数",
+        "list_date": "20121228",
+        "market": "CNI",
+        "name": "自由现金流R",
+        "ts_code": "480092.CNI"
+      },
+      "last_date": "2026-07-15",
+      "official_code": "480092",
+      "price_file": "data/strategy_style_research/prices/480092_CNI.json",
+      "price_file_sha256": "d7e7e072ddbd0e011ba2997c4c8d5e6a3a72dcb2f11d9bc504214eaa5a831240",
+      "qualified": true,
+      "research_order": 5,
+      "row_count": 3285,
+      "style_family": "cash_flow",
+      "warnings": []
+    }
+  ],
+  "generated_at": "2026-07-16T09:27:52+00:00",
+  "limitations": [
+    "Qualification establishes data identity and completeness only.",
+    "The dataset is not an input to formal CURRENT_TAA or execution.",
+    "No drawdown mechanism, allocation rule, or backtest is defined."
+  ],
+  "overall_status": "QUALIFIED",
+  "report_type": "strategy_style_research_data_qualification",
+  "schema_version": "1.0",
+  "scope": {
+    "excluded_scope": [
+      "broad_base",
+      "industry_theme",
+      "resource_cycle",
+      "other_assets"
+    ],
+    "included_style_families": [
+      "growth",
+      "value",
+      "dividend",
+      "cash_flow"
+    ]
+  },
+  "source_manifest_sha256": "580f9458d048b04989cb2c1dd9b92c465c13be8cae57117e3e4f69c3a7a3629f",
+  "source_universe_config_sha256": "727ab597519c073de2183c5accab5b2c72efdda140d4f32fe2848ea3eecac2be",
+  "summary": {
+    "blocked_assets": 0,
+    "cash_flow_assets": 1,
+    "dividend_assets": 2,
+    "growth_assets": 1,
+    "qualified_assets": 5,
+    "total_assets": 5,
+    "value_assets": 1
+  }
+}
