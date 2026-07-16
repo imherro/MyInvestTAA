@@ -3,7 +3,9 @@
     {
       "asset_key": "csi300_total_return",
       "blockers": [],
+      "contract_research_status": "available",
       "contract_status": "valid",
+      "contract_verification_status": "verified",
       "display_name": "沪深300全收益指数",
       "duplicate_dates": [],
       "first_date": "2011-01-04",
@@ -34,7 +36,9 @@
     {
       "asset_key": "csi500_total_return",
       "blockers": [],
+      "contract_research_status": "available",
       "contract_status": "valid",
+      "contract_verification_status": "verified",
       "display_name": "中证500全收益指数",
       "duplicate_dates": [],
       "first_date": "2011-01-04",
@@ -65,7 +69,9 @@
     {
       "asset_key": "csi1000_total_return",
       "blockers": [],
+      "contract_research_status": "available",
       "contract_status": "valid",
+      "contract_verification_status": "verified",
       "display_name": "中证1000全收益指数",
       "duplicate_dates": [],
       "first_date": "2011-01-04",
@@ -98,9 +104,12 @@
       "blockers": [
         "local research cache is missing",
         "total-return basis is reference_only",
-        "provider mapping is unverified"
+        "provider mapping is unverified",
+        "contract research_status is blocked"
       ],
+      "contract_research_status": "blocked",
       "contract_status": "valid",
+      "contract_verification_status": "unverified",
       "display_name": "创业板全收益指数",
       "duplicate_dates": [],
       "first_date": null,
@@ -132,9 +141,12 @@
         "local cache has no provider mapping",
         "provider_code is not verified",
         "total-return basis is unresolved",
-        "provider mapping is unverified"
+        "provider mapping is unverified",
+        "contract research_status is blocked"
       ],
+      "contract_research_status": "blocked",
       "contract_status": "valid",
+      "contract_verification_status": "unverified",
       "display_name": "国证1000价值全收益指数",
       "duplicate_dates": [],
       "first_date": null,
@@ -163,7 +175,9 @@
     {
       "asset_key": "csi_dividend_total_return",
       "blockers": [],
+      "contract_research_status": "available",
       "contract_status": "valid",
+      "contract_verification_status": "verified",
       "display_name": "中证红利全收益指数",
       "duplicate_dates": [],
       "first_date": "2011-01-04",
@@ -194,7 +208,9 @@
     {
       "asset_key": "cni_free_cash_flow_total_return",
       "blockers": [],
+      "contract_research_status": "available",
       "contract_status": "valid",
+      "contract_verification_status": "verified",
       "display_name": "国证自由现金流全收益指数",
       "duplicate_dates": [],
       "first_date": "2012-12-31",
@@ -223,7 +239,7 @@
       "warnings": []
     }
   ],
-  "generated_at": "2026-07-16T04:12:09+00:00",
+  "generated_at": "2026-07-16T04:23:28+00:00",
   "limitations": [
     "Provider availability does not independently prove total-return methodology.",
     "P0 audits price availability only; valuation and structural-validity filters are not implemented.",
@@ -241,6 +257,6 @@
     "tier_c_count": 13,
     "total_whitelist_assets": 32
   },
-  "universe_hash": "f55475b02b49ebb4282d9a350c470359a69bb095d17ee97c7a8f4dbf7dd7e2ce",
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
   "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
 }
