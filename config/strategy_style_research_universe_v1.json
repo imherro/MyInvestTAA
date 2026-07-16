@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "universe_id": "STRATEGY_STYLE_RESEARCH_UNIVERSE_V1",
+  "purpose": "independent_strategy_style_research",
+  "required_data_source": "tushare",
+  "required_return_basis": "total_return",
+  "cache_policy": "full_independent_snapshot",
+  "allowed_style_families": [
+    "growth",
+    "value",
+    "dividend",
+    "cash_flow"
+  ],
+  "excluded_scope": [
+    "broad_base",
+    "industry_theme",
+    "resource_cycle",
+    "other_assets"
+  ],
+  "assets": [
+    {
+      "asset_id": "CN2296.CNI",
+      "official_code": "CN2296",
+      "display_name": "创成长R",
+      "style_family": "growth",
+      "research_order": 1,
+      "metadata_expectation_mode": "exact",
+      "expected_index_basic": {
+        "name": "创成长R",
+        "fullname": "创业板动量成长全收益指数",
+        "market": "CNI",
+        "category": "风格指数",
+        "base_date": "20121231",
+        "list_date": "20190123"
+      },
+      "data_source": "tushare",
+      "return_basis": "total_return",
+      "enabled": true,
+      "substitution_allowed": false
+    },
+    {
+      "asset_id": "CN2371.CNI",
+      "official_code": "CN2371",
+      "display_name": "国证价值R",
+      "style_family": "value",
+      "research_order": 2,
+      "metadata_expectation_mode": "exact",
+      "expected_index_basic": {
+        "name": "国证价值R",
+        "fullname": "国证1000价值全收益指数",
+        "market": "CNI",
+        "category": "风格指数",
+        "base_date": "20021231",
+        "list_date": "20100104"
+      },
+      "data_source": "tushare",
+      "return_basis": "total_return",
+      "enabled": true,
+      "substitution_allowed": false
+    },
+    {
+      "asset_id": "H00015.CSI",
+      "official_code": "H00015",
+      "display_name": "红利收益",
+      "style_family": "dividend",
+      "research_order": 3,
+      "metadata_expectation_mode": "identity_only",
+      "expected_index_basic": null,
+      "data_source": "tushare",
+      "return_basis": "total_return",
+      "enabled": true,
+      "substitution_allowed": false
+    },
+    {
+      "asset_id": "H00922.CSI",
+      "official_code": "H00922",
+      "display_name": "中红收益",
+      "style_family": "dividend",
+      "research_order": 4,
+      "metadata_expectation_mode": "identity_only",
+      "expected_index_basic": null,
+      "data_source": "tushare",
+      "return_basis": "total_return",
+      "enabled": true,
+      "substitution_allowed": false
+    },
+    {
+      "asset_id": "480092.CNI",
+      "official_code": "480092",
+      "display_name": "国证自由现金流指数R",
+      "style_family": "cash_flow",
+      "research_order": 5,
+      "metadata_expectation_mode": "identity_only",
+      "expected_index_basic": null,
+      "data_source": "tushare",
+      "return_basis": "total_return",
+      "enabled": true,
+      "substitution_allowed": false
+    }
+  ]
+}
