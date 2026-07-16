@@ -305,9 +305,10 @@ def build_category_states(common_panel: dict[str, Any], calculation_contract_sha
     dates = common_panel["dates"]
     profiles: list[dict[str, Any]] = []
     for profile_id, threshold, absolute_horizon, relative_horizon, adverse_lookback in PROFILES:
+        closes = {member["asset_id"]: member["close"] for member in members}
         levels = {member["asset_id"]: member["normalized_level"] for member in members}
-        absolute = {asset_id: _horizon_returns(values, absolute_horizon) for asset_id, values in levels.items()}
-        relative = {asset_id: _horizon_returns(values, relative_horizon) for asset_id, values in levels.items()}
+        absolute = {asset_id: _horizon_returns(values, absolute_horizon) for asset_id, values in closes.items()}
+        relative = {asset_id: _horizon_returns(values, relative_horizon) for asset_id, values in closes.items()}
         prior = {asset_id: _prior_minima(values, adverse_lookback) for asset_id, values in levels.items()}
         calculations: list[dict[str, Any]] = []
         member_state_map: dict[str, dict[str, list[str]]] = {}
@@ -387,7 +388,7 @@ def build_category_states(common_panel: dict[str, Any], calculation_contract_sha
         "source_common_panel_sha256": sha256_bytes(json_bytes(common_panel)),
         "source_calculation_contract_sha256": calculation_contract_sha256,
         "date_count": len(dates),
-        "date_axis": dates,
+        "date_axis": "common_panel.dates",
         "profile_order": [item[0] for item in PROFILES],
         "common_state_values": list(COMMON_STATES),
         "agreement_state_values": list(AGREEMENT_STATES),
@@ -459,7 +460,7 @@ def validate_artifact_bytes(artifacts: dict[str, bytes]) -> None:
     _require(panel.get("session_count") == COMMON_SESSION_COUNT, "panel session count mismatch")
     _require(panel.get("member_date_observation_count") == COMMON_OBSERVATION_COUNT, "panel observation count mismatch")
     _require(states.get("date_count") == COMMON_SESSION_COUNT, "state date count mismatch")
-    _require(states.get("date_axis") == panel.get("dates"), "state date axis mismatch")
+    _require(states.get("date_axis") == "common_panel.dates", "state date axis mismatch")
     _require(states.get("source_common_panel_sha256") == sha256_bytes(artifacts["common_panel.json"]), "state panel hash mismatch")
     for key, filename in (("common_panel", "common_panel.json"), ("category_states", "category_states.json")):
         output = manifest["outputs"][key]

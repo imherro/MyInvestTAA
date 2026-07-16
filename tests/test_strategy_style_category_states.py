@@ -159,6 +159,51 @@ def test_warmup_median_and_prior_min_excludes_current(decoded: dict[str, Any]) -
     assert own["adverse_prior_min_level"][10] == min(member["normalized_level"][:10])
 
 
+def test_formal_horizon_returns_use_close_exactly(decoded: dict[str, Any]) -> None:
+    panel = decoded["common_panel.json"]
+    panel_members = {row["asset_id"]: row for row in panel["members"]}
+    for profile in decoded["category_states.json"]["profiles"]:
+        absolute_horizon = profile["parameters"]["absolute_horizon"]
+        relative_horizon = profile["parameters"]["relative_horizon"]
+        for calculation in profile["member_calculations"]:
+            closes = panel_members[calculation["asset_id"]]["close"]
+            index = relative_horizon + 7
+            assert calculation["absolute_horizon_return"][index] == closes[index] / closes[index - absolute_horizon] - 1
+            assert calculation["relative_horizon_return"][index] == closes[index] / closes[index - relative_horizon] - 1
+
+
+def test_close_and_normalized_float_paths_are_not_substituted() -> None:
+    dates = [f"D{index:02d}" for index in range(22)]
+    members = []
+    for asset_id, style, display_name in MODULE.MEMBER_SPECS:
+        closes = [0.1] + [0.3] * 20 + [1.1]
+        closes[11] = 1.1
+        levels = [value / closes[0] for value in closes]
+        members.append(
+            {
+                "asset_id": asset_id,
+                "style_unit": style,
+                "display_name": display_name,
+                "close": closes,
+                "normalized_level": levels,
+                "drawdown": [0.0] * len(dates),
+            }
+        )
+    panel = {"dates": dates, "members": members}
+    states = MODULE.build_category_states(panel, "0" * 64)
+    calculation = states["profiles"][0]["member_calculations"][0]
+    close_absolute = members[0]["close"][11] / members[0]["close"][1] - 1
+    normalized_absolute = members[0]["normalized_level"][11] / members[0]["normalized_level"][1] - 1
+    close_relative = members[0]["close"][21] / members[0]["close"][1] - 1
+    normalized_relative = members[0]["normalized_level"][21] / members[0]["normalized_level"][1] - 1
+    assert close_absolute != normalized_absolute
+    assert close_relative != normalized_relative
+    assert calculation["absolute_horizon_return"][11] == close_absolute
+    assert calculation["absolute_horizon_return"][11] != normalized_absolute
+    assert calculation["relative_horizon_return"][21] == close_relative
+    assert calculation["relative_horizon_return"][21] != normalized_relative
+
+
 def test_boundary_values_are_frozen() -> None:
     assert MODULE._state(-0.10, lambda value: value <= -0.10) == "MET"
     assert MODULE._state(0.0, lambda value: value >= 0.0) == "MET"
@@ -195,12 +240,14 @@ def test_style_order_mapping_aggregation_and_agreement(decoded: dict[str, Any]) 
 
 def test_state_arrays_enums_availability_and_no_nonfinite(decoded: dict[str, Any]) -> None:
     states = decoded["category_states.json"]
+    panel_dates = decoded["common_panel.json"]["dates"]
     assert states["date_count"] == 3284
+    assert states["date_axis"] == "common_panel.dates"
     assert states["common_state_values"] == ["MET", "NOT_MET", "UNAVAILABLE"]
     assert states["agreement_state_values"] == ["AGREEMENT", "CONFLICT", "UNAVAILABLE"]
     for profile in states["profiles"]:
         availability = profile["availability"]
-        assert all(value in states["date_axis"] for value in availability.values())
+        assert all(value in panel_dates for value in availability.values())
         for member in profile["member_calculations"]:
             for key in ("absolute_horizon_return", "relative_horizon_return", "relative_peer_median_return", "relative_return_gap", "adverse_prior_min_level"):
                 assert len(member[key]) == 3284
