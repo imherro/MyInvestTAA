@@ -12,6 +12,17 @@ EXPECTED_TIER_COUNTS = {"A": 7, "B": 12, "C": 13}
 ALLOWED_ASSET_GROUPS = {"broad_base", "style", "industry"}
 ALLOWED_VERIFICATION_STATUSES = {"verified", "unverified", "unavailable"}
 ALLOWED_RESEARCH_STATUSES = {"pending", "available", "blocked"}
+ALLOWED_RISK_FAMILIES = {
+    "broad_beta",
+    "growth_technology",
+    "value_income",
+    "consumer",
+    "healthcare",
+    "industrial_materials",
+    "transport_infrastructure",
+    "resource_cycle",
+    "agriculture_breeding",
+}
 FORBIDDEN_OFFICIAL_CODES = {"H00015", "931688CNY010", "H20590", "931743CNY010"}
 FORBIDDEN_NAME_PARTS = {"算力", "机器人", "半导体材料设备", "量子", "低空经济", "元宇宙"}
 ASSET_KEY_PATTERN = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
@@ -189,8 +200,8 @@ def _validate_asset(value: dict[str, Any]) -> None:
         raise ResearchUniverseError("research_order must be an integer")
     if value["asset_group"] not in ALLOWED_ASSET_GROUPS:
         raise ResearchUniverseError(f"invalid asset_group: {value['asset_group']}")
-    if not isinstance(value["risk_family"], str) or not value["risk_family"]:
-        raise ResearchUniverseError("risk_family must be non-empty")
+    if value["risk_family"] not in ALLOWED_RISK_FAMILIES:
+        raise ResearchUniverseError(f"invalid risk_family: {value['risk_family']}")
     if value["return_basis"] != "total_return":
         raise ResearchUniverseError("asset return_basis must be total_return")
     if value["data_source"] != "tushare":
@@ -216,6 +227,14 @@ def _validate_asset(value: dict[str, Any]) -> None:
     ):
         raise ResearchUniverseError(
             "available asset requires verified non-null provider_code"
+        )
+    if value["verification_status"] == "verified" and value["provider_code"] is None:
+        raise ResearchUniverseError("verified asset requires non-null provider_code")
+    if value["verification_status"] == "unavailable" and (
+        value["provider_code"] is not None or value["research_status"] != "blocked"
+    ):
+        raise ResearchUniverseError(
+            "unavailable asset requires null provider_code and blocked research_status"
         )
 
 

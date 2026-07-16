@@ -20,6 +20,7 @@ This document records the decisions agreed before rebuilding the investment stra
 - Research order is A7, then B12, then C13.
 - Each asset is researched independently before portfolio construction.
 - Risk-family exposures must be aggregated; correlated indexes are not independent diversification.
+- Risk families are a closed contract vocabulary. The building-materials index belongs to `industrial_materials`, because its principal drivers are capacity, raw-material costs, real estate, and fixed investment rather than transport or logistics infrastructure.
 - Parameters require walk-forward out-of-sample validation. Full-history optimum parameters cannot be adopted directly.
 
 ## Drawdown Semantics

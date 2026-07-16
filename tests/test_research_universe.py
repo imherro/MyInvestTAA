@@ -15,6 +15,40 @@ from current_taa.research_universe import (
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config" / "research_universe_v1.json"
+EXPECTED_RISK_FAMILIES = {
+    "csi300_total_return": "broad_beta",
+    "csi500_total_return": "broad_beta",
+    "csi1000_total_return": "broad_beta",
+    "chinext_total_return": "growth_technology",
+    "cni1000_value_total_return": "value_income",
+    "csi_dividend_total_return": "value_income",
+    "cni_free_cash_flow_total_return": "value_income",
+    "cni_food_beverage_total_return": "consumer",
+    "cni_durable_consumer_total_return": "consumer",
+    "cni_consumer_services_total_return": "consumer",
+    "cni_healthcare_total_return": "healthcare",
+    "cni_utilities_total_return": "value_income",
+    "cni_banks_total_return": "value_income",
+    "cni_basic_chemicals_total_return": "industrial_materials",
+    "cni_transportation_total_return": "transport_infrastructure",
+    "cni_nonferrous_metals_total_return": "resource_cycle",
+    "cni_information_technology_total_return": "growth_technology",
+    "cni_communications_total_return": "growth_technology",
+    "cni_semiconductor_chip_total_return": "growth_technology",
+    "star50_total_return": "growth_technology",
+    "cni_new_energy_total_return": "growth_technology",
+    "csi_innovative_drug_total_return": "healthcare",
+    "cni_aerospace_defense_total_return": "growth_technology",
+    "cni_transport_infrastructure_total_return": "transport_infrastructure",
+    "cni_logistics_total_return": "transport_infrastructure",
+    "cni_oil_gas_total_return": "resource_cycle",
+    "cni_green_coal_total_return": "resource_cycle",
+    "cni_industrial_metals_total_return": "resource_cycle",
+    "cni_steel_total_return": "resource_cycle",
+    "cni_building_materials_total_return": "industrial_materials",
+    "szse_agriculture_total_return": "agriculture_breeding",
+    "cni_hog_industry_total_return": "agriculture_breeding",
+}
 
 
 def test_real_contract_has_exact_approved_counts_and_order() -> None:
@@ -31,6 +65,18 @@ def test_real_contract_has_exact_approved_counts_and_order() -> None:
     assert "931688CNY010" not in {asset.official_code for asset in universe.assets}
     assert "H20590" not in {asset.official_code for asset in universe.assets}
     assert "931743CNY010" not in {asset.official_code for asset in universe.assets}
+
+
+def test_real_contract_has_exact_risk_family_mapping() -> None:
+    universe = load_research_universe(CONTRACT)
+
+    assert {asset.asset_key: asset.risk_family for asset in universe.assets} == (
+        EXPECTED_RISK_FAMILIES
+    )
+    assert (
+        universe.require_allowed_asset("cni_building_materials_total_return").risk_family
+        == "industrial_materials"
+    )
 
 
 def test_allowlist_queries_reject_unknown_values() -> None:
@@ -62,6 +108,32 @@ def test_allowlist_queries_reject_unknown_values() -> None:
         (
             lambda raw: raw["assets"][3].__setitem__("research_status", "available"),
             "verified non-null",
+        ),
+        (
+            lambda raw: raw["assets"][0].__setitem__("risk_family", "unknown_family"),
+            "invalid risk_family",
+        ),
+        (
+            lambda raw: raw["assets"][0].__setitem__("risk_family", "Broad_Beta"),
+            "invalid risk_family",
+        ),
+        (
+            lambda raw: raw["assets"][4].update(
+                verification_status="verified", provider_code=None
+            ),
+            "verified asset requires non-null",
+        ),
+        (
+            lambda raw: raw["assets"][4].update(
+                verification_status="unavailable", provider_code="CN2371.CNI"
+            ),
+            "unavailable asset requires null",
+        ),
+        (
+            lambda raw: raw["assets"][4].update(
+                verification_status="unavailable", research_status="pending"
+            ),
+            "unavailable asset requires null",
         ),
     ],
 )

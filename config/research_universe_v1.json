@@ -478,7 +478,7 @@
       "tier": "C",
       "research_order": 30,
       "asset_group": "industry",
-      "risk_family": "transport_infrastructure",
+      "risk_family": "industrial_materials",
       "return_basis": "total_return",
       "data_source": "tushare",
       "verification_status": "unverified",

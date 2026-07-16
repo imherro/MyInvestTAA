@@ -51,10 +51,40 @@ def test_offline_audit_marks_valid_confirmed_cache_ready(tmp_path: Path) -> None
     assert row["local_cache_status"] == "available"
     assert row["provider_status"] == "not_checked"
     assert row["return_basis_status"] == "confirmed"
+    assert row["contract_verification_status"] == "verified"
+    assert row["contract_research_status"] == "available"
     assert row["research_ready"] is True
     assert row["first_date"] == "2020-01-02"
     assert report["summary"]["total_whitelist_assets"] == 32
     assert len(report["assets"]) == 7
+
+
+def test_blocked_asset_with_valid_cache_is_not_research_ready(tmp_path: Path) -> None:
+    universe = _universe_with_status(tmp_path, "blocked")
+    _write_valid_csi300_cache(tmp_path)
+
+    row = _row(
+        audit_research_universe(universe, root=tmp_path, mode="offline"),
+        "csi300_total_return",
+    )
+
+    assert row["contract_research_status"] == "blocked"
+    assert row["research_ready"] is False
+    assert "contract research_status is blocked" in row["blockers"]
+
+
+def test_pending_asset_with_valid_cache_is_not_research_ready(tmp_path: Path) -> None:
+    universe = _universe_with_status(tmp_path, "pending")
+    _write_valid_csi300_cache(tmp_path)
+
+    row = _row(
+        audit_research_universe(universe, root=tmp_path, mode="offline"),
+        "csi300_total_return",
+    )
+
+    assert row["contract_research_status"] == "pending"
+    assert row["research_ready"] is False
+    assert "contract research_status is pending" in row["blockers"]
 
 
 def test_offline_audit_detects_missing_duplicate_invalid_and_wrong_basis(
@@ -155,6 +185,25 @@ def _write_cache(root: Path, provider_code: str, rows: list[dict]) -> None:
     (target / f"{provider_code.replace('.', '_')}.json").write_text(
         json.dumps(rows), encoding="utf-8"
     )
+
+
+def _write_valid_csi300_cache(root: Path) -> None:
+    _write_cache(
+        root,
+        "H00300.CSI",
+        [
+            {"date": "2020-01-02", "close": 100.0, "return_basis": "total_return"},
+            {"date": "2020-01-03", "close": 101.0, "return_basis": "total_return"},
+        ],
+    )
+
+
+def _universe_with_status(tmp_path: Path, status: str):
+    raw = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    raw["assets"][0]["research_status"] = status
+    contract = tmp_path / f"universe_{status}.json"
+    contract.write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
+    return load_research_universe(contract)
 
 
 def _row(report: dict, asset_key: str) -> dict:

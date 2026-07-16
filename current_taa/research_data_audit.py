@@ -126,9 +126,12 @@ def _audit_asset(
         blockers.append(f"total-return basis is {basis_status}")
     if asset.verification_status != "verified":
         blockers.append(f"provider mapping is {asset.verification_status}")
+    if asset.research_status != "available":
+        blockers.append(f"contract research_status is {asset.research_status}")
     blockers = list(dict.fromkeys(blockers))
     research_ready = (
-        asset.provider_code is not None
+        asset.research_status == "available"
+        and asset.provider_code is not None
         and asset.verification_status == "verified"
         and basis_status == "confirmed"
         and selected["status"] == "available"
@@ -143,6 +146,8 @@ def _audit_asset(
         "official_code": asset.official_code,
         "provider_code": asset.provider_code,
         "contract_status": "valid",
+        "contract_verification_status": asset.verification_status,
+        "contract_research_status": asset.research_status,
         "provider_status": provider["status"],
         "local_cache_status": local["status"],
         "return_basis_status": basis_status,

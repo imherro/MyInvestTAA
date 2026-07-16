@@ -30,7 +30,11 @@ Provider-code changes do not change `asset_key`. Unknown mappings remain blocked
 - `research_status`: `pending`, `available`, or `blocked`.
 - `substitution_allowed`: always `false`.
 
-An unverified provider cannot be marked available. A provider query that returns data proves availability only; total-return basis remains a separate evidence decision.
+Allowed risk families are exactly `broad_beta`, `growth_technology`, `value_income`, `consumer`, `healthcare`, `industrial_materials`, `transport_infrastructure`, `resource_cycle`, and `agriculture_breeding`. Case changes and unlisted values are invalid contract data.
+
+An `available` asset requires a verified, non-null provider mapping. A `verified` mapping requires a non-null provider code. An `unavailable` mapping requires a null provider code and a `blocked` research status. `pending` may retain a verified provider mapping, but it remains ineligible for research until explicitly promoted to `available`; `blocked` is always ineligible.
+
+A provider query that returns data proves availability only; total-return basis remains a separate evidence decision. The audit reports contract verification and research status separately, and `research_ready` can be true only when the contract is valid, the research status is `available`, provider verification and total-return evidence are confirmed, and the selected history is complete, sorted, unique, and price-valid with no blockers.
 
 ## Hash
 
