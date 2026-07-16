@@ -13,11 +13,14 @@ from current_taa.drawdown_outcomes import HORIZONS
 from current_taa.drawdown_threshold_statistics import (
     DrawdownThresholdStatisticsError,
     _distribution,
+    _first_median_recovery_time,
     _horizon_statistics,
     _kaplan_meier,
+    _km_at_horizon,
     _minimum_statistics,
     _recovery_sample,
     _selected_record,
+    _serialize_km_timeline,
     build_threshold_statistics,
 )
 from scripts import build_a_tier_drawdown_threshold_statistics as statistics_builder
@@ -137,6 +140,38 @@ def test_kaplan_meier_all_observed_all_censored_and_horizons() -> None:
     assert h126["recovery_probability"] == 0.3333333333
     assert h252["observed_recoveries_through_horizon"] == 2
     assert h252["recovery_probability"] == 1.0
+
+
+def test_km_median_uses_unrounded_survival_boundary() -> None:
+    slightly_above = [
+        _raw_km_row(10, 0.50000000004),
+        _raw_km_row(20, 0.49),
+    ]
+    assert _serialize_km_timeline(slightly_above)[0][
+        "survival_probability"
+    ] == 0.5
+    assert _first_median_recovery_time(slightly_above) == 20
+
+    exact = [_raw_km_row(10, 0.5)]
+    slightly_below = [_raw_km_row(10, 0.49999999996)]
+    assert _first_median_recovery_time(exact) == 10
+    assert _first_median_recovery_time(slightly_below) == 10
+    assert _serialize_km_timeline(slightly_below)[0][
+        "survival_probability"
+    ] == 0.5
+
+
+def test_km_fixed_horizon_serializes_unrounded_internal_state() -> None:
+    raw_timeline = [
+        _raw_km_row(10, 0.50000000004),
+        _raw_km_row(20, 0.49),
+    ]
+    horizon = _km_at_horizon(
+        [_sample("a", "censored", 100)], raw_timeline, 10, "boundary"
+    )
+    assert horizon["survival_probability"] == 0.5
+    assert horizon["recovery_probability"] == 0.5
+    assert _first_median_recovery_time(raw_timeline) == 20
 
 
 def test_distributions_use_r7_and_distinguish_positive_from_nonnegative() -> None:
@@ -481,6 +516,18 @@ def _sample(identifier: str, status: str, sessions: int) -> dict:
         "trigger_date": "2020-01-01",
         "status": status,
         "time_sessions": sessions,
+    }
+
+
+def _raw_km_row(time_sessions: int, survival: float) -> dict:
+    return {
+        "time_sessions": time_sessions,
+        "at_risk": 2,
+        "observed_recoveries": 1,
+        "censored": 0,
+        "survival_probability": survival,
+        "recovery_probability": 1 - survival,
+        "greenwood_standard_error": 0.12345678904,
     }
 
 

@@ -254,7 +254,7 @@ def _kaplan_meier(samples: list[dict[str, Any]]) -> dict[str, Any]:
     at_risk = len(samples)
     survival = 1.0
     greenwood_sum = 0.0
-    timeline: list[dict[str, Any]] = []
+    raw_timeline: list[dict[str, Any]] = []
     for time_sessions in sorted({sample["time_sessions"] for sample in samples}):
         recoveries = counts[(time_sessions, "observed")]
         censorings = counts[(time_sessions, "censored")]
@@ -270,44 +270,65 @@ def _kaplan_meier(samples: list[dict[str, Any]]) -> dict[str, Any]:
             if survival == 0
             else math.sqrt(survival * survival * greenwood_sum)
         )
-        timeline.append(
+        raw_timeline.append(
             {
                 "time_sessions": time_sessions,
                 "at_risk": at_risk,
                 "observed_recoveries": recoveries,
                 "censored": censorings,
-                "survival_probability": _rounded(survival),
-                "recovery_probability": _rounded(1 - survival),
-                "greenwood_standard_error": _rounded(standard_error),
+                "survival_probability": survival,
+                "recovery_probability": 1 - survival,
+                "greenwood_standard_error": standard_error,
             }
         )
         at_risk -= recoveries + censorings
-    median = next(
-        (
-            row["time_sessions"]
-            for row in timeline
-            if row["survival_probability"] <= 0.5
-        ),
-        None,
-    )
     return {
         "sample_count": len(samples),
         "observed_count": observed,
         "censored_count": censored,
         "naive_observed_fraction": _ratio(observed, len(samples)),
-        "median_recovery_sessions": median,
+        "median_recovery_sessions": _first_median_recovery_time(raw_timeline),
         "samples": samples,
-        "timeline": timeline,
+        "timeline": _serialize_km_timeline(raw_timeline),
         "fixed_horizons": [
-            _km_at_horizon(samples, timeline, sessions, label)
+            _km_at_horizon(samples, raw_timeline, sessions, label)
             for sessions, label in HORIZONS
         ],
     }
 
 
+def _first_median_recovery_time(
+    raw_timeline: list[dict[str, Any]],
+) -> int | None:
+    return next(
+        (
+            row["time_sessions"]
+            for row in raw_timeline
+            if row["survival_probability"] <= 0.5
+        ),
+        None,
+    )
+
+
+def _serialize_km_timeline(
+    raw_timeline: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    return [
+        {
+            **row,
+            "survival_probability": _rounded(row["survival_probability"]),
+            "recovery_probability": _rounded(row["recovery_probability"]),
+            "greenwood_standard_error": _rounded(
+                row["greenwood_standard_error"]
+            ),
+        }
+        for row in raw_timeline
+    ]
+
+
 def _km_at_horizon(
     samples: list[dict[str, Any]],
-    timeline: list[dict[str, Any]],
+    raw_timeline: list[dict[str, Any]],
     horizon: int,
     label: str,
 ) -> dict[str, Any]:
@@ -333,7 +354,9 @@ def _km_at_horizon(
             "recovery_probability": None,
             "greenwood_standard_error": None,
         }
-    visible = [row for row in timeline if row["time_sessions"] <= horizon]
+    visible = [
+        row for row in raw_timeline if row["time_sessions"] <= horizon
+    ]
     if visible:
         latest = visible[-1]
         survival = latest["survival_probability"]
@@ -343,9 +366,9 @@ def _km_at_horizon(
         survival, recovery, standard_error = 1.0, 0.0, 0.0
     return {
         **base,
-        "survival_probability": survival,
-        "recovery_probability": recovery,
-        "greenwood_standard_error": standard_error,
+        "survival_probability": _rounded(survival),
+        "recovery_probability": _rounded(recovery),
+        "greenwood_standard_error": _rounded(standard_error),
     }
 
 

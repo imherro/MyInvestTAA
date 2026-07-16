@@ -48,10 +48,13 @@ S(t) = S(previous) * (1 - d_t / n_t)
 The Greenwood sum adds `d_t / (n_t * (n_t - d_t))` only when `n_t > d_t`.
 The standard error is zero when survival reaches zero. No confidence interval
 is produced. Median recovery is the first session where survival is at most
-0.5, otherwise null.
+0.5, otherwise null. This decision uses the unrounded internal survival
+probability; rounding to at most 10 decimal places is only a report-display
+operation and cannot alter the selected median session.
 
 KM estimates are also read at 63, 126, 252, 504, and 756 trading sessions.
-An empty reached sample has null probabilities.
+Each fixed-horizon value is read from the unrounded internal KM state and only
+then rounded for output. An empty reached sample has null probabilities.
 
 ## Fixed-window outcomes
 
