@@ -96,12 +96,10 @@ def analyze_drawdown_history(
 ) -> DrawdownAnalysis:
     if not isinstance(asset_key, str) or not asset_key:
         raise DrawdownInputError("asset_key must be non-empty")
-    validated = _validate_rows(rows)
-    if as_of_date is not None:
-        dates = [row["date"] for row in validated]
-        if as_of_date not in dates:
-            raise DrawdownInputError("as_of_date must be an actual input trading date")
-        validated = validated[: dates.index(as_of_date) + 1]
+    candidate_rows = (
+        rows if as_of_date is None else _rows_through_as_of(rows, as_of_date)
+    )
+    validated = _validate_rows(candidate_rows)
 
     high_watermark = validated[0]["close"]
     high_watermark_date = validated[0]["date"]
@@ -242,6 +240,18 @@ def _validate_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         validated.append({"date": row_date, "close": close})
         previous_date = row_date
     return validated
+
+
+def _rows_through_as_of(
+    rows: list[dict[str, Any]], as_of_date: str
+) -> list[dict[str, Any]]:
+    if not isinstance(rows, list) or not rows:
+        raise DrawdownInputError("price history must be a non-empty list")
+    if isinstance(as_of_date, str) and as_of_date:
+        for index, row in enumerate(rows):
+            if isinstance(row, dict) and row.get("date") == as_of_date:
+                return rows[: index + 1]
+    raise DrawdownInputError("as_of_date must be an actual input trading date")
 
 
 def _point(

@@ -134,6 +134,109 @@ def test_as_of_is_prefix_equivalent_and_future_invariant() -> None:
 
 
 @pytest.mark.parametrize(
+    "future_row",
+    [
+        _row("2020-01-04", 0),
+        _row("2020-01-04", -1),
+        _row("2020-01-04", float("nan")),
+        _row("2020-01-04", float("inf")),
+        _row("2020-01-04", True),
+        _row("2020-01-04", 100, basis="price"),
+    ],
+)
+def test_as_of_ignores_invalid_future_prices_and_basis(future_row: dict) -> None:
+    prefix = _rows(100, 90, 80)
+    expected = analyze_drawdown_history(prefix, asset_key="asset")
+
+    actual = analyze_drawdown_history(
+        prefix + [future_row], asset_key="asset", as_of_date="2020-01-03"
+    )
+
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "future_row",
+    [
+        {},
+        {"date": "2020-01-04", "return_basis": "total_return"},
+        {"close": 100, "return_basis": "total_return"},
+        {"date": "2020-01-04", "close": 100},
+        "not-an-object",
+        None,
+    ],
+)
+def test_as_of_ignores_malformed_future_rows(future_row) -> None:
+    prefix = _rows(100, 90, 80)
+    expected = analyze_drawdown_history(prefix, asset_key="asset")
+
+    actual = analyze_drawdown_history(
+        prefix + [future_row], asset_key="asset", as_of_date="2020-01-03"
+    )
+
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "future_row",
+    [
+        _row("2020-01-02", 70),
+        _row("2019-12-31", 70),
+        _row("bad-date", 70),
+        _row("2020-01-03", 70),
+        _row("2020-01-01", 70),
+    ],
+)
+def test_as_of_ignores_future_tail_date_errors(future_row: dict) -> None:
+    prefix = _rows(100, 90, 80)
+    expected = analyze_drawdown_history(prefix, asset_key="asset")
+
+    actual = analyze_drawdown_history(
+        prefix + [future_row], asset_key="asset", as_of_date="2020-01-03"
+    )
+
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "bad_prefix",
+    [
+        [_row("2020-01-01", 100), {}, _row("2020-01-03", 80)],
+        [_row("2020-01-01", 100), _row("2020-01-02", 0)],
+        [_row("2020-01-01", 100), _row("2020-01-02", 90, basis="price")],
+        [_row("2020-01-02", 100), _row("2020-01-01", 90)],
+    ],
+)
+def test_as_of_still_rejects_errors_in_visible_prefix(bad_prefix: list) -> None:
+    target = bad_prefix[-1].get("date") if isinstance(bad_prefix[-1], dict) else None
+    if target is None:
+        target = "2020-01-03"
+        bad_prefix.append(_row(target, 80))
+
+    with pytest.raises(DrawdownInputError):
+        analyze_drawdown_history(
+            bad_prefix, asset_key="asset", as_of_date=target
+        )
+
+
+@pytest.mark.parametrize(
+    "future_row",
+    [
+        _row("2020-01-04", 0),
+        _row("2020-01-04", float("nan")),
+        _row("2020-01-04", 100, basis="price"),
+        {},
+        "not-an-object",
+        None,
+        _row("2020-01-02", 70),
+    ],
+)
+def test_full_analysis_still_validates_arbitrary_future_rows(future_row) -> None:
+    with pytest.raises(DrawdownInputError):
+        analyze_drawdown_history(_rows(100, 90, 80) + [future_row], asset_key="asset")
+
+
+@pytest.mark.parametrize(
     "as_of_date", ["2019-12-31", "2020-01-02", "2020-01-04"]
 )
 def test_as_of_must_be_an_actual_input_date(as_of_date: str) -> None:

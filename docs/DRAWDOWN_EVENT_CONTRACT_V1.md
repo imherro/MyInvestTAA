@@ -78,6 +78,8 @@ Calculations use unrounded inputs. JSON-derived floating values are rounded to a
 
 `analyze_drawdown_history(rows, asset_key=..., as_of_date=...)` requires `as_of_date` to be an actual input trading date. It analyzes only rows through that date. It never rolls to another date.
 
+When an as-of date is specified, the engine first locates the matching raw input row and immediately takes the inclusive prefix ending there. Full validation is applied only to that prefix. Rows after the target are not parsed, converted, or validated; even malformed future rows cannot change the historical result or its error state. Errors at or before the target still fail closed. With `as_of_date=None`, the complete input remains subject to strict validation.
+
 For every valid date `t`, analyzing the full input as of `t` must equal analyzing the prefix ending at `t`. Appending future rows must not change the same as-of result. Future troughs, recoveries, and durations therefore cannot enter historical state.
 
 ## Reports And Provenance
