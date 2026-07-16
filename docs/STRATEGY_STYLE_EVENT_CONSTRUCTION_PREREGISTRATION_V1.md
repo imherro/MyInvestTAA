@@ -190,10 +190,29 @@ source_exit_result
 固定语义：
 
 ```text
+event_status 只允许：CLOSED OPEN
 source_entry_result = ENTRY_CANDIDATE
 CLOSED: source_exit_result = EXIT_CANDIDATE
 OPEN: source_exit_result = null
 ```
+
+所有事件都必须包含 `last_observation_index` 和 `last_observation_date`，统一语义固定为：
+
+```text
+last_observation_index >= event_start_index
+last_observation_date = common_panel.dates[last_observation_index]
+
+CLOSED:
+  last_observation_index = event_end_index
+  last_observation_date = event_end_observation_date
+
+OPEN:
+  event_end_index = null
+  last_observation_index = 3283
+  last_observation_date = 2026-07-15
+```
+
+`CLOSED` 事件不得把 `last_observation_index` 或 `last_observation_date` 写为 `null`，也不得使用样本截止日替代实际事件结束日。不得引入第三种事件状态。
 
 ## 14. 明确禁止的事件字段
 
@@ -260,4 +279,3 @@ Integration status: DO_NOT_INTEGRATE
 ```
 
 不得标记为 `APPROVED`、`EVENT_READY`、`OUTCOME_READY`、`BEST_PROFILE`、`BACKTEST_READY` 或 `PRODUCTION_READY`。
-
