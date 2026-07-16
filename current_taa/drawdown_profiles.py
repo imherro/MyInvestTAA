@@ -207,6 +207,9 @@ def _validate_complete_event_report(
     ):
         raise DrawdownProfileError("event report period differs from series")
 
+    asset_key = report["asset"]["asset_key"]
+    date_indexes = {row["date"]: index for index, row in enumerate(series)}
+
     event_ids: set[str] = set()
     open_count = 0
     completed_count = 0
@@ -218,6 +221,8 @@ def _validate_complete_event_report(
         if not isinstance(event_id, str) or event_id in event_ids:
             raise DrawdownProfileError("event_id must be unique")
         event_ids.add(event_id)
+        if event.get("asset_key") != asset_key:
+            raise DrawdownProfileError("event asset_key differs from report")
         _event_depth(event.get("max_drawdown"))
         for field in ("decline_sessions", "event_span_sessions"):
             _nonnegative_integer(event.get(field), f"event {field}")
@@ -251,6 +256,7 @@ def _validate_complete_event_report(
                 )
         else:
             raise DrawdownProfileError("event completed must be boolean")
+        _validate_event_facts(event, series, date_indexes, asset_key)
     if open_count > 1 or underwater_events != underwater_rows:
         raise DrawdownProfileError("event and daily underwater counts differ")
     referenced_ids = {
@@ -265,6 +271,114 @@ def _validate_complete_event_report(
     ):
         raise DrawdownProfileError("event summary differs from events")
     return series, events
+
+
+def _validate_event_facts(
+    event: dict[str, Any],
+    series: list[dict[str, Any]],
+    date_indexes: dict[str, int],
+    asset_key: str,
+) -> None:
+    event_id = event["event_id"]
+    peak_index = _event_date_index(event, "peak_date", date_indexes)
+    start_index = _event_date_index(event, "start_date", date_indexes)
+    trough_index = _event_date_index(event, "trough_date", date_indexes)
+    if event_id != f"{asset_key}:{event['peak_date']}":
+        raise DrawdownProfileError("event_id differs from asset and peak date")
+    if start_index != peak_index + 1:
+        raise DrawdownProfileError("event start must immediately follow peak")
+    if series[peak_index]["drawdown"] != 0:
+        raise DrawdownProfileError("event peak must have zero drawdown")
+
+    completed = event["completed"] is True
+    terminal_field = "recovery_date" if completed else "last_observation_date"
+    terminal_index = _event_date_index(event, terminal_field, date_indexes)
+    if completed:
+        if not peak_index < start_index <= trough_index < terminal_index:
+            raise DrawdownProfileError("completed event dates are out of order")
+        expected_underwater_indexes = range(start_index, terminal_index)
+    else:
+        if not peak_index < start_index <= trough_index <= terminal_index:
+            raise DrawdownProfileError("open event dates are out of order")
+        expected_underwater_indexes = range(start_index, terminal_index + 1)
+
+    underwater_rows = [
+        (index, row)
+        for index, row in enumerate(series)
+        if row["state"] == "underwater" and row.get("event_id") == event_id
+    ]
+    if not underwater_rows or underwater_rows[0][1]["date"] != event["start_date"]:
+        raise DrawdownProfileError("event start is not its first underwater row")
+    if [index for index, _ in underwater_rows] != list(expected_underwater_indexes):
+        raise DrawdownProfileError("event underwater rows are not contiguous")
+    if len(underwater_rows) != event["underwater_observations"]:
+        raise DrawdownProfileError("event underwater count differs from series")
+
+    minimum_drawdown = min(row["drawdown"] for _, row in underwater_rows)
+    first_trough = next(
+        row["date"] for _, row in underwater_rows if row["drawdown"] == minimum_drawdown
+    )
+    reported_max = _finite_number(event["max_drawdown"], "event max_drawdown")
+    if _rounded(reported_max) != _rounded(minimum_drawdown):
+        raise DrawdownProfileError("event max drawdown differs from series")
+    if event["trough_date"] != first_trough:
+        raise DrawdownProfileError("event trough is not the first deepest row")
+
+    decline_sessions = trough_index - peak_index
+    event_span_sessions = terminal_index - peak_index
+    if event["decline_sessions"] != decline_sessions or decline_sessions < 1:
+        raise DrawdownProfileError("event decline duration differs from series")
+    if event["event_span_sessions"] != event_span_sessions:
+        raise DrawdownProfileError("event span duration differs from series")
+
+    recovered_rows = [
+        row
+        for row in series
+        if row["state"] == "recovered" and row.get("event_id") == event_id
+    ]
+    if completed:
+        recovery_sessions = terminal_index - trough_index
+        recovery_row = series[terminal_index]
+        if recovery_sessions < 1 or event["recovery_sessions"] != recovery_sessions:
+            raise DrawdownProfileError("event recovery duration differs from series")
+        if decline_sessions + recovery_sessions != event_span_sessions:
+            raise DrawdownProfileError("completed event durations are inconsistent")
+        if event["underwater_observations"] != event_span_sessions - 1:
+            raise DrawdownProfileError("completed event underwater count is invalid")
+        if (
+            len(recovered_rows) != 1
+            or recovery_row["state"] != "recovered"
+            or recovery_row.get("event_id") != event_id
+            or recovery_row["drawdown"] != 0
+        ):
+            raise DrawdownProfileError("completed event recovery row is invalid")
+        if event.get("last_observation_date") != event["recovery_date"]:
+            raise DrawdownProfileError(
+                "completed event last date must be recovery date"
+            )
+    else:
+        if event_span_sessions < 1:
+            raise DrawdownProfileError("open event span must be positive")
+        if event["underwater_observations"] != event_span_sessions:
+            raise DrawdownProfileError("open event underwater count is invalid")
+        if recovered_rows:
+            raise DrawdownProfileError("open event cannot have a recovery row")
+        last_row = series[-1]
+        if (
+            terminal_index != len(series) - 1
+            or last_row["state"] != "underwater"
+            or last_row.get("event_id") != event_id
+        ):
+            raise DrawdownProfileError("open event must match the final underwater row")
+
+
+def _event_date_index(
+    event: dict[str, Any], field: str, date_indexes: dict[str, int]
+) -> int:
+    value = event.get(field)
+    if not isinstance(value, str) or value not in date_indexes:
+        raise DrawdownProfileError(f"event {field} is not in drawdown series")
+    return date_indexes[value]
 
 
 def _series_through_as_of(series: Any, as_of_date: str) -> list[Any]:

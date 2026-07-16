@@ -21,6 +21,8 @@ The builder fails closed unless:
   universe and event index;
 - all event reports retain the recorded universe and audit source chain;
 - the event index summary can be reproduced from the seven reports.
+- the event source directory contains exactly the index and seven approved asset
+  JSON files; extra JSON makes the source set ambiguous and is rejected.
 
 The output index records the raw event-index SHA-256. Each asset profile records
 the raw SHA-256 of its event report.
@@ -79,6 +81,13 @@ Legal or malformed rows and event facts after the requested date must not alter
 the same historical profile. Errors in the visible prefix still fail. A full
 profile validates the complete series, events, counts, states, dates, event IDs,
 durations, and recovery fields.
+
+The profile layer does not identify a second set of events. It validates every
+supplied event against the approved daily facts: event and peak identity, indexed
+date order, first underwater row, first deepest trough, maximum drawdown,
+per-event underwater count, decline/recovery/span algebra, recovery-row semantics,
+and the final state of an open event. Durations are verified from daily-series
+indexes, not trusted as independent inputs.
 
 ## Output and publishing
 

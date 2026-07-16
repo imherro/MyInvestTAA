@@ -51,6 +51,35 @@ def test_r7_quantile_is_deterministic_and_handles_empty_samples() -> None:
         linear_quantile([1], 1.1)
 
 
+@pytest.mark.parametrize(
+    ("sample", "probability", "expected"),
+    [
+        ([0, 1, 2], 0.5, 1),
+        ([0, 10], 0.5, 5),
+        ([1, 1, 3], 0.5, 1),
+        ([0, 10], 0.75, 7.5),
+        ([0, 10], 0.9, 9),
+        ([0, 10], 0.95, 9.5),
+        ([0, 10], 0.975, 9.75),
+    ],
+)
+def test_r7_quantile_required_samples_and_probabilities(
+    sample: list[float], probability: float, expected: float
+) -> None:
+    assert linear_quantile(sample, probability) == expected
+
+
+@pytest.mark.parametrize(
+    ("sample", "probability"),
+    [([float("nan")], 0.5), ([float("inf")], 0.5), ([1], float("nan"))],
+)
+def test_r7_quantile_rejects_nonfinite_inputs(
+    sample: list[float], probability: float
+) -> None:
+    with pytest.raises(DrawdownProfileError):
+        linear_quantile(sample, probability)
+
+
 def test_profile_separates_daily_completed_and_open_event_samples() -> None:
     profile = build_drawdown_profile(_event_report())
     daily = profile["daily_depth_profile"]
@@ -87,6 +116,34 @@ def test_blocked_profile_has_only_null_profile_sections() -> None:
         "duration_profile": None,
         "current_position": None,
     }
+
+
+def test_current_position_inclusive_semantics_with_duplicate_depths() -> None:
+    current = build_drawdown_profile(_event_report(100, 90, 90))["current_position"]
+
+    assert current["all_observations_percentile"] == 1.0
+    assert current["all_observations_exceedance_rate"] == pytest.approx(2 / 3)
+    assert current["underwater_observations_percentile"] == 1.0
+    assert current["underwater_observations_exceedance_rate"] == 1.0
+
+
+def test_high_watermark_current_position_has_no_underwater_or_open_position() -> None:
+    current = build_drawdown_profile(_event_report(100, 90, 100, 110))[
+        "current_position"
+    ]
+
+    assert current["underwater_observations_percentile"] is None
+    assert current["underwater_observations_exceedance_rate"] is None
+    assert current["open_event_depth_position"] is None
+
+
+def test_event_trough_must_be_first_occurrence_of_deepest_drawdown() -> None:
+    report = _event_report(100, 80, 80, 100)
+    build_drawdown_profile(report)
+    report["events"][0]["trough_date"] = "2020-01-03"
+
+    with pytest.raises(DrawdownProfileError, match="first deepest"):
+        build_drawdown_profile(report)
 
 
 def test_as_of_rebuilds_visible_facts_and_ignores_arbitrary_future_content() -> None:
@@ -129,6 +186,25 @@ def test_as_of_requires_actual_date_and_valid_visible_prefix() -> None:
         lambda report: report["events"][0].update(recovery_sessions=-1),
         lambda report: report["event_summary"].update(completed_event_count=0),
         lambda report: report["events"][0].update(underwater_observations=1),
+        lambda report: report["events"][0].update(event_id="asset:wrong"),
+        lambda report: report["events"][0].update(peak_date="2020-01-02"),
+        lambda report: report["events"][0].update(start_date="2020-01-03"),
+        lambda report: report["events"][0].update(trough_date="2020-01-02"),
+        lambda report: report["events"][0].update(recovery_date="2020-01-05"),
+        lambda report: report["events"][0].update(max_drawdown=-0.1),
+        lambda report: report["events"][0].update(decline_sessions=1),
+        lambda report: report["events"][0].update(recovery_sessions=2),
+        lambda report: report["events"][0].update(event_span_sessions=4),
+        lambda report: (
+            report["events"][0].update(underwater_observations=1),
+            report["events"][1].update(underwater_observations=2),
+        ),
+        lambda report: report["drawdown_series"][3].update(state="high_watermark"),
+        lambda report: report["drawdown_series"][3].update(event_id="wrong"),
+        lambda report: report["events"][1].update(last_observation_date="2020-01-05"),
+        lambda report: report["drawdown_series"][-1].update(
+            state="high_watermark", event_id=None, drawdown=0
+        ),
     ],
 )
 def test_full_profile_fails_closed_on_inconsistent_event_facts(mutation) -> None:
@@ -189,6 +265,37 @@ def test_builder_rejects_stale_audit_hash(tmp_path: Path) -> None:
         build_drawdown_profile_report_set(project)
 
 
+@pytest.mark.parametrize("change", ["missing", "extra"])
+def test_builder_requires_exact_event_json_file_set(
+    tmp_path: Path, change: str
+) -> None:
+    project = _project_fixture(tmp_path)
+    event_directory = project / "reports/strategy_research/drawdown_events"
+    if change == "missing":
+        (event_directory / "csi300_total_return.json").unlink()
+    else:
+        (event_directory / "unknown.json").write_text("{}", encoding="utf-8")
+
+    with pytest.raises(DrawdownProfileBuildError, match="exactly"):
+        build_drawdown_profile_report_set(project)
+
+
+def test_builder_is_deterministic_except_index_timestamp_and_output_is_safe(
+    tmp_path: Path,
+) -> None:
+    project = _project_fixture(tmp_path)
+    first = build_drawdown_profile_report_set(project, generated_at="first")
+    second = build_drawdown_profile_report_set(project, generated_at="second")
+    first["index.json"].pop("generated_at")
+    second["index.json"].pop("generated_at")
+
+    assert first == second
+    serialized = json.dumps(first, allow_nan=False).lower()
+    assert "nan" not in serialized
+    assert "infinity" not in serialized
+    assert "token" not in serialized
+
+
 def test_atomic_publish_preserves_old_target_then_replaces_it(tmp_path: Path) -> None:
     project = _project_fixture(tmp_path / "project")
     reports = build_drawdown_profile_report_set(project, generated_at="fixed")
@@ -207,9 +314,11 @@ def test_atomic_publish_preserves_old_target_then_replaces_it(tmp_path: Path) ->
     assert not target.with_name("published.previous").exists()
 
 
-def _event_report() -> dict:
+def _event_report(*prices: float) -> dict:
+    if not prices:
+        prices = (100, 90, 80, 100, 110, 99)
     analysis = analyze_drawdown_history(
-        _rows(100, 90, 80, 100, 110, 99), asset_key="asset"
+        _rows(*prices), asset_key="asset"
     )
     events = [event.to_dict() for event in analysis.events]
     return {

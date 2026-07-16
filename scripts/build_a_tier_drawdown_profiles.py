@@ -38,6 +38,7 @@ def build_drawdown_profile_report_set(
     audit = _load_json(audit_bytes, "universe audit")
     event_index = _load_json(event_index_bytes, "drawdown event index")
     _validate_source_index(universe, tier_a, audit_bytes, audit, event_index)
+    _validate_event_file_set(root, tier_a)
     source_index_hash = hashlib.sha256(event_index_bytes).hexdigest()
     reports: dict[str, dict[str, Any]] = {}
     index_assets: list[dict[str, Any]] = []
@@ -220,6 +221,27 @@ def _validate_event_identity(
         "source_audit_sha256"
     ) != event_index.get("source_audit_sha256"):
         raise DrawdownProfileBuildError("event report source chain differs from index")
+
+
+def _validate_event_file_set(root: Path, tier_a: tuple[ResearchAsset, ...]) -> None:
+    event_directory = root / Path(EVENT_INDEX_RELATIVE).parent
+    expected = {"index.json"} | {
+        f"{asset.asset_key}.json" for asset in tier_a
+    }
+    try:
+        actual = {
+            path.name
+            for path in event_directory.iterdir()
+            if path.is_file() and path.suffix.lower() == ".json"
+        }
+    except OSError as exc:
+        raise DrawdownProfileBuildError(
+            "cannot inspect event source directory"
+        ) from exc
+    if actual != expected:
+        raise DrawdownProfileBuildError(
+            "event source directory must contain exactly the approved eight JSON files"
+        )
 
 
 def _validate_report_names(reports, tier_a) -> None:
