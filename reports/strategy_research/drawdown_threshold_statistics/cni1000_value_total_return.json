@@ -1,0 +1,55 @@
+{
+  "analysis_status": "blocked",
+  "asset": {
+    "asset_key": "cni1000_value_total_return",
+    "display_name": "国证1000价值全收益指数",
+    "official_code": "CN2371",
+    "provider_code": null,
+    "risk_family": "value_income",
+    "tier": "A"
+  },
+  "blockers": [
+    "local cache has no provider mapping",
+    "provider_code is not verified",
+    "total-return basis is unresolved",
+    "provider mapping is unverified",
+    "contract research_status is blocked"
+  ],
+  "limitations": [
+    "Candidate thresholds are not formal strategy parameters.",
+    "Statistics remain within one asset, threshold family, and threshold level.",
+    "Different thresholds from the same event remain highly dependent.",
+    "Kaplan-Meier estimates assume non-informative censoring, which is unproven.",
+    "Small-sample estimates are unstable.",
+    "Naive observed fractions do not adjust for censoring and cannot replace KM estimates.",
+    "Not-reached and insufficient-history events are not recovery failures.",
+    "Observed fixed-window returns exclude incomplete windows.",
+    "Realized minimum distributions exclude open-event censored minima and remain censoring-biased.",
+    "No cross-asset pooling, threshold ranking, parameter selection, positions, or strategy returns are produced.",
+    "Historical decisions must use the point-in-time interface."
+  ],
+  "methodology_version": "1.0",
+  "period": null,
+  "report_type": "asset_drawdown_threshold_statistics",
+  "schema_version": "1.0",
+  "source_cohort_index_path": "reports/strategy_research/drawdown_threshold_cohorts/index.json",
+  "source_cohort_index_sha256": "8c82b4126277895ca8e45b9407f46682d0e4f61314da589c44bc30b7c4772b71",
+  "source_cohort_report_path": "reports/strategy_research/drawdown_threshold_cohorts/cni1000_value_total_return.json",
+  "source_cohort_report_sha256": "ab6fb1dc43390dc00bdc110e1e62968fa7691f966322800f8a26ca1e9fc5a2dc",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_event_report_path": "reports/strategy_research/drawdown_events/cni1000_value_total_return.json",
+  "source_event_report_sha256": "0c032d6eeac08566d41e0ea6aef4abf914d470da71950583d5a79048fa4b6687",
+  "source_outcome_index_path": "reports/strategy_research/drawdown_outcomes/index.json",
+  "source_outcome_index_sha256": "aa66133bcea7ba784ea3fb149279a99790bf882acd399be872a7b3d949874600",
+  "source_outcome_report_path": "reports/strategy_research/drawdown_outcomes/cni1000_value_total_return.json",
+  "source_outcome_report_sha256": "5221b59522f197e589cb9ef708af419ea801b40aae63805f7245711f16ddb2f4",
+  "summary": {
+    "threshold_group_count": 0,
+    "total_event_count": 0,
+    "total_reached_cohorts": 0
+  },
+  "threshold_statistics": [],
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}
