@@ -1,0 +1,584 @@
+{
+  "assets": [
+    {
+      "asset_key": "csi300_total_return",
+      "display_name": "沪深300全收益指数",
+      "risk_family": "broad_beta",
+      "tiers": [
+        {
+          "current_reference_depth": 0.0530967996,
+          "median_historical_depth": 0.0483419373,
+          "observed_attainment_rate": 0.2903225806451613,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.2089619067,
+            "observed_count": 9,
+            "positive_return_count": 2,
+            "positive_return_rate": 0.2222222222222222,
+            "reached_count": 9
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.0067552763,
+            "p75_additional_loss": 0.0950423181,
+            "reached_count": 9,
+            "realized_count": 8
+          },
+          "reached_count": 9,
+          "resolved_attainment_count": 31,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p75",
+          "tier": 1,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.2018744373,
+            "observed_count": 9,
+            "positive_return_count": 2,
+            "positive_return_rate": 0.2222222222222222,
+            "reached_count": 9
+          }
+        },
+        {
+          "current_reference_depth": 0.0787001998,
+          "median_historical_depth": 0.0835154895,
+          "observed_attainment_rate": 0.12903225806451613,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.1699883019,
+            "observed_count": 4,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 4
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.3105642858,
+            "p75_additional_loss": 0.3444049464,
+            "reached_count": 4,
+            "realized_count": 3
+          },
+          "reached_count": 4,
+          "resolved_attainment_count": 31,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p90",
+          "tier": 2,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.1476246634,
+            "observed_count": 4,
+            "positive_return_count": 1,
+            "positive_return_rate": 0.25,
+            "reached_count": 4
+          }
+        },
+        {
+          "current_reference_depth": 0.2220904315,
+          "median_historical_depth": 0.2089552307,
+          "observed_attainment_rate": 0.0967741935483871,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.1527912632,
+            "observed_count": 3,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 3
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.340824354,
+            "p75_additional_loss": 0.3595349805,
+            "reached_count": 3,
+            "realized_count": 2
+          },
+          "reached_count": 3,
+          "resolved_attainment_count": 31,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p95",
+          "tier": 3,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.1372100567,
+            "observed_count": 3,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 3
+          }
+        }
+      ]
+    },
+    {
+      "asset_key": "csi500_total_return",
+      "display_name": "中证500全收益指数",
+      "risk_family": "broad_beta",
+      "tiers": [
+        {
+          "current_reference_depth": 0.0466861011,
+          "median_historical_depth": 0.0469337326,
+          "observed_attainment_rate": 0.20833333333333334,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.2767669764,
+            "observed_count": 5,
+            "positive_return_count": 1,
+            "positive_return_rate": 0.2,
+            "reached_count": 5
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.021595498,
+            "p75_additional_loss": 0.1290257242,
+            "reached_count": 5,
+            "realized_count": 4
+          },
+          "reached_count": 5,
+          "resolved_attainment_count": 24,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p75",
+          "tier": 1,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.3249883746,
+            "observed_count": 5,
+            "positive_return_count": 1,
+            "positive_return_rate": 0.2,
+            "reached_count": 5
+          }
+        },
+        {
+          "current_reference_depth": 0.0729754117,
+          "median_historical_depth": 0.1082675429,
+          "observed_attainment_rate": 0.08333333333333333,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.2990421369,
+            "observed_count": 2,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 2
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.4140502033,
+            "p75_additional_loss": 0.4140502033,
+            "reached_count": 2,
+            "realized_count": 1
+          },
+          "reached_count": 2,
+          "resolved_attainment_count": 24,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p90",
+          "tier": 2,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.2789916134,
+            "observed_count": 2,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 2
+          }
+        },
+        {
+          "current_reference_depth": 0.1271462134,
+          "median_historical_depth": 0.1776600098,
+          "observed_attainment_rate": 0.08333333333333333,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.3009541264,
+            "observed_count": 2,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 2
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.3972230738,
+            "p75_additional_loss": 0.3972230738,
+            "reached_count": 2,
+            "realized_count": 1
+          },
+          "reached_count": 2,
+          "resolved_attainment_count": 24,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p95",
+          "tier": 3,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.3255542971,
+            "observed_count": 2,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "asset_key": "csi1000_total_return",
+      "display_name": "中证1000全收益指数",
+      "risk_family": "broad_beta",
+      "tiers": [
+        {
+          "current_reference_depth": 0.0447611125,
+          "median_historical_depth": 0.041964674,
+          "observed_attainment_rate": 0.3225806451612903,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": 0.1247087534,
+            "observed_count": 10,
+            "positive_return_count": 5,
+            "positive_return_rate": 0.5,
+            "reached_count": 10
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.0022252867,
+            "p75_additional_loss": 0.0160974011,
+            "reached_count": 10,
+            "realized_count": 9
+          },
+          "reached_count": 10,
+          "resolved_attainment_count": 31,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p75",
+          "tier": 1,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": 0.0870050251,
+            "observed_count": 10,
+            "positive_return_count": 5,
+            "positive_return_rate": 0.5,
+            "reached_count": 10
+          }
+        },
+        {
+          "current_reference_depth": 0.0672117083,
+          "median_historical_depth": 0.1014559694,
+          "observed_attainment_rate": 0.0967741935483871,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.2124681866,
+            "observed_count": 3,
+            "positive_return_count": 1,
+            "positive_return_rate": 0.3333333333333333,
+            "reached_count": 3
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.212750876,
+            "p75_additional_loss": 0.3157453514,
+            "reached_count": 3,
+            "realized_count": 2
+          },
+          "reached_count": 3,
+          "resolved_attainment_count": 31,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p90",
+          "tier": 2,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.1453983105,
+            "observed_count": 3,
+            "positive_return_count": 1,
+            "positive_return_rate": 0.3333333333333333,
+            "reached_count": 3
+          }
+        },
+        {
+          "current_reference_depth": 0.1177161573,
+          "median_historical_depth": 0.1339763452,
+          "observed_attainment_rate": 0.06451612903225806,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.2800610081,
+            "observed_count": 2,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 2
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.4140585693,
+            "p75_additional_loss": 0.4140585693,
+            "reached_count": 2,
+            "realized_count": 1
+          },
+          "reached_count": 2,
+          "resolved_attainment_count": 31,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p95",
+          "tier": 3,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.3394908166,
+            "observed_count": 2,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "asset_key": "csi_dividend_total_return",
+      "display_name": "中证红利全收益指数",
+      "risk_family": "value_income",
+      "tiers": [
+        {
+          "current_reference_depth": 0.0505406148,
+          "median_historical_depth": 0.0505406148,
+          "observed_attainment_rate": 0.2916666666666667,
+          "one_year": {
+            "censored_count": 2,
+            "median_forward_return": 0.0013367933,
+            "observed_count": 12,
+            "positive_return_count": 6,
+            "positive_return_rate": 0.5,
+            "reached_count": 14
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.0416364984,
+            "p75_additional_loss": 0.0966492899,
+            "reached_count": 14,
+            "realized_count": 13
+          },
+          "reached_count": 14,
+          "resolved_attainment_count": 48,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p75",
+          "tier": 1,
+          "two_year": {
+            "censored_count": 4,
+            "median_forward_return": -0.0207297988,
+            "observed_count": 10,
+            "positive_return_count": 5,
+            "positive_return_rate": 0.5,
+            "reached_count": 14
+          }
+        },
+        {
+          "current_reference_depth": 0.1056222383,
+          "median_historical_depth": 0.0894437846,
+          "observed_attainment_rate": 0.16666666666666666,
+          "one_year": {
+            "censored_count": 1,
+            "median_forward_return": -0.0077763236,
+            "observed_count": 7,
+            "positive_return_count": 3,
+            "positive_return_rate": 0.42857142857142855,
+            "reached_count": 8
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.0458491855,
+            "p75_additional_loss": 0.2032233418,
+            "reached_count": 8,
+            "realized_count": 7
+          },
+          "reached_count": 8,
+          "resolved_attainment_count": 48,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p90",
+          "tier": 2,
+          "two_year": {
+            "censored_count": 2,
+            "median_forward_return": 0.0307334344,
+            "observed_count": 6,
+            "positive_return_count": 4,
+            "positive_return_rate": 0.6666666666666666,
+            "reached_count": 8
+          }
+        },
+        {
+          "current_reference_depth": 0.1703858167,
+          "median_historical_depth": 0.1879726,
+          "observed_attainment_rate": 0.0425531914893617,
+          "one_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.2343555539,
+            "observed_count": 2,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 2
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 0,
+            "median_additional_loss": 0.3442415487,
+            "p75_additional_loss": 0.3648279537,
+            "reached_count": 2,
+            "realized_count": 2
+          },
+          "reached_count": 2,
+          "resolved_attainment_count": 47,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p95",
+          "tier": 3,
+          "two_year": {
+            "censored_count": 0,
+            "median_forward_return": -0.1132314266,
+            "observed_count": 2,
+            "positive_return_count": 0,
+            "positive_return_rate": 0.0,
+            "reached_count": 2
+          }
+        }
+      ]
+    },
+    {
+      "asset_key": "cni_free_cash_flow_total_return",
+      "display_name": "国证自由现金流全收益指数",
+      "risk_family": "value_income",
+      "tiers": [
+        {
+          "current_reference_depth": 0.0418047022,
+          "median_historical_depth": 0.0418047022,
+          "observed_attainment_rate": 0.3103448275862069,
+          "one_year": {
+            "censored_count": 3,
+            "median_forward_return": 0.2299405178,
+            "observed_count": 24,
+            "positive_return_count": 16,
+            "positive_return_rate": 0.6666666666666666,
+            "reached_count": 27
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.0045789071,
+            "p75_additional_loss": 0.0678713455,
+            "reached_count": 27,
+            "realized_count": 26
+          },
+          "reached_count": 27,
+          "resolved_attainment_count": 87,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p75",
+          "tier": 1,
+          "two_year": {
+            "censored_count": 4,
+            "median_forward_return": 0.4439448452,
+            "observed_count": 23,
+            "positive_return_count": 20,
+            "positive_return_rate": 0.8695652173913043,
+            "reached_count": 27
+          }
+        },
+        {
+          "current_reference_depth": 0.0666635354,
+          "median_historical_depth": 0.0675658293,
+          "observed_attainment_rate": 0.16091954022988506,
+          "one_year": {
+            "censored_count": 1,
+            "median_forward_return": -0.0084580009,
+            "observed_count": 13,
+            "positive_return_count": 6,
+            "positive_return_rate": 0.46153846153846156,
+            "reached_count": 14
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.056565753,
+            "p75_additional_loss": 0.089234258,
+            "reached_count": 14,
+            "realized_count": 13
+          },
+          "reached_count": 14,
+          "resolved_attainment_count": 87,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p90",
+          "tier": 2,
+          "two_year": {
+            "censored_count": 3,
+            "median_forward_return": 0.2535096061,
+            "observed_count": 11,
+            "positive_return_count": 9,
+            "positive_return_rate": 0.8181818181818182,
+            "reached_count": 14
+          }
+        },
+        {
+          "current_reference_depth": 0.1367102844,
+          "median_historical_depth": 0.1288632679,
+          "observed_attainment_rate": 0.11494252873563218,
+          "one_year": {
+            "censored_count": 1,
+            "median_forward_return": -0.059714963,
+            "observed_count": 9,
+            "positive_return_count": 3,
+            "positive_return_rate": 0.3333333333333333,
+            "reached_count": 10
+          },
+          "post_trigger_additional_loss": {
+            "censored_count": 1,
+            "median_additional_loss": 0.0053456263,
+            "p75_additional_loss": 0.1030840088,
+            "reached_count": 10,
+            "realized_count": 9
+          },
+          "reached_count": 10,
+          "resolved_attainment_count": 87,
+          "threshold_family": "completed_event_depth_quantile",
+          "threshold_level": "p95",
+          "tier": 3,
+          "two_year": {
+            "censored_count": 3,
+            "median_forward_return": 0.2925925681,
+            "observed_count": 7,
+            "positive_return_count": 5,
+            "positive_return_rate": 0.7142857142857143,
+            "reached_count": 10
+          }
+        }
+      ]
+    }
+  ],
+  "blocked_assets": [
+    {
+      "asset_key": "chinext_total_return",
+      "blockers": [
+        "local research cache is missing",
+        "total-return basis is reference_only",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ]
+    },
+    {
+      "asset_key": "cni1000_value_total_return",
+      "blockers": [
+        "local cache has no provider mapping",
+        "provider_code is not verified",
+        "total-return basis is unresolved",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ]
+    }
+  ],
+  "generated_at": "2026-07-16T08:23:50+00:00",
+  "report_type": "a_tier_drawdown_addon_trigger_candidate",
+  "rule": {
+    "deeper_tier_preserves_shallower_tiers": true,
+    "insufficient_history_disables_tier": true,
+    "reset_on_peak_recovery": true,
+    "threshold_family": "completed_event_depth_quantile",
+    "thresholds_computed_at_event_peak": true,
+    "thresholds_frozen_within_event": true,
+    "tiers": [
+      {
+        "threshold_level": "p75",
+        "tier": 1
+      },
+      {
+        "threshold_level": "p90",
+        "tier": 2
+      },
+      {
+        "threshold_level": "p95",
+        "tier": 3
+      }
+    ],
+    "trigger_on_first_reach_or_exceed": true,
+    "trigger_once_per_event": true
+  },
+  "schema_version": "1.0",
+  "source_evidence_table_sha256": "da30ae7cf791377200f73e359ecf3ca676316b765a9107e34fe164e68d741ea5",
+  "source_ledger_index_sha256": "8514ebc1179ac266b83bdcfc3cfa70159848f4124a90a53ec04223182d0015d2"
+}
