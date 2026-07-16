@@ -1,0 +1,53 @@
+{
+  "analysis_status": "blocked",
+  "asset": {
+    "asset_key": "cni1000_value_total_return",
+    "display_name": "国证1000价值全收益指数",
+    "official_code": "CN2371",
+    "provider_code": null,
+    "risk_family": "value_income",
+    "tier": "A"
+  },
+  "blockers": [
+    "local cache has no provider mapping",
+    "provider_code is not verified",
+    "total-return basis is unresolved",
+    "provider mapping is unverified",
+    "contract research_status is blocked"
+  ],
+  "current_state": null,
+  "drawdown_series": [],
+  "event_summary": {
+    "completed_event_count": 0,
+    "open_event_count": 0,
+    "total_event_count": 0
+  },
+  "events": [],
+  "limitations": [
+    "This report establishes price drawdown facts only.",
+    "Historical drawdown percentiles are not calculated.",
+    "Recovery probabilities and forward returns are not calculated.",
+    "Strategy parameters and portfolio weights are not designed.",
+    "Blocked assets are not analyzed or substituted.",
+    "Completed-event outcomes are hindsight records; historical decisions must use the as-of interface."
+  ],
+  "methodology": {
+    "drawdown": "close / high_watermark - 1",
+    "event_start": "first observation strictly below the current high watermark",
+    "high_watermark": "expanding maximum using observations through each date",
+    "peak_tie": "most recent equal high while no event is open",
+    "point_in_time_interface": "analyze_drawdown_history(..., as_of_date=trading_date)",
+    "recovery": "first observation at or above the event peak value",
+    "trough_tie": "first observation at the minimum value"
+  },
+  "methodology_version": "1.0",
+  "period": null,
+  "report_type": "asset_drawdown_events",
+  "schema_version": "1.0",
+  "source_audit_path": "reports/strategy_research/universe_audit.json",
+  "source_audit_sha256": "74edab6f049f450df57fc8e1ac9f2729d7a244f6fe3590032864d5597129816c",
+  "source_cache_path": null,
+  "source_cache_sha256": null,
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}

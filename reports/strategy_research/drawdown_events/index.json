@@ -1,0 +1,143 @@
+{
+  "assets": [
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "csi300_total_return",
+      "blockers": [],
+      "completed_event_count": 31,
+      "current_drawdown": -0.0540300083,
+      "display_name": "沪深300全收益指数",
+      "first_date": "2011-01-04",
+      "last_date": "2026-07-14",
+      "open_event_count": 1,
+      "provider_code": "H00300.CSI",
+      "report_path": "reports/strategy_research/drawdown_events/csi300_total_return.json",
+      "risk_family": "broad_beta",
+      "row_count": 3770
+    },
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "csi500_total_return",
+      "blockers": [],
+      "completed_event_count": 24,
+      "current_drawdown": -0.1691022283,
+      "display_name": "中证500全收益指数",
+      "first_date": "2011-01-04",
+      "last_date": "2026-07-14",
+      "open_event_count": 1,
+      "provider_code": "H00905.CSI",
+      "report_path": "reports/strategy_research/drawdown_events/csi500_total_return.json",
+      "risk_family": "broad_beta",
+      "row_count": 3770
+    },
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "csi1000_total_return",
+      "blockers": [],
+      "completed_event_count": 31,
+      "current_drawdown": -0.4145210954,
+      "display_name": "中证1000全收益指数",
+      "first_date": "2011-01-04",
+      "last_date": "2026-07-14",
+      "open_event_count": 1,
+      "provider_code": "H00852.CSI",
+      "report_path": "reports/strategy_research/drawdown_events/csi1000_total_return.json",
+      "risk_family": "broad_beta",
+      "row_count": 3770
+    },
+    {
+      "analysis_status": "blocked",
+      "asset_key": "chinext_total_return",
+      "blockers": [
+        "local research cache is missing",
+        "total-return basis is reference_only",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ],
+      "completed_event_count": 0,
+      "current_drawdown": null,
+      "display_name": "创业板全收益指数",
+      "first_date": null,
+      "last_date": null,
+      "open_event_count": 0,
+      "provider_code": "399606.SZ",
+      "report_path": "reports/strategy_research/drawdown_events/chinext_total_return.json",
+      "risk_family": "growth_technology",
+      "row_count": 0
+    },
+    {
+      "analysis_status": "blocked",
+      "asset_key": "cni1000_value_total_return",
+      "blockers": [
+        "local cache has no provider mapping",
+        "provider_code is not verified",
+        "total-return basis is unresolved",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ],
+      "completed_event_count": 0,
+      "current_drawdown": null,
+      "display_name": "国证1000价值全收益指数",
+      "first_date": null,
+      "last_date": null,
+      "open_event_count": 0,
+      "provider_code": null,
+      "report_path": "reports/strategy_research/drawdown_events/cni1000_value_total_return.json",
+      "risk_family": "value_income",
+      "row_count": 0
+    },
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "csi_dividend_total_return",
+      "blockers": [],
+      "completed_event_count": 48,
+      "current_drawdown": -0.0908872331,
+      "display_name": "中证红利全收益指数",
+      "first_date": "2011-01-04",
+      "last_date": "2026-07-14",
+      "open_event_count": 1,
+      "provider_code": "H00922.CSI",
+      "report_path": "reports/strategy_research/drawdown_events/csi_dividend_total_return.json",
+      "risk_family": "value_income",
+      "row_count": 3770
+    },
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "cni_free_cash_flow_total_return",
+      "blockers": [],
+      "completed_event_count": 87,
+      "current_drawdown": -0.2094279795,
+      "display_name": "国证自由现金流全收益指数",
+      "first_date": "2012-12-31",
+      "last_date": "2026-07-14",
+      "open_event_count": 1,
+      "provider_code": "480092.CNI",
+      "report_path": "reports/strategy_research/drawdown_events/cni_free_cash_flow_total_return.json",
+      "risk_family": "value_income",
+      "row_count": 3284
+    }
+  ],
+  "generated_at": "2026-07-16T04:41:58+00:00",
+  "limitations": [
+    "This report establishes price drawdown facts only.",
+    "Historical drawdown percentiles are not calculated.",
+    "Recovery probabilities and forward returns are not calculated.",
+    "Strategy parameters and portfolio weights are not designed.",
+    "Blocked assets are not analyzed or substituted.",
+    "Completed-event outcomes are hindsight records; historical decisions must use the as-of interface."
+  ],
+  "methodology_version": "1.0",
+  "report_type": "a_tier_drawdown_event_index",
+  "schema_version": "1.0",
+  "source_audit_path": "reports/strategy_research/universe_audit.json",
+  "source_audit_sha256": "74edab6f049f450df57fc8e1ac9f2729d7a244f6fe3590032864d5597129816c",
+  "summary": {
+    "analyzed_assets": 5,
+    "blocked_assets": 2,
+    "completed_events": 221,
+    "open_events": 5,
+    "tier_a_assets": 7
+  },
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}
