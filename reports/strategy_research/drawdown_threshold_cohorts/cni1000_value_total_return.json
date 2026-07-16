@@ -1,0 +1,51 @@
+{
+  "analysis_status": "blocked",
+  "asset": {
+    "asset_key": "cni1000_value_total_return",
+    "display_name": "国证1000价值全收益指数",
+    "official_code": "CN2371",
+    "provider_code": null,
+    "risk_family": "value_income",
+    "tier": "A"
+  },
+  "blockers": [
+    "local cache has no provider mapping",
+    "provider_code is not verified",
+    "total-return basis is unresolved",
+    "provider mapping is unverified",
+    "contract research_status is blocked"
+  ],
+  "cohorts": [],
+  "limitations": [
+    "Thresholds are research candidates, not formal strategy parameters.",
+    "Each event threshold is frozen at its peak date using only then-visible history.",
+    "The current event is excluded from its own threshold estimation.",
+    "Each event contributes at most one record to each candidate threshold.",
+    "Threshold cohorts from the same event remain highly dependent.",
+    "Small samples do not establish threshold reliability.",
+    "No probabilities, return aggregates, positions, or strategy performance are calculated.",
+    "Historical decisions must use the point-in-time interface.",
+    "Full-history terminal quantiles or maximum drawdowns must not be used as historical thresholds."
+  ],
+  "methodology_version": "1.0",
+  "period": null,
+  "report_type": "asset_drawdown_threshold_cohorts",
+  "schema_version": "1.0",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_event_report_path": "reports/strategy_research/drawdown_events/cni1000_value_total_return.json",
+  "source_event_report_sha256": "0c032d6eeac08566d41e0ea6aef4abf914d470da71950583d5a79048fa4b6687",
+  "source_outcome_index_path": "reports/strategy_research/drawdown_outcomes/index.json",
+  "source_outcome_index_sha256": "aa66133bcea7ba784ea3fb149279a99790bf882acd399be872a7b3d949874600",
+  "source_outcome_report_path": "reports/strategy_research/drawdown_outcomes/cni1000_value_total_return.json",
+  "source_outcome_report_sha256": "5221b59522f197e589cb9ef708af419ea801b40aae63805f7245711f16ddb2f4",
+  "summary": {
+    "candidate_threshold_count": 0,
+    "event_count": 0,
+    "insufficient_history_count": 0,
+    "not_reached_count": 0,
+    "reached_count": 0
+  },
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}
