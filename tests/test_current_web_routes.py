@@ -4,10 +4,13 @@ from backend.main import app
 
 
 CLIENT = TestClient(app)
-CURRENT_ROUTES = {"/", "/allocation", "/research", "/shadow", "/data", "/site-map"}
+CURRENT_ROUTES = {
+    "/", "/strategies", "/strategies/current-taa", "/strategies/p2-style-drawdown",
+    "/allocation", "/research", "/shadow", "/data", "/site-map",
+}
 
 
-def test_public_business_routes_are_exactly_the_six_current_pages() -> None:
+def test_public_business_routes_are_exactly_the_strategy_and_report_pages() -> None:
     routes = {
         route.path
         for route in app.routes
@@ -16,7 +19,7 @@ def test_public_business_routes_are_exactly_the_six_current_pages() -> None:
     assert routes == CURRENT_ROUTES
 
 
-def test_each_current_page_is_available() -> None:
+def test_each_public_page_is_available() -> None:
     for path in CURRENT_ROUTES:
         response = CLIENT.get(path)
         assert response.status_code == 200
