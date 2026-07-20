@@ -264,6 +264,16 @@ peer_relative_return = null
 
 事件只按 `event_start_observation_date` 分区。
 
+`walk_forward_partition` 是闭集，只允许：
+
+```text
+DEVELOPMENT_EXCLUDED
+FORMAL_OOS
+PROSPECTIVE_NOT_SCORED
+```
+
+不得使用其他 partition 值。
+
 ### 13.1 Development exclusion
 
 开始日期在 2013-01-04 至 2017-12-31 的事件固定标记：
@@ -276,6 +286,13 @@ walk_forward_fold_id = null
 这些事件可以保留在结果数据集中以便完整审计，但不得进入正式 walk-forward 汇总、profile 支持判断或选择。不得根据 development 结果修改 profile、公式或门槛。
 
 ### 13.2 正式年度 OOS folds
+
+开始日期在 2018-01-01 至 2025-12-31 的事件固定标记：
+
+```text
+walk_forward_partition = FORMAL_OOS
+walk_forward_fold_id = WF_<事件开始年份>
+```
 
 固定八个 fold：
 
@@ -290,7 +307,7 @@ WF_2024
 WF_2025
 ```
 
-事件按开始观察日期所属公历年分配。profile 和公式在所有 fold 中保持完全不变。
+`walk_forward_fold_id` 只允许上述八个值。事件按开始观察日期所属公历年分配。profile 和公式在所有 fold 中保持完全不变。
 
 ### 13.3 Prospective partition
 
@@ -480,12 +497,34 @@ selected_profile = 该 profile
 
 ### 19.3 多个支持 profile
 
-依次使用以下固定顺序比较：
+只对 `profile_support_status = WALK_FORWARD_SUPPORTED` 的 profile 执行选择。
 
-1. H60 正向年度 fold 数量更多。
-2. H60 正向 style 数量更多。
-3. H60 的 `median_of_profile_fold_medians` 更高。
-4. 按以下 H120 有效性与数值规则比较。
+两个 H60 选择指标固定为：
+
+```text
+h60_positive_fold_count =
+  Profile x Horizon 层的 positive_fold_count(H60)
+
+h60_positive_style_count =
+  同时满足以下两项要求的 style 数量：
+  available_fold_count(H60) >= 5
+  and median_of_fold_median_peer_relative_return(H60) > 0
+```
+
+因此 `h60_positive_style_count` 与条件 A 使用完全相同的 style 级有效性和正向定义。不得把不足五个 `AVAILABLE` fold 的 style 计为正向 style。
+
+初始候选集固定为：
+
+```text
+remaining_profiles = 所有 WALK_FORWARD_SUPPORTED profile
+```
+
+对当前全部剩余候选按以下顺序逐级缩减，不得按 profile 顺序逐对比较：
+
+1. 保留 `h60_positive_fold_count` 最大的 profile。
+2. 若仍有多个 profile，保留 `h60_positive_style_count` 最大的 profile。
+3. 若仍有多个 profile，保留 H60 的 `median_of_profile_fold_medians` 最大的 profile。
+4. 若仍有多个 profile，按以下 H120 有效性与数值规则缩减。
 
 H120 有效性固定定义：
 
@@ -495,16 +534,30 @@ H120_VALID =
   and median_of_profile_fold_medians(H120) is not null
 ```
 
-第四级比较规则固定为：一方 `H120_VALID = true`、另一方为 false 时，VALID 方优先；双方均 VALID 时，指标较高者优先；双方均不 VALID 时，该级保持平局。
+第四级对当前全部剩余候选固定执行：若至少一个 profile 的 `H120_VALID = true`，删除全部非 VALID profile；若剩余多个 VALID profile，保留 H120 `median_of_profile_fold_medians` 最高的 profile；若所有剩余 profile 均非 VALID，不删除任何 profile。
 
-全部相同时：
+任意一级处理后若：
 
 ```text
+len(remaining_profiles) = 1
+```
+
+立即固定：
+
+```text
+mechanism decision = SUPPORTED
+selected_profile = remaining_profiles 中的唯一 profile
+```
+
+四级全部完成后若：
+
+```text
+len(remaining_profiles) > 1
 mechanism decision = AMBIGUOUS
 selected_profile = null
 ```
 
-不得默认选择 PROFILE_A、PROFILE_B 或 PROFILE_C，不得因参数更激进或保守而主观选择，不得使用事件数量作为优先级，不得使用 H20、development 或 2026 prospective 结果打破最终平局，也不得使用仓位回测结果倒推 profile。
+两个 profile 并列第一而第三个 profile 较差时，第三个必须在相应级别被删除；若四级后前两个仍并列，最终决定仍为 `AMBIGUOUS`。不得默认选择 PROFILE_A、PROFILE_B 或 PROFILE_C，不得因参数更激进或保守而主观选择，不得使用事件数量作为优先级，不得使用 H20、development 或 2026 prospective 结果打破最终平局，也不得使用仓位回测结果倒推 profile。
 
 规则状态固定为：
 
