@@ -9,6 +9,12 @@ from typing import Any, Callable
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
 
+from backend.strategy_style_research_view import (
+    ProfileDecision,
+    StrategyStyleResearchView,
+    load_strategy_style_research_view,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT / "reports" / "current"
@@ -100,13 +106,92 @@ def _chart(series: list[dict[str, Any]], label: str, benchmark: list[dict[str, A
     )
 
 
+NAV_PATHS = {
+    "home.html": "/",
+    "allocation.html": "/allocation",
+    "research.html": "/research",
+    "shadow.html": "/shadow",
+    "data.html": "/data",
+    "site-map.html": "/site-map",
+}
+
+
+def _navigation_context(current_path: str = "") -> dict[str, str]:
+    return {
+        f"nav_{path.strip('/').replace('-', '_') or 'home'}": "active" if path == current_path else ""
+        for path in NAV_PATHS.values()
+    }
+
+
 def _render_page(template_name: str, reports: dict[str, dict[str, Any]], **context: str) -> str:
     page = _read_template(template_name).safe_substitute(context)
     manifest = reports["manifest"]
+    current_path = NAV_PATHS[template_name]
+    nav_context = _navigation_context(current_path)
     return _read_template("base.html").safe_substitute(
         title=context.get("title", "CURRENT_TAA"),
         content=page,
         data_as_of=_text(manifest.get("data_as_of")),
+        **nav_context,
+    )
+
+
+def _strategy_style_result() -> StrategyStyleResearchView | None:
+    try:
+        return load_strategy_style_research_view()
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _profile_result_label(profile: ProfileDecision) -> str:
+    return "支持" if profile.support_status == "SUPPORTED" else "不支持"
+
+
+def _condition_label(passed: bool) -> str:
+    css_class = "pass" if passed else "fail"
+    label = "通过" if passed else "未通过"
+    return f'<span class="result {css_class}">{label}</span>'
+
+
+def _strategy_style_panel(view: StrategyStyleResearchView | None, compact: bool = False) -> str:
+    if view is None:
+        return (
+            '<section class="decision-panel unavailable-result"><p class="eyebrow">独立研究 · P2</p>'
+            '<h2>策略风格研究结果暂不可用</h2><p>当前配置仍可查看；本区不会用缺失结果代替正式结论。</p></section>'
+        )
+    if compact:
+        return (
+            '<section class="decision-panel rejected"><div><p class="eyebrow">独立研究结论 · P2</p>'
+            '<h2>策略风格回撤再平衡：未获支持</h2>'
+            '<p>三套预注册方案均未通过关键检验，研究已经关闭；该结论不改变 CURRENT_TAA 当前配置。</p></div>'
+            '<div class="decision-facts"><span><strong>0 / 3</strong>方案获支持</span>'
+            '<span><strong>禁止</strong>进入配置与 Shadow</span></div>'
+            '<a class="button" href="/research#strategy-style-decision">查看检验依据</a></section>'
+        )
+    rows = "".join(
+        '<tr><td><strong>{}</strong></td><td>{}</td><td>{}</td><td>{}</td><td>{}</td>'
+        '<td>{}</td><td><strong>{}</strong></td></tr>'.format(
+            _text(profile.profile_id.replace("PROFILE_", "方案 ")),
+            _condition_label(profile.condition_a_passed),
+            _condition_label(profile.condition_b_passed),
+            _condition_label(profile.condition_c_passed),
+            _condition_label(profile.condition_d_passed),
+            _pct(profile.h60_median),
+            _text(_profile_result_label(profile)),
+        )
+        for profile in view.profiles
+    )
+    return (
+        '<section id="strategy-style-decision" class="research-decision"><div class="decision-panel rejected">'
+        '<div><p class="eyebrow">独立研究结论 · P2</p><h2>策略风格回撤再平衡未获证据支持</h2>'
+        f'<p>数据截至 {_text(view.source_as_of_date)}。三套方案均未通过关键检验，未选择任何方案，研究生命周期已经关闭。</p></div>'
+        f'<div class="decision-facts"><span><strong>{view.supported_profile_count} / 3</strong>方案获支持</span>'
+        '<span><strong>不进入</strong>CURRENT_TAA / ETF Shadow</span></div></div>'
+        '<div class="table-wrap decision-table"><table><thead><tr><th>预注册方案</th><th>A 风格广度</th>'
+        '<th>B 年度一致性</th><th>C 60日方向</th><th>D 次要确认</th><th>60日中位结果</th><th>结论</th></tr></thead>'
+        f'<tbody>{rows}</tbody></table></div>'
+        '<div class="explain-grid"><div><h3>怎样读这张表</h3><p>A、B、C 是决定是否支持机制的关键条件；D 只作次要确认，不能推翻前三项失败。60日中位结果是相对预注册基准的差异。</p></div>'
+        '<div><h3>这项结论意味着什么</h3><p>不分配权重、不运行组合回测、不修改当前配置，也不进入 ETF Shadow。页面保留证据，是为了防止未来误把已否决方案当成现行策略。</p></div></div></section>'
     )
 
 
@@ -130,7 +215,11 @@ def _home(reports: dict[str, dict[str, Any]]) -> str:
             _metric("Shadow 状态", "跟踪中" if shadow.get("status") == "tracking" else _text(shadow.get("status")), f"{_text(shadow.get('start_date'))} 起"),
         )
     )
-    return _render_page("home.html", reports, title="CURRENT_TAA 首页", metrics=metrics, etf_rows=etf_rows or '<tr><td colspan="2">当前无 ETF 配置</td></tr>')
+    return _render_page(
+        "home.html", reports, title="CURRENT_TAA 首页", metrics=metrics,
+        etf_rows=etf_rows or '<tr><td colspan="2">当前无 ETF 配置</td></tr>',
+        strategy_style_result=_strategy_style_panel(_strategy_style_result(), compact=True),
+    )
 
 
 def _allocation(reports: dict[str, dict[str, Any]]) -> str:
@@ -197,6 +286,7 @@ def _research(reports: dict[str, dict[str, Any]]) -> str:
         signal_date=_text(latest.get("signal_date")), effective_date=_text(latest.get("effective_date")),
         signal_rows=signal_rows, monthly_rows=monthly_rows,
         chart=_chart(report.get("equity_curve", []), "CURRENT_TAA 全收益指数研究"),
+        strategy_style_result=_strategy_style_panel(_strategy_style_result()),
     )
 
 
@@ -285,6 +375,7 @@ def render_current_page(path: str, report_dir: Path | None = None) -> HTMLRespon
                 f'<div class="notice danger">{escape(str(exc))}</div>'
                 '<p>请先运行 <code>python scripts/update_current.py</code>，确认数据更新成功后再查看。</p></main>'
             ),
+            **_navigation_context(),
         )
         return HTMLResponse(content, status_code=503)
 
