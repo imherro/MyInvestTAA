@@ -1,2 +1,0 @@
-"""Core MyInvestTAA research engine."""
-

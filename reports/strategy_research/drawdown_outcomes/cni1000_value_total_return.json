@@ -1,0 +1,47 @@
+{
+  "analysis_status": "blocked",
+  "asset": {
+    "asset_key": "cni1000_value_total_return",
+    "display_name": "国证1000价值全收益指数",
+    "official_code": "CN2371",
+    "provider_code": null,
+    "risk_family": "value_income",
+    "tier": "A"
+  },
+  "blockers": [
+    "local cache has no provider mapping",
+    "provider_code is not verified",
+    "total-return basis is unresolved",
+    "provider mapping is unverified",
+    "contract research_status is blocked"
+  ],
+  "limitations": [
+    "Frontier records are path facts, not buy signals or independent samples.",
+    "A later threshold study must use at most one record per event per threshold.",
+    "Observed does not imply future recovery; censored does not imply failure.",
+    "Fixed horizons use trading sessions and can extend beyond event recovery.",
+    "No probabilities, aggregate returns, thresholds, or strategy results are calculated.",
+    "Historical decisions must use the point-in-time interface."
+  ],
+  "methodology_version": "1.0",
+  "period": null,
+  "records": [],
+  "report_type": "asset_drawdown_frontier_outcomes",
+  "schema_version": "1.0",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_event_report_path": "reports/strategy_research/drawdown_events/cni1000_value_total_return.json",
+  "source_event_report_sha256": "0c032d6eeac08566d41e0ea6aef4abf914d470da71950583d5a79048fa4b6687",
+  "summary": {
+    "censored_peak_recoveries": 0,
+    "censored_trigger_price_recoveries": 0,
+    "completed_event_count": 0,
+    "event_count": 0,
+    "frontier_record_count": 0,
+    "observed_peak_recoveries": 0,
+    "observed_trigger_price_recoveries": 0,
+    "open_event_count": 0
+  },
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}

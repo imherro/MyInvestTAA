@@ -1,0 +1,39 @@
+{
+  "analysis_status": "blocked",
+  "asset": {
+    "asset_key": "cni1000_value_total_return",
+    "display_name": "国证1000价值全收益指数",
+    "official_code": "CN2371",
+    "provider_code": null,
+    "risk_family": "value_income",
+    "tier": "A"
+  },
+  "blockers": [
+    "local cache has no provider mapping",
+    "provider_code is not verified",
+    "total-return basis is unresolved",
+    "provider mapping is unverified",
+    "contract research_status is blocked"
+  ],
+  "current_position": null,
+  "daily_depth_profile": null,
+  "duration_profile": null,
+  "event_depth_profile": null,
+  "limitations": [
+    "Profiles are descriptive price-drawdown facts, not trading signals.",
+    "Recovery probabilities, forward returns, and strategy parameters are not calculated.",
+    "Open events are right-censored and excluded from completed duration distributions.",
+    "Excluding open events does not remove censoring bias; later recovery research must address it explicitly.",
+    "Blocked assets are not analyzed or substituted."
+  ],
+  "methodology_version": "1.0",
+  "period": null,
+  "report_type": "asset_drawdown_profile",
+  "schema_version": "1.0",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_event_report_path": "reports/strategy_research/drawdown_events/cni1000_value_total_return.json",
+  "source_event_report_sha256": "0c032d6eeac08566d41e0ea6aef4abf914d470da71950583d5a79048fa4b6687",
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}

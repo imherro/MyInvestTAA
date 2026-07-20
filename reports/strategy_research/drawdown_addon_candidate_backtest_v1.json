@@ -1,0 +1,1968 @@
+{
+  "assets": [
+    {
+      "asset_key": "csi300_total_return",
+      "benchmark_70_30": {
+        "annualized_volatility": 0.1592579421469624,
+        "cagr": 0.039545197465993054,
+        "calmar_ratio": 0.10591466238462158,
+        "maximum_drawdown": -0.37336848908026987,
+        "total_return": 0.7861396814588455
+      },
+      "benchmark_buy_hold": {
+        "annualized_volatility": 0.21310813942125198,
+        "cagr": 0.05162537355457708,
+        "calmar_ratio": 0.11208545951346087,
+        "maximum_drawdown": -0.46058939115449804,
+        "total_return": 1.1230566877983508
+      },
+      "comparison": {
+        "excess_cagr_vs_70_30": 0.005464757472223969,
+        "excess_total_return_vs_70_30": 0.14570315832083325,
+        "excess_total_return_vs_buy_hold": -0.19121384801867203,
+        "maximum_drawdown_difference_vs_70_30": -0.07291237753589153,
+        "maximum_drawdown_difference_vs_buy_hold": 0.014308524538336642
+      },
+      "display_name": "沪深300全收益指数",
+      "period": {
+        "first_date": "2011-01-04",
+        "last_date": "2026-07-14",
+        "session_count": 3770
+      },
+      "risk_family": "broad_beta",
+      "strategy": {
+        "annualized_volatility": 0.20542496706721472,
+        "cagr": 0.04500995493821702,
+        "calmar_ratio": 0.10085566804487121,
+        "days_at_100": 3157,
+        "days_at_70": 256,
+        "days_at_80": 71,
+        "days_at_90": 286,
+        "maximum_asset_weight": 1.0,
+        "maximum_drawdown": -0.4462808666161614,
+        "reset_count": 8,
+        "tier_1_trigger_count": 8,
+        "tier_2_trigger_count": 3,
+        "tier_3_trigger_count": 3,
+        "total_return": 0.9318428397796787,
+        "total_transaction_cost": 0.004742757505866634,
+        "trade_count": 23
+      },
+      "trade_log": [
+        {
+          "action": "initialize",
+          "event_id": "INITIALIZATION",
+          "execution_close": 3371.872,
+          "execution_date": "2011-01-04",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.0,
+          "signal_date": "2011-01-04",
+          "transaction_cost": 0.0007
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi300_total_return:2011-03-09",
+          "execution_close": 3399.453,
+          "execution_date": "2011-03-18",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2011-03-17",
+          "transaction_cost": 9.878563951953117e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi300_total_return:2011-03-09",
+          "execution_close": 3524.419,
+          "execution_date": "2011-04-11",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2011-04-08",
+          "transaction_cost": 0.00010935828403611177
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi300_total_return:2011-04-13",
+          "execution_close": 3393.972,
+          "execution_date": "2011-04-27",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2011-04-26",
+          "transaction_cost": 0.00010879650121941875
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi300_total_return:2011-04-13",
+          "execution_close": 3376.423,
+          "execution_date": "2011-04-29",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2011-04-28",
+          "transaction_cost": 0.00010116264618099065
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi300_total_return:2011-04-13",
+          "execution_close": 3306.079,
+          "execution_date": "2011-05-05",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2011-05-04",
+          "transaction_cost": 0.00010031905693819441
+        },
+        {
+          "action": "reset",
+          "event_id": "csi300_total_return:2011-04-13",
+          "execution_close": 3597.864,
+          "execution_date": "2014-12-05",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2014-12-04",
+          "transaction_cost": 0.00032134489201952887
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi300_total_return:2014-12-22",
+          "execution_close": 3840.4366,
+          "execution_date": "2014-12-25",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-12-24",
+          "transaction_cost": 9.697530335180566e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi300_total_return:2014-12-22",
+          "execution_close": 3978.722,
+          "execution_date": "2014-12-29",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-12-26",
+          "transaction_cost": 0.00012181673868936303
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi300_total_return:2015-01-07",
+          "execution_close": 3911.3901,
+          "execution_date": "2015-01-20",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-01-19",
+          "transaction_cost": 0.0002320557066782368
+        },
+        {
+          "action": "reset",
+          "event_id": "csi300_total_return:2015-01-07",
+          "execution_close": 4327.0352,
+          "execution_date": "2015-03-17",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-03-16",
+          "transaction_cost": 0.00026060571628534426
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi300_total_return:2015-04-27",
+          "execution_close": 5152.3525,
+          "execution_date": "2015-05-07",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-06",
+          "transaction_cost": 9.149495369368713e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi300_total_return:2015-04-27",
+          "execution_close": 5711.5725,
+          "execution_date": "2015-05-22",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-05-21",
+          "transaction_cost": 0.00017833979216695875
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi300_total_return:2015-05-26",
+          "execution_close": 5588.8314,
+          "execution_date": "2015-05-29",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-28",
+          "transaction_cost": 0.000158377637973673
+        },
+        {
+          "action": "reset",
+          "event_id": "csi300_total_return:2015-05-26",
+          "execution_close": 6186.0209,
+          "execution_date": "2015-06-08",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-05",
+          "transaction_cost": 0.00019025560833916592
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi300_total_return:2015-06-08",
+          "execution_close": 5943.0553,
+          "execution_date": "2015-06-17",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-06-16",
+          "transaction_cost": 0.00017338533600631318
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi300_total_return:2015-06-08",
+          "execution_close": 5543.5541,
+          "execution_date": "2015-06-23",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-19",
+          "transaction_cost": 0.00031962484875552215
+        },
+        {
+          "action": "reset",
+          "event_id": "csi300_total_return:2015-06-08",
+          "execution_close": 6146.6894,
+          "execution_date": "2020-07-10",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2020-07-09",
+          "transaction_cost": 0.0005029054815358852
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi300_total_return:2020-07-13",
+          "execution_close": 5897.2349,
+          "execution_date": "2020-07-17",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2020-07-16",
+          "transaction_cost": 0.00017710653538619665
+        },
+        {
+          "action": "reset",
+          "event_id": "csi300_total_return:2020-07-13",
+          "execution_close": 6266.4331,
+          "execution_date": "2020-08-31",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2020-08-28",
+          "transaction_cost": 0.00018726842264845913
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi300_total_return:2021-02-10",
+          "execution_close": 7126.9215,
+          "execution_date": "2021-02-25",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2021-02-24",
+          "transaction_cost": 0.00013807913975924852
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi300_total_return:2021-02-10",
+          "execution_close": 7060.7612,
+          "execution_date": "2021-03-01",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-02-26",
+          "transaction_cost": 0.00018875049613865501
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi300_total_return:2021-02-10",
+          "execution_close": 5656.4715,
+          "execution_date": "2022-03-08",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2022-03-07",
+          "transaction_cost": 0.00018594876854434556
+        }
+      ]
+    },
+    {
+      "asset_key": "csi500_total_return",
+      "benchmark_70_30": {
+        "annualized_volatility": 0.18295061071913274,
+        "cagr": 0.03570588868698188,
+        "calmar_ratio": 0.06564856352361112,
+        "maximum_drawdown": -0.5438944398858008,
+        "total_return": 0.6899801351142165
+      },
+      "benchmark_buy_hold": {
+        "annualized_volatility": 0.24828251641337684,
+        "cagr": 0.04693246649334437,
+        "calmar_ratio": 0.07316818838067289,
+        "maximum_drawdown": -0.6414326708373363,
+        "total_return": 0.9856859073060236
+      },
+      "comparison": {
+        "excess_cagr_vs_70_30": 0.0005311610428313518,
+        "excess_total_return_vs_70_30": 0.013009237996724377,
+        "excess_total_return_vs_buy_hold": -0.28269653419508267,
+        "maximum_drawdown_difference_vs_70_30": -0.08593958476115127,
+        "maximum_drawdown_difference_vs_buy_hold": 0.01159864619038431
+      },
+      "display_name": "中证500全收益指数",
+      "period": {
+        "first_date": "2011-01-04",
+        "last_date": "2026-07-14",
+        "session_count": 3770
+      },
+      "risk_family": "broad_beta",
+      "strategy": {
+        "annualized_volatility": 0.24388015985171801,
+        "cagr": 0.03623704972981323,
+        "calmar_ratio": 0.057534284131641814,
+        "days_at_100": 3536,
+        "days_at_70": 168,
+        "days_at_80": 48,
+        "days_at_90": 18,
+        "maximum_asset_weight": 1.0,
+        "maximum_drawdown": -0.629834024646952,
+        "reset_count": 4,
+        "tier_1_trigger_count": 5,
+        "tier_2_trigger_count": 1,
+        "tier_3_trigger_count": 2,
+        "total_return": 0.7029893731109409,
+        "total_transaction_cost": 0.0027312611135202483,
+        "trade_count": 13
+      },
+      "trade_log": [
+        {
+          "action": "initialize",
+          "event_id": "INITIALIZATION",
+          "execution_close": 5213.219,
+          "execution_date": "2011-01-04",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.0,
+          "signal_date": "2011-01-04",
+          "transaction_cost": 0.0007
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi500_total_return:2011-03-25",
+          "execution_close": 5201.923,
+          "execution_date": "2011-03-31",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2011-03-30",
+          "transaction_cost": 0.00010023313957499214
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi500_total_return:2011-03-25",
+          "execution_close": 5034.007,
+          "execution_date": "2011-04-29",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2011-04-28",
+          "transaction_cost": 0.00010234479440951527
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi500_total_return:2011-03-25",
+          "execution_close": 4763.548,
+          "execution_date": "2011-05-26",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2011-05-25",
+          "transaction_cost": 9.718178490813677e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi500_total_return:2011-03-25",
+          "execution_close": 5586.8981,
+          "execution_date": "2014-11-25",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2014-11-24",
+          "transaction_cost": 0.0003253690461370601
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi500_total_return:2014-12-16",
+          "execution_close": 5591.9817,
+          "execution_date": "2014-12-23",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-12-22",
+          "transaction_cost": 0.00010828569283872027
+        },
+        {
+          "action": "reset",
+          "event_id": "csi500_total_return:2014-12-16",
+          "execution_close": 6126.5321,
+          "execution_date": "2015-01-22",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-01-21",
+          "transaction_cost": 0.00013337015821749727
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi500_total_return:2015-04-27",
+          "execution_close": 8515.465,
+          "execution_date": "2015-05-07",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-06",
+          "transaction_cost": 5.302225690340261e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi500_total_return:2015-04-27",
+          "execution_close": 9425.3309,
+          "execution_date": "2015-05-12",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-05-11",
+          "transaction_cost": 0.00018674505544096965
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi500_total_return:2015-05-27",
+          "execution_close": 10748.7453,
+          "execution_date": "2015-05-29",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-28",
+          "transaction_cost": 0.00012960602383257038
+        },
+        {
+          "action": "reset",
+          "event_id": "csi500_total_return:2015-05-27",
+          "execution_close": 11843.0053,
+          "execution_date": "2015-06-03",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-02",
+          "transaction_cost": 0.00022044426432521588
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi500_total_return:2015-06-12",
+          "execution_close": 11980.0837,
+          "execution_date": "2015-06-17",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-06-16",
+          "transaction_cost": 0.00018846130965345913
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi500_total_return:2015-06-12",
+          "execution_close": 10848.1741,
+          "execution_date": "2015-06-23",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-19",
+          "transaction_cost": 0.00038619758727870854
+        }
+      ]
+    },
+    {
+      "asset_key": "csi1000_total_return",
+      "benchmark_70_30": {
+        "annualized_volatility": 0.19965309665611644,
+        "cagr": 0.027657750642178014,
+        "calmar_ratio": 0.044147485193423625,
+        "maximum_drawdown": -0.6264853030925988,
+        "total_return": 0.5038701331333209
+      },
+      "benchmark_buy_hold": {
+        "annualized_volatility": 0.2674662278109667,
+        "cagr": 0.03691842359676456,
+        "calmar_ratio": 0.051426367704230445,
+        "maximum_drawdown": -0.717888998287693,
+        "total_return": 0.719814475904744
+      },
+      "comparison": {
+        "excess_cagr_vs_70_30": -0.0037489232779528425,
+        "excess_total_return_vs_70_30": -0.07999667611175121,
+        "excess_total_return_vs_buy_hold": -0.29594101888317437,
+        "maximum_drawdown_difference_vs_70_30": -0.0821053789219961,
+        "maximum_drawdown_difference_vs_buy_hold": 0.009298316273098184
+      },
+      "display_name": "中证1000全收益指数",
+      "period": {
+        "first_date": "2011-01-04",
+        "last_date": "2026-07-14",
+        "session_count": 3770
+      },
+      "risk_family": "broad_beta",
+      "strategy": {
+        "annualized_volatility": 0.26259649918947564,
+        "cagr": 0.02390882736422517,
+        "calmar_ratio": 0.03374137985592749,
+        "days_at_100": 3474,
+        "days_at_70": 202,
+        "days_at_80": 54,
+        "days_at_90": 40,
+        "maximum_asset_weight": 1.0,
+        "maximum_drawdown": -0.7085906820145949,
+        "reset_count": 9,
+        "tier_1_trigger_count": 10,
+        "tier_2_trigger_count": 3,
+        "tier_3_trigger_count": 2,
+        "total_return": 0.42387345702156964,
+        "total_transaction_cost": 0.004505799212806263,
+        "trade_count": 25
+      },
+      "trade_log": [
+        {
+          "action": "initialize",
+          "event_id": "INITIALIZATION",
+          "execution_close": 5333.0,
+          "execution_date": "2011-01-04",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.0,
+          "signal_date": "2011-01-04",
+          "transaction_cost": 0.0007
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2011-03-25",
+          "execution_close": 5389.042,
+          "execution_date": "2011-03-31",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2011-03-30",
+          "transaction_cost": 9.845983538646182e-05
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi1000_total_return:2011-03-25",
+          "execution_close": 5127.491,
+          "execution_date": "2011-04-29",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2011-04-28",
+          "transaction_cost": 0.00010456338589275735
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi1000_total_return:2011-03-25",
+          "execution_close": 5008.433,
+          "execution_date": "2011-05-24",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2011-05-23",
+          "transaction_cost": 9.673663041511454e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2011-03-25",
+          "execution_close": 5703.977,
+          "execution_date": "2014-08-19",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2014-08-18",
+          "transaction_cost": 0.00032357269714685776
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2014-09-15",
+          "execution_close": 6001.486,
+          "execution_date": "2014-09-17",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-09-16",
+          "transaction_cost": 9.995165672657871e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2014-09-15",
+          "execution_close": 6243.283,
+          "execution_date": "2014-09-25",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-09-24",
+          "transaction_cost": 0.00012255783118024003
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2014-10-09",
+          "execution_close": 6181.6723,
+          "execution_date": "2014-10-23",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-10-22",
+          "transaction_cost": 0.00011693520038899533
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2014-10-09",
+          "execution_close": 6505.9538,
+          "execution_date": "2014-10-30",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-10-29",
+          "transaction_cost": 0.00012895301731067718
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2014-11-06",
+          "execution_close": 6379.4409,
+          "execution_date": "2014-11-12",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-11-11",
+          "transaction_cost": 0.00012257548452102891
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2014-11-06",
+          "execution_close": 6663.4531,
+          "execution_date": "2014-11-25",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-11-24",
+          "transaction_cost": 0.0001302653538402001
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2014-12-04",
+          "execution_close": 6636.7351,
+          "execution_date": "2014-12-10",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-12-09",
+          "transaction_cost": 0.00012255313026072776
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2014-12-04",
+          "execution_close": 6916.5601,
+          "execution_date": "2014-12-16",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-12-15",
+          "transaction_cost": 0.00013381094407313252
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2014-12-15",
+          "execution_close": 6278.7298,
+          "execution_date": "2014-12-23",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-12-22",
+          "transaction_cost": 0.0001418156697270231
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi1000_total_return:2014-12-15",
+          "execution_close": 6415.8181,
+          "execution_date": "2014-12-24",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-12-23",
+          "transaction_cost": 0.00011542610276119963
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2014-12-15",
+          "execution_close": 6948.8838,
+          "execution_date": "2015-01-28",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-01-27",
+          "transaction_cost": 0.0002658489944751556
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2015-04-14",
+          "execution_close": 9948.0166,
+          "execution_date": "2015-04-16",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-04-15",
+          "transaction_cost": 5.0827305189290214e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2015-04-14",
+          "execution_close": 10536.1717,
+          "execution_date": "2015-04-23",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-04-22",
+          "transaction_cost": 0.00019095354274208568
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2015-05-04",
+          "execution_close": 10716.1779,
+          "execution_date": "2015-05-08",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-07",
+          "transaction_cost": 0.00017092703444196027
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2015-05-04",
+          "execution_close": 11234.9718,
+          "execution_date": "2015-05-11",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-05-08",
+          "transaction_cost": 0.0001977805694406357
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2015-05-27",
+          "execution_close": 13594.8643,
+          "execution_date": "2015-05-29",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-28",
+          "transaction_cost": 0.00012991650580352647
+        },
+        {
+          "action": "reset",
+          "event_id": "csi1000_total_return:2015-05-27",
+          "execution_close": 14898.9099,
+          "execution_date": "2015-06-02",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-01",
+          "transaction_cost": 0.00025967580010258256
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi1000_total_return:2015-06-12",
+          "execution_close": 15041.5319,
+          "execution_date": "2015-06-17",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-06-16",
+          "transaction_cost": 0.00022420840618278372
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi1000_total_return:2015-06-12",
+          "execution_close": 13600.0711,
+          "execution_date": "2015-06-19",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-18",
+          "transaction_cost": 0.00024629197187759196
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi1000_total_return:2015-06-12",
+          "execution_close": 13623.5973,
+          "execution_date": "2015-06-23",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-06-19",
+          "transaction_cost": 0.0002111921429196555
+        }
+      ]
+    },
+    {
+      "asset_key": "csi_dividend_total_return",
+      "benchmark_70_30": {
+        "annualized_volatility": 0.1605073936323854,
+        "cagr": 0.06332829971992004,
+        "calmar_ratio": 0.16489726850422212,
+        "maximum_drawdown": -0.38404699055581115,
+        "total_return": 1.5052238353045322
+      },
+      "benchmark_buy_hold": {
+        "annualized_volatility": 0.20599872497918384,
+        "cagr": 0.0797435222786258,
+        "calmar_ratio": 0.17464923281542524,
+        "maximum_drawdown": -0.45659245673813664,
+        "total_return": 2.15031976472076
+      },
+      "comparison": {
+        "excess_cagr_vs_70_30": 0.005138488306227762,
+        "excess_total_return_vs_70_30": 0.18730254075116903,
+        "excess_total_return_vs_buy_hold": -0.4577933886650589,
+        "maximum_drawdown_difference_vs_70_30": -0.05826402540875608,
+        "maximum_drawdown_difference_vs_buy_hold": 0.01428144077356941
+      },
+      "display_name": "中证红利全收益指数",
+      "period": {
+        "first_date": "2011-01-04",
+        "last_date": "2026-07-14",
+        "session_count": 3770
+      },
+      "risk_family": "value_income",
+      "strategy": {
+        "annualized_volatility": 0.19449607335137117,
+        "cagr": 0.0684667880261478,
+        "calmar_ratio": 0.15479331410464478,
+        "days_at_100": 2304,
+        "days_at_70": 428,
+        "days_at_80": 418,
+        "days_at_90": 620,
+        "maximum_asset_weight": 1.0,
+        "maximum_drawdown": -0.44231101596456723,
+        "reset_count": 13,
+        "tier_1_trigger_count": 14,
+        "tier_2_trigger_count": 6,
+        "tier_3_trigger_count": 2,
+        "total_return": 1.6925263760557012,
+        "total_transaction_cost": 0.009482417914509619,
+        "trade_count": 36
+      },
+      "trade_log": [
+        {
+          "action": "initialize",
+          "event_id": "INITIALIZATION",
+          "execution_close": 3621.569,
+          "execution_date": "2011-01-04",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.0,
+          "signal_date": "2011-01-04",
+          "transaction_cost": 0.0007
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2011-03-08",
+          "execution_close": 3760.4801,
+          "execution_date": "2011-03-14",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2011-03-11",
+          "transaction_cost": 9.456383392330782e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2011-03-08",
+          "execution_close": 3854.8702,
+          "execution_date": "2011-04-11",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2011-04-08",
+          "transaction_cost": 0.00010878460333204808
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2011-04-13",
+          "execution_close": 3708.4185,
+          "execution_date": "2011-04-26",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2011-04-25",
+          "transaction_cost": 0.0001102193490554837
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi_dividend_total_return:2011-04-13",
+          "execution_close": 3697.2007,
+          "execution_date": "2011-04-29",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.8,
+          "signal_date": "2011-04-28",
+          "transaction_cost": 0.00020371782833566125
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2011-04-13",
+          "execution_close": 3969.5095,
+          "execution_date": "2014-12-03",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2014-12-02",
+          "transaction_cost": 0.0003272237270064267
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2014-12-22",
+          "execution_close": 4417.2746,
+          "execution_date": "2014-12-25",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-12-24",
+          "transaction_cost": 9.182179351707423e-05
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2014-12-22",
+          "execution_close": 4690.3669,
+          "execution_date": "2015-01-05",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-12-31",
+          "transaction_cost": 0.0001350981605130107
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2015-01-06",
+          "execution_close": 4519.1935,
+          "execution_date": "2015-01-13",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-01-12",
+          "transaction_cost": 0.00012975493314359578
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi_dividend_total_return:2015-01-06",
+          "execution_close": 4415.932,
+          "execution_date": "2015-01-20",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-01-19",
+          "transaction_cost": 0.00012247976840811667
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2015-01-06",
+          "execution_close": 4804.6448,
+          "execution_date": "2015-03-13",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-03-12",
+          "transaction_cost": 0.0002642017261991409
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2015-05-04",
+          "execution_close": 6197.2915,
+          "execution_date": "2015-05-06",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-05",
+          "transaction_cost": 7.57001304763534e-05
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi_dividend_total_return:2015-05-04",
+          "execution_close": 6185.0197,
+          "execution_date": "2015-05-08",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-05-07",
+          "transaction_cost": 0.00015348141691647142
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2015-05-04",
+          "execution_close": 6912.9109,
+          "execution_date": "2015-05-21",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-05-20",
+          "transaction_cost": 0.00035457110059987926
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2015-05-27",
+          "execution_close": 7073.796,
+          "execution_date": "2015-05-29",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-28",
+          "transaction_cost": 0.0001636371709798978
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2015-05-27",
+          "execution_close": 7730.4141,
+          "execution_date": "2015-06-03",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-02",
+          "transaction_cost": 0.00021018042882971498
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2015-06-12",
+          "execution_close": 7963.0137,
+          "execution_date": "2015-06-17",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-06-16",
+          "transaction_cost": 0.0001768534467262055
+        },
+        {
+          "action": "tier_3",
+          "event_id": "csi_dividend_total_return:2015-06-12",
+          "execution_close": 7329.5046,
+          "execution_date": "2015-06-23",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-19",
+          "transaction_cost": 0.00037700395082401246
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2015-06-12",
+          "execution_close": 8189.8487,
+          "execution_date": "2021-05-11",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2021-05-10",
+          "transaction_cost": 0.0005915427070256256
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2021-07-22",
+          "execution_close": 8002.8371,
+          "execution_date": "2021-07-28",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2021-07-27",
+          "transaction_cost": 0.00020342341209363774
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2021-07-22",
+          "execution_close": 8629.3964,
+          "execution_date": "2021-08-16",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-08-13",
+          "transaction_cost": 0.0002303941101852095
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2021-09-13",
+          "execution_close": 9424.6208,
+          "execution_date": "2021-09-22",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2021-09-17",
+          "transaction_cost": 0.00017948874178384236
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi_dividend_total_return:2021-09-13",
+          "execution_close": 9020.4154,
+          "execution_date": "2021-09-28",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-09-27",
+          "transaction_cost": 0.00022687680403713279
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2021-09-13",
+          "execution_close": 9899.0895,
+          "execution_date": "2023-05-05",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2023-05-04",
+          "transaction_cost": 0.00047930913768440666
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2023-05-08",
+          "execution_close": 9355.4994,
+          "execution_date": "2023-05-24",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2023-05-23",
+          "transaction_cost": 0.0002480292720298264
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi_dividend_total_return:2023-05-08",
+          "execution_close": 9073.5075,
+          "execution_date": "2023-06-26",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2023-06-21",
+          "transaction_cost": 0.00022678402577185405
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2023-05-08",
+          "execution_close": 10189.3597,
+          "execution_date": "2024-02-21",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2024-02-20",
+          "transaction_cost": 0.0005039121313189841
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2024-05-21",
+          "execution_close": 10334.1414,
+          "execution_date": "2024-06-25",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2024-06-24",
+          "transaction_cost": 0.00023517435920929276
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi_dividend_total_return:2024-05-21",
+          "execution_close": 9786.6471,
+          "execution_date": "2024-08-30",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2024-08-29",
+          "transaction_cost": 0.0002525806029778112
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2024-05-21",
+          "execution_close": 11413.3351,
+          "execution_date": "2024-10-08",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2024-09-30",
+          "transaction_cost": 0.0005681549963623442
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2024-10-08",
+          "execution_close": 10868.0393,
+          "execution_date": "2024-10-10",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2024-10-09",
+          "transaction_cost": 0.0002845034507492209
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2024-10-08",
+          "execution_close": 11508.4167,
+          "execution_date": "2025-07-10",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2025-07-09",
+          "transaction_cost": 0.0002941653336224451
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2025-11-13",
+          "execution_close": 11460.9307,
+          "execution_date": "2025-12-10",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2025-12-09",
+          "transaction_cost": 0.0002713976908102288
+        },
+        {
+          "action": "reset",
+          "event_id": "csi_dividend_total_return:2025-11-13",
+          "execution_close": 12113.754,
+          "execution_date": "2026-02-26",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2026-02-25",
+          "transaction_cost": 0.0003058106864928225
+        },
+        {
+          "action": "tier_1",
+          "event_id": "csi_dividend_total_return:2026-03-12",
+          "execution_close": 11995.89,
+          "execution_date": "2026-03-24",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2026-03-23",
+          "transaction_cost": 0.00028509249176717676
+        },
+        {
+          "action": "tier_2",
+          "event_id": "csi_dividend_total_return:2026-03-12",
+          "execution_close": 11074.2707,
+          "execution_date": "2026-06-25",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2026-06-24",
+          "transaction_cost": 0.0002964845918013601
+        }
+      ]
+    },
+    {
+      "asset_key": "cni_free_cash_flow_total_return",
+      "benchmark_70_30": {
+        "annualized_volatility": 0.19319506505229272,
+        "cagr": 0.14178701481122014,
+        "calmar_ratio": 0.32772148450915606,
+        "maximum_drawdown": -0.43264485703029587,
+        "total_return": 4.62607971
+      },
+      "benchmark_buy_hold": {
+        "annualized_volatility": 0.228673100604209,
+        "cagr": 0.16855322883820523,
+        "calmar_ratio": 0.3357981715958797,
+        "maximum_drawdown": -0.501948024425376,
+        "total_return": 6.6086853
+      },
+      "comparison": {
+        "excess_cagr_vs_70_30": 0.002960456880086504,
+        "excess_total_return_vs_70_30": 0.19303386890888863,
+        "excess_total_return_vs_buy_hold": -1.7895717210911117,
+        "maximum_drawdown_difference_vs_70_30": -0.05311892908786442,
+        "maximum_drawdown_difference_vs_buy_hold": 0.016184238307215715
+      },
+      "display_name": "国证自由现金流全收益指数",
+      "period": {
+        "first_date": "2012-12-31",
+        "last_date": "2026-07-14",
+        "session_count": 3284
+      },
+      "risk_family": "value_income",
+      "strategy": {
+        "annualized_volatility": 0.21443861966310593,
+        "cagr": 0.14474747169130664,
+        "calmar_ratio": 0.2979791327138935,
+        "days_at_100": 2183,
+        "days_at_70": 493,
+        "days_at_80": 300,
+        "days_at_90": 308,
+        "maximum_asset_weight": 1.0,
+        "maximum_drawdown": -0.4857637861181603,
+        "reset_count": 26,
+        "tier_1_trigger_count": 22,
+        "tier_2_trigger_count": 11,
+        "tier_3_trigger_count": 10,
+        "total_return": 4.819113578908889,
+        "total_transaction_cost": 0.029594217618646324,
+        "trade_count": 70
+      },
+      "trade_log": [
+        {
+          "action": "initialize",
+          "event_id": "INITIALIZATION",
+          "execution_close": 1000.0,
+          "execution_date": "2012-12-31",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.0,
+          "signal_date": "2012-12-31",
+          "transaction_cost": 0.0007
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2013-01-10",
+          "execution_close": 1013.3235,
+          "execution_date": "2013-01-14",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.7,
+          "signal_date": "2013-01-11",
+          "transaction_cost": 0.0002997900000000002
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2013-01-10",
+          "execution_close": 1021.78,
+          "execution_date": "2013-01-15",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2013-01-14",
+          "transaction_cost": 0.0003050204630452398
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2013-01-21",
+          "execution_close": 999.9956,
+          "execution_date": "2013-01-25",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.7,
+          "signal_date": "2013-01-24",
+          "transaction_cost": 0.0003049289569063262
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2013-01-21",
+          "execution_close": 1047.4696,
+          "execution_date": "2013-02-04",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2013-02-01",
+          "transaction_cost": 0.0003145425818362877
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2013-02-18",
+          "execution_close": 1061.2918,
+          "execution_date": "2013-02-20",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2013-02-19",
+          "transaction_cost": 0.00010287968821828301
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2013-02-18",
+          "execution_close": 1028.1121,
+          "execution_date": "2013-02-22",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.8,
+          "signal_date": "2013-02-21",
+          "transaction_cost": 0.00021154795490581002
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2013-02-18",
+          "execution_close": 1083.1943,
+          "execution_date": "2014-08-05",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2014-08-04",
+          "transaction_cost": 0.00032589424659713493
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2014-08-18",
+          "execution_close": 1088.6747,
+          "execution_date": "2014-08-29",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-08-28",
+          "transaction_cost": 0.00010782959106905474
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2014-08-18",
+          "execution_close": 1124.2618,
+          "execution_date": "2014-09-03",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-09-02",
+          "transaction_cost": 0.000117521817118346
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2014-10-09",
+          "execution_close": 1168.2677,
+          "execution_date": "2014-10-20",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-10-17",
+          "transaction_cost": 0.00010568353288636886
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2014-10-09",
+          "execution_close": 1143.6561,
+          "execution_date": "2014-10-24",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2014-10-23",
+          "transaction_cost": 0.0001167994481773802
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2014-10-09",
+          "execution_close": 1209.4549,
+          "execution_date": "2014-10-31",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2014-10-30",
+          "transaction_cost": 0.0002433726735011011
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2014-12-08",
+          "execution_close": 1446.3543,
+          "execution_date": "2014-12-10",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-12-09",
+          "transaction_cost": 0.00022119679731314614
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2014-12-08",
+          "execution_close": 1446.8834,
+          "execution_date": "2014-12-11",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2014-12-10",
+          "transaction_cost": 0.00027012699471491014
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2014-12-22",
+          "execution_close": 1443.2216,
+          "execution_date": "2014-12-24",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.7,
+          "signal_date": "2014-12-23",
+          "transaction_cost": 0.0002702677113391737
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2014-12-22",
+          "execution_close": 1615.9389,
+          "execution_date": "2015-01-06",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-01-05",
+          "transaction_cost": 0.00031303615900400895
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2015-01-07",
+          "execution_close": 1536.9547,
+          "execution_date": "2015-01-12",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-01-09",
+          "transaction_cost": 0.0001594418385356913
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2015-01-07",
+          "execution_close": 1548.1999,
+          "execution_date": "2015-01-13",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-01-12",
+          "transaction_cost": 0.00014326478439877176
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2015-01-07",
+          "execution_close": 1499.6227,
+          "execution_date": "2015-01-20",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-01-19",
+          "transaction_cost": 0.0001449374577820126
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2015-01-07",
+          "execution_close": 1665.9858,
+          "execution_date": "2015-03-16",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2015-03-13",
+          "transaction_cost": 0.00046935991326898895
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2015-04-27",
+          "execution_close": 2191.9815,
+          "execution_date": "2015-04-29",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-04-28",
+          "transaction_cost": 8.727210081261582e-05
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2015-04-27",
+          "execution_close": 2050.5623,
+          "execution_date": "2015-05-06",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-05-05",
+          "transaction_cost": 0.0002008210938779959
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2015-04-27",
+          "execution_close": 2030.928,
+          "execution_date": "2015-05-08",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-05-07",
+          "transaction_cost": 0.00018108837407484636
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2015-04-27",
+          "execution_close": 2335.4311,
+          "execution_date": "2015-05-25",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2015-05-22",
+          "transaction_cost": 0.0006192724554552713
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2015-05-27",
+          "execution_close": 2249.5607,
+          "execution_date": "2015-05-29",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-05-28",
+          "transaction_cost": 0.00021698491837726755
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2015-05-27",
+          "execution_close": 2428.5766,
+          "execution_date": "2015-06-03",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-02",
+          "transaction_cost": 0.00023942325614183252
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2015-06-12",
+          "execution_close": 2615.6073,
+          "execution_date": "2015-06-17",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2015-06-16",
+          "transaction_cost": 0.00019075153608118293
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2015-06-12",
+          "execution_close": 2423.7227,
+          "execution_date": "2015-06-23",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2015-06-19",
+          "transaction_cost": 0.00023853329824015534
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2015-06-12",
+          "execution_close": 2198.661,
+          "execution_date": "2015-06-29",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2015-06-26",
+          "transaction_cost": 0.0002120629495643024
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2015-06-12",
+          "execution_close": 2742.5069,
+          "execution_date": "2020-11-23",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2020-11-20",
+          "transaction_cost": 0.0007271540565482119
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2020-12-02",
+          "execution_close": 2620.8064,
+          "execution_date": "2020-12-09",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2020-12-08",
+          "transaction_cost": 0.00025736581850211614
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2020-12-02",
+          "execution_close": 2874.1177,
+          "execution_date": "2021-02-19",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-02-18",
+          "transaction_cost": 0.0002892163062333695
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2021-02-22",
+          "execution_close": 2869.1652,
+          "execution_date": "2021-03-01",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2021-02-26",
+          "transaction_cost": 0.00025349277238086664
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2021-02-22",
+          "execution_close": 2883.2336,
+          "execution_date": "2021-03-23",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-03-22",
+          "transaction_cost": 0.0002555243650277761
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2021-03-22",
+          "execution_close": 2835.5919,
+          "execution_date": "2021-03-25",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2021-03-24",
+          "transaction_cost": 0.0002593821323572308
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2021-03-22",
+          "execution_close": 3013.4436,
+          "execution_date": "2021-04-01",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-03-31",
+          "transaction_cost": 0.0002882760843108053
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2021-05-10",
+          "execution_close": 3184.0034,
+          "execution_date": "2021-05-21",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2021-05-20",
+          "transaction_cost": 0.000242254543540153
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2021-05-10",
+          "execution_close": 3325.753,
+          "execution_date": "2021-06-28",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-06-25",
+          "transaction_cost": 0.0003027252323634515
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2021-07-22",
+          "execution_close": 3345.4556,
+          "execution_date": "2021-07-29",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2021-07-28",
+          "transaction_cost": 0.00028086418008907904
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2021-07-22",
+          "execution_close": 3522.4764,
+          "execution_date": "2021-08-09",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-08-06",
+          "transaction_cost": 0.0003204712385963864
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2021-09-13",
+          "execution_close": 4301.8917,
+          "execution_date": "2021-09-17",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2021-09-16",
+          "transaction_cost": 0.00020455780803327556
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2021-09-13",
+          "execution_close": 4083.5691,
+          "execution_date": "2021-09-27",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2021-09-24",
+          "transaction_cost": 0.00035614307618520464
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2021-09-13",
+          "execution_close": 4010.6503,
+          "execution_date": "2021-09-30",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2021-09-29",
+          "transaction_cost": 0.00032831674404855215
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2021-09-13",
+          "execution_close": 4678.9311,
+          "execution_date": "2023-02-21",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2023-02-20",
+          "transaction_cost": 0.001130487522966541
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2023-03-13",
+          "execution_close": 4779.5677,
+          "execution_date": "2023-03-28",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2023-03-27",
+          "transaction_cost": 0.0003653725086357649
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2023-03-13",
+          "execution_close": 4948.9167,
+          "execution_date": "2023-04-06",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2023-04-04",
+          "transaction_cost": 0.0004148652126415142
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2023-05-08",
+          "execution_close": 5125.0774,
+          "execution_date": "2023-05-15",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2023-05-12",
+          "transaction_cost": 0.00037355566613997063
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2023-05-08",
+          "execution_close": 4878.1341,
+          "execution_date": "2023-05-24",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2023-05-23",
+          "transaction_cost": 0.00041843728970593445
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2023-05-08",
+          "execution_close": 5367.8332,
+          "execution_date": "2023-09-15",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.9,
+          "signal_date": "2023-09-14",
+          "transaction_cost": 0.0008796525264437833
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2023-09-19",
+          "execution_close": 5115.6508,
+          "execution_date": "2023-10-23",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2023-10-20",
+          "transaction_cost": 0.0004500126924089645
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2023-09-19",
+          "execution_close": 5506.9035,
+          "execution_date": "2024-01-04",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2024-01-03",
+          "transaction_cost": 0.00048325758049462634
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2024-01-05",
+          "execution_close": 5282.0648,
+          "execution_date": "2024-01-23",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2024-01-22",
+          "transaction_cost": 0.0004580083962652872
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2024-01-05",
+          "execution_close": 5797.319,
+          "execution_date": "2024-01-26",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2024-01-25",
+          "transaction_cost": 0.0005193356523753287
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2024-03-08",
+          "execution_close": 6234.0479,
+          "execution_date": "2024-03-28",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2024-03-27",
+          "transaction_cost": 0.00040576429592574975
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2024-03-08",
+          "execution_close": 6509.5913,
+          "execution_date": "2024-04-08",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2024-04-03",
+          "transaction_cost": 0.000528134659644354
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2024-04-19",
+          "execution_close": 6436.8302,
+          "execution_date": "2024-04-24",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2024-04-23",
+          "transaction_cost": 0.000502049693811195
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2024-04-19",
+          "execution_close": 6190.1646,
+          "execution_date": "2024-07-24",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2024-07-23",
+          "transaction_cost": 0.0005054305261893309
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2024-04-19",
+          "execution_close": 5945.7641,
+          "execution_date": "2024-09-06",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2024-09-05",
+          "transaction_cost": 0.0004753120261053523
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2024-04-19",
+          "execution_close": 7373.9309,
+          "execution_date": "2024-10-08",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2024-09-30",
+          "transaction_cost": 0.0017054280408348218
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2024-10-08",
+          "execution_close": 7025.7416,
+          "execution_date": "2024-10-10",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.7,
+          "signal_date": "2024-10-09",
+          "transaction_cost": 0.0011553952943198788
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2024-10-08",
+          "execution_close": 6304.4421,
+          "execution_date": "2025-04-08",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2025-04-07",
+          "transaction_cost": 0.0005494055785732604
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2024-10-08",
+          "execution_close": 7445.9577,
+          "execution_date": "2025-08-13",
+          "new_target_weight": 0.7,
+          "old_target_weight": 1.0,
+          "signal_date": "2025-08-12",
+          "transaction_cost": 0.001766588783698659
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2025-11-13",
+          "execution_close": 7882.2639,
+          "execution_date": "2025-11-24",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2025-11-21",
+          "transaction_cost": 0.0005403934273038135
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2025-11-13",
+          "execution_close": 8467.7981,
+          "execution_date": "2026-01-07",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2026-01-06",
+          "transaction_cost": 0.0007220273216716366
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2026-01-29",
+          "execution_close": 8856.5161,
+          "execution_date": "2026-02-03",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2026-02-02",
+          "transaction_cost": 0.0006074051046702375
+        },
+        {
+          "action": "reset",
+          "event_id": "cni_free_cash_flow_total_return:2026-01-29",
+          "execution_close": 9295.1447,
+          "execution_date": "2026-02-26",
+          "new_target_weight": 0.7,
+          "old_target_weight": 0.8,
+          "signal_date": "2026-02-25",
+          "transaction_cost": 0.0007495492406161276
+        },
+        {
+          "action": "tier_1",
+          "event_id": "cni_free_cash_flow_total_return:2026-03-12",
+          "execution_close": 9005.7426,
+          "execution_date": "2026-03-20",
+          "new_target_weight": 0.8,
+          "old_target_weight": 0.7,
+          "signal_date": "2026-03-19",
+          "transaction_cost": 0.0007267432503975011
+        },
+        {
+          "action": "tier_2",
+          "event_id": "cni_free_cash_flow_total_return:2026-03-12",
+          "execution_close": 8887.3353,
+          "execution_date": "2026-03-24",
+          "new_target_weight": 0.9,
+          "old_target_weight": 0.8,
+          "signal_date": "2026-03-23",
+          "transaction_cost": 0.0006883030787817025
+        },
+        {
+          "action": "tier_3",
+          "event_id": "cni_free_cash_flow_total_return:2026-03-12",
+          "execution_close": 8175.2014,
+          "execution_date": "2026-06-05",
+          "new_target_weight": 1.0,
+          "old_target_weight": 0.9,
+          "signal_date": "2026-06-04",
+          "transaction_cost": 0.0006739052965650189
+        }
+      ]
+    }
+  ],
+  "assumptions": {
+    "base_asset_weight": 0.7,
+    "cash_annual_return": 0.0,
+    "execution_delay_sessions": 1,
+    "initialization_cost_applies": true,
+    "one_way_transaction_cost": 0.001,
+    "tier_weights": [
+      0.8,
+      0.9,
+      1.0
+    ]
+  },
+  "blocked_assets": [
+    {
+      "asset_key": "chinext_total_return",
+      "blockers": [
+        "local research cache is missing",
+        "total-return basis is reference_only",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ]
+    },
+    {
+      "asset_key": "cni1000_value_total_return",
+      "blockers": [
+        "local cache has no provider mapping",
+        "provider_code is not verified",
+        "total-return basis is unresolved",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ]
+    }
+  ],
+  "generated_at": "2026-07-16T08:43:27+00:00",
+  "report_type": "drawdown_addon_candidate_backtest",
+  "schema_version": "1.0",
+  "source_candidate_sha256": "a61ea136ca311ec0a23258a06312f9566bfbd5e09554baf3a5c4c350e785ae75",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_ledger_index_sha256": "8514ebc1179ac266b83bdcfc3cfa70159848f4124a90a53ec04223182d0015d2"
+}

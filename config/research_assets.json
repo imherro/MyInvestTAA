@@ -1,0 +1,16 @@
+[
+  {"asset_id":"H00300.CSI","name":"沪深300收益","category":"broad_base","data_source":"tushare","enabled":true},
+  {"asset_id":"H00905.CSI","name":"中证500收益","category":"broad_base","data_source":"tushare","enabled":true},
+  {"asset_id":"H00852.CSI","name":"中证1000全收益","category":"broad_base","data_source":"tushare","enabled":true},
+  {"asset_id":"000688CNY01.CSI","name":"科创50全收益","category":"broad_base","data_source":"tushare","enabled":true},
+  {"asset_id":"H00015.CSI","name":"红利收益","category":"dividend","data_source":"tushare","enabled":true},
+  {"asset_id":"H00922.CSI","name":"中红收益","category":"dividend","data_source":"tushare","enabled":true},
+  {"asset_id":"480092.CNI","name":"国证自由现金流指数R","category":"factor","data_source":"tushare","enabled":true},
+  {"asset_id":"H20007.CSI","name":"芯片产业全收益","category":"theme","data_source":"tushare","enabled":true},
+  {"asset_id":"931743CNY010.CSI","name":"半导体材料设备全收益","category":"theme","data_source":"tushare","enabled":true},
+  {"asset_id":"H21152.CSI","name":"CS创新药全收益","category":"theme","data_source":"tushare","enabled":true},
+  {"asset_id":"H20590.CSI","name":"机器人全收益","category":"theme","data_source":"tushare","enabled":true},
+  {"asset_id":"H20771.CSI","name":"CS新能源全收益","category":"theme","data_source":"tushare","enabled":true},
+  {"asset_id":"931688CNY010.CSI","name":"中证算力全收益","category":"theme","data_source":"tushare","enabled":true},
+  {"asset_id":"H00805.CSI","name":"A股资源全收益","category":"resource","data_source":"tushare","enabled":true}
+]

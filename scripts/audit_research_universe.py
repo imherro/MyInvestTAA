@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import json
-import os
 import sys
 from pathlib import Path
 
@@ -11,71 +9,43 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from data_provider.tushare_provider import TushareProvider
-from engine.asset_registry import (
-    build_research_data_availability_audit,
-    build_research_universe_mock_provider,
-    write_research_data_availability_audit,
+from current_taa.research_data_audit import (
+    audit_research_universe,
+    write_audit_report,
 )
-from engine.asset_registry.data_audit import RESEARCH_DATA_AUDIT_REPORT, RESEARCH_TUSHARE_DATA_AUDIT_REPORT
+from current_taa.research_universe import load_research_universe
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Audit MyInvestTAA research universe data availability.")
-    parser.add_argument("--provider", choices=["mock", "tushare"], default="mock")
-    parser.add_argument("--start", default=None)
-    parser.add_argument("--end", default=None)
-    parser.add_argument("--max-assets", type=int, default=None)
-    parser.add_argument("--output", default=None)
+    parser = argparse.ArgumentParser(description="Audit the V1 research universe")
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--offline", action="store_true")
+    mode.add_argument("--provider-check", action="store_true")
     args = parser.parse_args()
 
-    _load_dotenv(ROOT / ".env")
-    provider = _build_provider(args.provider)
-    report = build_research_data_availability_audit(
-        provider,
-        start=args.start,
-        end=args.end,
-        max_assets=args.max_assets,
+    universe = load_research_universe(ROOT / "config" / "research_universe_v1.json")
+    source = None
+    selected_mode = "offline"
+    if args.provider_check:
+        from scripts.update_market_data import TushareMarketDataSource, _load_env_file
+
+        _load_env_file(ROOT / ".env")
+        source = TushareMarketDataSource()
+        selected_mode = "provider_check"
+    report = audit_research_universe(
+        universe,
+        root=ROOT,
+        mode=selected_mode,
+        source=source,
     )
-    output = write_research_data_availability_audit(report, _output_path(args.provider, args.output))
-    summary = {
-        "provider": report["provider"],
-        "checked_assets": report["checked_assets"],
-        "available_assets": report["available_assets"],
-        "unavailable_assets": report["unavailable_assets"],
-        "warnings": len(report["warnings"]),
-        "errors": len(report["errors"]),
-        "output": str(output),
-    }
-    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    output = ROOT / "reports" / "strategy_research" / "universe_audit.json"
+    write_audit_report(output, report)
+    summary = report["summary"]
+    print(
+        f"{selected_mode}: A ready={summary['tier_a_ready']} "
+        f"blocked={summary['tier_a_blocked']} output={output}"
+    )
     return 0
-
-
-def _build_provider(provider_name: str):
-    if provider_name == "mock":
-        return build_research_universe_mock_provider()
-    provider = TushareProvider()
-    if not provider.provider_status()["available"]:
-        raise SystemExit("TUSHARE_TOKEN is required for --provider tushare. Use --provider mock for local audit.")
-    return provider
-
-
-def _output_path(provider_name: str, output: str | None) -> Path:
-    if output:
-        return Path(output)
-    if provider_name == "tushare":
-        return RESEARCH_TUSHARE_DATA_AUDIT_REPORT
-    return RESEARCH_DATA_AUDIT_REPORT
-
-
-def _load_dotenv(path: Path) -> None:
-    if not path.exists():
-        return
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if not line or line.strip().startswith("#") or "=" not in line:
-            continue
-        key, value = line.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
 
 if __name__ == "__main__":

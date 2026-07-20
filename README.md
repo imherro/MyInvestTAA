@@ -75,7 +75,7 @@ python scripts/verify_system_release.py
 需要在明确授权的发布任务中完整离线重建时，使用唯一的参数化命令：
 
 ```powershell
-python scripts/build_system_release.py --market-data-as-of 2026-07-08 --decision-date 2026-07-13 --generated-at 2026-07-13T08:15:34+00:00 --provider local --output-dir reports/release
+python scripts/build_system_release.py --market-data-as-of <最新交易日> --decision-date <决策日> --generated-at <UTC时间> --provider local --output-dir reports/release
 ```
 
 C0-A 只冻结范围和合同，不执行该重建命令，也不刷新正式发布。

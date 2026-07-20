@@ -1,0 +1,16 @@
+{
+  "model": "CURRENT_TAA",
+  "model_description": "趋势/回撤型多资产 TAA",
+  "implementation_version": "1.0.0",
+  "generated_at": "2026-07-15T08:27:15+00:00",
+  "provider": "tushare",
+  "data_as_of": "2026-07-14",
+  "shadow_start_date": "2026-07-14",
+  "reports": [
+    "allocation.json",
+    "data_status.json",
+    "manifest.json",
+    "research.json",
+    "shadow.json"
+  ]
+}

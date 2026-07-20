@@ -1,0 +1,262 @@
+{
+  "assets": [
+    {
+      "asset_key": "csi300_total_return",
+      "blockers": [],
+      "contract_research_status": "available",
+      "contract_status": "valid",
+      "contract_verification_status": "verified",
+      "display_name": "沪深300全收益指数",
+      "duplicate_dates": [],
+      "first_date": "2011-01-04",
+      "invalid_price_count": 0,
+      "last_date": "2026-07-14",
+      "local_cache_status": "available",
+      "official_code": "H00300",
+      "provider_code": "H00300.CSI",
+      "provider_evidence": [],
+      "provider_status": "not_checked",
+      "research_ready": true,
+      "return_basis_evidence": [
+        "Listed as a total-return index in the V1.0 human reference.",
+        "Existing local research cache declares return_basis=total_return.",
+        "Provider mapping is present in the existing verified project configuration."
+      ],
+      "return_basis_status": "confirmed",
+      "row_count": 3770,
+      "sorted_unique_dates": true,
+      "tier": "A",
+      "verification_notes": [
+        "Provider query success and total-return basis confirmation are separate conclusions.",
+        "Valuation filter is not implemented in P0.",
+        "Structural validity is unassessed in P0."
+      ],
+      "warnings": []
+    },
+    {
+      "asset_key": "csi500_total_return",
+      "blockers": [],
+      "contract_research_status": "available",
+      "contract_status": "valid",
+      "contract_verification_status": "verified",
+      "display_name": "中证500全收益指数",
+      "duplicate_dates": [],
+      "first_date": "2011-01-04",
+      "invalid_price_count": 0,
+      "last_date": "2026-07-14",
+      "local_cache_status": "available",
+      "official_code": "H00905",
+      "provider_code": "H00905.CSI",
+      "provider_evidence": [],
+      "provider_status": "not_checked",
+      "research_ready": true,
+      "return_basis_evidence": [
+        "Listed as a total-return index in the V1.0 human reference.",
+        "Existing local research cache declares return_basis=total_return.",
+        "Provider mapping is present in the existing verified project configuration."
+      ],
+      "return_basis_status": "confirmed",
+      "row_count": 3770,
+      "sorted_unique_dates": true,
+      "tier": "A",
+      "verification_notes": [
+        "Provider query success and total-return basis confirmation are separate conclusions.",
+        "Valuation filter is not implemented in P0.",
+        "Structural validity is unassessed in P0."
+      ],
+      "warnings": []
+    },
+    {
+      "asset_key": "csi1000_total_return",
+      "blockers": [],
+      "contract_research_status": "available",
+      "contract_status": "valid",
+      "contract_verification_status": "verified",
+      "display_name": "中证1000全收益指数",
+      "duplicate_dates": [],
+      "first_date": "2011-01-04",
+      "invalid_price_count": 0,
+      "last_date": "2026-07-14",
+      "local_cache_status": "available",
+      "official_code": "H00852",
+      "provider_code": "H00852.CSI",
+      "provider_evidence": [],
+      "provider_status": "not_checked",
+      "research_ready": true,
+      "return_basis_evidence": [
+        "Listed as a total-return index in the V1.0 human reference.",
+        "Existing local research cache declares return_basis=total_return.",
+        "Provider mapping is present in the existing verified project configuration."
+      ],
+      "return_basis_status": "confirmed",
+      "row_count": 3770,
+      "sorted_unique_dates": true,
+      "tier": "A",
+      "verification_notes": [
+        "Provider query success and total-return basis confirmation are separate conclusions.",
+        "Valuation filter is not implemented in P0.",
+        "Structural validity is unassessed in P0."
+      ],
+      "warnings": []
+    },
+    {
+      "asset_key": "chinext_total_return",
+      "blockers": [
+        "local research cache is missing",
+        "total-return basis is reference_only",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ],
+      "contract_research_status": "blocked",
+      "contract_status": "valid",
+      "contract_verification_status": "unverified",
+      "display_name": "创业板全收益指数",
+      "duplicate_dates": [],
+      "first_date": null,
+      "invalid_price_count": 0,
+      "last_date": null,
+      "local_cache_status": "missing",
+      "official_code": "399606",
+      "provider_code": "399606.SZ",
+      "provider_evidence": [],
+      "provider_status": "not_checked",
+      "research_ready": false,
+      "return_basis_evidence": [
+        "Listed as a total-return index in the V1.0 human reference."
+      ],
+      "return_basis_status": "reference_only",
+      "row_count": 0,
+      "sorted_unique_dates": false,
+      "tier": "A",
+      "verification_notes": [
+        "Provider query success and total-return basis confirmation are separate conclusions.",
+        "Valuation filter is not implemented in P0.",
+        "Structural validity is unassessed in P0."
+      ],
+      "warnings": []
+    },
+    {
+      "asset_key": "cni1000_value_total_return",
+      "blockers": [
+        "local cache has no provider mapping",
+        "provider_code is not verified",
+        "total-return basis is unresolved",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ],
+      "contract_research_status": "blocked",
+      "contract_status": "valid",
+      "contract_verification_status": "unverified",
+      "display_name": "国证1000价值全收益指数",
+      "duplicate_dates": [],
+      "first_date": null,
+      "invalid_price_count": 0,
+      "last_date": null,
+      "local_cache_status": "missing",
+      "official_code": "CN2371",
+      "provider_code": null,
+      "provider_evidence": [],
+      "provider_status": "not_checked",
+      "research_ready": false,
+      "return_basis_evidence": [
+        "Listed as a total-return index in the V1.0 human reference."
+      ],
+      "return_basis_status": "unresolved",
+      "row_count": 0,
+      "sorted_unique_dates": false,
+      "tier": "A",
+      "verification_notes": [
+        "Provider query success and total-return basis confirmation are separate conclusions.",
+        "Valuation filter is not implemented in P0.",
+        "Structural validity is unassessed in P0."
+      ],
+      "warnings": []
+    },
+    {
+      "asset_key": "csi_dividend_total_return",
+      "blockers": [],
+      "contract_research_status": "available",
+      "contract_status": "valid",
+      "contract_verification_status": "verified",
+      "display_name": "中证红利全收益指数",
+      "duplicate_dates": [],
+      "first_date": "2011-01-04",
+      "invalid_price_count": 0,
+      "last_date": "2026-07-14",
+      "local_cache_status": "available",
+      "official_code": "H00922",
+      "provider_code": "H00922.CSI",
+      "provider_evidence": [],
+      "provider_status": "not_checked",
+      "research_ready": true,
+      "return_basis_evidence": [
+        "Listed as a total-return index in the V1.0 human reference.",
+        "Existing local research cache declares return_basis=total_return.",
+        "Provider mapping is present in the existing verified project configuration."
+      ],
+      "return_basis_status": "confirmed",
+      "row_count": 3770,
+      "sorted_unique_dates": true,
+      "tier": "A",
+      "verification_notes": [
+        "Provider query success and total-return basis confirmation are separate conclusions.",
+        "Valuation filter is not implemented in P0.",
+        "Structural validity is unassessed in P0."
+      ],
+      "warnings": []
+    },
+    {
+      "asset_key": "cni_free_cash_flow_total_return",
+      "blockers": [],
+      "contract_research_status": "available",
+      "contract_status": "valid",
+      "contract_verification_status": "verified",
+      "display_name": "国证自由现金流全收益指数",
+      "duplicate_dates": [],
+      "first_date": "2012-12-31",
+      "invalid_price_count": 0,
+      "last_date": "2026-07-14",
+      "local_cache_status": "available",
+      "official_code": "480092",
+      "provider_code": "480092.CNI",
+      "provider_evidence": [],
+      "provider_status": "not_checked",
+      "research_ready": true,
+      "return_basis_evidence": [
+        "Listed as a total-return index in the V1.0 human reference.",
+        "Existing local research cache declares return_basis=total_return.",
+        "Provider mapping is present in the existing verified project configuration."
+      ],
+      "return_basis_status": "confirmed",
+      "row_count": 3284,
+      "sorted_unique_dates": true,
+      "tier": "A",
+      "verification_notes": [
+        "Provider query success and total-return basis confirmation are separate conclusions.",
+        "Valuation filter is not implemented in P0.",
+        "Structural validity is unassessed in P0."
+      ],
+      "warnings": []
+    }
+  ],
+  "generated_at": "2026-07-16T04:23:28+00:00",
+  "limitations": [
+    "Provider availability does not independently prove total-return methodology.",
+    "P0 audits price availability only; valuation and structural-validity filters are not implemented.",
+    "B-tier and C-tier assets are contract-validated but are not queried in P0."
+  ],
+  "mode": "offline",
+  "report_type": "research_universe_audit",
+  "schema_version": "1.0",
+  "summary": {
+    "tier_a_blocked": 2,
+    "tier_a_count": 7,
+    "tier_a_ready": 5,
+    "tier_a_unverified": 2,
+    "tier_b_count": 12,
+    "tier_c_count": 13,
+    "total_whitelist_assets": 32
+  },
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}

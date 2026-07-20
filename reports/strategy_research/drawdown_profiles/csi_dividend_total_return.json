@@ -1,0 +1,176 @@
+{
+  "analysis_status": "analyzed",
+  "asset": {
+    "asset_key": "csi_dividend_total_return",
+    "display_name": "中证红利全收益指数",
+    "official_code": "H00922",
+    "provider_code": "H00922.CSI",
+    "risk_family": "value_income",
+    "tier": "A"
+  },
+  "blockers": [],
+  "current_position": {
+    "all_observations_exceedance_rate": 0.6289124668,
+    "all_observations_percentile": 0.3713527851,
+    "current_depth": 0.0908872331,
+    "current_drawdown": -0.0908872331,
+    "date": "2026-07-14",
+    "open_event_depth_position": {
+      "completed_event_depth_exceedance_rate": 0.0833333333,
+      "completed_event_depth_percentile": 0.9166666667
+    },
+    "state": "underwater",
+    "underwater_observations_exceedance_rate": 0.6499451754,
+    "underwater_observations_percentile": 0.3503289474
+  },
+  "daily_depth_profile": {
+    "all_observations": {
+      "maximum": 0.4565924567,
+      "mean": 0.1591701435,
+      "minimum": 0.0,
+      "percentiles": {
+        "p50": 0.15282164,
+        "p60": 0.1940679165,
+        "p70": 0.2301248662,
+        "p75": 0.2500666202,
+        "p80": 0.272351488,
+        "p85": 0.2885842098,
+        "p90": 0.3050189564,
+        "p95": 0.3439007779,
+        "p97_5": 0.3894735606
+      },
+      "sample_count": 3770,
+      "sample_name": "all_observations",
+      "underwater_count": 3648,
+      "underwater_rate": 0.9676392573,
+      "zero_depth_count": 122
+    },
+    "underwater_observations": {
+      "maximum": 0.4565924567,
+      "mean": 0.1644932678,
+      "minimum": 3.4185e-06,
+      "percentiles": {
+        "p50": 0.164226538,
+        "p60": 0.1983001828,
+        "p70": 0.2338658811,
+        "p75": 0.2559329691,
+        "p80": 0.2740243376,
+        "p85": 0.2899471978,
+        "p90": 0.3067247196,
+        "p95": 0.3458330984,
+        "p97_5": 0.3899328803
+      },
+      "sample_count": 3648,
+      "sample_name": "underwater_observations",
+      "underwater_count": 3648,
+      "underwater_rate": null,
+      "zero_depth_count": 0
+    }
+  },
+  "duration_profile": {
+    "decline_sessions": {
+      "maximum": 402,
+      "mean": 26.125,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 1.0,
+        "p75": 9.0,
+        "p90": 92.8,
+        "p95": 143.1
+      },
+      "sample_count": 48
+    },
+    "event_span_sessions": {
+      "maximum": 1436,
+      "mean": 75.2708333333,
+      "minimum": 2,
+      "percentiles": {
+        "p50": 4.5,
+        "p75": 21.75,
+        "p90": 118.9,
+        "p95": 322.3
+      },
+      "sample_count": 48
+    },
+    "recovery_sessions": {
+      "maximum": 1281,
+      "mean": 49.1458333333,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 2.5,
+        "p75": 10.5,
+        "p90": 29.7,
+        "p95": 200.8
+      },
+      "sample_count": 48
+    },
+    "underwater_observations": {
+      "maximum": 1435,
+      "mean": 74.2708333333,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 3.5,
+        "p75": 20.75,
+        "p90": 117.9,
+        "p95": 321.3
+      },
+      "sample_count": 48
+    }
+  },
+  "event_depth_profile": {
+    "completed_events": {
+      "completed_event_count": 48,
+      "maximum": 0.4565924567,
+      "mean": 0.0495645205,
+      "minimum": 0.0016670003,
+      "percentiles": {
+        "p50": 0.0211697479,
+        "p60": 0.0271153475,
+        "p70": 0.0387755749,
+        "p75": 0.0505406148,
+        "p80": 0.0689211664,
+        "p85": 0.0878792722,
+        "p90": 0.1056222383,
+        "p95": 0.1703858167,
+        "p97_5": 0.318348043
+      },
+      "sample_count": 48
+    },
+    "current_open_event": {
+      "current_date": "2026-07-14",
+      "current_depth": 0.0908872331,
+      "current_drawdown": -0.0908872331,
+      "decline_sessions": 73,
+      "event_id": "csi_dividend_total_return:2026-03-12",
+      "event_span_sessions": 83,
+      "exists": true,
+      "max_depth_to_date": 0.1444354959,
+      "max_drawdown_to_date": -0.1444354959,
+      "peak_date": "2026-03-12",
+      "start_date": "2026-03-13",
+      "trough_date": "2026-06-30",
+      "underwater_observations": 83
+    }
+  },
+  "limitations": [
+    "Profiles are descriptive price-drawdown facts, not trading signals.",
+    "Recovery probabilities, forward returns, and strategy parameters are not calculated.",
+    "Open events are right-censored and excluded from completed duration distributions.",
+    "Excluding open events does not remove censoring bias; later recovery research must address it explicitly.",
+    "Blocked assets are not analyzed or substituted."
+  ],
+  "methodology_version": "1.0",
+  "period": {
+    "first_date": "2011-01-04",
+    "last_date": "2026-07-14",
+    "row_count": 3770
+  },
+  "report_type": "asset_drawdown_profile",
+  "schema_version": "1.0",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_event_report_path": "reports/strategy_research/drawdown_events/csi_dividend_total_return.json",
+  "source_event_report_sha256": "df3e63e73ae510117c9777124f199a4ae12c370119d1f7bfaf5c8e7d5a75f277",
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}

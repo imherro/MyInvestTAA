@@ -1,0 +1,176 @@
+{
+  "analysis_status": "analyzed",
+  "asset": {
+    "asset_key": "cni_free_cash_flow_total_return",
+    "display_name": "国证自由现金流全收益指数",
+    "official_code": "480092",
+    "provider_code": "480092.CNI",
+    "risk_family": "value_income",
+    "tier": "A"
+  },
+  "blockers": [],
+  "current_position": {
+    "all_observations_exceedance_rate": 0.215590743,
+    "all_observations_percentile": 0.7847137637,
+    "current_depth": 0.2094279795,
+    "current_drawdown": -0.2094279795,
+    "date": "2026-07-14",
+    "open_event_depth_position": {
+      "completed_event_depth_exceedance_rate": 0.0114942529,
+      "completed_event_depth_percentile": 0.9885057471
+    },
+    "state": "underwater",
+    "underwater_observations_exceedance_rate": 0.2305437968,
+    "underwater_observations_percentile": 0.76978183
+  },
+  "daily_depth_profile": {
+    "all_observations": {
+      "maximum": 0.5019480244,
+      "mean": 0.1332423494,
+      "minimum": 0.0,
+      "percentiles": {
+        "p50": 0.1009743772,
+        "p60": 0.136214659,
+        "p70": 0.1753469266,
+        "p75": 0.1959783064,
+        "p80": 0.2186734432,
+        "p85": 0.2462200126,
+        "p90": 0.3224372428,
+        "p95": 0.3962434625,
+        "p97_5": 0.4469741829
+      },
+      "sample_count": 3284,
+      "sample_name": "all_observations",
+      "underwater_count": 3071,
+      "underwater_rate": 0.9351400731,
+      "zero_depth_count": 213
+    },
+    "underwater_observations": {
+      "maximum": 0.5019480244,
+      "mean": 0.1424838409,
+      "minimum": 2.65398e-05,
+      "percentiles": {
+        "p50": 0.1123092763,
+        "p60": 0.1458133229,
+        "p70": 0.1852493897,
+        "p75": 0.2014231221,
+        "p80": 0.2242755486,
+        "p85": 0.2562289949,
+        "p90": 0.3291990095,
+        "p95": 0.4030366067,
+        "p97_5": 0.4486182814
+      },
+      "sample_count": 3071,
+      "sample_name": "underwater_observations",
+      "underwater_count": 3071,
+      "underwater_rate": null,
+      "zero_depth_count": 0
+    }
+  },
+  "duration_profile": {
+    "decline_sessions": {
+      "maximum": 155,
+      "mean": 9.3908045977,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 2.0,
+        "p75": 5.5,
+        "p90": 14.2,
+        "p95": 35.7
+      },
+      "sample_count": 87
+    },
+    "event_span_sessions": {
+      "maximum": 1325,
+      "mean": 35.3448275862,
+      "minimum": 2,
+      "percentiles": {
+        "p50": 3.0,
+        "p75": 11.0,
+        "p90": 38.4,
+        "p95": 104.3
+      },
+      "sample_count": 87
+    },
+    "recovery_sessions": {
+      "maximum": 1170,
+      "mean": 25.9540229885,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 2.0,
+        "p75": 5.0,
+        "p90": 21.4,
+        "p95": 64.1
+      },
+      "sample_count": 87
+    },
+    "underwater_observations": {
+      "maximum": 1324,
+      "mean": 34.3448275862,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 2.0,
+        "p75": 10.0,
+        "p90": 37.4,
+        "p95": 103.3
+      },
+      "sample_count": 87
+    }
+  },
+  "event_depth_profile": {
+    "completed_events": {
+      "completed_event_count": 87,
+      "maximum": 0.5019480244,
+      "mean": 0.0367825138,
+      "minimum": 2.65398e-05,
+      "percentiles": {
+        "p50": 0.016121892,
+        "p60": 0.021909933,
+        "p70": 0.0293572674,
+        "p75": 0.0418047022,
+        "p80": 0.0502393789,
+        "p85": 0.0607178832,
+        "p90": 0.0666635354,
+        "p95": 0.1367102844,
+        "p97_5": 0.2186890052
+      },
+      "sample_count": 87
+    },
+    "current_open_event": {
+      "current_date": "2026-07-14",
+      "current_depth": 0.2094279795,
+      "current_drawdown": -0.2094279795,
+      "decline_sessions": 73,
+      "event_id": "cni_free_cash_flow_total_return:2026-03-12",
+      "event_span_sessions": 83,
+      "exists": true,
+      "max_depth_to_date": 0.2444156411,
+      "max_drawdown_to_date": -0.2444156411,
+      "peak_date": "2026-03-12",
+      "start_date": "2026-03-13",
+      "trough_date": "2026-06-30",
+      "underwater_observations": 83
+    }
+  },
+  "limitations": [
+    "Profiles are descriptive price-drawdown facts, not trading signals.",
+    "Recovery probabilities, forward returns, and strategy parameters are not calculated.",
+    "Open events are right-censored and excluded from completed duration distributions.",
+    "Excluding open events does not remove censoring bias; later recovery research must address it explicitly.",
+    "Blocked assets are not analyzed or substituted."
+  ],
+  "methodology_version": "1.0",
+  "period": {
+    "first_date": "2012-12-31",
+    "last_date": "2026-07-14",
+    "row_count": 3284
+  },
+  "report_type": "asset_drawdown_profile",
+  "schema_version": "1.0",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_event_report_path": "reports/strategy_research/drawdown_events/cni_free_cash_flow_total_return.json",
+  "source_event_report_sha256": "50e7ef7fa0661f645c89615a43e990db6cc05761a9ff78b860d285317c7e1c7f",
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}

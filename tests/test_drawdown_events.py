@@ -1,83 +1,417 @@
-from engine.drawdown import calculate_drawdown_percentile, detect_drawdown_events
+from __future__ import annotations
+
+import copy
+import hashlib
+import json
+from pathlib import Path
+
+import pytest
+
+from current_taa.drawdown_events import (
+    DrawdownInputError,
+    analyze_drawdown_history,
+)
+from scripts.build_a_tier_drawdown_events import (
+    DrawdownBuildError,
+    build_drawdown_report_set,
+    publish_drawdown_report_set,
+)
 
 
-def test_detect_drawdown_events_returns_empty_for_monotonic_rise():
-    events = detect_drawdown_events(
-        [
-            {"date": "2024-01-01", "close": 100},
-            {"date": "2024-02-01", "close": 110},
-            {"date": "2024-03-01", "close": 120},
-        ]
+ROOT = Path(__file__).resolve().parents[1]
+TIER_A_KEYS = [
+    "csi300_total_return",
+    "csi500_total_return",
+    "csi1000_total_return",
+    "chinext_total_return",
+    "cni1000_value_total_return",
+    "csi_dividend_total_return",
+    "cni_free_cash_flow_total_return",
+]
+ANALYZED_KEYS = {
+    "csi300_total_return",
+    "csi500_total_return",
+    "csi1000_total_return",
+    "csi_dividend_total_return",
+    "cni_free_cash_flow_total_return",
+}
+
+
+def _row(row_date: str, close: float, *, basis: str = "total_return") -> dict:
+    return {"date": row_date, "close": close, "return_basis": basis}
+
+
+def test_monotonic_history_has_no_event_and_high_watermark_states() -> None:
+    result = analyze_drawdown_history(_rows(100, 101, 102), asset_key="asset")
+
+    assert result.events == ()
+    assert [point.state for point in result.drawdown_series] == [
+        "high_watermark",
+        "high_watermark",
+        "high_watermark",
+    ]
+    assert result.current_state["drawdown"] == 0.0
+    assert result.current_state["event_id"] is None
+
+
+def test_completed_event_preserves_first_equal_trough_and_durations() -> None:
+    result = analyze_drawdown_history(
+        _rows(100, 90, 80, 80, 100), asset_key="asset"
+    )
+    event = result.events[0]
+
+    assert event.event_id == "asset:2020-01-01"
+    assert event.completed is True
+    assert event.start_date == "2020-01-02"
+    assert event.trough_date == "2020-01-03"
+    assert event.recovery_date == "2020-01-05"
+    assert event.max_drawdown == pytest.approx(-0.2)
+    assert event.decline_sessions == 2
+    assert event.recovery_sessions == 2
+    assert event.event_span_sessions == 4
+    assert event.underwater_observations == 3
+    assert result.drawdown_series[-1].state == "recovered"
+    assert result.drawdown_series[-1].event_id == event.event_id
+
+
+def test_open_event_updates_trough_without_creating_multiple_events() -> None:
+    result = analyze_drawdown_history(
+        _rows(100, 95, 90, 92, 80, 85), asset_key="asset"
+    )
+    event = result.events[0]
+
+    assert len(result.events) == 1
+    assert event.completed is False
+    assert event.trough_date == "2020-01-05"
+    assert event.recovery_date is None
+    assert event.recovery_sessions is None
+    assert event.last_observation_date == "2020-01-06"
+    assert event.event_span_sessions == 5
+    assert result.current_state["open_event"]["event_id"] == event.event_id
+
+
+def test_equal_high_uses_recent_date_and_recovery_can_start_later_event() -> None:
+    result = analyze_drawdown_history(
+        _rows(100, 100, 90, 105, 100), asset_key="asset"
     )
 
-    assert events == []
+    assert [event.event_id for event in result.events] == [
+        "asset:2020-01-02",
+        "asset:2020-01-04",
+    ]
+    assert result.events[0].completed is True
+    assert result.events[0].recovery_date == "2020-01-04"
+    assert result.events[1].completed is False
+    assert result.drawdown_series[3].state == "recovered"
 
 
-def test_detect_drawdown_events_handles_single_recovered_crash():
-    events = detect_drawdown_events(
-        [
-            {"date": "2024-01-01", "close": 100},
-            {"date": "2024-02-01", "close": 70},
-            {"date": "2024-03-01", "close": 80},
-            {"date": "2024-04-01", "close": 101},
-        ]
+def test_exact_peak_and_overshoot_both_recover_one_event() -> None:
+    exact = analyze_drawdown_history(_rows(100, 90, 100), asset_key="exact")
+    overshoot = analyze_drawdown_history(_rows(100, 90, 110), asset_key="over")
+
+    assert len(exact.events) == len(overshoot.events) == 1
+    assert exact.events[0].completed is overshoot.events[0].completed is True
+    assert overshoot.drawdown_series[-1].high_watermark == 110
+    assert overshoot.drawdown_series[-1].state == "recovered"
+
+
+def test_as_of_is_prefix_equivalent_and_future_invariant() -> None:
+    full = _rows(100, 90, 80, 100, 70)
+    as_of = analyze_drawdown_history(
+        full, asset_key="asset", as_of_date="2020-01-03"
+    )
+    prefix = analyze_drawdown_history(full[:3], asset_key="asset")
+    appended = analyze_drawdown_history(
+        full + _rows_from("2020-01-06", 120, 60),
+        asset_key="asset",
+        as_of_date="2020-01-03",
     )
 
-    assert len(events) == 1
-    event = events[0]
-    assert event.peak_date == "2024-01-01"
-    assert event.bottom_date == "2024-02-01"
-    assert event.recovery_date == "2024-04-01"
-    assert event.drawdown_pct == -30.0
-    assert event.is_recovered is True
+    assert as_of == prefix == appended
+    assert as_of.events[0].completed is False
+    assert as_of.events[0].trough_value == 80
+    assert as_of.events[0].recovery_date is None
 
 
-def test_detect_drawdown_events_handles_ongoing_bear_market():
-    events = detect_drawdown_events(
-        [
-            {"date": "2024-01-01", "close": 100},
-            {"date": "2024-02-01", "close": 80},
-            {"date": "2024-03-01", "close": 50},
-            {"date": "2024-04-01", "close": 20},
-        ]
+@pytest.mark.parametrize(
+    "future_row",
+    [
+        _row("2020-01-04", 0),
+        _row("2020-01-04", -1),
+        _row("2020-01-04", float("nan")),
+        _row("2020-01-04", float("inf")),
+        _row("2020-01-04", True),
+        _row("2020-01-04", 100, basis="price"),
+    ],
+)
+def test_as_of_ignores_invalid_future_prices_and_basis(future_row: dict) -> None:
+    prefix = _rows(100, 90, 80)
+    expected = analyze_drawdown_history(prefix, asset_key="asset")
+
+    actual = analyze_drawdown_history(
+        prefix + [future_row], asset_key="asset", as_of_date="2020-01-03"
     )
 
-    assert len(events) == 1
-    assert events[0].bottom_date == "2024-04-01"
-    assert events[0].drawdown_pct == -80.0
-    assert events[0].recovery_date is None
-    assert events[0].is_recovered is False
+    assert actual == expected
 
 
-def test_detect_drawdown_events_handles_v_shaped_recovery():
-    events = detect_drawdown_events(
-        [
-            {"date": "2024-01-01", "close": 100},
-            {"date": "2024-02-01", "close": 60},
-            {"date": "2024-03-01", "close": 100},
-        ]
+@pytest.mark.parametrize(
+    "future_row",
+    [
+        {},
+        {"date": "2020-01-04", "return_basis": "total_return"},
+        {"close": 100, "return_basis": "total_return"},
+        {"date": "2020-01-04", "close": 100},
+        "not-an-object",
+        None,
+    ],
+)
+def test_as_of_ignores_malformed_future_rows(future_row) -> None:
+    prefix = _rows(100, 90, 80)
+    expected = analyze_drawdown_history(prefix, asset_key="asset")
+
+    actual = analyze_drawdown_history(
+        prefix + [future_row], asset_key="asset", as_of_date="2020-01-03"
     )
 
-    assert len(events) == 1
-    assert events[0].drawdown_pct == -40.0
-    assert events[0].recovery_date == "2024-03-01"
+    assert actual == expected
 
 
-def test_calculate_drawdown_percentile_uses_event_distribution():
-    events = detect_drawdown_events(
-        [
-            {"date": "2024-01-01", "close": 100},
-            {"date": "2024-02-01", "close": 90},
-            {"date": "2024-03-01", "close": 101},
-            {"date": "2024-04-01", "close": 80},
-            {"date": "2024-05-01", "close": 110},
-            {"date": "2024-06-01", "close": 55},
-        ]
+@pytest.mark.parametrize(
+    "future_row",
+    [
+        _row("2020-01-02", 70),
+        _row("2019-12-31", 70),
+        _row("bad-date", 70),
+        _row("2020-01-03", 70),
+        _row("2020-01-01", 70),
+    ],
+)
+def test_as_of_ignores_future_tail_date_errors(future_row: dict) -> None:
+    prefix = _rows(100, 90, 80)
+    expected = analyze_drawdown_history(prefix, asset_key="asset")
+
+    actual = analyze_drawdown_history(
+        prefix + [future_row], asset_key="asset", as_of_date="2020-01-03"
     )
 
-    pressure = calculate_drawdown_percentile(events, -25)
+    assert actual == expected
 
-    assert pressure["event_count"] == 3
-    assert pressure["percentile"] == 0.6667
-    assert pressure["zone"] == "medium"
 
+@pytest.mark.parametrize(
+    "bad_prefix",
+    [
+        [_row("2020-01-01", 100), {}, _row("2020-01-03", 80)],
+        [_row("2020-01-01", 100), _row("2020-01-02", 0)],
+        [_row("2020-01-01", 100), _row("2020-01-02", 90, basis="price")],
+        [_row("2020-01-02", 100), _row("2020-01-01", 90)],
+    ],
+)
+def test_as_of_still_rejects_errors_in_visible_prefix(bad_prefix: list) -> None:
+    target = bad_prefix[-1].get("date") if isinstance(bad_prefix[-1], dict) else None
+    if target is None:
+        target = "2020-01-03"
+        bad_prefix.append(_row(target, 80))
+
+    with pytest.raises(DrawdownInputError):
+        analyze_drawdown_history(
+            bad_prefix, asset_key="asset", as_of_date=target
+        )
+
+
+@pytest.mark.parametrize(
+    "future_row",
+    [
+        _row("2020-01-04", 0),
+        _row("2020-01-04", float("nan")),
+        _row("2020-01-04", 100, basis="price"),
+        {},
+        "not-an-object",
+        None,
+        _row("2020-01-02", 70),
+    ],
+)
+def test_full_analysis_still_validates_arbitrary_future_rows(future_row) -> None:
+    with pytest.raises(DrawdownInputError):
+        analyze_drawdown_history(_rows(100, 90, 80) + [future_row], asset_key="asset")
+
+
+@pytest.mark.parametrize(
+    "as_of_date", ["2019-12-31", "2020-01-02", "2020-01-04"]
+)
+def test_as_of_must_be_an_actual_input_date(as_of_date: str) -> None:
+    with pytest.raises(DrawdownInputError, match="actual input trading date"):
+        analyze_drawdown_history(
+            [_row("2020-01-01", 100), _row("2020-01-03", 90)],
+            asset_key="asset",
+            as_of_date=as_of_date,
+        )
+
+
+@pytest.mark.parametrize(
+    ("rows", "message"),
+    [
+        ([_row("2020-01-01", 100), _row("2020-01-01", 90)], "strictly increasing"),
+        ([_row("2020-01-02", 100), _row("2020-01-01", 90)], "strictly increasing"),
+        ([_row("2020-01-01", 0)], "finite positive"),
+        ([_row("2020-01-01", float("nan"))], "finite positive"),
+        ([_row("2020-01-01", float("inf"))], "finite positive"),
+        ([_row("2020-01-01", True)], "malformed"),
+        ([_row("2020-01-01", 100, basis="price")], "total_return"),
+        ([_row("20200101", 100)], "YYYY-MM-DD"),
+        ([_row("not-a-date", 100)], "YYYY-MM-DD"),
+    ],
+)
+def test_invalid_price_history_fails_closed(rows: list[dict], message: str) -> None:
+    with pytest.raises(DrawdownInputError, match=message):
+        analyze_drawdown_history(rows, asset_key="asset")
+
+
+def test_builder_generates_five_analyzed_two_blocked_and_source_hashes(
+    tmp_path: Path,
+) -> None:
+    project = _project_fixture(tmp_path)
+    reports = build_drawdown_report_set(
+        project, generated_at="2026-07-16T00:00:00+00:00"
+    )
+    index = reports["index.json"]
+
+    assert set(reports) == {"index.json"} | {
+        f"{asset_key}.json" for asset_key in TIER_A_KEYS
+    }
+    assert index["summary"]["analyzed_assets"] == 5
+    assert index["summary"]["blocked_assets"] == 2
+    assert index["summary"]["completed_events"] == 5
+    assert [row["asset_key"] for row in index["assets"]] == TIER_A_KEYS
+    audit_bytes = (project / "reports/strategy_research/universe_audit.json").read_bytes()
+    assert index["source_audit_sha256"] == hashlib.sha256(audit_bytes).hexdigest()
+    for asset_key in ANALYZED_KEYS:
+        report = reports[f"{asset_key}.json"]
+        cache = project / report["source_cache_path"]
+        assert report["analysis_status"] == "analyzed"
+        assert report["source_cache_sha256"] == hashlib.sha256(
+            cache.read_bytes()
+        ).hexdigest()
+    for asset_key in set(TIER_A_KEYS) - ANALYZED_KEYS:
+        report = reports[f"{asset_key}.json"]
+        assert report["analysis_status"] == "blocked"
+        assert report["source_cache_path"] is None
+        assert report["events"] == report["drawdown_series"] == []
+        assert report["current_state"] is None
+
+
+def test_builder_is_deterministic_except_index_timestamp_and_has_no_secrets(
+    tmp_path: Path,
+) -> None:
+    project = _project_fixture(tmp_path)
+    first = build_drawdown_report_set(project, generated_at="first")
+    second = build_drawdown_report_set(project, generated_at="second")
+    first["index.json"].pop("generated_at")
+    second["index.json"].pop("generated_at")
+
+    assert first == second
+    text = json.dumps(first, allow_nan=False)
+    assert "NaN" not in text and "Infinity" not in text
+    assert "token" not in text.lower()
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        (lambda audit: audit.update(universe_hash="bad"), "universe_hash"),
+        (lambda audit: audit.update(universe_id="bad"), "universe_id"),
+        (lambda audit: audit["assets"].pop(), "exactly tier A"),
+        (lambda audit: audit["assets"].append(copy.deepcopy(audit["assets"][0])), "duplicate"),
+        (
+            lambda audit: audit["assets"][0].update(asset_key="unknown_asset"),
+            "exactly tier A",
+        ),
+        (lambda audit: audit["assets"][0].update(provider_code="wrong"), "contract fields"),
+        (
+            lambda audit: audit["assets"][0].update(
+                contract_research_status="blocked"
+            ),
+            "contract fields",
+        ),
+    ],
+)
+def test_builder_rejects_stale_or_inconsistent_audit(
+    tmp_path: Path, mutation, message: str
+) -> None:
+    project = _project_fixture(tmp_path)
+    path = project / "reports/strategy_research/universe_audit.json"
+    audit = json.loads(path.read_text(encoding="utf-8"))
+    mutation(audit)
+    path.write_text(json.dumps(audit, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(DrawdownBuildError, match=message):
+        build_drawdown_report_set(project)
+
+
+def test_blocked_assets_do_not_require_or_read_a_cache(tmp_path: Path) -> None:
+    project = _project_fixture(tmp_path)
+    assert not (project / "data/research_prices/399606_SZ.json").exists()
+
+    reports = build_drawdown_report_set(project)
+
+    assert reports["chinext_total_return.json"]["analysis_status"] == "blocked"
+
+
+def test_atomic_publish_replaces_complete_directory_and_invalid_set_preserves_old(
+    tmp_path: Path,
+) -> None:
+    project = _project_fixture(tmp_path / "project")
+    reports = build_drawdown_report_set(project, generated_at="fixed")
+    target = tmp_path / "published"
+    target.mkdir()
+    (target / "old.json").write_text("old", encoding="utf-8")
+
+    with pytest.raises(DrawdownBuildError):
+        publish_drawdown_report_set(target, {"index.json": reports["index.json"]})
+    assert (target / "old.json").read_text(encoding="utf-8") == "old"
+
+    publish_drawdown_report_set(target, reports)
+    assert {path.name for path in target.iterdir()} == set(reports)
+    assert not target.with_name("published.previous").exists()
+
+
+def _project_fixture(tmp_path: Path) -> Path:
+    project = tmp_path
+    (project / "config").mkdir(parents=True)
+    (project / "reports/strategy_research").mkdir(parents=True)
+    (project / "data/research_prices").mkdir(parents=True)
+    contract_path = project / "config/research_universe_v1.json"
+    contract_path.write_bytes((ROOT / "config/research_universe_v1.json").read_bytes())
+    audit_path = project / "reports/strategy_research/universe_audit.json"
+    audit_path.write_bytes(
+        (ROOT / "reports/strategy_research/universe_audit.json").read_bytes()
+    )
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    for asset in contract["assets"][:7]:
+        if asset["asset_key"] not in ANALYZED_KEYS:
+            continue
+        cache = (
+            project
+            / "data/research_prices"
+            / f"{asset['provider_code'].replace('.', '_')}.json"
+        )
+        cache.write_text(
+            json.dumps(_rows(100, 90, 80, 100), ensure_ascii=False),
+            encoding="utf-8",
+        )
+    return project
+
+
+def _rows(*prices: float) -> list[dict]:
+    return [
+        _row(f"2020-01-{index:02d}", price)
+        for index, price in enumerate(prices, start=1)
+    ]
+
+
+def _rows_from(start: str, *prices: float) -> list[dict]:
+    year, month, day = (int(value) for value in start.split("-"))
+    return [
+        _row(f"{year:04d}-{month:02d}-{day + index:02d}", price)
+        for index, price in enumerate(prices)
+    ]

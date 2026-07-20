@@ -1,0 +1,176 @@
+{
+  "analysis_status": "analyzed",
+  "asset": {
+    "asset_key": "csi300_total_return",
+    "display_name": "沪深300全收益指数",
+    "official_code": "H00300",
+    "provider_code": "H00300.CSI",
+    "risk_family": "broad_beta",
+    "tier": "A"
+  },
+  "blockers": [],
+  "current_position": {
+    "all_observations_exceedance_rate": 0.9018567639,
+    "all_observations_percentile": 0.0984084881,
+    "current_depth": 0.0540300083,
+    "current_drawdown": -0.0540300083,
+    "date": "2026-07-14",
+    "open_event_depth_position": {
+      "completed_event_depth_exceedance_rate": 0.0322580645,
+      "completed_event_depth_percentile": 0.9677419355
+    },
+    "state": "underwater",
+    "underwater_observations_exceedance_rate": 0.9186706296,
+    "underwater_observations_percentile": 0.0815995677
+  },
+  "daily_depth_profile": {
+    "all_observations": {
+      "maximum": 0.4605893912,
+      "mean": 0.2305393662,
+      "minimum": 0.0,
+      "percentiles": {
+        "p50": 0.2475855097,
+        "p60": 0.2699819525,
+        "p70": 0.2988944185,
+        "p75": 0.3141548151,
+        "p80": 0.3272648372,
+        "p85": 0.3422371296,
+        "p90": 0.3580048879,
+        "p95": 0.3843015369,
+        "p97_5": 0.3995935699
+      },
+      "sample_count": 3770,
+      "sample_name": "all_observations",
+      "underwater_count": 3701,
+      "underwater_rate": 0.9816976127,
+      "zero_depth_count": 69
+    },
+    "underwater_observations": {
+      "maximum": 0.4605893912,
+      "mean": 0.2348374522,
+      "minimum": 7.80748e-05,
+      "percentiles": {
+        "p50": 0.249526679,
+        "p60": 0.2719820213,
+        "p70": 0.30126188,
+        "p75": 0.3151110979,
+        "p80": 0.3280453296,
+        "p85": 0.3430983397,
+        "p90": 0.3583830439,
+        "p95": 0.3848388346,
+        "p97_5": 0.4001338486
+      },
+      "sample_count": 3701,
+      "sample_name": "underwater_observations",
+      "underwater_count": 3701,
+      "underwater_rate": null,
+      "zero_depth_count": 0
+    }
+  },
+  "duration_profile": {
+    "decline_sessions": {
+      "maximum": 402,
+      "mean": 22.064516129,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 2.0,
+        "p75": 6.5,
+        "p90": 19.0,
+        "p95": 90.5
+      },
+      "sample_count": 31
+    },
+    "event_span_sessions": {
+      "maximum": 1239,
+      "mean": 78.1290322581,
+      "minimum": 2,
+      "percentiles": {
+        "p50": 6.0,
+        "p75": 18.5,
+        "p90": 43.0,
+        "p95": 464.5
+      },
+      "sample_count": 31
+    },
+    "recovery_sessions": {
+      "maximum": 1080,
+      "mean": 56.064516129,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 4.0,
+        "p75": 9.5,
+        "p90": 24.0,
+        "p95": 254.5
+      },
+      "sample_count": 31
+    },
+    "underwater_observations": {
+      "maximum": 1238,
+      "mean": 77.1290322581,
+      "minimum": 1,
+      "percentiles": {
+        "p50": 5.0,
+        "p75": 17.5,
+        "p90": 42.0,
+        "p95": 463.5
+      },
+      "sample_count": 31
+    }
+  },
+  "event_depth_profile": {
+    "completed_events": {
+      "completed_event_count": 31,
+      "maximum": 0.4605893912,
+      "mean": 0.0543935441,
+      "minimum": 0.00013234,
+      "percentiles": {
+        "p50": 0.0247299759,
+        "p60": 0.0349608827,
+        "p70": 0.0483419373,
+        "p75": 0.0530967996,
+        "p80": 0.0681834478,
+        "p85": 0.0696315001,
+        "p90": 0.0787001998,
+        "p95": 0.2220904315,
+        "p97_5": 0.3802291769
+      },
+      "sample_count": 31
+    },
+    "current_open_event": {
+      "current_date": "2026-07-14",
+      "current_depth": 0.0540300083,
+      "current_drawdown": -0.0540300083,
+      "decline_sessions": 723,
+      "event_id": "csi300_total_return:2021-02-10",
+      "event_span_sessions": 1310,
+      "exists": true,
+      "max_depth_to_date": 0.415610061,
+      "max_drawdown_to_date": -0.415610061,
+      "peak_date": "2021-02-10",
+      "start_date": "2021-02-18",
+      "trough_date": "2024-02-02",
+      "underwater_observations": 1310
+    }
+  },
+  "limitations": [
+    "Profiles are descriptive price-drawdown facts, not trading signals.",
+    "Recovery probabilities, forward returns, and strategy parameters are not calculated.",
+    "Open events are right-censored and excluded from completed duration distributions.",
+    "Excluding open events does not remove censoring bias; later recovery research must address it explicitly.",
+    "Blocked assets are not analyzed or substituted."
+  ],
+  "methodology_version": "1.0",
+  "period": {
+    "first_date": "2011-01-04",
+    "last_date": "2026-07-14",
+    "row_count": 3770
+  },
+  "report_type": "asset_drawdown_profile",
+  "schema_version": "1.0",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "source_event_report_path": "reports/strategy_research/drawdown_events/csi300_total_return.json",
+  "source_event_report_sha256": "ff195fa6e2d6a208455d6f0d93ba0106955f60d2fde1d9cc9114b28d36b25c67",
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}

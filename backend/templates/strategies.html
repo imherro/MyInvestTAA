@@ -1,0 +1,18 @@
+<main>
+  <div class="page-head"><p class="eyebrow">策略中心</p><h1>全部策略与生命周期</h1><p>这里列出系统中全部正式、候选、失败和关闭的策略。失败研究会被保留并明确展示，不会因为未进入生产而隐藏。</p></div>
+  <section class="strategy-grid">
+    <article class="strategy-card ${current_state}">
+      <div class="strategy-card-head"><span class="status ${current_state}">${current_status}</span><span>趋势/回撤型多资产 TAA</span></div>
+      <h2>CURRENT_TAA</h2><p>${current_note}</p>
+      <dl class="capability-list"><div><dt>研究结果</dt><dd>${current_capability}</dd></div><div><dt>当前配置</dt><dd>${current_capability}</dd></div><div><dt>调仓记录</dt><dd>${current_capability}</dd></div><div><dt>Shadow</dt><dd>${current_capability}</dd></div></dl>
+      <a class="button primary" href="/strategies/current-taa">查看策略</a>
+    </article>
+    <article class="strategy-card ${p2_state}">
+      <div class="strategy-card-head"><span class="status ${p2_state}">${p2_status}</span><span>风格内部回撤企稳轮动</span></div>
+      <h2>风格回撤再平衡</h2><p>${p2_note}</p>
+      <dl class="capability-list"><div><dt>研究结果</dt><dd>${p2_research}</dd></div><div><dt>当前配置</dt><dd>${p2_downstream}</dd></div><div><dt>调仓记录</dt><dd>${p2_downstream}</dd></div><div><dt>Shadow</dt><dd>${p2_downstream}</dd></div></dl>
+      <a class="button" href="/strategies/p2-style-drawdown">查看失败原因与研究结果</a>
+    </article>
+  </section>
+  <div class="notice info">本系统只做研究和人工决策支持，不连接券商账户，也不会自动交易。</div>
+</main>

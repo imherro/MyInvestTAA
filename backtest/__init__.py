@@ -1,2 +1,0 @@
-"""Backtest foundation for MyInvestTAA."""
-

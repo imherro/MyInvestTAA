@@ -1,0 +1,133 @@
+{
+  "assets": [
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "csi300_total_return",
+      "blockers": [],
+      "completed_event_count": 31,
+      "current_all_observations_percentile": 0.0984084881,
+      "current_depth": 0.0540300083,
+      "current_drawdown": -0.0540300083,
+      "display_name": "沪深300全收益指数",
+      "open_event_count": 1,
+      "report_path": "reports/strategy_research/drawdown_profiles/csi300_total_return.json",
+      "risk_family": "broad_beta",
+      "source_event_report_sha256": "ff195fa6e2d6a208455d6f0d93ba0106955f60d2fde1d9cc9114b28d36b25c67"
+    },
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "csi500_total_return",
+      "blockers": [],
+      "completed_event_count": 24,
+      "current_all_observations_percentile": 0.1185676393,
+      "current_depth": 0.1691022283,
+      "current_drawdown": -0.1691022283,
+      "display_name": "中证500全收益指数",
+      "open_event_count": 1,
+      "report_path": "reports/strategy_research/drawdown_profiles/csi500_total_return.json",
+      "risk_family": "broad_beta",
+      "source_event_report_sha256": "fa09eda219df8752e95b16649a6f2d91132dbe7ff3854d922b4222123fde526e"
+    },
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "csi1000_total_return",
+      "blockers": [],
+      "completed_event_count": 31,
+      "current_all_observations_percentile": 0.3580901857,
+      "current_depth": 0.4145210954,
+      "current_drawdown": -0.4145210954,
+      "display_name": "中证1000全收益指数",
+      "open_event_count": 1,
+      "report_path": "reports/strategy_research/drawdown_profiles/csi1000_total_return.json",
+      "risk_family": "broad_beta",
+      "source_event_report_sha256": "f2124205665b086806b07eb086abb6cb88b5de9df6eced176246d267af4c36a2"
+    },
+    {
+      "analysis_status": "blocked",
+      "asset_key": "chinext_total_return",
+      "blockers": [
+        "local research cache is missing",
+        "total-return basis is reference_only",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ],
+      "completed_event_count": 0,
+      "current_all_observations_percentile": null,
+      "current_depth": null,
+      "current_drawdown": null,
+      "display_name": "创业板全收益指数",
+      "open_event_count": 0,
+      "report_path": "reports/strategy_research/drawdown_profiles/chinext_total_return.json",
+      "risk_family": "growth_technology",
+      "source_event_report_sha256": "4b217fb07ff8f561a19052b8eb233b9cbbc243e9d99e9488ad331b882639fad3"
+    },
+    {
+      "analysis_status": "blocked",
+      "asset_key": "cni1000_value_total_return",
+      "blockers": [
+        "local cache has no provider mapping",
+        "provider_code is not verified",
+        "total-return basis is unresolved",
+        "provider mapping is unverified",
+        "contract research_status is blocked"
+      ],
+      "completed_event_count": 0,
+      "current_all_observations_percentile": null,
+      "current_depth": null,
+      "current_drawdown": null,
+      "display_name": "国证1000价值全收益指数",
+      "open_event_count": 0,
+      "report_path": "reports/strategy_research/drawdown_profiles/cni1000_value_total_return.json",
+      "risk_family": "value_income",
+      "source_event_report_sha256": "0c032d6eeac08566d41e0ea6aef4abf914d470da71950583d5a79048fa4b6687"
+    },
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "csi_dividend_total_return",
+      "blockers": [],
+      "completed_event_count": 48,
+      "current_all_observations_percentile": 0.3713527851,
+      "current_depth": 0.0908872331,
+      "current_drawdown": -0.0908872331,
+      "display_name": "中证红利全收益指数",
+      "open_event_count": 1,
+      "report_path": "reports/strategy_research/drawdown_profiles/csi_dividend_total_return.json",
+      "risk_family": "value_income",
+      "source_event_report_sha256": "df3e63e73ae510117c9777124f199a4ae12c370119d1f7bfaf5c8e7d5a75f277"
+    },
+    {
+      "analysis_status": "analyzed",
+      "asset_key": "cni_free_cash_flow_total_return",
+      "blockers": [],
+      "completed_event_count": 87,
+      "current_all_observations_percentile": 0.7847137637,
+      "current_depth": 0.2094279795,
+      "current_drawdown": -0.2094279795,
+      "display_name": "国证自由现金流全收益指数",
+      "open_event_count": 1,
+      "report_path": "reports/strategy_research/drawdown_profiles/cni_free_cash_flow_total_return.json",
+      "risk_family": "value_income",
+      "source_event_report_sha256": "50e7ef7fa0661f645c89615a43e990db6cc05761a9ff78b860d285317c7e1c7f"
+    }
+  ],
+  "generated_at": "2026-07-16T05:04:13+00:00",
+  "limitations": [
+    "Profiles are descriptive price-drawdown facts, not trading signals.",
+    "Recovery probabilities, forward returns, and strategy parameters are not calculated.",
+    "Open events are right-censored and excluded from completed duration distributions.",
+    "Excluding open events does not remove censoring bias; later recovery research must address it explicitly.",
+    "Blocked assets are not analyzed or substituted."
+  ],
+  "methodology_version": "1.0",
+  "report_type": "a_tier_drawdown_profile_index",
+  "schema_version": "1.0",
+  "source_event_index_path": "reports/strategy_research/drawdown_events/index.json",
+  "source_event_index_sha256": "98a1f6d8bef267f2cbc91d5d8c426d45e2f93e4f48bd7c6c74b16c17839cca8f",
+  "summary": {
+    "analyzed_assets": 5,
+    "blocked_assets": 2,
+    "tier_a_assets": 7
+  },
+  "universe_hash": "be76799774b5688dc07a97d3e4a27b76fa509206e7738fbda749a439edcb65b6",
+  "universe_id": "MYINVEST_TAA_RESEARCH_UNIVERSE_V1"
+}

@@ -6858,5 +6858,10 @@
     "date": "2026-07-14",
     "close": 2.125,
     "return_basis": "qfq"
+  },
+  {
+    "date": "2026-07-15",
+    "close": 2.028,
+    "return_basis": "qfq"
   }
 ]

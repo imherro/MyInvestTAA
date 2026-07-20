@@ -1,10 +1,5 @@
 [
   {
-    "date": "2010-12-31",
-    "close": 1000.0,
-    "return_basis": "total_return"
-  },
-  {
     "date": "2011-01-04",
     "close": 1017.276,
     "return_basis": "total_return"
