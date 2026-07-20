@@ -66,10 +66,24 @@ Web
 
 ```text
 evaluation_start_index = event_start_index + 1
+```
+
+若 `evaluation_start_index <= 3283`，固定：
+
+```text
 evaluation_start_date = common_panel.dates[evaluation_start_index]
 ```
 
-如果 `evaluation_start_index > 3283`，该事件的所有未来结果均为 `UNAVAILABLE_AS_OF`。不得使用事件开始日收盘价作为结果起点。
+若 `evaluation_start_index > 3283`，`evaluation_start_index` 仍保留计算所得值（样本末日事件为 3284），并固定：
+
+```text
+evaluation_start_date = null
+H20 availability_status = UNAVAILABLE_AS_OF
+H60 availability_status = UNAVAILABLE_AS_OF
+H120 availability_status = UNAVAILABLE_AS_OF
+```
+
+上述规则只约束固定期限结果。`OPEN` 事件的 episode 状态仍固定为 `NOT_CLOSED`，不得因 `evaluation_start_index > 3283` 改写为 `UNAVAILABLE_AS_OF`。不得使用事件开始日收盘价作为结果起点。
 
 `evaluation_start_date` 只是避免使用形成信号当日收盘价的滞后一日结果参考点，不得称为交易日、实际买入日或执行日。
 
@@ -195,9 +209,9 @@ NOT_CLOSED
 
 不可用结果的所有数值字段必须为 `null`。不得输出 NaN 或 Infinity，不得使用零代替不可用，不得删除不可用事件，不得把 OPEN episode 视为亏损或盈利，也不得根据结果是否有利决定保留结果。
 
-## 12. 事件结果事实预留字段
+## 12. 事件结果事实字段闭集
 
-后续实现的事件结果记录可以包含：
+后续实现的事件结果记录必须包含且只能包含：
 
 ```text
 event_id
@@ -215,7 +229,7 @@ H120
 episode
 ```
 
-每个期限对象可以包含：
+每个 `H20`、`H60`、`H120` 和 `episode` 对象必须包含且只能包含：
 
 ```text
 availability_status
@@ -227,6 +241,22 @@ peer_style_total_returns
 peer_benchmark_total_return
 peer_relative_return
 ```
+
+`AVAILABLE` 对象必须保存正式 `evaluation_end_index`、与索引逐项匹配的 `evaluation_end_date`，以及按冻结公式得到的 member、style、peer 和 relative 结果对象。
+
+`UNAVAILABLE_AS_OF` 对象固定为：
+
+```text
+evaluation_end_index = null
+evaluation_end_date = null
+member_total_returns = null
+style_total_return = null
+peer_style_total_returns = null
+peer_benchmark_total_return = null
+peer_relative_return = null
+```
+
+`NOT_CLOSED` 只允许用于 `OPEN` episode，并使用与 `UNAVAILABLE_AS_OF` 相同的 null 字段结构。不得省略字段，不得增加字段。
 
 不得把这些字段写回正式事件数据集。不得加入权重、仓位、资金、交易成本、实际买卖价格、组合收益或回测净值。
 
@@ -308,6 +338,7 @@ peer_relative_return < 0: NEGATIVE
 每个单元固定报告：
 
 ```text
+summary_status
 eligible_event_count
 unavailable_event_count
 median_style_total_return
@@ -318,7 +349,21 @@ negative_count
 positive_rate
 ```
 
-`positive_rate = positive_count / (positive_count + flat_count + negative_count)`。无 `AVAILABLE` 事件时，所有汇总值为 `null`，状态为 `NO_ELIGIBLE_EVENTS`。
+`positive_rate = positive_count / (positive_count + flat_count + negative_count)`。
+
+有至少一个 `AVAILABLE` 事件时，`summary_status = AVAILABLE`，并正常计算全部指标。无 `AVAILABLE` 事件时固定：
+
+```text
+summary_status = NO_ELIGIBLE_EVENTS
+eligible_event_count = 0
+unavailable_event_count = 该单元实际不可用事件数
+median_style_total_return = null
+median_peer_relative_return = null
+positive_count = 0
+flat_count = 0
+negative_count = 0
+positive_rate = null
+```
 
 ### 16.2 Profile x Style x Horizon
 
@@ -332,11 +377,11 @@ negative_fold_count
 median_of_fold_median_peer_relative_return
 ```
 
-每个 fold 的方向由该 fold 的 `median_peer_relative_return` 确定，不得用事件数量作为 fold 权重。
+每个 fold 的方向由该 fold 的 `median_peer_relative_return` 确定，不得用事件数量作为 fold 权重。上层汇总只使用 `summary_status = AVAILABLE` 的 fold，不把 `NO_ELIGIBLE_EVENTS` 解释为零收益，也不把它计为正向、平坦或负向；`available_fold_count` 只统计 `AVAILABLE` fold。
 
 ### 16.3 Profile x Fold x Horizon
 
-固定计算该 profile 在该 fold 中四个 style 级中位数的中位数，只纳入当 fold 有 `AVAILABLE` 事件的 style，并报告 `available_style_count`。无可用 style 时状态为 `NO_ELIGIBLE_EVENTS`。不得按 style 事件数量加权。
+固定计算该 profile 在该 fold 中四个 style 级中位数的中位数，只纳入 `summary_status = AVAILABLE` 的 style，并报告 `available_style_count`。无可用 style 时状态为 `NO_ELIGIBLE_EVENTS`，不把它解释为零收益或计入方向。不得按 style 事件数量加权。
 
 ### 16.4 Profile x Horizon
 
@@ -362,15 +407,22 @@ median_of_profile_fold_medians
 
 H60 是唯一主要决策期限。每套 profile 独立计算以下四项条件。
 
-### 条件 A：Style 广度
-
-四个 style 中至少三个满足：
+统一冻结：
 
 ```text
+minimum_available_fold_count = 5
+```
+
+### 条件 A：Style 广度
+
+四个 style 中至少三个同时满足：
+
+```text
+available_fold_count(H60) >= 5
 median_of_fold_median_peer_relative_return(H60) > 0
 ```
 
-无足够 `AVAILABLE` fold 的 style 视为不满足，不得删除。
+否则该 style 不满足条件 A，不得删除。
 
 ### 条件 B：年度一致性
 
@@ -385,16 +437,20 @@ profile_fold_median_peer_relative_return(H60) > 0
 ### 条件 C：主要期限总体方向
 
 ```text
+available_fold_count(H60) >= 5
 median_of_profile_fold_medians(H60) > 0
 ```
 
 ### 条件 D：次要期限确认
 
-H20 或 H120 至少一个满足：
+H20 或 H120 至少一个同时满足：
 
 ```text
+available_fold_count >= 5
 median_of_profile_fold_medians > 0
 ```
+
+不足五个 `AVAILABLE` fold 的期限不得承担次要确认作用。
 
 只有同时满足 A、B、C、D 时，该 profile 在后续实现中才可以标记为 `WALK_FORWARD_SUPPORTED`；否则标记为 `NOT_SUPPORTED`。本文只冻结规则，不执行实际判定。
 
@@ -429,7 +485,17 @@ selected_profile = 该 profile
 1. H60 正向年度 fold 数量更多。
 2. H60 正向 style 数量更多。
 3. H60 的 `median_of_profile_fold_medians` 更高。
-4. H120 的 `median_of_profile_fold_medians` 更高。
+4. 按以下 H120 有效性与数值规则比较。
+
+H120 有效性固定定义：
+
+```text
+H120_VALID =
+  available_fold_count(H120) >= 5
+  and median_of_profile_fold_medians(H120) is not null
+```
+
+第四级比较规则固定为：一方 `H120_VALID = true`、另一方为 false 时，VALID 方优先；双方均 VALID 时，指标较高者优先；双方均不 VALID 时，该级保持平局。
 
 全部相同时：
 
@@ -438,7 +504,7 @@ mechanism decision = AMBIGUOUS
 selected_profile = null
 ```
 
-不得默认选择 PROFILE_A、PROFILE_B 或 PROFILE_C，不得因参数更激进或保守而主观选择，不得使用事件数量作为优先级，不得使用 development 或 2026 prospective 结果打破平局，也不得使用仓位回测结果倒推 profile。
+不得默认选择 PROFILE_A、PROFILE_B 或 PROFILE_C，不得因参数更激进或保守而主观选择，不得使用事件数量作为优先级，不得使用 H20、development 或 2026 prospective 结果打破最终平局，也不得使用仓位回测结果倒推 profile。
 
 规则状态固定为：
 
@@ -447,21 +513,36 @@ Profile selection rule status: FROZEN_V1
 Profile selection execution status: NOT_RUN
 ```
 
-## 20. Episode 结果用途
+## 20. Episode 结果用途与汇总范围
 
-Episode 结果只作为状态机退出规则的补充诊断，不得替代 H60 主要决策期限。固定报告：
+Episode 结果只作为状态机退出规则的补充诊断，不得替代 H60 主要决策期限，也不得参与 profile 支持或选择。
+
+Episode 正式诊断汇总层级固定为 `Profile x Style`，且只使用事件开始日期属于以下八个正式 OOS fold 的事件：
 
 ```text
-CLOSED available episode count
-episode median peer-relative return
-episode positive count
-episode flat count
-episode negative count
-OPEN count
-episode UNAVAILABLE_AS_OF count
+WF_2018
+WF_2019
+WF_2020
+WF_2021
+WF_2022
+WF_2023
+WF_2024
+WF_2025
 ```
 
-不得因为 OPEN 事件缺少 episode 结果而删除它或假设退出。
+每个 `Profile x Style` 固定报告：
+
+```text
+closed_available_episode_count
+episode_median_peer_relative_return
+episode_positive_count
+episode_flat_count
+episode_negative_count
+open_count
+episode_unavailable_as_of_count
+```
+
+Development 和 2026 prospective 事件可以保留 episode 事实，但不得进入该汇总。不得因为 OPEN 事件缺少 episode 结果而删除它或假设退出。
 
 ## 21. 结果解释边界
 
